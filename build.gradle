@@ -1,0 +1,24 @@
+apply from: "../publish.gradle"
+
+ext{
+    testClassName = "com.vabrant.actionsystem.test.ActionSystemTestApplication"
+    artifactId = "action-system"
+}
+
+group += "actionsystem"
+version = "$actionSystemVersion"
+
+dependencies{
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "com.vabrant.testbase:test-base:0.0.0"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+task runTest(dependsOn: classes, type: JavaExec){
+    main = project.ext.testClassName
+    classpath = sourceSets.main.runtimeClasspath += sourceSets.test.runtimeClasspath
+    workingDir = project.file("src/test/resources").path
+    standardInput = System.in
+    ignoreExitValue = true
+}
