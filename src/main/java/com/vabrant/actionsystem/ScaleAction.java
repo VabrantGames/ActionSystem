@@ -54,7 +54,7 @@ public class ScaleAction extends TimeAction{
 	}
 	
 	@Override
-	protected void start() {
+	public void start() {
 		super.start();
 		if(xStart == xEnd) {
 			scaleX = false;
@@ -139,7 +139,7 @@ public class ScaleAction extends TimeAction{
 	}
 	
 	public static ScaleAction getAction(float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		ScaleAction action = Pools.obtain(ScaleAction.class);
+		ScaleAction action = ActionPools.obtain(ScaleAction.class);
 		action.set(duration, reverseBackToStart, interpolation);
 		return action;
 	}

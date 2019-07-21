@@ -29,8 +29,9 @@ public class ActionSystemTestApplication extends TestApplicationBase{
 		super.create();
 //		setScreen(new PauseConditionTest());
 //		setScreen(new TestingPlayground());
-		setScreen(new MoveByTest());
+//		setScreen(new MoveByTest());
 //		setScreen(new MoveToTest());
+		setScreen(new ActionTest());
 	}
 	
 	public void runTest() {

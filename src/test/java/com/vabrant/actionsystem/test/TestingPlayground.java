@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
-import com.vabrant.actionsystem.Pools;
+import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RepeatAction;
 
 public class TestingPlayground extends ActionSystemTestScreen{
@@ -60,15 +60,15 @@ public class TestingPlayground extends ActionSystemTestScreen{
 	
 	public void repeatTest() {
 		
-		DelayAction delay = Pools.obtain(DelayAction.class);
+		DelayAction delay = ActionPools.obtain(DelayAction.class);
 		delay.set(0.25f);
 		
-		GroupAction group = Pools.obtain(GroupAction.class);
+		GroupAction group = ActionPools.obtain(GroupAction.class);
 		group.sequence();
 		group.add(MoveAction.moveXBy(testObject, 50, 0.5f, false, Interpolation.linear).restartMoveByXFromEnd());
 		group.add(delay);
 		
-		RepeatAction repeat = Pools.obtain(RepeatAction.class);
+		RepeatAction repeat = ActionPools.obtain(RepeatAction.class);
 		repeat.set(group);
 		repeat.setRepeatAmount(2);
 		

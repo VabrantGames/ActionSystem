@@ -61,7 +61,7 @@ public class MultiSingleAction extends TimeAction{
 	}
 	
 	@Override
-	protected void start() {
+	public void start() {
 		super.start();
 		duration = duration * actions.size;;
 	}

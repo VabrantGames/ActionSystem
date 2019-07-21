@@ -14,6 +14,7 @@ import com.vabrant.actionsystem.RepeatAction;
 public class MoveToTest extends ActionSystemTestScreen{
 	
 	private int currentTest = 9;
+	private int maxTest = 9;
 	private ActionSystemTestObject testObject;
 	
 	public MoveToTest() {

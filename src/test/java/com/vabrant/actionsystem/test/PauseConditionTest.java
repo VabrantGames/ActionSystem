@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.PauseCondition;
-import com.vabrant.actionsystem.Pools;
+import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.actionsystem.RunnableAction;
 
@@ -68,15 +68,15 @@ public class PauseConditionTest extends ActionSystemTestScreen implements PauseC
 	}
 	
 	private void playAnimation() {
-		MoveAction moveAction = Pools.obtain(MoveAction.class);
+		MoveAction moveAction = ActionPools.obtain(MoveAction.class);
 //		moveAction.moveXTo(testObject, 0, 100);
 		moveAction.set(0.5f, false, Interpolation.linear);
 		
-		RepeatAction repeatMoveAction = Pools.obtain(RepeatAction.class);
+		RepeatAction repeatMoveAction = ActionPools.obtain(RepeatAction.class);
 		repeatMoveAction.set(moveAction);
 		repeatMoveAction.setRepeatAmount(2);
 		
-		RunnableAction pauseRunnable = Pools.obtain(RunnableAction.class);
+		RunnableAction pauseRunnable = ActionPools.obtain(RunnableAction.class);
 		pauseRunnable.set(new Runnable() {
 			@Override
 			public void run() {
@@ -84,11 +84,11 @@ public class PauseConditionTest extends ActionSystemTestScreen implements PauseC
 			}
 		});
 		
-		MoveAction lastMove = Pools.obtain(MoveAction.class);
+		MoveAction lastMove = ActionPools.obtain(MoveAction.class);
 		lastMove.moveYTo(testObject, 150);
 		lastMove.set(0.5f, true, Interpolation.linear);
 		
-		GroupAction group = Pools.obtain(GroupAction.class);
+		GroupAction group = ActionPools.obtain(GroupAction.class);
 		group.setPauseCondition(this);
 		group.sequence();
 		group.add(repeatMoveAction);

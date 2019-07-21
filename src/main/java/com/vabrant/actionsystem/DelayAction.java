@@ -5,6 +5,10 @@ public class DelayAction extends Action {
 	private float timer;
 	private float duration;
 	
+	public DelayAction bob() {
+		return this;
+	}
+	
 	public void set(float duration) {
 		this.duration = duration;
 	}

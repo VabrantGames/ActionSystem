@@ -120,7 +120,7 @@ public class MoveAction extends TimeAction {
 	}
 	
 	@Override
-	protected void start() {
+	public void start() {
 		super.start();
 		
 		if(firstMove) {
