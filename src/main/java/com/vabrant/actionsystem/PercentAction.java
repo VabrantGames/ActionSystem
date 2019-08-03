@@ -18,5 +18,9 @@ public class PercentAction extends TimeAction {
 		super.reset();
 		percentable = null;
 	}
+	
+	public static PercentAction getAction() {
+		return getAction(PercentAction.class);
+	}
 
 }

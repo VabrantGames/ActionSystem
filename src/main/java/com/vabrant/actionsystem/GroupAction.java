@@ -3,6 +3,33 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.utils.Array;
 
 public class GroupAction extends Action {
+	
+	public static GroupAction getAction() {
+		return getAction(GroupAction.class);
+	}
+	
+	public static GroupAction parallel(Action a1, Action a2) {
+		GroupAction action = getAction()
+				.parallel()
+				.add(a1)
+				.add(a2);
+		return action;
+	}
+	
+//	public static GroupAction parallel(Action... a) {
+//		GroupAction action = getAction()
+//				.parallel();
+//		
+//		return action;
+//	}
+	
+	public static GroupAction sequence(Action a1, Action a2) {
+		GroupAction action = getAction()
+				.sequence()
+				.add(a1)
+				.add(a2);
+		return action;
+	}
 
 	private float timer;
 	private boolean parallel;
@@ -116,10 +143,6 @@ public class GroupAction extends Action {
 		offset = 0;
 		index = 0;
 		timer = 0;
-	}
-	
-	public static GroupAction getAction() {
-		return getAction(GroupAction.class);
 	}
 
 }

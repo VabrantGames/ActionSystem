@@ -5,6 +5,80 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class MoveAction extends TimeAction {
 	
+	public static MoveAction getAction() {
+		return getAction(MoveAction.class);
+	}
+	
+	public static MoveAction moveXBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveXBy(movable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveYBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveYBy(movable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveBy(Movable movable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveBy(movable, xAmount, yAmount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveByAngle(movable, angle, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveXTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveXTo(movable, end);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveYTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveYTo(movable, end);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction moveTo(Movable movable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		MoveAction action = getAction();
+		action.moveTo(movable, xEnd, yEnd);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static MoveAction setX(Movable movable, float x) {
+		MoveAction action = getAction();
+		action.moveXTo(movable, x);
+		action.set(0, false, null);
+		return action;
+	}
+	
+	public static MoveAction setY(Movable movable, float y) {
+		MoveAction action = getAction();
+		action.moveYTo(movable, y);
+		action.set(0, false, null);
+		return action;
+	}
+	
+	public static MoveAction setPosition(Movable movable, float x, float y) {
+		MoveAction action = getAction();
+		action.moveTo(movable, x, y);
+		action.set(0, false, null);
+		return action;
+	}
+	
 	private enum XMoveType{
 		MOVE_X_TO,
 		MOVE_X_BY,
@@ -20,8 +94,6 @@ public class MoveAction extends TimeAction {
 	private boolean firstMove = true;
 	private boolean restartMoveByXFromEnd;
 	private boolean restartMoveByYFromEnd;
-	private boolean moveX;
-	private boolean moveY;
 	private float xStart;
 	private float xEnd;
 	private float yStart;
@@ -103,20 +175,32 @@ public class MoveAction extends TimeAction {
 		yEnd = yStart + yAmount;
 	}
 
-	public MoveAction restartMoveByXFromEnd() {
+	public MoveAction restartMoveXByFromEnd() {
 		restartMoveByXFromEnd = true;
 		return this;
 	}
 	
-	public MoveAction restartMoveByYFromEnd() {
+	public MoveAction restartMoveYByFromEnd() {
 		restartMoveByYFromEnd = true;
 		return this;
 	}
 
 	@Override
 	protected void percent(float percent) {
-		if(moveX) movable.setX(MathUtils.lerp(xStart, xEnd, percent));
-		if(moveY) movable.setY(MathUtils.lerp(yStart, yEnd, percent));
+		switch(xMoveType) {
+			case MOVE_X_BY:
+			case MOVE_X_TO:
+				movable.setX(MathUtils.lerp(xStart, xEnd, percent));
+				break;
+		}
+		
+		switch(yMoveType) {
+			case MOVE_Y_BY:
+			case MOVE_Y_TO:
+				movable.setY(MathUtils.lerp(yStart, yEnd, percent));
+				break;
+		}
+		
 	}
 	
 	@Override
@@ -142,9 +226,6 @@ public class MoveAction extends TimeAction {
 					break;
 			}
 		}
-		
-		moveX = xStart == 0 && xEnd == 0 ? false : true;
-		moveY = yStart == 0 && yEnd == 0 ? false : true;
 	}
 
 	@Override
@@ -161,8 +242,6 @@ public class MoveAction extends TimeAction {
 		super.reset();
 		xAmount = 0;
 		yAmount = 0;
-		moveX = false;
-		moveY = false;
 		xStart = 0;
 		xEnd = 0;
 		yStart = 0;
@@ -173,80 +252,6 @@ public class MoveAction extends TimeAction {
 		restartMoveByYFromEnd = false;
 		xMoveType = XMoveType.NONE;
 		yMoveType = YMoveType.NONE;
-	}
-	
-	public static MoveAction getAction() {
-		return getAction(MoveAction.class);
-	}
-	
-	public static MoveAction moveXBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveXBy(movable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction moveYBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveYBy(movable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction moveBy(Movable movable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveBy(movable, xAmount, yAmount);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveByAngle(movable, angle, amount);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction moveXTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveXTo(movable, end);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction moveYTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveYTo(movable, end);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
-	}
-	
-	public static MoveAction setX(Movable movable, float x) {
-		MoveAction action = getAction();
-		action.moveXTo(movable, x);
-		action.set(0, false, null);
-		return action;
-	}
-	
-	public static MoveAction setY(Movable movable, float y) {
-		MoveAction action = getAction();
-		action.moveYTo(movable, y);
-		action.set(0, false, null);
-		return action;
-	}
-	
-	public static MoveAction setPosition(Movable movable, float x, float y) {
-		MoveAction action = getAction();
-		action.moveTo(movable, x, y);
-		action.set(0, false, null);
-		return action;
-	}
-	
-	public static MoveAction moveTo(Movable movable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		MoveAction action = getAction();
-		action.moveTo(movable, xEnd, yEnd);
-		action.set(duration, reverseBackToStart, interpolation);
-		return action;
 	}
 
 }

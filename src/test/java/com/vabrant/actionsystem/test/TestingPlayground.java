@@ -5,17 +5,20 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
+import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
-import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RepeatAction;
+import com.vabrant.testbase.TestSelectScreen;
 
 public class TestingPlayground extends ActionSystemTestScreen{
 	
 	private ActionSystemTestObject testObject;
 	
-	public TestingPlayground() {
+	public TestingPlayground(TestSelectScreen screen) {
+		super(screen);
+		
 		debug = true;
 		testObject = new ActionSystemTestObject();
 		testObject.setX(100);
@@ -65,12 +68,12 @@ public class TestingPlayground extends ActionSystemTestScreen{
 		
 		GroupAction group = ActionPools.obtain(GroupAction.class);
 		group.sequence();
-		group.add(MoveAction.moveXBy(testObject, 50, 0.5f, false, Interpolation.linear).restartMoveByXFromEnd());
+		group.add(MoveAction.moveXBy(testObject, 50, 0.5f, false, Interpolation.linear).restartMoveXByFromEnd());
 		group.add(delay);
 		
 		RepeatAction repeat = ActionPools.obtain(RepeatAction.class);
 		repeat.set(group);
-		repeat.setRepeatAmount(2);
+		repeat.setAmount(2);
 		
 		actionManager.addAction(repeat);
 	}

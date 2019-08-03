@@ -3,9 +3,10 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.vabrant.actionsystem.ActionAdapter;
-import com.vabrant.actionsystem.ActionListener;
 import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.DelayAction;
+import com.vabrant.testbase.Test;
+import com.vabrant.testbase.TestSelectScreen;
 
 public class ActionTest extends ActionSystemTestScreen {
 	
@@ -14,7 +15,8 @@ public class ActionTest extends ActionSystemTestScreen {
 	ActionSystemTestObject testObject;
 	Test test;
 	
-	public ActionTest() {
+	public ActionTest(TestSelectScreen screen) {
+		super(screen);
 		ActionPools.create(DelayAction.class, 1, 3);
 		
 		testObject = new ActionSystemTestObject();
@@ -28,7 +30,7 @@ public class ActionTest extends ActionSystemTestScreen {
 	public boolean keyDown(int keycode) {
 		switch(keycode) {
 			case Keys.SPACE:
-				if(test != null) test.runTest();
+				if(test != null) test.runTest1();
 				break;
 			case Keys.NUMPAD_1:
 				if(test != null) test.check1();
@@ -61,7 +63,7 @@ public class ActionTest extends ActionSystemTestScreen {
 		}
 
 		@Override
-		public void runTest() {
+		public void runTest1() {
 			unmanagedAction.restart();
 			unmanagedAction.start();
 		}

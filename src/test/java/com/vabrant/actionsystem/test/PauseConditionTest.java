@@ -5,12 +5,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
+import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.PauseCondition;
-import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.actionsystem.RunnableAction;
+import com.vabrant.testbase.TestSelectScreen;
 
 public class PauseConditionTest extends ActionSystemTestScreen implements PauseCondition{
 	
@@ -18,7 +19,9 @@ public class PauseConditionTest extends ActionSystemTestScreen implements PauseC
 	private boolean isCharacterStunned;
 	private ActionSystemTestObject testObject;
 	
-	public PauseConditionTest() {
+	public PauseConditionTest(TestSelectScreen screen) {
+		super(screen);
+		
 		debug = true;
 		testObject = new ActionSystemTestObject();
 	}
@@ -74,7 +77,7 @@ public class PauseConditionTest extends ActionSystemTestScreen implements PauseC
 		
 		RepeatAction repeatMoveAction = ActionPools.obtain(RepeatAction.class);
 		repeatMoveAction.set(moveAction);
-		repeatMoveAction.setRepeatAmount(2);
+		repeatMoveAction.setAmount(2);
 		
 		RunnableAction pauseRunnable = ActionPools.obtain(RunnableAction.class);
 		pauseRunnable.set(new Runnable() {

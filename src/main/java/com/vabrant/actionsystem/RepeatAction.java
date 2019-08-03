@@ -16,13 +16,14 @@ public class RepeatAction extends Action {
 		return isContinuous;
 	}
 	
-	public RepeatAction setRepeatAmount(int amount) {
+	public RepeatAction setAmount(int amount) {
 		this.amount = amount;
 		return this;
 	}
 	
-	public void set(Action action) {
+	public RepeatAction set(Action action) {
 		this.action = action;
+		return this;
 	}
 	
 	public boolean update(float delta) {
@@ -77,9 +78,24 @@ public class RepeatAction extends Action {
 		return getAction(RepeatAction.class);
 	}
 	
+	@Deprecated
 	public static RepeatAction repeat(Action repeatAction) {
 		RepeatAction action = getAction();
 		action.set(repeatAction);
+		return action;
+	}
+	
+	public static RepeatAction repeat(Action repeatAction, int amount) {
+		RepeatAction action = getAction();
+		action.set(repeatAction);
+		action.setAmount(amount);
+		return action;
+	}
+	
+	public static RepeatAction continuous(Action repeatAction) {
+		RepeatAction action = getAction();
+		action.set(repeatAction);
+		action.setContinuous();
 		return action;
 	}
 }

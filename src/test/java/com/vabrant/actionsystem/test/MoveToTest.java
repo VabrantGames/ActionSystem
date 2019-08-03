@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.RepeatAction;
+import com.vabrant.testbase.TestSelectScreen;
 
 public class MoveToTest extends ActionSystemTestScreen{
 	
@@ -17,7 +17,9 @@ public class MoveToTest extends ActionSystemTestScreen{
 	private int maxTest = 9;
 	private ActionSystemTestObject testObject;
 	
-	public MoveToTest() {
+	public MoveToTest(TestSelectScreen screen) {
+		super(screen);
+		
 		debug = true;
 		testObject = new ActionSystemTestObject();
 		testObject.setX(100);
@@ -89,7 +91,7 @@ public class MoveToTest extends ActionSystemTestScreen{
 		GroupAction group = GroupAction.getAction()
 				.add(MoveAction.moveXTo(testObject, 200, 0.5f, false, Interpolation.linear))
 				.add(DelayAction.delay(0.25f));
-		RepeatAction repeat = RepeatAction.repeat(group).setRepeatAmount(2);
+		RepeatAction repeat = RepeatAction.repeat(group).setAmount(2);
 		actionManager.addAction(repeat);
 	}
 	
@@ -97,7 +99,7 @@ public class MoveToTest extends ActionSystemTestScreen{
 		GroupAction group = GroupAction.getAction()
 				.add(MoveAction.moveYTo(testObject, 200, 0.5f, false, Interpolation.linear))
 				.add(DelayAction.delay(0.25f));
-		RepeatAction repeat = RepeatAction.repeat(group).setRepeatAmount(2);
+		RepeatAction repeat = RepeatAction.repeat(group).setAmount(2);
 		actionManager.addAction(repeat);
 	}
 	
@@ -105,7 +107,7 @@ public class MoveToTest extends ActionSystemTestScreen{
 		GroupAction group = GroupAction.getAction()
 				.add(MoveAction.moveTo(testObject, 300, 200, 0.5f, false, Interpolation.linear))
 				.add(DelayAction.delay(0.25f));
-		RepeatAction repeat = RepeatAction.repeat(group).setRepeatAmount(2);
+		RepeatAction repeat = RepeatAction.repeat(group).setAmount(2);
 		actionManager.addAction(repeat);
 	}
 	
@@ -137,6 +139,7 @@ public class MoveToTest extends ActionSystemTestScreen{
 
 	@Override
 	public void debug(ShapeRenderer renderer) {
+		super.debug(renderer);
 		renderer.set(ShapeType.Filled);
 		renderer.setColor(Color.BLACK);
 		renderer.rect(testObject.getX(), testObject.getY(), 10, 10);

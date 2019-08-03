@@ -2,45 +2,24 @@ package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.utils.ObjectMap;
-import com.vabrant.testbase.TestApplicationBase;
-import com.vabrant.testbase.TestScreen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.vabrant.testbase.TestApplication;
 
-public class ActionSystemTestApplication extends TestApplicationBase{
+public class ActionSystemTestApplication extends TestApplication{
 	
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 960;
 		config.height = 640;
+		config.resizable = false;
 		 new LwjglApplication(new ActionSystemTestApplication(), config);
 	}
-	
-	static final int TEST_WIDTH = 480;
-	static final int TEST_HEIGHT = 320;
-	
-	public enum ActionSystemTests {
-		MOVE_TO_TEST,
-	}
-	
-	private final ObjectMap<Class<?>, TestScreen> tests = new ObjectMap<>();
 	
 	@Override
 	public void create() {
 		super.create();
-//		setScreen(new PauseConditionTest());
-//		setScreen(new TestingPlayground());
-//		setScreen(new MoveByTest());
-//		setScreen(new MoveToTest());
-		setScreen(new ActionTest());
+		setScreen(new ActionTestSelectScreen(this));
 	}
 	
-	public void runTest() {
-		
-	}
-	
-	public void endTest() {
-	}
-	
-	
-
 }
