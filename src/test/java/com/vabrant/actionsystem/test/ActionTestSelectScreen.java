@@ -6,11 +6,10 @@ import com.vabrant.testbase.TestSelectScreen;
 public class ActionTestSelectScreen extends TestSelectScreen{
 	
 	Class[] testScreens = {
-			ActionTest.class,
 			ColorActionTestScreen.class,
 			MoveActionTestScreen.class,
+			ZoomActionTestScreen.class,
 			};
-	
 	
 	public ActionTestSelectScreen(TestApplication app) {
 		super(app);

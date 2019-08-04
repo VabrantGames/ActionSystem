@@ -3,9 +3,11 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.graphics.Color;
 import com.vabrant.actionsystem.Colorable;
 import com.vabrant.actionsystem.Movable;
+import com.vabrant.actionsystem.Zoomable;
 
-public class ActionSystemTestObject implements Movable, Colorable{
+public class ActionSystemTestObject implements Movable, Colorable, Zoomable{
 	
+	private float zoom = 1;
 	private float x;
 	private float y;
 	public float width = 50;
@@ -47,5 +49,14 @@ public class ActionSystemTestObject implements Movable, Colorable{
 		return color;
 	}
 	
+	@Override
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+	}
+	
+	@Override
+	public float getZoom() {
+		return zoom;
+	}
 
 }

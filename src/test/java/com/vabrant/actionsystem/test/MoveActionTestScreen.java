@@ -15,7 +15,7 @@ import com.vabrant.testbase.TestSelectScreen;
 
 public class MoveActionTestScreen extends ActionSystemTestScreen{
 	
-	private final Class[] tests = {
+	private final Class<?>[] tests = {
 			MoveXByTest.class,
 			MoveYByTest.class,
 			MoveByTest.class,
@@ -289,6 +289,5 @@ public class MoveActionTestScreen extends ActionSystemTestScreen{
 			testObject.setY(20);
 		}
 	}
-}
 	
 }
