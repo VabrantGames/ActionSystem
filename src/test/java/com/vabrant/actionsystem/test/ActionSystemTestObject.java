@@ -3,13 +3,17 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.graphics.Color;
 import com.vabrant.actionsystem.Colorable;
 import com.vabrant.actionsystem.Movable;
+import com.vabrant.actionsystem.Shakable;
 import com.vabrant.actionsystem.Zoomable;
 
-public class ActionSystemTestObject implements Movable, Colorable, Zoomable{
+public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Shakable{
 	
 	private float zoom = 1;
 	private float x;
 	private float y;
+	private float shakeX;
+	private float shakeY;
+	private float shakeAngle;
 	public float width = 50;
 	public float height = 50;
 	private Color color = new Color(1,1,1,1);
@@ -57,6 +61,36 @@ public class ActionSystemTestObject implements Movable, Colorable, Zoomable{
 	@Override
 	public float getZoom() {
 		return zoom;
+	}
+
+	@Override
+	public void setShakeX(float x) {
+		this.shakeX = x;
+	}
+
+	@Override
+	public void setShakeY(float y) {
+		this.shakeY = y;
+	}
+
+	@Override
+	public void setShakeAngle(float angle) {
+		this.shakeAngle = angle;
+	}
+
+	@Override
+	public float getShakeX() {
+		return shakeX;
+	}
+
+	@Override
+	public float getShakeY() {
+		return shakeY;
+	}
+
+	@Override
+	public float getShakeAngle() {
+		return shakeAngle;
 	}
 
 }

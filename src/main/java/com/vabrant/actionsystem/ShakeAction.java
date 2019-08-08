@@ -1,92 +1,116 @@
 package com.vabrant.actionsystem;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class ShakeAction extends TimeAction {
 	
-	private boolean shakeX;
-	private boolean shakeY;
-	private boolean shakeAngle;
+	public static ShakeAction getAction() {
+		return getAction(ShakeAction.class);
+	}
+	
+	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		ShakeAction action = getAction();
+		action.shakeX(shakable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static ShakeAction shakeY(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		ShakeAction action = getAction();
+		action.shakeY(shakable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static ShakeAction shakeAngle(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		ShakeAction action = getAction();
+		action.shakeAngle(shakable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angleAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		ShakeAction action = getAction();
+		action.shake(shakable, xAmount, yAmount, angleAmount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	private enum ShakeType{
+		SHAKE_X,
+		SHAKE_Y,
+		SHAKE_ANGLE,
+		SHAKE_ALL,
+		NONE
+	}
+	
 	private boolean usePercent;
 	private float x;
 	private float y;
 	private float angle;
-	private float multiplier;
 	private Shakable shakable;
-
-	public void shake(Shakable shakable, float amount, float angle, float multiplier) {
-		shake(shakable, amount, amount, angle, multiplier);
+	private ShakeType type = ShakeType.NONE;
+	
+	public ShakeAction shakeX(Shakable shakable, float amount) {
+		this.shakable = shakable;
+		this.x = amount;
+		type = ShakeType.SHAKE_X;
+		return this;
 	}
 	
-	public void shakeX(Shakable shakable, float x, float angle, float multiplier) {
-		shake(shakable, x, 0, angle, multiplier);
+	public ShakeAction shakeY(Shakable shakable, float amount) {
+		this.shakable = shakable;
+		this.y = amount;
+		type = ShakeType.SHAKE_Y;
+		return this;
 	}
 	
-	public void shakeY(Shakable shakable, float y, float angle, float multiplier) {
-		shake(shakable, 0, y, angle, multiplier);
+	public ShakeAction shakeAngle(Shakable shakable, float amount) {
+		this.shakable = shakable;
+		this.angle = amount;
+		type = ShakeType.SHAKE_ANGLE;
+		return this;
 	}
 	
-	public void shakeAngle(Shakable shakable, float angle, float multiplier) {
-		shake(shakable, 0, 0, angle, multiplier);
-	}
-	
-	public void usePercent(boolean usePercent) {
-		this.usePercent = usePercent;
-	}
-	
-	public void shake(Shakable shakable, float xAmount, float yAmount, float angle, float multiplier) {
+	public ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angle) {
 		this.shakable = shakable;
 		this.x = xAmount;
 		this.y = yAmount;
 		this.angle = angle;
-		this.multiplier = multiplier;
+		type = ShakeType.SHAKE_ALL;
+		return this;
+	}
+	
+	public ShakeAction usePercent(boolean usePercent) {
+		this.usePercent = usePercent;
+		return this;
 	}
 	
 	@Override
 	protected void percent(float percent) {
 		if(!usePercent) percent = 1;
-		float x = MathUtils.random(-this.x, this.x) * multiplier * percent;
-		float y = MathUtils.random(-this.y, this.y) * multiplier * percent;
-		float angle = MathUtils.random(-this.angle, this.angle) * multiplier * percent;
-		shakable.setShakeX(x);
-		shakable.setShakeY(y);
-		shakable.setShakeAngle(angle);
-	}
-	
-	@Override
-	public void start() {
-		super.start();
-		if(x == 0) {
-			shakeX = false;
-		}
-		else {
-			shakeX = true;
-		}
-		if(y == 0) {
-			shakeY = false;
-		}
-		else {
-			shakeY = true;
-		}
-		if(angle == 0) {
-			shakeAngle = false;
-		}
-		else {
-			shakeAngle = true;
+		switch(type) {
+			case SHAKE_X:
+				shakable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
+				break;
+			case SHAKE_Y:
+				shakable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
+				break;
+			case SHAKE_ANGLE:
+				shakable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
+				break;
+			case SHAKE_ALL:
+				shakable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
+				shakable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
+				shakable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
+				break;
 		}
 	}
 	
-	@Override
+	 @Override
 	public void end() {
 		super.end();
-		shakable.setShakeX(0);
-		shakable.setShakeY(0);
-		shakable.setShakeAngle(0);
-	}
-	
-	@Override
-	public void restart() {
-		super.restart();
 		shakable.setShakeX(0);
 		shakable.setShakeY(0);
 		shakable.setShakeAngle(0);
@@ -96,10 +120,10 @@ public class ShakeAction extends TimeAction {
 	public void reset() {
 		super.reset();
 		x = 0;
-		y = 9;
+		y = 0;
 		angle = 0;
-		multiplier = 0;
 		shakable = null;
 		usePercent = false;
+		type = ShakeType.NONE;
 	}
 }

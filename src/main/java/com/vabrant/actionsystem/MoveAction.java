@@ -206,7 +206,6 @@ public class MoveAction extends TimeAction {
 	@Override
 	public void start() {
 		super.start();
-		
 		if(firstMove) {
 			switch(xMoveType) {
 				case MOVE_X_BY:
@@ -232,7 +231,6 @@ public class MoveAction extends TimeAction {
 	public void restart() {
 		super.restart();
 		firstMove = false;
-		
 		if(xMoveType.equals(XMoveType.MOVE_X_BY) && restartMoveByXFromEnd) setupMoveXBy(xEnd);
 		if(yMoveType.equals(YMoveType.MOVE_Y_BY) && restartMoveByYFromEnd) setupMoveYBy(yEnd);
 	}

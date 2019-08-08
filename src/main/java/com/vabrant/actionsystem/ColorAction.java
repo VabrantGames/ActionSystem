@@ -77,13 +77,13 @@ public class ColorAction extends TimeAction {
 		colorType = ColorType.HUE;
 	}
 	
-	public void changeSaturation(Colorable colorable, float saturation) {
-		
-	}
-	
-	public void changeBrightness(Colorable colorable, float brightness) {
-		
-	}
+//	public void changeSaturation(Colorable colorable, float saturation) {
+//		
+//	}
+//	
+//	public void changeBrightness(Colorable colorable, float brightness) {
+//		
+//	}
 	
 	public void changeAlpha(Colorable colorable, float endAlpha) {
 		this.colorable = colorable;
@@ -93,7 +93,6 @@ public class ColorAction extends TimeAction {
 
 	@Override
 	protected void percent(float percent) {
-		
 		switch(colorType) {
 			case RGBA:
 				float rgbaR = startColor.r + (endColor.r - startColor.r) * percent;
