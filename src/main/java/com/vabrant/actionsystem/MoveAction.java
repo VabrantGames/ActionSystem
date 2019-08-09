@@ -183,7 +183,6 @@ public class MoveAction extends TimeAction {
 				movable.setY(MathUtils.lerp(yStart, yEnd, percent));
 				break;
 		}
-		
 	}
 	
 	@Override
@@ -219,11 +218,6 @@ public class MoveAction extends TimeAction {
 		super.end();
 		if(!xMoveType.equals(XMoveType.MOVE_X_BY) || xMoveType.equals(XMoveType.MOVE_X_BY) && !restartMoveXByFromEnd) setupX = false;
 		if(!yMoveType.equals(YMoveType.MOVE_Y_BY) || yMoveType.equals(YMoveType.MOVE_Y_BY) && !restartMoveYByFromEnd) setupY = false;
-	}
-
-	@Override
-	public void restart() {
-		super.restart();
 	}
 	
 	@Override

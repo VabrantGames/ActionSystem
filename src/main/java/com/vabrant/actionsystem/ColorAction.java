@@ -37,6 +37,20 @@ public class ColorAction extends TimeAction {
 		action.set(duration, reverseBackToStart, interpolation);
 		return action;
 	}
+	
+	public static ColorAction setColor(Colorable colorable, Color color) {
+		ColorAction action = getAction();
+		action.changeColor(colorable, color);
+		action.set(0, false, Interpolation.linear);
+		return action;
+	}
+	
+	public static ColorAction setColor(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
+		ColorAction action = getAction();
+		action.changeColor(colorable, hue, saturation, brightness, alpha);
+		action.set(0, false, Interpolation.linear);
+		return action;
+	}
 
 	private enum ColorType{
 		RGBA,

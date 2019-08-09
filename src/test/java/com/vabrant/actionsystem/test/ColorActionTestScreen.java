@@ -17,7 +17,8 @@ public class ColorActionTestScreen extends ActionSystemTestScreen {
 			ChangeAlphaTest.class,
 			ChangeHueTest.class,
 			ChangeColorRGBATest.class,
-			ChangeColorHSBATest.class
+			ChangeColorHSBATest.class,
+			SetColorTest.class
 			};
 	ActionSystemTestObject testObject;
 	
@@ -159,6 +160,33 @@ public class ColorActionTestScreen extends ActionSystemTestScreen {
 		@Override
 		public void reset() {
 			ColorAction.HSBToRGB(testObject.getColor(), 0, 1f, 1f, 1);
+		}
+	}
+	
+	public class SetColorTest implements Test{
+		
+		private final Color endColor = new Color(254f/255f, 136f/255f, 172f/255f, 1f);
+		private final float hue = 10;
+		private final float saturation = 0.1f;
+		private final float brightness = 0.6f;
+		
+		public SetColorTest() {
+			reset();
+		}
+		
+		@Override
+		public void reset() {
+			testObject.setColor(Color.BLACK);
+		}
+		
+		@Override
+		public void runTest1() {
+			actionManager.addAction(ColorAction.setColor(testObject, endColor));
+		}
+		
+		@Override
+		public void runTest2() {
+			actionManager.addAction(ColorAction.setColor(testObject, hue, saturation, brightness, 1f));
 		}
 	}
 }

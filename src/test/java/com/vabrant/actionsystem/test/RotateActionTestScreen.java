@@ -17,6 +17,7 @@ public class RotateActionTestScreen extends ActionSystemTestScreen {
 	private final Class<?>[] tests = {
 			RotateToTest.class,
 			RotateByTest.class,
+			SetRotationTest.class,
 			};
 	private ActionSystemTestObject testObject;
 	
@@ -85,4 +86,23 @@ public class RotateActionTestScreen extends ActionSystemTestScreen {
 		}
 	}
 
+	public class SetRotationTest implements Test{
+		
+		public final float end = 225f;
+		
+		public SetRotationTest() {
+			reset();
+		}
+
+		@Override
+		public void reset() {
+			testObject.setRotation(0);
+		}
+		
+		@Override
+		public void runTest1() {
+			actionManager.addAction(RotateAction.setRotation(testObject, end));
+		}
+		 
+	}
 }

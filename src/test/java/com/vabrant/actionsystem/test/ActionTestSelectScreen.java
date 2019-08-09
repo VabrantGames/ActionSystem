@@ -11,6 +11,7 @@ public class ActionTestSelectScreen extends TestSelectScreen{
 			ZoomActionTestScreen.class,
 			ShakeActionTestScreen.class,
 			RotateActionTestScreen.class,
+			ScaleActionTestScreen.class,
 			};
 	
 	public ActionTestSelectScreen(TestApplication app) {

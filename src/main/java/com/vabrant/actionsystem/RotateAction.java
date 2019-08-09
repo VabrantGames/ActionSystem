@@ -23,6 +23,13 @@ public class RotateAction extends TimeAction {
 		return action;
 	}
 	
+	public static RotateAction setRotation(Rotatable rotatable, float end) {
+		RotateAction action = getAction();
+		action.rotateTo(rotatable, end);
+		action.set(0, false, Interpolation.linear);
+		return action;
+	}
+	
 	private enum RotationType{
 		ROTATE_TO,
 		ROTATE_BY,
