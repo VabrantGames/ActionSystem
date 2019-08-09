@@ -46,7 +46,7 @@ public class ColorAction extends TimeAction {
 		NONE
 	}
 	
-	private boolean firstMove = true;
+	private boolean setupAction = true;
 	private float startHue;
 	private float endHue;
 	private float[] startHSBA = new float[4];
@@ -125,7 +125,7 @@ public class ColorAction extends TimeAction {
 	public void start() {
 		super.start();
 		
-		if(firstMove) {
+		if(setupAction) {
 			switch(colorType) {
 				case RGBA:
 					startColor.set(colorable.getColor());
@@ -149,9 +149,9 @@ public class ColorAction extends TimeAction {
 	}
 	
 	@Override
-	public void restart() {
-		super.restart();
-		firstMove = false;
+	public void end() {
+		super.end();
+		setupAction = false;
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class ColorAction extends TimeAction {
 		super.reset();
 		endHue = 0;
 		colorable = null;
-		firstMove = true;
+		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
 		colorType = ColorType.NONE;

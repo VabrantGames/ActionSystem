@@ -91,9 +91,10 @@ public class MoveAction extends TimeAction {
 		NONE
 	}
 
-	private boolean firstMove = true;
-	private boolean restartMoveByXFromEnd;
-	private boolean restartMoveByYFromEnd;
+	private boolean setupX = true;
+	private boolean setupY = true;
+	private boolean restartMoveXByFromEnd;
+	private boolean restartMoveYByFromEnd;
 	private float xStart;
 	private float xEnd;
 	private float yStart;
@@ -123,15 +124,7 @@ public class MoveAction extends TimeAction {
 		xMoveType = XMoveType.MOVE_X_TO;
 		yMoveType = YMoveType.MOVE_Y_TO;
 	}
-	
-	protected void setupMoveXTo() {
-		this.xStart = movable.getX();
-	}
-	
-	protected void setupMoveYTo() {
-		this.yStart = movable.getY();
-	}
-	
+
 	public MoveAction moveByAngle(Movable movable, float angle, float amount) {
 		this.movable = movable;
 		angle %= 360;
@@ -164,24 +157,14 @@ public class MoveAction extends TimeAction {
 		yMoveType = YMoveType.MOVE_Y_BY;
 		return this;
 	}
-	
-	protected void setupMoveXBy(float start) {
-		xStart = start;
-		xEnd = xStart + xAmount;
-	}
-	
-	protected void setupMoveYBy(float start) {
-		yStart = start;
-		yEnd = yStart + yAmount;
-	}
 
 	public MoveAction restartMoveXByFromEnd() {
-		restartMoveByXFromEnd = true;
+		restartMoveXByFromEnd = true;
 		return this;
 	}
 	
 	public MoveAction restartMoveYByFromEnd() {
-		restartMoveByYFromEnd = true;
+		restartMoveYByFromEnd = true;
 		return this;
 	}
 
@@ -206,33 +189,41 @@ public class MoveAction extends TimeAction {
 	@Override
 	public void start() {
 		super.start();
-		if(firstMove) {
+		if(setupX) {
 			switch(xMoveType) {
 				case MOVE_X_BY:
-					setupMoveXBy(movable.getX());
+					xStart = movable.getX();
+					xEnd = xStart + xAmount;
 					break;
 				case MOVE_X_TO:
-					setupMoveXTo();
-					break;
-			}
-			
-			switch(yMoveType) {
-				case MOVE_Y_BY:
-					setupMoveYBy(movable.getY());
-					break;
-				case MOVE_Y_TO:
-					setupMoveYTo();
+					xStart = movable.getX();
 					break;
 			}
 		}
+		
+		if(setupY) {	
+			switch(yMoveType) {
+				case MOVE_Y_BY:
+					yStart = movable.getY();
+					yEnd = yStart + yAmount;
+					break;
+				case MOVE_Y_TO:
+					yStart = movable.getY();
+					break;
+			}
+		}
+	}
+	
+	@Override
+	public void end() {
+		super.end();
+		if(!xMoveType.equals(XMoveType.MOVE_X_BY) || xMoveType.equals(XMoveType.MOVE_X_BY) && !restartMoveXByFromEnd) setupX = false;
+		if(!yMoveType.equals(YMoveType.MOVE_Y_BY) || yMoveType.equals(YMoveType.MOVE_Y_BY) && !restartMoveYByFromEnd) setupY = false;
 	}
 
 	@Override
 	public void restart() {
 		super.restart();
-		firstMove = false;
-		if(xMoveType.equals(XMoveType.MOVE_X_BY) && restartMoveByXFromEnd) setupMoveXBy(xEnd);
-		if(yMoveType.equals(YMoveType.MOVE_Y_BY) && restartMoveByYFromEnd) setupMoveYBy(yEnd);
 	}
 	
 	@Override
@@ -245,9 +236,10 @@ public class MoveAction extends TimeAction {
 		yStart = 0;
 		yEnd = 0;
 		movable = null;
-		firstMove = true;
-		restartMoveByXFromEnd = false;
-		restartMoveByYFromEnd = false;
+		setupX = true;
+		setupY = true;
+		restartMoveXByFromEnd = false;
+		restartMoveYByFromEnd = false;
 		xMoveType = XMoveType.NONE;
 		yMoveType = YMoveType.NONE;
 	}

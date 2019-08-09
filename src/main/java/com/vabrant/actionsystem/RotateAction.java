@@ -1,79 +1,105 @@
 package com.vabrant.actionsystem;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
 public class RotateAction extends TimeAction {
 
+	public static RotateAction getAction() {
+		return getAction(RotateAction.class);
+	}
+	
+	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		RotateAction action = getAction();
+		action.rotateTo(rotatable, end);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	public static RotateAction rotateBy(Rotatable rotatable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		RotateAction action = getAction();
+		action.rotateBy(rotatable, amount);
+		action.set(duration, reverseBackToStart, interpolation);
+		return action;
+	}
+	
+	private enum RotationType{
+		ROTATE_TO,
+		ROTATE_BY,
+		NONE
+	}
+	
+	private boolean setupRotation = true;
 	private boolean cap;
 	private boolean restartRotateByFromEnd;
-	private float rotateByAmount;
+	private float byAmount;
 	private float start;
 	private float end;
 	private Rotatable rotatable;
+	private RotationType type = RotationType.NONE;
 	
-	public void rotateTo(Rotatable rotatable, float end) {
-		rotateTo(rotatable, rotatable.getRotation(), end);
-	}
-	
-	public void rotateTo(Rotatable rotatable, float start, float end) {
-		restartRotateByFromEnd = false;
+	public RotateAction rotateTo(Rotatable rotatable, float end) {
 		this.rotatable = rotatable;
-		this.start = start;
-		this.end = end;
+		this.end = end * -1f;
+		type = RotationType.ROTATE_TO;
+		return this;
 	}
 	
-	public void rotateBy(Rotatable rotatable, float amount) {
-		rotateBy(rotatable, rotatable.getRotation(), amount);
-	}
-	
-	public void rotateBy(Rotatable rotatable, float start, float amount) {
-		rotateByAmount = amount;
+	public RotateAction rotateBy(Rotatable rotatable, float amount) {
 		this.rotatable = rotatable;
-		this.start = start;
-		this.end = start + amount;
+		byAmount = amount * -1f;
+		type = RotationType.ROTATE_BY;
+		return this;
 	}
 	
-	public void restartRotateByFromEnd() {
+	public RotateAction restartRotateByFromEnd() {
 		restartRotateByFromEnd = true;
+		return this;
 	}
 	
-	public void capAt360(boolean cap) {
+	public RotateAction capAt360(boolean cap) {
 		this.cap = cap;
+		return this;
 	}
 	
 	@Override
 	protected void percent(float percent) {
-		float rotation = MathUtils.lerp(start, end, percent);
-		rotatable.setRotation(rotation);
+		rotatable.setRotation(MathUtils.lerp(start, end, percent));
+	}
+	
+	@Override
+	public void start() {
+		super.start();
+		if(setupRotation) {
+			switch(type) {
+				case ROTATE_TO:
+					start = rotatable.getRotation();
+					break;
+				case ROTATE_BY:
+					start = rotatable.getRotation();
+					end = start + byAmount;
+					break;
+			}
+		}
 	}
 	
 	@Override
 	public void end() {
 		super.end();
-		if(reverseBackToStart) {
-			rotatable.setRotation(start);
-		}
-		else {
-			rotatable.setRotation(end);
-		}
+		if(!type.equals(RotationType.ROTATE_BY) || type.equals(RotationType.ROTATE_BY) && !restartRotateByFromEnd) setupRotation = false;
 		if(cap) rotatable.setRotation(rotatable.getRotation() % 360f);
-	}
-	
-	@Override
-	public void restart() {
-		super.restart();
-		if(restartRotateByFromEnd) rotateBy(rotatable, rotateByAmount);
-		rotatable.setRotation(start);
 	}
 	
 	@Override
 	public void reset() {
 		super.reset();
+		type = RotationType.NONE;
+		setupRotation = true;
 		cap = false;
 		rotatable = null;
 		start = 0;
 		end = 0;
-		rotateByAmount = 0;
+		byAmount = 0;
 		restartRotateByFromEnd = false;
 	}
 

@@ -37,7 +37,7 @@ public class ZoomAction extends TimeAction{
 	}
 	
 	private boolean restartZoomByFromEnd;
-	private boolean setupAction = true;
+	private boolean setupZoom = true;
 	private float start;
 	private float end;
 	private float amount;
@@ -73,7 +73,7 @@ public class ZoomAction extends TimeAction{
 	public void start() {
 		super.start();
 		
-		if(setupAction) {
+		if(setupZoom) {
 			switch(type) {
 				case ZOOM_BY:
 					start = zoomable.getZoom();
@@ -85,17 +85,17 @@ public class ZoomAction extends TimeAction{
 			}
 		}
 	}
-
+	
 	@Override
-	public void restart() {
-		super.restart();
-		if(!type.equals(ZoomType.ZOOM_BY) || type.equals(ZoomType.ZOOM_BY) && !restartZoomByFromEnd) setupAction = false;
+	public void end() {
+		super.end();
+		if(!type.equals(ZoomType.ZOOM_BY) || type.equals(ZoomType.ZOOM_BY) && !restartZoomByFromEnd) setupZoom = false;
 	}
 	
 	@Override
 	public void reset() {
 		super.reset();
-		setupAction = true;
+		setupZoom = true;
 		start = 0;
 		end = 0;
 		amount = 0;
