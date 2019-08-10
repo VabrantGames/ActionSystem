@@ -166,9 +166,9 @@ public class ColorActionTestScreen extends ActionSystemTestScreen {
 	public class SetColorTest implements Test{
 		
 		private final Color endColor = new Color(254f/255f, 136f/255f, 172f/255f, 1f);
-		private final float hue = 10;
-		private final float saturation = 0.1f;
-		private final float brightness = 0.6f;
+		private final float hue = 342;
+		private final float saturation = 0.46f;
+		private final float brightness = 1f;
 		
 		public SetColorTest() {
 			reset();

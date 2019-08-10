@@ -181,7 +181,7 @@ public class ColorAction extends TimeAction {
 	
 	public static void HSBToRGB(Color color, float hue, float saturation, float brightness, float alpha) {
 		if(hue >= 360) hue %= 360;
-		saturation = MathUtils.clamp(brightness, 0f, 1f);
+		saturation = MathUtils.clamp(saturation, 0f, 1f);
 		brightness = MathUtils.clamp(brightness, 0f, 1f);
 		
 		float c = brightness * saturation;
