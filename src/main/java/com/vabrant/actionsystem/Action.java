@@ -29,7 +29,7 @@ public class Action implements Poolable{
 	}
 	
 	/**
-	 * Makes this Action managed by the user. Useful when an action needs to be permeate. Will not be pooled when finished.
+	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
 	public void unmanage() {
 		isManaged = false;
