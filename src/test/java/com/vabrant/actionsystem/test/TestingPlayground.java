@@ -12,7 +12,7 @@ import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class TestingPlayground extends ActionSystemTestScreen{
+public class TestingPlayground extends ActionSystemBaseTestScreen{
 	
 	private ActionSystemTestObject testObject;
 	

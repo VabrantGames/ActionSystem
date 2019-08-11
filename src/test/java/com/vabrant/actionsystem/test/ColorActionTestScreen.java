@@ -11,7 +11,7 @@ import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ColorActionTestScreen extends ActionSystemTestScreen {
+public class ColorActionTestScreen extends ActionSystemBaseTestScreen {
 	
 	private final Class[] tests = {
 			ChangeAlphaTest.class,

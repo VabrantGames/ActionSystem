@@ -13,7 +13,7 @@ import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.actionsystem.RunnableAction;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class PauseConditionTest extends ActionSystemTestScreen implements PauseCondition{
+public class PauseConditionTest extends ActionSystemBaseTestScreen implements PauseCondition{
 	
 	private boolean isGamePaused;
 	private boolean isCharacterStunned;

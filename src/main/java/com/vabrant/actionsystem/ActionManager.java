@@ -1,12 +1,13 @@
 package com.vabrant.actionsystem;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 
 public class ActionManager {
 	
 	private Array<Action> unmanagedActions;
 	private Array<Action> actions;
+	private final Logger logger;
 	
 	public ActionManager() {
 		this(10);
@@ -15,6 +16,11 @@ public class ActionManager {
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
+		logger = new Logger(this.getClass().getSimpleName(), Logger.NONE);
+	}
+	
+	public Logger getLogger() {
+		return logger;
 	}
 	
 	public Array<Action> getUnmanagedActions(){
@@ -27,40 +33,32 @@ public class ActionManager {
 	
 	void startUnmanagedAction(Action action) {
 		int index = unmanagedActions.indexOf(action, false);
-		actions.add(unmanagedActions.removeIndex(index));
+		actions.add(unmanagedActions.get(index));
 	}
 	
 	public void addUnmanagedAction(Action action) {
 		if(action.isManaged()) return;
 		action.setActionManager(this);
 		unmanagedActions.add(action);
-		Gdx.app.log("Action Manager", "Unmanaged action added");
+		logger.info("Unmanaged action added");
 	}
 	
 	void poolUnmanagedAction(Action unmanagedAction) {
 		int index = unmanagedActions.indexOf(unmanagedAction, false);
 		Action action = unmanagedActions.removeIndex(index);
-		if(action != null) ActionPools.free(action);
+		ActionPools.free(action);
 	}
 	
 	public void addAction(Action action) {
 		actions.add(action);
+		logger.debug(action.getClass().getSimpleName() + " added");
 	}
 	
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
 			if(action.update(delta)) {
-				Action completedAction = actions.removeIndex(i);
-				
-				if(!completedAction.isManaged()) {
-					Gdx.app.log("Action Manager", "Put action back into unmanaged Array");
-					unmanagedActions.add(completedAction);
-				}
-				else {
-					Gdx.app.log("Action Manager", "Pool Action");
-					ActionPools.free(completedAction);
-				}
+				ActionPools.free(actions.removeIndex(i));
 			}
 		}
 	}
@@ -107,7 +105,13 @@ public class ActionManager {
 	 * Pools all actions held. Running actions will be killed.
 	 */
 	public void dispose() {
+		for(int i = actions.size - 1; i >= 0; i--) {
+			ActionPools.free(actions.removeIndex(i));
+		}
 		
+		for(int i = unmanagedActions.size - 1; i >= 0; i--) {
+			unmanagedActions.get(i).poolUnmanagedAction();
+		}
 	}
 
 }

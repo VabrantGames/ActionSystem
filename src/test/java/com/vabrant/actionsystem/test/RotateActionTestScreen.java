@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class RotateActionTestScreen extends ActionSystemTestScreen {
+public class RotateActionTestScreen extends ActionSystemBaseTestScreen {
 	
 	private final Class<?>[] tests = {
 			RotateToTest.class,

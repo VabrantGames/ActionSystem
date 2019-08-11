@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ZoomActionTestScreen extends ActionSystemTestScreen {
+public class ZoomActionTestScreen extends ActionSystemBaseTestScreen {
 	
 	private Class<?>[] tests = {
 			ZoomByTest.class,

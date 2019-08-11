@@ -6,7 +6,8 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class Action implements Poolable{
 	
-	private boolean isManaged = true;
+	boolean isManaged = true;
+	//TODO still needed?
 	private boolean hasBeenPooled;
 	protected boolean isFinished;
 	protected boolean isRunning;
@@ -39,9 +40,6 @@ public class Action implements Poolable{
 		return isManaged;
 	}
 	
-	/**
-	 * For use with unmanaged actions.
-	 */
 	void setActionManager(ActionManager actionManager) {
 		this.actionManager = actionManager;
 	}
@@ -84,6 +82,7 @@ public class Action implements Poolable{
 	}
 	
 	public void addListener(ActionListener listener) {
+		if(listener == null) throw new IllegalArgumentException("Listener is null.");
 		listeners.add(listener);
 	}
 	
@@ -99,11 +98,16 @@ public class Action implements Poolable{
 		return false;
 	}
 	
+	public void poolUnmanagedAction() {
+		if(!isManaged && actionManager != null) {
+			isManaged = true;
+			actionManager.poolUnmanagedAction(this);
+			actionManager = null;
+		}
+	}
+	
 	@Override
 	public void reset() {
-		if(!isManaged && actionManager != null) actionManager.poolUnmanagedAction(this);
-		actionManager = null;
-		isManaged = true;
 		listeners.clear();
 		pauseCondition = null;
 		name = null;
@@ -148,6 +152,8 @@ public class Action implements Poolable{
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
 	public void kill() {
+		if(!isRunning) return;
+		
 		isRunning = false;
 		isFinished = true;
 		name = null;

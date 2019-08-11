@@ -4,11 +4,11 @@ import com.vabrant.actionsystem.ActionManager;
 import com.vabrant.testbase.TestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionSystemTestScreen extends TestScreen {
+public class ActionSystemBaseTestScreen extends TestScreen {
 	
 	ActionManager actionManager;
 	
-	public ActionSystemTestScreen(TestSelectScreen screen) {
+	public ActionSystemBaseTestScreen(TestSelectScreen screen) {
 		super(screen);
 		actionManager = new ActionManager(5);
 	}

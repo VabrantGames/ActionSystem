@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ScaleActionTestScreen extends ActionSystemTestScreen {
+public class ScaleActionTestScreen extends ActionSystemBaseTestScreen {
 
 	private final Class<?>[] tests = {
 			ScaleXByTest.class,

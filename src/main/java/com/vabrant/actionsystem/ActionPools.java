@@ -1,6 +1,7 @@
 package com.vabrant.actionsystem;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
@@ -9,6 +10,7 @@ public class ActionPools {
 	
 	private static final int defaultPoolMaxCapacity = 100;
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
+	public static final Logger logger = new Logger(ActionPools.class.getSimpleName(), Logger.NONE);
 
 	/**
 	 * Where you want the pool to be filled to.
@@ -19,6 +21,7 @@ public class ActionPools {
 		if(amount == 0) throw new IllegalArgumentException("Fill amount can't be 0.");
 		
 		Pool<T> pool = get(type);
+		logger.debug("AmountToAdd: " + (amount - pool.getFree()));
 		if(amount > pool.max) throw new IllegalArgumentException("Fill amount is greater than the Pool max.");
 		if(pool.getFree() >= amount) return;
 		
@@ -74,10 +77,11 @@ public class ActionPools {
 	}
 	
 	private static void freeAction(Action action) {
-		if(action.hasBeenPooled()) return;
+		if(action.hasBeenPooled() || !action.isManaged()) return;
  		Pool pool = pools.get(action.getClass());
 		if(pool == null) return;
 		action.setPooled(true);
+		logger.info("(" + action.getClass().getSimpleName() + ") " + (action.getName() != null ? action.getName() : "") + " pooled");
 		pool.free(action);
 	}
 	
