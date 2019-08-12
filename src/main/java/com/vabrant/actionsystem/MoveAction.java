@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class MoveAction extends TimeAction {
+public class MoveAction extends PercentAction {
 	
 	public static MoveAction getAction() {
 		return getAction(MoveAction.class);

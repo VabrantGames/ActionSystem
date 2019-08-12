@@ -62,6 +62,7 @@ public class Action implements Poolable{
 	}
 
 	public void setPause(boolean pause) {
+		if(isFinished) return;
 		if(pause) {
 			if(isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
 			isPaused = pause;
@@ -140,6 +141,8 @@ public class Action implements Poolable{
 	 * Ends the action as if it's completed.
 	 */
 	public void end() {
+		if(isFinished) return;
+		
 		isRunning = false;
 		isFinished = true;
 		name = null;
@@ -152,7 +155,7 @@ public class Action implements Poolable{
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
 	public void kill() {
-		if(!isRunning) return;
+		if(isFinished) return;
 		
 		isRunning = false;
 		isFinished = true;

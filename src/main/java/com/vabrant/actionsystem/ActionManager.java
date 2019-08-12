@@ -74,14 +74,29 @@ public class ActionManager {
 	public void killAction(String name) {
 		Action action = getActionByName(name);
 		if(action == null) return;
-		if(action.isFinished()) return;
 		action.kill();
+	}
+	
+	public void endAllActions() {
+		for(int i = 0, size = actions.size; i < size; i++) {
+			Action action = actions.get(i);
+			if(action == null) continue;
+			action.end();
+		}
+	}
+	
+	public void killAllActions() {
+		for(int i = 0, size = actions.size; i < size; i++) {
+			Action action = actions.get(i);
+			if(action == null) continue;
+			action.kill();
+		}
 	}
 	
 	public void pauseAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
 			Action action = actions.get(i);
-			if(action == null || action.isFinished()) continue;
+			if(action == null) continue;
 			action.setPause(true);
 		}
 	}
@@ -89,7 +104,7 @@ public class ActionManager {
 	public void resumeAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
 			Action action = actions.get(i);
-			if(action == null || action.isFinished() || !action.isPaused()) continue;
+			if(action == null) continue;
 			action.setPause(false);
 		}
 	}
@@ -97,7 +112,6 @@ public class ActionManager {
 	public void pauseAction(String name, boolean value) {
 		Action action = getActionByName(name);
 		if(action == null) return;
-		if(action.isFinished()) return;
 		action.setPause(value);
 	}
 	
