@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem;
 
-public interface Shakable {
+public interface Shakable extends Percentable{
 	public void setShakeX(float x);
 	public void setShakeY(float y);
 	public void setShakeAngle(float angle);

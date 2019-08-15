@@ -37,7 +37,7 @@ public class ZoomActionTestScreen extends ActionSystemBaseTestScreen {
 		renderer.setColor(testObject.getColor());
 		renderer.rect(testObject.getX(), testObject.getY(), testObject.width / 2, testObject.height / 2, testObject.width, testObject.height, testObject.getZoom(), testObject.getZoom(), 0);
 	}
-	
+
 	public class ZoomByTest implements Test{
 		
 		final int repeatAmount = 3;

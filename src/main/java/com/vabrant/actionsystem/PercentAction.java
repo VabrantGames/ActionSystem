@@ -2,10 +2,20 @@ package com.vabrant.actionsystem;
 
 import com.badlogic.gdx.math.Interpolation;
 
-public abstract class PercentAction extends TimeAction {
+public abstract class PercentAction<T extends Percentable> extends TimeAction {
 
 	protected boolean reverseBackToStart;
 	protected Interpolation interpolation;
+	protected T percentable;
+	
+	public T getPercentable() {
+		return percentable;
+	}
+	
+	public void set(T percentable, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+		this.percentable = percentable;
+		set(duration, reverseBackToStart, interpolation);
+	}
 	
 	public void set(float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		setDuration(duration);
@@ -16,6 +26,7 @@ public abstract class PercentAction extends TimeAction {
 	@Override
 	public void reset() {
 		super.reset();
+		percentable = null;
 		reverseBackToStart = false;
 		interpolation = null;
 	}
@@ -25,7 +36,7 @@ public abstract class PercentAction extends TimeAction {
 		if(isFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
-		isFinished = (timer += delta) >= duration;
+		boolean isFinished = (timer += delta) >= duration;
 		float percent = 0;
 		if(isFinished) {
 			percent = reverseBackToStart ? 0 : 1;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ColorAction extends PercentAction {
+public class ColorAction extends PercentAction<Colorable> {
 	
 	public static ColorAction getAction() {
 		return getAction(ColorAction.class);
@@ -12,43 +12,43 @@ public class ColorAction extends PercentAction {
 	
 	public static ColorAction changeColor(Colorable colorable, Color endColor, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ColorAction action = getAction();
-		action.changeColor(colorable, endColor);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.changeColor(endColor);
+		action.set(colorable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ColorAction action = getAction();
-		action.changeColor(colorable, hue, saturation, brightness, alpha);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.changeColor(hue, saturation, brightness, alpha);
+		action.set(colorable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ColorAction action = getAction();
-		action.changeAlpha(colorable, endAlpha);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.changeAlpha(endAlpha);
+		action.set(colorable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ColorAction changeHue(Colorable colorable, float endHue, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ColorAction action = getAction();
-		action.changeHue(colorable, endHue);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.changeHue(endHue);
+		action.set(colorable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ColorAction setColor(Colorable colorable, Color color) {
 		ColorAction action = getAction();
-		action.changeColor(colorable, color);
-		action.set(0, false, Interpolation.linear);
+		action.changeColor(color);
+		action.set(colorable, 0, false, Interpolation.linear);
 		return action;
 	}
 	
 	public static ColorAction setColor(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
 		ColorAction action = getAction();
-		action.changeColor(colorable, hue, saturation, brightness, alpha);
-		action.set(0, false, Interpolation.linear);
+		action.changeColor(hue, saturation, brightness, alpha);
+		action.set(colorable, 0, false, Interpolation.linear);
 		return action;
 	}
 
@@ -67,17 +67,14 @@ public class ColorAction extends PercentAction {
 	private float[] endHSBA = new float[4];
 	private Color startColor = new Color(Color.WHITE);
 	private Color endColor = new Color(Color.WHITE);
-	public Colorable colorable;
 	private ColorType colorType = ColorType.NONE;
 	
-	public void changeColor(Colorable colorable, Color endColor) {
-		this.colorable = colorable;
+	public void changeColor(Color endColor) {
 		this.endColor.set(endColor);
 		colorType = ColorType.RGBA;
 	}
 	
-	public void changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
-		this.colorable = colorable;
+	public void changeColor(float hue, float saturation, float brightness, float alpha) {
 		colorType = ColorType.HSBA;
 		endHSBA[0] = hue / 360f;
 		endHSBA[1] = saturation;
@@ -85,22 +82,20 @@ public class ColorAction extends PercentAction {
 		endHSBA[3] = alpha;
 	}
 	
-	public void changeHue(Colorable colorable, float hue) {
-		this.colorable = colorable;
+	public void changeHue(float hue) {
 		this.endHue = hue / 360f;
 		colorType = ColorType.HUE;
 	}
 	
-//	public void changeSaturation(Colorable colorable, float saturation) {
+//	public void changeSaturation(float saturation) {
 //		
 //	}
 //	
-//	public void changeBrightness(Colorable colorable, float brightness) {
+//	public void changeBrightness(float brightness) {
 //		
 //	}
 	
-	public void changeAlpha(Colorable colorable, float endAlpha) {
-		this.colorable = colorable;
+	public void changeAlpha(float endAlpha) {
 		endColor.a = endAlpha;
 		colorType = ColorType.ALPHA;
 	}
@@ -113,7 +108,7 @@ public class ColorAction extends PercentAction {
 				float rgbaG = startColor.g + (endColor.g - startColor.g) * percent;
 				float rgbaB = startColor.b + (endColor.b - startColor.b) * percent;
 				float rgbaA = startColor.a + (endColor.a - startColor.a) * percent;
-				colorable.getColor().set(rgbaR, rgbaG, rgbaB, rgbaA);
+				percentable.getColor().set(rgbaR, rgbaG, rgbaB, rgbaA);
 				break;
 			case HSBA:
 				float hsbaH = startHSBA[0] + (endHSBA[0] - startHSBA[0]) * percent;
@@ -121,16 +116,16 @@ public class ColorAction extends PercentAction {
 				float hsbaB = startHSBA[2] + (endHSBA[2] - startHSBA[2]) * percent;
 				float hsbaA = startHSBA[3] + (endHSBA[3] - startHSBA[3]) * percent;
 				HSBToRGB(endColor, hsbaH * 360f, hsbaS, hsbaB, hsbaA);
-				colorable.getColor().set(endColor);
+				percentable.getColor().set(endColor);
 				break;
 			case HUE:
 				float hue = startHue + (endHue - startHue) * percent;
 				HSBToRGB(endColor, hue * 360, 1f, 1f, 1);
-				colorable.getColor().set(endColor);
+				percentable.getColor().set(endColor);
 				break;
 			case ALPHA:
 				float aaa = startColor.a + (endColor.a - startColor.a) * percent;
-				colorable.getColor().a = aaa;
+				percentable.getColor().a = aaa;
 				break;
 		}
 	}
@@ -142,20 +137,20 @@ public class ColorAction extends PercentAction {
 		if(setupAction) {
 			switch(colorType) {
 				case RGBA:
-					startColor.set(colorable.getColor());
+					startColor.set(percentable.getColor());
 					break;
 				case HSBA:
-					startColor.set(colorable.getColor());
+					startColor.set(percentable.getColor());
 					startHSBA[0] = getHue(startColor) / 360f;
 					startHSBA[1] = getSaturation(startColor);
 					startHSBA[2] = getBrightness(startColor);
 					startHSBA[3] = startColor.a;
 					break;
 				case ALPHA:
-					startColor.a = colorable.getColor().a;
+					startColor.a = percentable.getColor().a;
 					break;
 				case HUE:
-					startColor.set(colorable.getColor());
+					startColor.set(percentable.getColor());
 					startHue = getHue(startColor) / 360f;
 					break;
 			}
@@ -172,7 +167,6 @@ public class ColorAction extends PercentAction {
 	public void reset() {
 		super.reset();
 		endHue = 0;
-		colorable = null;
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);

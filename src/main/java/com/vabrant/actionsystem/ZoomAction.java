@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ZoomAction extends PercentAction{
+public class ZoomAction extends PercentAction<Zoomable>{
 	
 	public static ZoomAction getAction() {
 		return getAction(ZoomAction.class);
@@ -11,22 +11,22 @@ public class ZoomAction extends PercentAction{
 	
 	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ZoomAction action = getAction();
-		action.zoomTo(zoomable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.zoomTo(end);
+		action.set(zoomable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ZoomAction zoomBy(Zoomable zoomable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ZoomAction action = getAction();
-		action.zoomBy(zoomable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.zoomBy(amount);
+		action.set(zoomable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ZoomAction setZoom(Zoomable zoomable, float zoom) {
 		ZoomAction action = getAction();
-		action.zoomTo(zoomable, zoom);
-		action.set(0, false, null);
+		action.zoomTo(zoom);
+		action.set(zoomable, 0, false, null);
 		return action;
 	}
 
@@ -41,18 +41,15 @@ public class ZoomAction extends PercentAction{
 	private float start;
 	private float end;
 	private float amount;
-	private Zoomable zoomable;
 	private ZoomType type = ZoomType.NONE;
 
-	public ZoomAction zoomTo(Zoomable zoomable, float end) {
-		this.zoomable = zoomable;
+	public ZoomAction zoomTo(float end) {
 		this.end = end;
 		type = ZoomType.ZOOM_TO;
 		return this;
 	}
 	
-	public ZoomAction zoomBy(Zoomable zoomable, float amount) {
-		this.zoomable = zoomable;
+	public ZoomAction zoomBy(float amount) {
 		this.amount = amount;
 		type = ZoomType.ZOOM_BY;
 		return this;
@@ -65,8 +62,7 @@ public class ZoomAction extends PercentAction{
 	
 	@Override
 	protected void percent(float percent) {
-		float zoom = MathUtils.lerp(start, end, percent);
-		zoomable.setZoom(zoom);
+		percentable.setZoom(MathUtils.lerp(start, end, percent));
 	}
 	
 	@Override
@@ -76,11 +72,11 @@ public class ZoomAction extends PercentAction{
 		if(setupZoom) {
 			switch(type) {
 				case ZOOM_BY:
-					start = zoomable.getZoom();
+					start = percentable.getZoom();
 					end = start + amount;
 					break;
 				case ZOOM_TO:
-					start = zoomable.getZoom();
+					start = percentable.getZoom();
 					break;
 			}
 		}
@@ -99,7 +95,6 @@ public class ZoomAction extends PercentAction{
 		start = 0;
 		end = 0;
 		amount = 0;
-		zoomable = null;
 		restartZoomByFromEnd = false;
 		type = ZoomType.NONE;
 	}

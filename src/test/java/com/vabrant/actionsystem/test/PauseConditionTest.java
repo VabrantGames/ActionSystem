@@ -88,8 +88,8 @@ public class PauseConditionTest extends ActionSystemBaseTestScreen implements Pa
 		});
 		
 		MoveAction lastMove = ActionPools.obtain(MoveAction.class);
-		lastMove.moveYTo(testObject, 150);
-		lastMove.set(0.5f, true, Interpolation.linear);
+		lastMove.moveYTo(150);
+		lastMove.set(testObject, 0.5f, true, Interpolation.linear);
 		
 		GroupAction group = ActionPools.obtain(GroupAction.class);
 		group.setPauseCondition(this);

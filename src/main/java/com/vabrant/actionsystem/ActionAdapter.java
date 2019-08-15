@@ -3,19 +3,19 @@ package com.vabrant.actionsystem;
 public class ActionAdapter implements ActionListener {
 
 	@Override
-	public void actionStart() {
+	public void actionStart(Action a) {
 	}
 
 	@Override
-	public void actionEnd() {
+	public void actionEnd(Action a) {
 	}
 
 	@Override
-	public void actionKill() {
+	public void actionKill(Action a) {
 	}
 
 	@Override
-	public void actionRestart() {
+	public void actionRestart(Action a) {
 	}
 
 }

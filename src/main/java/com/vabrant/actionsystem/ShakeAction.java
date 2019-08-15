@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ShakeAction extends PercentAction {
+public class ShakeAction extends PercentAction<Shakable> {
 	
 	public static ShakeAction getAction() {
 		return getAction(ShakeAction.class);
@@ -11,29 +11,29 @@ public class ShakeAction extends PercentAction {
 	
 	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ShakeAction action = getAction();
-		action.shakeX(shakable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.shakeX(amount);
+		action.set(shakable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shakeY(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ShakeAction action = getAction();
-		action.shakeY(shakable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.shakeY(amount);
+		action.set(shakable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shakeAngle(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ShakeAction action = getAction();
-		action.shakeAngle(shakable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.shakeAngle(amount);
+		action.set(shakable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angleAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ShakeAction action = getAction();
-		action.shake(shakable, xAmount, yAmount, angleAmount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.shake(xAmount, yAmount, angleAmount);
+		action.set(shakable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
@@ -49,32 +49,27 @@ public class ShakeAction extends PercentAction {
 	private float x;
 	private float y;
 	private float angle;
-	private Shakable shakable;
 	private ShakeType type = ShakeType.NONE;
 	
-	public ShakeAction shakeX(Shakable shakable, float amount) {
-		this.shakable = shakable;
+	public ShakeAction shakeX(float amount) {
 		this.x = amount;
 		type = ShakeType.SHAKE_X;
 		return this;
 	}
 	
-	public ShakeAction shakeY(Shakable shakable, float amount) {
-		this.shakable = shakable;
+	public ShakeAction shakeY(float amount) {
 		this.y = amount;
 		type = ShakeType.SHAKE_Y;
 		return this;
 	}
 	
-	public ShakeAction shakeAngle(Shakable shakable, float amount) {
-		this.shakable = shakable;
+	public ShakeAction shakeAngle(float amount) {
 		this.angle = amount;
 		type = ShakeType.SHAKE_ANGLE;
 		return this;
 	}
 	
-	public ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angle) {
-		this.shakable = shakable;
+	public ShakeAction shake(float xAmount, float yAmount, float angle) {
 		this.x = xAmount;
 		this.y = yAmount;
 		this.angle = angle;
@@ -92,18 +87,18 @@ public class ShakeAction extends PercentAction {
 		if(!usePercent) percent = 1;
 		switch(type) {
 			case SHAKE_X:
-				shakable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
+				percentable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
 				break;
 			case SHAKE_Y:
-				shakable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
+				percentable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
 				break;
 			case SHAKE_ANGLE:
-				shakable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
+				percentable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
 				break;
 			case SHAKE_ALL:
-				shakable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
-				shakable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
-				shakable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
+				percentable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
+				percentable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
+				percentable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
 				break;
 		}
 	}
@@ -111,9 +106,9 @@ public class ShakeAction extends PercentAction {
 	 @Override
 	public void end() {
 		super.end();
-		shakable.setShakeX(0);
-		shakable.setShakeY(0);
-		shakable.setShakeAngle(0);
+		percentable.setShakeX(0);
+		percentable.setShakeY(0);
+		percentable.setShakeAngle(0);
 	}
 	
 	@Override
@@ -122,7 +117,6 @@ public class ShakeAction extends PercentAction {
 		x = 0;
 		y = 0;
 		angle = 0;
-		shakable = null;
 		usePercent = false;
 		type = ShakeType.NONE;
 	}

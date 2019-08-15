@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class RotateAction extends PercentAction {
+public class RotateAction extends PercentAction<Rotatable> {
 
 	public static RotateAction getAction() {
 		return getAction(RotateAction.class);
@@ -11,22 +11,22 @@ public class RotateAction extends PercentAction {
 	
 	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		RotateAction action = getAction();
-		action.rotateTo(rotatable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.rotateTo(end);
+		action.set(rotatable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static RotateAction rotateBy(Rotatable rotatable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		RotateAction action = getAction();
-		action.rotateBy(rotatable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.rotateBy(amount);
+		action.set(rotatable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static RotateAction setRotation(Rotatable rotatable, float end) {
 		RotateAction action = getAction();
-		action.rotateTo(rotatable, end);
-		action.set(0, false, Interpolation.linear);
+		action.rotateTo(end);
+		action.set(rotatable, 0, false, Interpolation.linear);
 		return action;
 	}
 	
@@ -42,18 +42,15 @@ public class RotateAction extends PercentAction {
 	private float byAmount;
 	private float start;
 	private float end;
-	private Rotatable rotatable;
 	private RotationType type = RotationType.NONE;
 	
-	public RotateAction rotateTo(Rotatable rotatable, float end) {
-		this.rotatable = rotatable;
+	public RotateAction rotateTo(float end) {
 		this.end = end * -1f;
 		type = RotationType.ROTATE_TO;
 		return this;
 	}
 	
-	public RotateAction rotateBy(Rotatable rotatable, float amount) {
-		this.rotatable = rotatable;
+	public RotateAction rotateBy(float amount) {
 		byAmount = amount * -1f;
 		type = RotationType.ROTATE_BY;
 		return this;
@@ -71,7 +68,7 @@ public class RotateAction extends PercentAction {
 	
 	@Override
 	protected void percent(float percent) {
-		rotatable.setRotation(MathUtils.lerp(start, end, percent));
+		percentable.setRotation(MathUtils.lerp(start, end, percent));
 	}
 	
 	@Override
@@ -80,10 +77,10 @@ public class RotateAction extends PercentAction {
 		if(setupRotation) {
 			switch(type) {
 				case ROTATE_TO:
-					start = rotatable.getRotation();
+					start = percentable.getRotation();
 					break;
 				case ROTATE_BY:
-					start = rotatable.getRotation();
+					start = percentable.getRotation();
 					end = start + byAmount;
 					break;
 			}
@@ -94,7 +91,7 @@ public class RotateAction extends PercentAction {
 	public void end() {
 		super.end();
 		if(!type.equals(RotationType.ROTATE_BY) || type.equals(RotationType.ROTATE_BY) && !restartRotateByFromEnd) setupRotation = false;
-		if(cap) rotatable.setRotation(rotatable.getRotation() % 360f);
+		if(cap) percentable.setRotation(percentable.getRotation() % 360f);
 	}
 	
 	@Override
@@ -103,7 +100,6 @@ public class RotateAction extends PercentAction {
 		type = RotationType.NONE;
 		setupRotation = true;
 		cap = false;
-		rotatable = null;
 		start = 0;
 		end = 0;
 		byAmount = 0;

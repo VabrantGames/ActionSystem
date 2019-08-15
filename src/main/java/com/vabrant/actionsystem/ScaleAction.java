@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ScaleAction extends PercentAction{
+public class ScaleAction extends PercentAction<Scalable>{
 	
 	public static ScaleAction getAction() {
 		return getAction(ScaleAction.class);
@@ -11,64 +11,64 @@ public class ScaleAction extends PercentAction{
 	
 	public static ScaleAction scaleXBy(Scalable scalable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleXBy(scalable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleXBy(amount);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction scaleYBy(Scalable scalable, float amount , float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleYBy(scalable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleYBy(amount);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction scaleBy(Scalable scalable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleBy(scalable, xAmount, yAmount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleBy(xAmount, yAmount);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction scaleXTo(Scalable scalable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleXTo(scalable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleXTo(end);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction scaleYTo(Scalable scalable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleYTo(scalable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleYTo(end);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction scaleTo(Scalable scalable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ScaleAction action = getAction();
-		action.scaleTo(scalable, xEnd, yEnd);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.scaleTo(xEnd, yEnd);
+		action.set(scalable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction setScaleX(Scalable scalable, float scaleX) {
 		ScaleAction action = getAction();
-		action.scaleXTo(scalable, scaleX);
-		action.set(0, false, Interpolation.linear);
+		action.scaleXTo(scaleX);
+		action.set(scalable, 0, false, Interpolation.linear);
 		return action;
 	}
 	
 	public static ScaleAction setScaleY(Scalable scalable, float scaleY) {
 		ScaleAction action = getAction();
-		action.scaleYTo(scalable, scaleY);
-		action.set(0, false, Interpolation.linear);
+		action.scaleYTo(scaleY);
+		action.set(scalable, 0, false, Interpolation.linear);
 		return action;
 	}
 	
 	public static ScaleAction setScale(Scalable scalable, float scaleX, float scaleY) {
 		ScaleAction action = getAction();
-		action.scaleTo(scalable, scaleX, scaleY);
-		action.set(0, false, Interpolation.linear);
+		action.scaleTo(scaleX, scaleY);
+		action.set(scalable, 0, false, Interpolation.linear);
 		return action;
 	}
 	
@@ -94,26 +94,22 @@ public class ScaleAction extends PercentAction{
 	private float yEnd;
 	private float xAmount;
 	private float yAmount;
-	private Scalable scalable;
 	private XScaleType xScaleType = XScaleType.NONE;
 	private YScaleType yScaleType = YScaleType.NONE;
 	
-	public ScaleAction scaleXBy(Scalable scalable, float amount) {
-		this.scalable = scalable;
+	public ScaleAction scaleXBy(float amount) {
 		xAmount = amount;
 		xScaleType = XScaleType.SCALE_X_BY;
 		return this;
 	}
 	
-	public ScaleAction scaleYBy(Scalable scalable, float amount) {
-		this.scalable = scalable;
+	public ScaleAction scaleYBy(float amount) {
 		yAmount = amount;
 		yScaleType = YScaleType.SCALE_Y_BY;
 		return this;
 	}
 	
-	public ScaleAction scaleBy(Scalable scalable, float xAmount, float yAmount) {
-		this.scalable = scalable;
+	public ScaleAction scaleBy(float xAmount, float yAmount) {
 		this.xAmount = xAmount;
 		this.yAmount = yAmount;
 		xScaleType = XScaleType.SCALE_X_BY;
@@ -121,22 +117,19 @@ public class ScaleAction extends PercentAction{
 		return this;
 	}
 	
-	public ScaleAction scaleXTo(Scalable scalable, float end) {
-		this.scalable = scalable;
+	public ScaleAction scaleXTo(float end) {
 		this.xEnd = end;
 		xScaleType = XScaleType.SCALE_X_TO;
 		return this;
 	}
 	
-	public ScaleAction scaleYTo(Scalable scalable, float end) {
-		this.scalable = scalable;
+	public ScaleAction scaleYTo(float end) {
 		this.yEnd = end;
 		yScaleType = YScaleType.SCALE_Y_TO;
 		return this;
 	}
 	
-	public ScaleAction scaleTo(Scalable scalable, float xEnd, float yEnd) {
-		this.scalable = scalable;
+	public ScaleAction scaleTo(float xEnd, float yEnd) {
 		this.xEnd = xEnd;
 		this.yEnd = yEnd;
 		xScaleType = XScaleType.SCALE_X_TO;
@@ -159,14 +152,14 @@ public class ScaleAction extends PercentAction{
 		switch(xScaleType) {
 			case SCALE_X_BY:
 			case SCALE_X_TO:
-				scalable.setScaleX(MathUtils.lerp(xStart, xEnd, percent));
+				percentable.setScaleX(MathUtils.lerp(xStart, xEnd, percent));
 				break;
 		}
 		
 		switch(yScaleType) {
 			case SCALE_Y_BY:
 			case SCALE_Y_TO:
-				scalable.setScaleY(MathUtils.lerp(yStart, yEnd, percent));
+				percentable.setScaleY(MathUtils.lerp(yStart, yEnd, percent));
 				break;
 		}
 	}
@@ -177,11 +170,11 @@ public class ScaleAction extends PercentAction{
 		if(setupX) {
 			switch(xScaleType) {
 				case SCALE_X_BY:
-					xStart = scalable.getScaleX();
+					xStart = percentable.getScaleX();
 					xEnd = xStart + xAmount;
 					break;
 				case SCALE_X_TO:
-					xStart = scalable.getScaleX();
+					xStart = percentable.getScaleX();
 					break;
 			}
 		}
@@ -189,11 +182,11 @@ public class ScaleAction extends PercentAction{
 		if(setupY) {
 			switch(yScaleType) {
 				case SCALE_Y_BY:
-					yStart = scalable.getScaleY();
+					yStart = percentable.getScaleY();
 					yEnd = yStart + yAmount;
 					break;
 				case SCALE_Y_TO:
-					yStart = scalable.getScaleY();
+					yStart = percentable.getScaleY();
 					break;
 			}
 		}
@@ -219,7 +212,6 @@ public class ScaleAction extends PercentAction{
 		xEnd = 0;
 		yStart = 0;
 		yEnd = 0;
-		scalable = null;
 		xScaleType = XScaleType.NONE;
 		yScaleType = YScaleType.NONE;
 	}

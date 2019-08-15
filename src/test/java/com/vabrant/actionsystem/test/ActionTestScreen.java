@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Logger;
+import com.vabrant.actionsystem.Action;
 import com.vabrant.actionsystem.ActionAdapter;
 import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RotateAction;
@@ -52,7 +53,7 @@ public class ActionTestScreen extends ActionSystemBaseTestScreen {
 		private ActionAdapter getUnmanagedActionListener() {
 			return new ActionAdapter() {
 				@Override
-				public void actionEnd() {
+				public void actionEnd(Action a) {
 					System.out.println("Delay Over");
 				}
 			};

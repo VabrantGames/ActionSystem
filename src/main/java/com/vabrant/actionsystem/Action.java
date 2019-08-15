@@ -125,7 +125,7 @@ public class Action implements Poolable{
 		
 		isRunning = true;
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionStart();
+			listeners.get(i).actionStart(this);
 		}
 	}
 	
@@ -133,7 +133,7 @@ public class Action implements Poolable{
 		isRunning = false;
 		isFinished = false;
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionRestart();
+			listeners.get(i).actionRestart(this);
 		}
 	}
 	
@@ -147,7 +147,7 @@ public class Action implements Poolable{
 		isFinished = true;
 		name = null;
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionEnd();
+			listeners.get(i).actionEnd(this);
 		}
 	}
 	
@@ -161,7 +161,7 @@ public class Action implements Poolable{
 		isFinished = true;
 		name = null;
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionKill();
+			listeners.get(i).actionKill(this);
 		}
 	}
 	

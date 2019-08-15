@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class MoveAction extends PercentAction {
+public class MoveAction extends PercentAction<Movable> {
 	
 	public static MoveAction getAction() {
 		return getAction(MoveAction.class);
@@ -11,71 +11,71 @@ public class MoveAction extends PercentAction {
 	
 	public static MoveAction moveXBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveXBy(movable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveXBy(amount);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveYBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveYBy(movable, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveYBy(amount);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveBy(Movable movable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveBy(movable, xAmount, yAmount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveBy(xAmount, yAmount);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveByAngle(movable, angle, amount);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveByAngle(angle, amount);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveXTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveXTo(movable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveXTo(end);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveYTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveYTo(movable, end);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveYTo(end);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction moveTo(Movable movable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveTo(movable, xEnd, yEnd);
-		action.set(duration, reverseBackToStart, interpolation);
+		action.moveTo(xEnd, yEnd);
+		action.set(movable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
 	
 	public static MoveAction setX(Movable movable, float x) {
 		MoveAction action = getAction();
-		action.moveXTo(movable, x);
-		action.set(0, false, null);
+		action.moveXTo(x);
+		action.set(movable, 0, false, null);
 		return action;
 	}
 	
 	public static MoveAction setY(Movable movable, float y) {
 		MoveAction action = getAction();
-		action.moveYTo(movable, y);
-		action.set(0, false, null);
+		action.moveYTo(y);
+		action.set(movable, 0, false, null);
 		return action;
 	}
 	
 	public static MoveAction setPosition(Movable movable, float x, float y) {
 		MoveAction action = getAction();
-		action.moveTo(movable, x, y);
-		action.set(0, false, null);
+		action.moveTo(x, y);
+		action.set(movable, 0, false, null);
 		return action;
 	}
 	
@@ -101,32 +101,27 @@ public class MoveAction extends PercentAction {
 	private float yEnd;
 	private float yAmount;
 	private float xAmount;
-	private Movable movable;
 	private XMoveType xMoveType = XMoveType.NONE;
 	private YMoveType yMoveType = YMoveType.NONE;
 	
-	public void moveXTo(Movable movable, float end) {
-		this.movable = movable;
+	public void moveXTo(float end) {
 		this.xEnd = end;
 		xMoveType = XMoveType.MOVE_X_TO;
 	}
 	
-	public void moveYTo(Movable movable, float end) {
-		this.movable = movable;
+	public void moveYTo(float end) {
 		this.yEnd = end;
 		yMoveType = YMoveType.MOVE_Y_TO;
 	}
 	
-	public void moveTo(Movable movable, float xEnd, float yEnd) {
-		this.movable = movable;
+	public void moveTo(float xEnd, float yEnd) {
 		this.xEnd = xEnd;
 		this.yEnd = yEnd;
 		xMoveType = XMoveType.MOVE_X_TO;
 		yMoveType = YMoveType.MOVE_Y_TO;
 	}
 
-	public MoveAction moveByAngle(Movable movable, float angle, float amount) {
-		this.movable = movable;
+	public MoveAction moveByAngle(float angle, float amount) {
 		angle %= 360;
 		xAmount = amount * MathUtils.cosDeg(angle);
 		yAmount = amount * MathUtils.sinDeg(angle);
@@ -135,22 +130,19 @@ public class MoveAction extends PercentAction {
 		return this;
 	}
 	
-	public MoveAction moveXBy(Movable movable, float amount) {
-		this.movable = movable;
+	public MoveAction moveXBy(float amount) {
 		xAmount = amount;
 		xMoveType = XMoveType.MOVE_X_BY;
 		return this;
 	}
 
-	public MoveAction moveYBy(Movable movable, float amount) {
-		this.movable = movable;
+	public MoveAction moveYBy(float amount) {
 		yAmount = amount;
 		yMoveType = YMoveType.MOVE_Y_BY;
 		return this;
 	}
 	
-	public MoveAction moveBy(Movable movable, float xAmount, float yAmount) {
-		this.movable = movable;
+	public MoveAction moveBy(float xAmount, float yAmount) {
 		this.xAmount = xAmount;
 		this.yAmount = yAmount;
 		xMoveType = XMoveType.MOVE_X_BY;
@@ -173,14 +165,14 @@ public class MoveAction extends PercentAction {
 		switch(xMoveType) {
 			case MOVE_X_BY:
 			case MOVE_X_TO:
-				movable.setX(MathUtils.lerp(xStart, xEnd, percent));
+				percentable.setX(MathUtils.lerp(xStart, xEnd, percent));
 				break;
 		}
 		
 		switch(yMoveType) {
 			case MOVE_Y_BY:
 			case MOVE_Y_TO:
-				movable.setY(MathUtils.lerp(yStart, yEnd, percent));
+				percentable.setY(MathUtils.lerp(yStart, yEnd, percent));
 				break;
 		}
 	}
@@ -191,11 +183,11 @@ public class MoveAction extends PercentAction {
 		if(setupX) {
 			switch(xMoveType) {
 				case MOVE_X_BY:
-					xStart = movable.getX();
+					xStart = percentable.getX();
 					xEnd = xStart + xAmount;
 					break;
 				case MOVE_X_TO:
-					xStart = movable.getX();
+					xStart = percentable.getX();
 					break;
 			}
 		}
@@ -203,11 +195,11 @@ public class MoveAction extends PercentAction {
 		if(setupY) {	
 			switch(yMoveType) {
 				case MOVE_Y_BY:
-					yStart = movable.getY();
+					yStart = percentable.getY();
 					yEnd = yStart + yAmount;
 					break;
 				case MOVE_Y_TO:
-					yStart = movable.getY();
+					yStart = percentable.getY();
 					break;
 			}
 		}
@@ -229,7 +221,6 @@ public class MoveAction extends PercentAction {
 		xEnd = 0;
 		yStart = 0;
 		yEnd = 0;
-		movable = null;
 		setupX = true;
 		setupY = true;
 		restartMoveXByFromEnd = false;

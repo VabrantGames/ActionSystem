@@ -47,6 +47,12 @@ public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Sha
 	public float getY() {
 		return y;
 	}
+	
+	@Override
+	public void setPosition(float x, float y) {
+		setX(x);
+		setY(y);
+	}
 
 	@Override
 	public void setColor(Color color) {
