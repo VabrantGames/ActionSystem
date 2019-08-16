@@ -13,16 +13,12 @@ public abstract class PercentAction<T extends Percentable> extends TimeAction {
 	}
 	
 	public void set(T percentable, float duration, boolean reverseBackToStart, Interpolation interpolation) {
-		this.percentable = percentable;
-		set(duration, reverseBackToStart, interpolation);
-	}
-	
-	public void set(float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		setDuration(duration);
+		this.percentable = percentable;
 		this.reverseBackToStart = reverseBackToStart;
 		this.interpolation = interpolation;
 	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
