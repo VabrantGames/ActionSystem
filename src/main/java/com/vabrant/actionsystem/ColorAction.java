@@ -166,13 +166,23 @@ public class ColorAction extends PercentAction<Colorable> {
 	@Override
 	public void reset() {
 		super.reset();
+		startHue = 0;
 		endHue = 0;
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
 		colorType = ColorType.NONE;
+		startHSBA[0] = 0;
+		startHSBA[1] = 0;
+		startHSBA[2] = 0;
+		startHSBA[3] = 0;
+		endHSBA[0] = 0;
+		endHSBA[1] = 0;
+		endHSBA[2] = 0;
+		endHSBA[3] = 0;
 	}
 	
+	//TODO the (hue / 60f) doesn't need to be computed twice
 	public static void HSBToRGB(Color color, float hue, float saturation, float brightness, float alpha) {
 		if(hue >= 360) hue %= 360;
 		saturation = MathUtils.clamp(saturation, 0f, 1f);

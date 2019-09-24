@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ScaleActionTestScreen extends ActionSystemBaseTestScreen {
+public class ScaleActionTestScreenOld extends ActionSystemBaseTestScreen {
 
 	private final Class<?>[] tests = {
 			ScaleXByTest.class,
@@ -25,14 +25,18 @@ public class ScaleActionTestScreen extends ActionSystemBaseTestScreen {
 			};
 	private ActionSystemTestObject testObject;
 	
-	public ScaleActionTestScreen(TestSelectScreen screen) {
+	public ScaleActionTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		testObject = new ActionSystemTestObject();
 		testObject.setSize(20, 20);
 		testObject.setColor(Color.BLACK);
 		testObject.setX((TestBaseConstantsAndUtils.WORLD_WIDTH / 2) - 25);
 		testObject.setY((TestBaseConstantsAndUtils.WORLD_HEIGHT / 2) - 25);
-		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	@Override

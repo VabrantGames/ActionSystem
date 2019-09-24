@@ -2,6 +2,7 @@ package com.vabrant.actionsystem;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class Action implements Poolable{
@@ -13,12 +14,25 @@ public class Action implements Poolable{
 	protected boolean isRunning;
 	protected boolean isPaused;
 	private String name;
-	private Array<ActionListener> listeners;
 	private PauseCondition pauseCondition;
 	private ActionManager actionManager;
+	private final Array<ActionListener> listeners;
+	final Array<Action> preActions;
+	private static Logger logger;
 	
 	public Action() {
 		listeners = new Array<>();
+		preActions = new Array<>(2);
+	}
+	
+	public static void setLoggingLevel(int level) {
+		if(logger == null) logger = new Logger(Action.class.getSimpleName());
+		logger.setLevel(level);
+	}
+	
+	public void addPreAction(Action action) {
+		if(action == null) throw new IllegalArgumentException("Action is null.");
+		preActions.add(action);
 	}
 	
 	void setPooled(boolean pooled) {
@@ -38,6 +52,13 @@ public class Action implements Poolable{
 	
 	public boolean isManaged() {
 		return isManaged;
+	}
+	
+	public void poolUnmanagedAction() {
+		if(!isManaged && actionManager != null) {
+			isManaged = true;
+			actionManager.poolUnmanagedAction(this);
+		}
 	}
 	
 	void setActionManager(ActionManager actionManager) {
@@ -99,16 +120,10 @@ public class Action implements Poolable{
 		return false;
 	}
 	
-	public void poolUnmanagedAction() {
-		if(!isManaged && actionManager != null) {
-			isManaged = true;
-			actionManager.poolUnmanagedAction(this);
-			actionManager = null;
-		}
-	}
-	
 	@Override
 	public void reset() {
+		if(isManaged) actionManager = null;
+		preActions.clear();
 		listeners.clear();
 		pauseCondition = null;
 		name = null;
@@ -121,6 +136,15 @@ public class Action implements Poolable{
 		if(!isManaged()) {
 			if(actionManager == null) throw new GdxRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
 			actionManager.startUnmanagedAction(this);
+		}
+		
+		if(preActions.size > 0) {
+			//exception will be thrown when if the action is managed and start is called
+			//TODO add exception message
+			if(actionManager == null) throw new ActionSystemRuntimeException("");
+			for(int i = preActions.size - 1; i >= 0; i--) {
+				actionManager.addAction(preActions.pop());
+			}
 		}
 		
 		isRunning = true;
@@ -145,7 +169,6 @@ public class Action implements Poolable{
 		
 		isRunning = false;
 		isFinished = true;
-		name = null;
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd(this);
 		}
@@ -159,7 +182,6 @@ public class Action implements Poolable{
 		
 		isRunning = false;
 		isFinished = true;
-		name = null;
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);
 		}

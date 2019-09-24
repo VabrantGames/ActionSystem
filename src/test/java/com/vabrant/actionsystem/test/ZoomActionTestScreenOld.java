@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ZoomActionTestScreen extends ActionSystemBaseTestScreen {
+public class ZoomActionTestScreenOld extends ActionSystemBaseTestScreen {
 	
 	private Class<?>[] tests = {
 			ZoomByTest.class,
@@ -21,13 +21,18 @@ public class ZoomActionTestScreen extends ActionSystemBaseTestScreen {
 			};
 	private ActionSystemTestObject testObject;
 	
-	public ZoomActionTestScreen(TestSelectScreen screen) {
+	public ZoomActionTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		testObject = new ActionSystemTestObject();
 		testObject.setColor(Color.BLACK);
 		testObject.setX((TestBaseConstantsAndUtils.WORLD_WIDTH / 2) - testObject.width / 2);
 		testObject.setY((TestBaseConstantsAndUtils.WORLD_HEIGHT / 2) - testObject.height / 2);
-		addTests(tests);
+//		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	@Override

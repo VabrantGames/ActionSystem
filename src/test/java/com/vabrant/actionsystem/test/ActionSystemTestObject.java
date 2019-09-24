@@ -1,6 +1,8 @@
 package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.vabrant.actionsystem.Colorable;
 import com.vabrant.actionsystem.Movable;
 import com.vabrant.actionsystem.Rotatable;
@@ -21,7 +23,7 @@ public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Sha
 	private float shakeAngle;
 	public float width = 50;
 	public float height = 50;
-	private Color color = new Color(1,1,1,1);
+	private Color color = new Color(0,0,0,1);
 	
 	public void setSize(float width, float height) {
 		this.width = width;
@@ -138,6 +140,12 @@ public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Sha
 	public void setScale(float scaleX, float scaleY) {
 		setScaleX(scaleX);
 		setScaleY(scaleY);
+	}
+	
+	public void draw(ShapeRenderer renderer) {
+		if(!renderer.getCurrentType().equals(ShapeType.Filled)) renderer.set(ShapeType.Filled);
+		renderer.setColor(color);
+		renderer.rect(x, y, width / 2, height / 2, width, height, scaleX, scaleY, rotation);
 	}
 
 }

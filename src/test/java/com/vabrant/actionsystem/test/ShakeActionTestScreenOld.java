@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ShakeActionTestScreen extends ActionSystemBaseTestScreen {
+public class ShakeActionTestScreenOld extends ActionSystemBaseTestScreen {
 	
 	private Class<?>[] tests = {
 			ShakeXTest.class,
@@ -22,13 +22,16 @@ public class ShakeActionTestScreen extends ActionSystemBaseTestScreen {
 			};
 	private ActionSystemTestObject testObject;
 	
-	public ShakeActionTestScreen(TestSelectScreen screen) {
+	public ShakeActionTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		testObject = new ActionSystemTestObject();
 		testObject.setColor(Color.BLACK);
 		testObject.setX((TestBaseConstantsAndUtils.WORLD_WIDTH / 2) - testObject.width / 2);
 		testObject.setY((TestBaseConstantsAndUtils.WORLD_HEIGHT / 2) - testObject.height / 2);
-		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
 	}
 	
 	@Override

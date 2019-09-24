@@ -16,7 +16,7 @@ public class ActionManager {
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
-		logger = new Logger(this.getClass().getSimpleName(), Logger.NONE);
+		logger = new Logger(this.getClass().getSimpleName(), Logger.DEBUG);
 	}
 	
 	public Logger getLogger() {
@@ -37,7 +37,7 @@ public class ActionManager {
 	}
 	
 	public void addUnmanagedAction(Action action) {
-		if(action.isManaged()) return;
+		if(action.isManaged()) throw new ActionSystemRuntimeException("Action is not unmanaged.");
 		action.setActionManager(this);
 		unmanagedActions.add(action);
 		logger.info("Unmanaged action added");
@@ -50,6 +50,7 @@ public class ActionManager {
 	}
 	
 	public void addAction(Action action) {
+		if(action.preActions.size > 0) action.setActionManager(this);
 		actions.add(action);
 		logger.debug(action.getClass().getSimpleName() + " added");
 	}

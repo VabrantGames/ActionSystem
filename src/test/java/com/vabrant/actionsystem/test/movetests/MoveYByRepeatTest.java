@@ -1,0 +1,45 @@
+package com.vabrant.actionsystem.test.movetests;
+
+import com.badlogic.gdx.math.Interpolation;
+import com.vabrant.actionsystem.DelayAction;
+import com.vabrant.actionsystem.GroupAction;
+import com.vabrant.actionsystem.MoveAction;
+import com.vabrant.actionsystem.RepeatAction;
+import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.testbase.TestSelectScreen;
+
+public class MoveYByRepeatTest extends ActionSystemBaseTestScreen {
+	
+	final int repeatAmount = 3;
+	final int amount = 30;
+	float start;
+	
+	public MoveYByRepeatTest(TestSelectScreen screen) {
+		super(screen);
+		createTestObject();
+		reset();
+	}
+
+	@Override
+	public void runTest() {
+		start = testObject.getY();
+		GroupAction group = GroupAction.getAction()
+				.sequence()
+				.add(MoveAction.moveYBy(testObject, amount, 1f, false, Interpolation.linear).restartMoveYByFromEnd())
+				.add(DelayAction.delay(0.3f));
+		actionManager.addAction(RepeatAction.repeat(group, repeatAmount));
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		testObject.setX(screenCenterX - (testObject.width / 2));
+		reset();
+	}
+	
+	@Override
+	public void reset() {
+		testObject.setY(20);
+	}
+
+}

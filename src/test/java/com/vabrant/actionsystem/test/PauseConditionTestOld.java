@@ -13,17 +13,21 @@ import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.actionsystem.RunnableAction;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class PauseConditionTest extends ActionSystemBaseTestScreen implements PauseCondition{
+public class PauseConditionTestOld extends ActionSystemBaseTestScreen implements PauseCondition{
 	
 	private boolean isGamePaused;
 	private boolean isCharacterStunned;
 	private ActionSystemTestObject testObject;
 	
-	public PauseConditionTest(TestSelectScreen screen) {
+	public PauseConditionTestOld(TestSelectScreen screen) {
 		super(screen);
 		
 		debug = true;
 		testObject = new ActionSystemTestObject();
+	}
+	
+	@Override
+	public void runTest() {
 	}
 	
 	@Override
@@ -71,34 +75,34 @@ public class PauseConditionTest extends ActionSystemBaseTestScreen implements Pa
 	}
 	
 	private void playAnimation() {
-		MoveAction moveAction = ActionPools.obtain(MoveAction.class);
+//		MoveAction moveAction = ActionPools.obtain(MoveAction.class);
 //		moveAction.moveXTo(testObject, 0, 100);
-		moveAction.set(0.5f, false, Interpolation.linear);
-		
-		RepeatAction repeatMoveAction = ActionPools.obtain(RepeatAction.class);
-		repeatMoveAction.set(moveAction);
-		repeatMoveAction.setAmount(2);
-		
-		RunnableAction pauseRunnable = ActionPools.obtain(RunnableAction.class);
-		pauseRunnable.set(new Runnable() {
-			@Override
-			public void run() {
-				actionManager.pauseAllActions();
-			}
-		});
-		
-		MoveAction lastMove = ActionPools.obtain(MoveAction.class);
-		lastMove.moveYTo(150);
-		lastMove.set(testObject, 0.5f, true, Interpolation.linear);
-		
-		GroupAction group = ActionPools.obtain(GroupAction.class);
-		group.setPauseCondition(this);
-		group.sequence();
-		group.add(repeatMoveAction);
-		group.add(pauseRunnable);
-		group.add(lastMove);
-		
-		actionManager.addAction(group);
+//		moveAction.set(0.5f, false, Interpolation.linear);
+//		
+//		RepeatAction repeatMoveAction = ActionPools.obtain(RepeatAction.class);
+//		repeatMoveAction.set(moveAction);
+//		repeatMoveAction.setAmount(2);
+//		
+//		RunnableAction pauseRunnable = ActionPools.obtain(RunnableAction.class);
+//		pauseRunnable.set(new Runnable() {
+//			@Override
+//			public void run() {
+//				actionManager.pauseAllActions();
+//			}
+//		});
+//		
+//		MoveAction lastMove = ActionPools.obtain(MoveAction.class);
+//		lastMove.moveYTo(150);
+//		lastMove.set(testObject, 0.5f, true, Interpolation.linear);
+//		
+//		GroupAction group = ActionPools.obtain(GroupAction.class);
+//		group.setPauseCondition(this);
+//		group.sequence();
+//		group.add(repeatMoveAction);
+//		group.add(pauseRunnable);
+//		group.add(lastMove);
+//		
+//		actionManager.addAction(group);
 	}
 
 }

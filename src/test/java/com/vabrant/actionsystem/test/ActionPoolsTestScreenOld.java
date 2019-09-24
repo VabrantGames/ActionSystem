@@ -8,17 +8,21 @@ import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionPoolsTestScreen extends ActionSystemBaseTestScreen {
+public class ActionPoolsTestScreenOld extends ActionSystemBaseTestScreen {
 	
 	private Class<?>[] tests = {
 			FillTest.class
 			};
 	
-	public ActionPoolsTestScreen(TestSelectScreen screen) {
+	public ActionPoolsTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		ActionPools.logger.setLevel(Logger.DEBUG);
-		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	public class FillTest implements Test{

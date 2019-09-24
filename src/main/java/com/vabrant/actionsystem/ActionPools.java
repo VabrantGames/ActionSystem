@@ -1,5 +1,6 @@
 package com.vabrant.actionsystem;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -81,7 +82,7 @@ public class ActionPools {
  		Pool pool = pools.get(action.getClass());
 		if(pool == null) return;
 		action.setPooled(true);
-		logger.info("(" + action.getClass().getSimpleName() + ") " + (action.getName() != null ? action.getName() : "") + " pooled");
+		logger.info("(" + action.getClass().getSimpleName() + ")" + (action.getName() != null ? action.getName() : "") + " - pooled");	
 		pool.free(action);
 	}
 	

@@ -14,19 +14,23 @@ import com.vabrant.actionsystem.ZoomAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionManagerTestScreen extends ActionSystemBaseTestScreen {
+public class ActionManagerTestScreenOld extends ActionSystemBaseTestScreen {
 
 	private final Class<?>[] tests = {
 			DisposeTest.class
 			};
 	ActionSystemTestObject testObject;
 	
-	public ActionManagerTestScreen(TestSelectScreen screen) {
+	public ActionManagerTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		ActionPools.logger.setLevel(Logger.DEBUG);
 		testObject = new ActionSystemTestObject();
-		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	public class DisposeTest implements Test{

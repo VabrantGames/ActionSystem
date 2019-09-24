@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class RotateActionTestScreen extends ActionSystemBaseTestScreen {
+public class RotateActionTestScreenOld extends ActionSystemBaseTestScreen {
 	
 	private final Class<?>[] tests = {
 			RotateToTest.class,
@@ -21,13 +21,17 @@ public class RotateActionTestScreen extends ActionSystemBaseTestScreen {
 			};
 	private ActionSystemTestObject testObject;
 	
-	public RotateActionTestScreen(TestSelectScreen screen) {
+	public RotateActionTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		testObject = new ActionSystemTestObject();
 		testObject.setColor(Color.BLACK);
 		testObject.setX((TestBaseConstantsAndUtils.WORLD_WIDTH / 2) - 25);
 		testObject.setY((TestBaseConstantsAndUtils.WORLD_HEIGHT / 2) - 25);
-		addTests(tests);
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	@Override

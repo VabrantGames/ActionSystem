@@ -19,7 +19,7 @@ public class ActionSystemTestApplication extends TestApplication{
 	@Override
 	public void create() {
 		super.create();
-		setScreen(new ActionTestSelectScreen(this));
+		setScreen(new ActionSystemTestSelectScreen(this));
 	}
 	
 }

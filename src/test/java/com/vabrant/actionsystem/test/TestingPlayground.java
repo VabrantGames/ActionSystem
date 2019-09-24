@@ -5,21 +5,25 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
+import com.vabrant.actionsystem.ActionManager;
 import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.RepeatAction;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.BaseScreen;
+import com.vabrant.testbase.TestApplication;
 
-public class TestingPlayground extends ActionSystemBaseTestScreen{
+public class TestingPlayground extends BaseScreen{
 	
+	private ActionManager actionManager;
 	private ActionSystemTestObject testObject;
 	
-	public TestingPlayground(TestSelectScreen screen) {
-		super(screen);
+	public TestingPlayground(TestApplication app) {
+		super(app);
 		
 		debug = true;
+		actionManager = new ActionManager(20);
 		testObject = new ActionSystemTestObject();
 		testObject.setX(100);
 		testObject.setY(100);
