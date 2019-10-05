@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ZoomAction extends PercentAction<Zoomable>{
+public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	
 	public static ZoomAction getAction() {
 		return getAction(ZoomAction.class);

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ColorAction extends PercentAction<Colorable> {
+public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	public static ColorAction getAction() {
 		return getAction(ColorAction.class);

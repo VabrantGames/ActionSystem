@@ -2,7 +2,7 @@ package com.vabrant.actionsystem;
 
 import com.badlogic.gdx.math.Interpolation;
 
-public abstract class PercentAction<T extends Percentable> extends TimeAction {
+public abstract class PercentAction<T extends Percentable, S extends Action> extends TimeAction<S> {
 
 	protected boolean reverseBackToStart;
 	protected Interpolation interpolation;

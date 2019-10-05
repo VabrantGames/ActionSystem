@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ShakeAction extends PercentAction<Shakable> {
+public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	
 	public static ShakeAction getAction() {
 		return getAction(ShakeAction.class);

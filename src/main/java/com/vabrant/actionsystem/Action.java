@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-public class Action implements Poolable{
+public class Action<T extends Action> implements Poolable{
 	
 	boolean hasBeenReset;
 	boolean isManaged = true;
@@ -31,17 +31,19 @@ public class Action implements Poolable{
 		logger.setLevel(Logger.DEBUG);
 	}
 	
-	public void setLoggingLevel(int level) {
+	public T setLoggingLevel(int level) {
 		logger.setLevel(level);
+		return (T)this;
 	}
 	
 	public ActionLogger getLogger() {
 		return logger;
 	}
 	
-	public void addPreAction(Action action) {
+	public T addPreAction(Action action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
 		preActions.add(action);
+		return (T)this;
 	}
 	
 	void setPooled(boolean pooled) {
@@ -55,8 +57,9 @@ public class Action implements Poolable{
 	/**
 	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
-	public void unmanage() {
+	public T unmanage() {
 		isManaged = false;
+		return (T)this;
 	}
 	
 	public boolean isManaged() {
@@ -82,10 +85,11 @@ public class Action implements Poolable{
 		return isFinished;
 	}
 	
-	public void setName(String name) {
+	public T setName(String name) {
 		if(name == null) throw new IllegalArgumentException("Name can't be null.");
 		this.name = name;
 		logger.setActionName(name);
+		return (T)this;
 	}
 	
 	public String getName() {
@@ -108,14 +112,16 @@ public class Action implements Poolable{
 		return isPaused;
 	}
 	
-	public void setPauseCondition(PauseCondition pauseCondition) {
+	public T setPauseCondition(PauseCondition pauseCondition) {
 		if(pauseCondition == null) throw new IllegalArgumentException("PauseCondition is null.");
 		this.pauseCondition = pauseCondition;
+		return (T)this;
 	}
 	
-	public void addListener(ActionListener listener) {
+	public T addListener(ActionListener listener) {
 		if(listener == null) throw new IllegalArgumentException("Listener is null.");
 		listeners.add(listener);
+		return (T)this;
 	}
 	
 	public boolean removeListener(ActionListener listener) {

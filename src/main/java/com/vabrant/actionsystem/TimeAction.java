@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem;
 
-public class TimeAction extends Action {
+public class TimeAction<T extends Action> extends Action<T> {
 
 	public float timer;
 	protected float duration;

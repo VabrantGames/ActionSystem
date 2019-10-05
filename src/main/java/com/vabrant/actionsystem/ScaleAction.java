@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class ScaleAction extends PercentAction<Scalable>{
+public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
 	public static ScaleAction getAction() {
 		return getAction(ScaleAction.class);

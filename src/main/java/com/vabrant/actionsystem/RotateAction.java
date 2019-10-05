@@ -3,7 +3,7 @@ package com.vabrant.actionsystem;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-public class RotateAction extends PercentAction<Rotatable> {
+public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	public static RotateAction getAction() {
 		return getAction(RotateAction.class);
