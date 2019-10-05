@@ -23,11 +23,22 @@ public class RestartMoveXByFromEndTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		start = testObject.getX();
-		GroupAction group = GroupAction.getAction()
-				.sequence()
-				.add(MoveAction.moveXBy(testObject, amount, 1f, Interpolation.linear).restartMoveXByFromEnd())
-				.add(DelayAction.delay(0.3f));
-		actionManager.addAction(RepeatAction.repeat(group, repeatAmount));
+		actionManager.addAction(
+				RepeatAction.repeat(
+						GroupAction.getAction()
+							.sequence()
+							.add(
+								MoveAction.moveXBy(testObject, 45f, 1f, Interpolation.linear)
+									.setName("Move")
+									.reverseBackToStart(true)
+									.restartMoveXByFromEnd()
+								)
+							.add(
+								DelayAction.delay(0.3f)
+									.setName("Delay")
+								)
+						,repeatAmount)
+				);
 	}
 	
 	@Override

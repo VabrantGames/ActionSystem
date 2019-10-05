@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem;
 
-public class RunnableAction extends Action{
+public class RunnableAction extends Action<RunnableAction>{
 
 	private Runnable runnable;
 	

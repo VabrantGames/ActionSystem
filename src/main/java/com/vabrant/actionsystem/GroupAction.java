@@ -2,7 +2,7 @@ package com.vabrant.actionsystem;
 
 import com.badlogic.gdx.utils.Array;
 
-public class GroupAction extends Action {
+public class GroupAction extends Action<GroupAction> {
 	
 	public static GroupAction getAction() {
 		return getAction(GroupAction.class);

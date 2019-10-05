@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem;
 
-public class DelayAction extends TimeAction {
+public class DelayAction extends TimeAction<DelayAction> {
 	
 	public void set(float duration) {
 		this.duration = duration;
