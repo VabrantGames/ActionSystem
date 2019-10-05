@@ -2,11 +2,12 @@ package com.vabrant.actionsystem.test.movetests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.MoveAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class MoveYByTest extends ActionSystemBaseTestScreen {
+public class MoveYByTest extends ActionSystemTestScreen {
 	
+	float start;
 	final int amount = 50;
 
 	public MoveYByTest(TestSelectScreen screen) {
@@ -17,6 +18,7 @@ public class MoveYByTest extends ActionSystemBaseTestScreen {
 
 	@Override
 	public void runTest() {
+		start = testObject.getY();
 		actionManager.addAction(MoveAction.moveYBy(testObject, amount, 1f, false, Interpolation.linear));
 	}
 	
@@ -30,6 +32,12 @@ public class MoveYByTest extends ActionSystemBaseTestScreen {
 	@Override
 	public void reset() {
 		testObject.setY(20);
+	}
+	
+	@Override
+	public void runCheck1() {
+		log("Current: ", Float.toString(testObject.getY()));
+		log("End: ", Float.toString(start + amount));
 	}
 
 }

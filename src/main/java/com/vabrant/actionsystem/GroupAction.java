@@ -15,14 +15,7 @@ public class GroupAction extends Action {
 				.add(a2);
 		return action;
 	}
-	
-//	public static GroupAction parallel(Action... a) {
-//		GroupAction action = getAction()
-//				.parallel();
-//		
-//		return action;
-//	}
-	
+
 	public static GroupAction sequence(Action a1, Action a2) {
 		GroupAction action = getAction()
 				.sequence()
@@ -31,14 +24,15 @@ public class GroupAction extends Action {
 		return action;
 	}
 
-	private float timer;
 	private boolean parallel;
+	private boolean restartSequenceActions;
+	private float timer;
 	private float offset;
 	private int index;
 	private Array<Action> actions;
 	
 	public GroupAction() {
-		actions = new Array<>();
+		actions = new Array<>(4);
 	}
 	
 	public Array<Action> getActions() {
@@ -89,7 +83,9 @@ public class GroupAction extends Action {
 		if(actions.get(index).update(delta)) {
 			if(++index == actions.size) {
 				end();
+				return;
 			}
+			if(restartSequenceActions) actions.get(index).restart();
 		}
 	}
 	
@@ -112,8 +108,7 @@ public class GroupAction extends Action {
 	public void end() {
 		super.end();
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action action = actions.get(i);
-			if(action.isRunning()) action.end();
+			actions.get(i).end();
 		}
 	}
 	
@@ -121,8 +116,7 @@ public class GroupAction extends Action {
 	public void kill() {
 		super.kill();
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action action = actions.get(i);
-			if(action.isRunning()) action.kill();
+			actions.get(i).kill();
 		}
 	}
 	
@@ -131,8 +125,23 @@ public class GroupAction extends Action {
 		super.restart();
 		index = 0;
 		timer = 0;
+		
+		if(parallel) {
+			for(int i = 0; i < actions.size; i++) {
+				actions.get(i).restart();
+			}
+		}
+		else {
+			restartSequenceActions = true;
+			if(actions.size > 0) actions.first().restart();
+		}
+	}
+	
+	@Override
+	protected void onComplete() {
+		super.onComplete();
 		for(int i = 0; i < actions.size; i++) {
-			actions.get(i).restart();
+			actions.get(i).onComplete();
 		}
 	}
 	
@@ -143,6 +152,7 @@ public class GroupAction extends Action {
 		offset = 0;
 		index = 0;
 		timer = 0;
+		restartSequenceActions = false;
 	}
 
 }

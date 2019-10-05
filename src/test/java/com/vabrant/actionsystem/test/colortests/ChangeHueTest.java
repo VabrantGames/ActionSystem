@@ -2,10 +2,10 @@ package com.vabrant.actionsystem.test.colortests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.ColorAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ChangeHueTest extends ActionSystemBaseTestScreen {
+public class ChangeHueTest extends ActionSystemTestScreen {
 
 	private final float startHue = 0;
 	private final float endHue = 270f;

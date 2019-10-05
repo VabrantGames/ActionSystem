@@ -12,7 +12,7 @@ import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ShakeActionTestScreenOld extends ActionSystemBaseTestScreen {
+public class ShakeActionTestScreenOld extends ActionSystemTestScreen {
 	
 	private Class<?>[] tests = {
 			ShakeXTest.class,

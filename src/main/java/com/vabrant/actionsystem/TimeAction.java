@@ -44,5 +44,12 @@ public class TimeAction extends Action {
 		timer = 0;
 		duration = 0;
 	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		timer = 0;
+		duration = 0;
+	}
 
 }

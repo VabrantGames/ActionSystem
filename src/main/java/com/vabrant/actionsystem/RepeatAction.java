@@ -31,8 +31,12 @@ public class RepeatAction extends Action {
 		if(isPaused) return false;
 		if(!isRunning) start();
 		if(action.update(delta)) {
-			if(!isContinuous) count++;
+			
+			if(!isContinuous) {
+				count++;
+			}
 			if(isContinuous || count <= amount) {
+				if(!isContinuous) logger.debug("Repeat", Integer.toString(count));
 				action.restart();
 			}
 			else {
@@ -49,20 +53,26 @@ public class RepeatAction extends Action {
 	@Override
 	public void end() {
 		super.end();
-		if(action.isRunning()) action.end();
+		if(action != null) action.end();
 	}
 	
 	@Override
 	public void kill() {
 		super.kill();
-		if(action.isRunning()) action.kill();
+		if(action != null) action.kill();
 	}
 	
 	@Override
 	public void restart() {
 		super.restart();
 		count = 0;
-		action.restart();
+		if(action != null) action.restart();
+	}
+	
+	@Override
+	protected void onComplete() {
+		super.onComplete();
+		if(action != null) action.onComplete();
 	}
 	
 	@Override

@@ -2,10 +2,10 @@ package com.vabrant.actionsystem.test.actiontests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.RotateAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class UnmanagedTest extends ActionSystemBaseTestScreen {
+public class UnmanagedTest extends ActionSystemTestScreen {
 
 	RotateAction unmanagedAction;
 	
@@ -13,6 +13,7 @@ public class UnmanagedTest extends ActionSystemBaseTestScreen {
 		super(screen);
 		createTestObject();
 		unmanagedAction = RotateAction.rotateBy(testObject, 45f, 0.5f, false, Interpolation.linear);
+		unmanagedAction.setName("UnmanagedRotateAction");
 		unmanagedAction.unmanage();
 		actionManager.addUnmanagedAction(unmanagedAction);
 	}

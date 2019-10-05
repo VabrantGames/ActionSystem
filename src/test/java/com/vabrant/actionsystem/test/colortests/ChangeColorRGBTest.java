@@ -3,10 +3,10 @@ package com.vabrant.actionsystem.test.colortests;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.ColorAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ChangeColorRGBTest extends ActionSystemBaseTestScreen {
+public class ChangeColorRGBTest extends ActionSystemTestScreen {
 	
 	Color startColor = new Color(Color.BLACK);
 	Color endColor = new Color(Color.RED);

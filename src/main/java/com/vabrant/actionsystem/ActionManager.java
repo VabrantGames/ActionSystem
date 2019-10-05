@@ -59,6 +59,7 @@ public class ActionManager {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
 			if(action.update(delta)) {
+				action.onComplete();
 				ActionPools.free(actions.removeIndex(i));
 			}
 		}

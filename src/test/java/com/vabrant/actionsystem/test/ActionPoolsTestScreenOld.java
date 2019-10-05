@@ -8,7 +8,7 @@ import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionPoolsTestScreenOld extends ActionSystemBaseTestScreen {
+public class ActionPoolsTestScreenOld extends ActionSystemTestScreen {
 	
 	private Class<?>[] tests = {
 			FillTest.class

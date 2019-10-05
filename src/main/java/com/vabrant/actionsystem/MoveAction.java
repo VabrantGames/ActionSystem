@@ -177,9 +177,7 @@ public class MoveAction extends PercentAction<Movable> {
 		}
 	}
 	
-	@Override
-	public void start() {
-		super.start();
+	private void setup() {
 		if(setupX) {
 			switch(xMoveType) {
 				case MOVE_X_BY:
@@ -203,6 +201,18 @@ public class MoveAction extends PercentAction<Movable> {
 					break;
 			}
 		}
+	}
+	
+	@Override
+	public void start() {
+		super.start();
+		setup();
+	}
+	
+	@Override
+	public void restart() {
+		super.restart();
+		setup();
 	}
 	
 	@Override

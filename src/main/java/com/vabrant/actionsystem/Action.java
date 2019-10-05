@@ -7,27 +7,36 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 
 public class Action implements Poolable{
 	
+	boolean hasBeenReset;
 	boolean isManaged = true;
 	//TODO still needed?
 	private boolean hasBeenPooled;
+	
 	protected boolean isFinished;
 	protected boolean isRunning;
 	protected boolean isPaused;
 	private String name;
 	private PauseCondition pauseCondition;
 	private ActionManager actionManager;
-	private final Array<ActionListener> listeners;
+	private Array<ActionListener> listeners;
 	final Array<Action> preActions;
-	private static Logger logger;
+	protected ActionLogger logger;
 	
 	public Action() {
-		listeners = new Array<>();
+		listeners = new Array<>(2);
 		preActions = new Array<>(2);
+		logger = new ActionLogger(this.getClass());
+		
+	//DEBUG remove
+		logger.setLevel(Logger.DEBUG);
 	}
 	
-	public static void setLoggingLevel(int level) {
-		if(logger == null) logger = new Logger(Action.class.getSimpleName());
+	public void setLoggingLevel(int level) {
 		logger.setLevel(level);
+	}
+	
+	public ActionLogger getLogger() {
+		return logger;
 	}
 	
 	public void addPreAction(Action action) {
@@ -76,6 +85,7 @@ public class Action implements Poolable{
 	public void setName(String name) {
 		if(name == null) throw new IllegalArgumentException("Name can't be null.");
 		this.name = name;
+		logger.setActionName(name);
 	}
 	
 	public String getName() {
@@ -83,7 +93,7 @@ public class Action implements Poolable{
 	}
 
 	public void setPause(boolean pause) {
-		if(isFinished) return;
+		if(!isRunning) return;
 		if(pause) {
 			if(isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
 			isPaused = pause;
@@ -122,6 +132,7 @@ public class Action implements Poolable{
 	
 	@Override
 	public void reset() {
+		if(logger != null) logger.info("Reset");
 		if(isManaged) actionManager = null;
 		preActions.clear();
 		listeners.clear();
@@ -130,9 +141,19 @@ public class Action implements Poolable{
 		isPaused = false;
 		isRunning = false;
 		isFinished = false;
+		logger.clearActionName();
+	}
+	
+	public void clear() {
+		if(logger != null) logger.info("Clear");		
+		isRunning = false;
+		isFinished = false;
+		isPaused = false;
 	}
 	
 	public void start() {
+		if(logger != null) logger.info("Start");		
+		
 		if(!isManaged()) {
 			if(actionManager == null) throw new GdxRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
 			actionManager.startUnmanagedAction(this);
@@ -148,14 +169,19 @@ public class Action implements Poolable{
 		}
 		
 		isRunning = true;
+		isFinished = false;
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionStart(this);
 		}
 	}
 	
 	public void restart() {
-		isRunning = false;
+		if(logger != null) logger.info("Restart");		
+
+		isRunning = true;
 		isFinished = false;
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionRestart(this);
 		}
@@ -165,23 +191,33 @@ public class Action implements Poolable{
 	 * Ends the action as if it's completed.
 	 */
 	public void end() {
-		if(isFinished) return;
+		if(!isRunning) return;
+		
+		if(logger != null) logger.info("End");		
 		
 		isRunning = false;
 		isFinished = true;
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd(this);
 		}
+	}
+	
+	protected void onComplete() {
+		if(logger != null) logger.info("Completed");	
 	}
 	
 	/**
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
 	public void kill() {
-		if(isFinished) return;
+		if(!isRunning) return;
+		
+		if(logger != null) logger.info("Kill");		
 		
 		isRunning = false;
 		isFinished = true;
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);
 		}

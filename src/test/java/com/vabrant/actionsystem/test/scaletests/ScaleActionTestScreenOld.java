@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem.test;
+package com.vabrant.actionsystem.test.scaletests;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -8,11 +8,13 @@ import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.RepeatAction;
 import com.vabrant.actionsystem.ScaleAction;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestObject;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ScaleActionTestScreenOld extends ActionSystemBaseTestScreen {
+public class ScaleActionTestScreenOld extends ActionSystemTestScreen {
 
 	private final Class<?>[] tests = {
 			ScaleXByTest.class,

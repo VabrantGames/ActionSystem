@@ -1,18 +1,21 @@
 package com.vabrant.actionsystem.test;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.vabrant.actionsystem.ActionManager;
 import com.vabrant.testbase.TestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public abstract class ActionSystemBaseTestScreen extends TestScreen {
+public abstract class ActionSystemTestScreen extends TestScreen {
 	
 	public ActionSystemTestObject testObject;
 	public ActionSystemTestObject[] testObjects;
 	public ActionManager actionManager;
 	
-	public ActionSystemBaseTestScreen(TestSelectScreen screen) {
+	public ActionSystemTestScreen(TestSelectScreen screen) {
 		super(screen);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		actionManager = new ActionManager(5);
 	}
 	

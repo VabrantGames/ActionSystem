@@ -14,7 +14,7 @@ import com.vabrant.actionsystem.ZoomAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionManagerTestScreenOld extends ActionSystemBaseTestScreen {
+public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 
 	private final Class<?>[] tests = {
 			DisposeTest.class

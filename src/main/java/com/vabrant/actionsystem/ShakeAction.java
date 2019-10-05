@@ -23,9 +23,9 @@ public class ShakeAction extends PercentAction<Shakable> {
 		return action;
 	}
 	
-	public static ShakeAction shakeAngle(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ShakeAction shakeAngle(Shakable shakable, float maxAngle, float duration, boolean reverseBackToStart, Interpolation interpolation) {
 		ShakeAction action = getAction();
-		action.shakeAngle(amount);
+		action.shakeAngle(maxAngle);
 		action.set(shakable, duration, reverseBackToStart, interpolation);
 		return action;
 	}
@@ -88,6 +88,10 @@ public class ShakeAction extends PercentAction<Shakable> {
 		switch(type) {
 			case SHAKE_X:
 				percentable.setShakeX(MathUtils.random(-this.x, this.x) * percent);
+//				float ranAng = MathUtils.random(360);
+//				float ranDist = MathUtils.random(-this.x, this.x);
+//				float val = MathUtils.cosDeg(ranAng) * ranDist;
+//				percentable.setShakeX(val);
 				break;
 			case SHAKE_Y:
 				percentable.setShakeY(MathUtils.random(-this.y, this.y) * percent);
@@ -101,6 +105,14 @@ public class ShakeAction extends PercentAction<Shakable> {
 				percentable.setShakeAngle(MathUtils.random(-this.angle, this.angle) * percent);
 				break;
 		}
+	}
+	
+	@Override
+	public void kill() {
+		super.kill();
+		percentable.setShakeX(0);
+		percentable.setShakeY(0);
+		percentable.setShakeAngle(0);
 	}
 	
 	 @Override

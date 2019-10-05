@@ -29,12 +29,15 @@ public abstract class PercentAction<T extends Percentable> extends TimeAction {
 	
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
-		if(isPaused) return false;
-		if(!isRunning) start();
-		boolean isFinished = (timer += delta) >= duration;
+//		if(isFinished) return true;
+//		if(isPaused) return false;
+//		if(!isRunning) start();
+//		boolean finished = (timer += delta) >= duration;
+		
+		boolean finished = super.update(delta);
+		
 		float percent = 0;
-		if(isFinished) {
+		if(finished) {
 			percent = reverseBackToStart ? 0 : 1;
 		}
 		else {
@@ -48,7 +51,7 @@ public abstract class PercentAction<T extends Percentable> extends TimeAction {
 			}
 		}
 		percent(percent);
-		if(isFinished) end();
+		if(finished) end();
 		return isFinished;
 	}
 	

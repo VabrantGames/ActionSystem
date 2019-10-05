@@ -5,16 +5,16 @@ import com.vabrant.actionsystem.DelayAction;
 import com.vabrant.actionsystem.GroupAction;
 import com.vabrant.actionsystem.MoveAction;
 import com.vabrant.actionsystem.RepeatAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class MoveXByRepeatTest extends ActionSystemBaseTestScreen {
+public class RestartMoveXByFromEndTest extends ActionSystemTestScreen {
 	
-	final int repeatAmount = 3;
+	final int repeatAmount = 2;
 	final int amount = 50;
 	float start;
 
-	public MoveXByRepeatTest(TestSelectScreen screen) {
+	public RestartMoveXByFromEndTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
 		reset();
@@ -40,6 +40,13 @@ public class MoveXByRepeatTest extends ActionSystemBaseTestScreen {
 	@Override
 	public void reset() {
 		testObject.setX(20);
+	}
+	
+	@Override
+	public void runCheck1() {
+		float end = (start + amount) + (amount * repeatAmount);
+		log("Current: ", Float.toString(testObject.getX()));
+		log("End: ", Float.toString(end));
 	}
 
 }

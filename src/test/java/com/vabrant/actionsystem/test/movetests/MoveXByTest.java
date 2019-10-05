@@ -2,10 +2,10 @@ package com.vabrant.actionsystem.test.movetests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.MoveAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class MoveXByTest extends ActionSystemBaseTestScreen{
+public class MoveXByTest extends ActionSystemTestScreen{
 	
 	final int amount = 50;
 	float start;

@@ -7,9 +7,9 @@ public class MoveTestsSelectScreen extends TestSelectScreen {
 
 	Class[] tests = {
 		MoveXByTest.class,	
-		MoveXByRepeatTest.class,
+		RestartMoveXByFromEndTest.class,
 		MoveYByTest.class,
-		MoveYByRepeatTest.class,
+		RestartMoveYByFromEndTest.class,
 		MoveByAngleTest.class
 	};
 	

@@ -2,10 +2,10 @@ package com.vabrant.actionsystem.test.colortests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.ColorAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ChangeColorHSBTest extends ActionSystemBaseTestScreen {
+public class ChangeColorHSBTest extends ActionSystemTestScreen {
 
 	private final float[] start = {130f, 0.25f, 0.9f};
 	private final float[] end = {0f, 0.25f, 0.9f};

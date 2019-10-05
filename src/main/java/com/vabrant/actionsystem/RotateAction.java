@@ -45,13 +45,13 @@ public class RotateAction extends PercentAction<Rotatable> {
 	private RotationType type = RotationType.NONE;
 	
 	public RotateAction rotateTo(float end) {
-		this.end = end * -1f;
+		this.end = end;
 		type = RotationType.ROTATE_TO;
 		return this;
 	}
 	
 	public RotateAction rotateBy(float amount) {
-		byAmount = amount * -1f;
+		byAmount = amount;
 		type = RotationType.ROTATE_BY;
 		return this;
 	}
@@ -71,9 +71,7 @@ public class RotateAction extends PercentAction<Rotatable> {
 		percentable.setRotation(MathUtils.lerp(start, end, percent));
 	}
 	
-	@Override
-	public void start() {
-		super.start();
+	private void setup() {
 		if(setupRotation) {
 			switch(type) {
 				case ROTATE_TO:
@@ -85,6 +83,18 @@ public class RotateAction extends PercentAction<Rotatable> {
 					break;
 			}
 		}
+	}
+	
+	@Override
+	public void start() {
+		super.start();
+		setup();
+	}
+	
+	@Override
+	public void restart() {
+		super.restart();
+		setup();
 	}
 	
 	@Override

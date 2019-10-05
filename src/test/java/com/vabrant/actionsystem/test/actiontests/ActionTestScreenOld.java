@@ -12,13 +12,13 @@ import com.vabrant.actionsystem.ActionAdapter;
 import com.vabrant.actionsystem.ActionPools;
 import com.vabrant.actionsystem.RotateAction;
 import com.vabrant.actionsystem.ScaleAction;
-import com.vabrant.actionsystem.test.ActionSystemBaseTestScreen;
+import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.actionsystem.test.ActionSystemTestObject;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestBaseConstantsAndUtils;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ActionTestScreenOld extends ActionSystemBaseTestScreen {
+public class ActionTestScreenOld extends ActionSystemTestScreen {
 	
 	private Class<?>[] tests = {
 			UnmanagedTest.class,
@@ -29,7 +29,6 @@ public class ActionTestScreenOld extends ActionSystemBaseTestScreen {
 	public ActionTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Action.setLoggingLevel(Logger.DEBUG);
 		ActionPools.logger.setLevel(Logger.DEBUG);
 		testObject = new ActionSystemTestObject();
 		testObject.setColor(Color.BLACK);
