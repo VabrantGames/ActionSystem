@@ -28,7 +28,7 @@ public class ZoomToTest extends ActionSystemTestScreen{
 	
 	@Override
 	public void runTest() {
-		ZoomAction action = ZoomAction.zoomTo(testObject, end, 1f, false, Interpolation.linear);
+		ZoomAction action = ZoomAction.zoomTo(testObject, end, 1f, Interpolation.linear);
 		action.setName("ZoomTo");
 		actionManager.addAction(action);
 	}

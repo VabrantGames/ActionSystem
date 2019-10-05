@@ -19,7 +19,7 @@ public class MoveXByTest extends ActionSystemTestScreen{
 	@Override
 	public void runTest() {
 		start = testObject.getX();
-		actionManager.addAction(MoveAction.moveXBy(testObject, amount, 1f, false, Interpolation.linear));
+		actionManager.addAction(MoveAction.moveXBy(testObject, amount, 1f, Interpolation.linear));
 	}
 	
 	@Override

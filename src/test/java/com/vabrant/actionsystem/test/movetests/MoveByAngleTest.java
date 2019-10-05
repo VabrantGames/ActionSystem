@@ -21,7 +21,7 @@ public class MoveByAngleTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		GroupAction group = GroupAction.getAction()
-				.add(MoveAction.moveByAngle(testObject, angle, amount, 1f, false, Interpolation.linear)
+				.add(MoveAction.moveByAngle(testObject, angle, amount, 1f, Interpolation.linear)
 						.setName("By Angle")
 						)
 				.add(DelayAction.delay(0.3f));

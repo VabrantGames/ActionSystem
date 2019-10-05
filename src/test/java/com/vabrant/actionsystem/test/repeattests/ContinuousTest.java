@@ -31,7 +31,7 @@ public class ContinuousTest extends ActionSystemTestScreen {
 	
 	@Override
 	public void runTest() {
-		RotateAction action = RotateAction.rotateBy(testObject, rotateAmount, 1f, false, Interpolation.linear);
+		RotateAction action = RotateAction.rotateBy(testObject, rotateAmount, 1f, Interpolation.linear);
 		action.restartRotateByFromEnd();
 		action.setName("ContinuousAction");
 		actionManager.addAction(RepeatAction.continuous(action));

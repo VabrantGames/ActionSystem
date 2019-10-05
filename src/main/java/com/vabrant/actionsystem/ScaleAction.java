@@ -9,66 +9,66 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		return getAction(ScaleAction.class);
 	}
 	
-	public static ScaleAction scaleXBy(Scalable scalable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleXBy(Scalable scalable, float amount, float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleXBy(amount);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
-	public static ScaleAction scaleYBy(Scalable scalable, float amount , float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleYBy(Scalable scalable, float amount , float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleYBy(amount);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
-	public static ScaleAction scaleBy(Scalable scalable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleBy(Scalable scalable, float xAmount, float yAmount, float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleBy(xAmount, yAmount);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
-	public static ScaleAction scaleXTo(Scalable scalable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleXTo(Scalable scalable, float end, float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleXTo(end);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
-	public static ScaleAction scaleYTo(Scalable scalable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleYTo(Scalable scalable, float end, float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleYTo(end);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
-	public static ScaleAction scaleTo(Scalable scalable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ScaleAction scaleTo(Scalable scalable, float xEnd, float yEnd, float duration, Interpolation interpolation) {
 		ScaleAction action = getAction();
 		action.scaleTo(xEnd, yEnd);
-		action.set(scalable, duration, reverseBackToStart, interpolation);
+		action.set(scalable, duration, interpolation);
 		return action;
 	}
 	
 	public static ScaleAction setScaleX(Scalable scalable, float scaleX) {
 		ScaleAction action = getAction();
 		action.scaleXTo(scaleX);
-		action.set(scalable, 0, false, Interpolation.linear);
+		action.set(scalable, 0, Interpolation.linear);
 		return action;
 	}
 	
 	public static ScaleAction setScaleY(Scalable scalable, float scaleY) {
 		ScaleAction action = getAction();
 		action.scaleYTo(scaleY);
-		action.set(scalable, 0, false, Interpolation.linear);
+		action.set(scalable, 0, Interpolation.linear);
 		return action;
 	}
 	
 	public static ScaleAction setScale(Scalable scalable, float scaleX, float scaleY) {
 		ScaleAction action = getAction();
 		action.scaleTo(scaleX, scaleY);
-		action.set(scalable, 0, false, Interpolation.linear);
+		action.set(scalable, 0, Interpolation.linear);
 		return action;
 	}
 	

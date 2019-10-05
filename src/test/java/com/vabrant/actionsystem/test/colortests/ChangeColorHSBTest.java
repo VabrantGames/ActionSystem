@@ -18,7 +18,7 @@ public class ChangeColorHSBTest extends ActionSystemTestScreen {
 	
 	@Override
 	public void runTest() {
-		actionManager.addAction(ColorAction.changeColor(testObject, end[0], end[1], end[2], 1, 1f, false, Interpolation.linear));
+		actionManager.addAction(ColorAction.changeColor(testObject, end[0], end[1], end[2], 1, 1f, Interpolation.linear));
 	}
 	
 	@Override

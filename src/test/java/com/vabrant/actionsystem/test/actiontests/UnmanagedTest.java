@@ -12,7 +12,7 @@ public class UnmanagedTest extends ActionSystemTestScreen {
 	public UnmanagedTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
-		unmanagedAction = RotateAction.rotateBy(testObject, 45f, 0.5f, false, Interpolation.linear);
+		unmanagedAction = RotateAction.rotateBy(testObject, 45f, 0.5f, Interpolation.linear);
 		unmanagedAction.setName("UnmanagedRotateAction");
 		unmanagedAction.unmanage();
 		actionManager.addUnmanagedAction(unmanagedAction);

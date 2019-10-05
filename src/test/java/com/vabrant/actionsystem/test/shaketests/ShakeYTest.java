@@ -23,7 +23,7 @@ public class ShakeYTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		ShakeAction action = ShakeAction.shakeY(testObject, amount, 1f, false, Interpolation.linear);
+		ShakeAction action = ShakeAction.shakeY(testObject, amount, 1f, Interpolation.linear);
 		action.setName("ShakeY");
 		actionManager.addAction(action);
 	}

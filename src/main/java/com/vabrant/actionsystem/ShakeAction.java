@@ -9,31 +9,31 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		return getAction(ShakeAction.class);
 	}
 	
-	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, Interpolation interpolation) {
 		ShakeAction action = getAction();
 		action.shakeX(amount);
-		action.set(shakable, duration, reverseBackToStart, interpolation);
+		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
-	public static ShakeAction shakeY(Shakable shakable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ShakeAction shakeY(Shakable shakable, float amount, float duration,  Interpolation interpolation) {
 		ShakeAction action = getAction();
 		action.shakeY(amount);
-		action.set(shakable, duration, reverseBackToStart, interpolation);
+		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
-	public static ShakeAction shakeAngle(Shakable shakable, float maxAngle, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ShakeAction shakeAngle(Shakable shakable, float maxAngle, float duration, Interpolation interpolation) {
 		ShakeAction action = getAction();
 		action.shakeAngle(maxAngle);
-		action.set(shakable, duration, reverseBackToStart, interpolation);
+		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
-	public static ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angleAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angleAmount, float duration, Interpolation interpolation) {
 		ShakeAction action = getAction();
 		action.shake(xAmount, yAmount, angleAmount);
-		action.set(shakable, duration, reverseBackToStart, interpolation);
+		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	

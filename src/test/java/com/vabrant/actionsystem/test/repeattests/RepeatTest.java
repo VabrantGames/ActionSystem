@@ -29,7 +29,7 @@ public class RepeatTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		RotateAction action = RotateAction.rotateBy(testObject, 30f, 1f, false, Interpolation.linear);
+		RotateAction action = RotateAction.rotateBy(testObject, 30f, 1f, Interpolation.linear);
 		action.setName("RepeatAction");
 		GroupAction group = GroupAction.getAction()
 				.sequence()

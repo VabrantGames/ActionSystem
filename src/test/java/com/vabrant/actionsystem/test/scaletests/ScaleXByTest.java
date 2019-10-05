@@ -30,7 +30,7 @@ public class ScaleXByTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		start = testObject.getScaleX();
-		ScaleAction action = ScaleAction.scaleXBy(testObject, amount, 1f, false, Interpolation.linear);
+		ScaleAction action = ScaleAction.scaleXBy(testObject, amount, 1f, Interpolation.linear);
 		action.setName("ScaleXBy");
 		actionManager.addAction(action);
 	}

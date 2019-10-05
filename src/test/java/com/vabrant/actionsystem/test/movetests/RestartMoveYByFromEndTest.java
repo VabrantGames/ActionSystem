@@ -25,7 +25,7 @@ public class RestartMoveYByFromEndTest extends ActionSystemTestScreen {
 		start = testObject.getY();
 		GroupAction group = GroupAction.getAction()
 				.sequence()
-				.add(MoveAction.moveYBy(testObject, amount, 1f, false, Interpolation.linear).restartMoveYByFromEnd())
+				.add(MoveAction.moveYBy(testObject, amount, 1f, Interpolation.linear).restartMoveYByFromEnd())
 				.add(DelayAction.delay(0.3f));
 		actionManager.addAction(RepeatAction.repeat(group, repeatAmount));
 	}

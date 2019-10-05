@@ -59,7 +59,7 @@ public class RestartScaleXByFromEndTest extends ActionSystemTestScreen {
 	//TODO Finish group action testing.
 	@Override
 	public void runTest() {
-		ScaleAction scale = ScaleAction.scaleXBy(testObject, scaleAmount, 1f, false, Interpolation.linear);
+		ScaleAction scale = ScaleAction.scaleXBy(testObject, scaleAmount, 1f, Interpolation.linear);
 		scale.setName("FromEnd");
 		scale.addListener(getListener());
 		scale.restartScaleXByFromEnd();

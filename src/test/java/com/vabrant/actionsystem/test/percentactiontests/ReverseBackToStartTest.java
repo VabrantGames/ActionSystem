@@ -1,15 +1,13 @@
-package com.vabrant.actionsystem.test.shaketests;
+package com.vabrant.actionsystem.test.percentactiontests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.ShakeAction;
+import com.vabrant.actionsystem.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ShakeXTest extends ActionSystemTestScreen {
-	
-	private final float amount = 5;
+public class ReverseBackToStartTest extends ActionSystemTestScreen {
 
-	public ShakeXTest(TestSelectScreen screen) {
+	public ReverseBackToStartTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
 	}
@@ -20,11 +18,19 @@ public class ShakeXTest extends ActionSystemTestScreen {
 		testObject.setX(screenCenterX - (testObject.width / 2));
 		testObject.setY(screenCenterY - (testObject.height / 2));
 	}
+	
+	@Override
+	public void reset() {
+		
+	}
 
 	@Override
 	public void runTest() {
-		ShakeAction action = ShakeAction.shakeX(testObject, amount, 0.5f, Interpolation.linear);
-		actionManager.addAction(action);
+		actionManager.addAction(
+				ScaleAction.scaleBy(testObject, 2, 2, 1f, Interpolation.linear)
+					.reverseBackToStart(true)
+					.setName("ReverseBackToStartTest")
+				);
 	}
 
 }

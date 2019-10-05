@@ -25,7 +25,7 @@ public class RestartMoveXByFromEndTest extends ActionSystemTestScreen {
 		start = testObject.getX();
 		GroupAction group = GroupAction.getAction()
 				.sequence()
-				.add(MoveAction.moveXBy(testObject, amount, 1f, false, Interpolation.linear).restartMoveXByFromEnd())
+				.add(MoveAction.moveXBy(testObject, amount, 1f, Interpolation.linear).restartMoveXByFromEnd())
 				.add(DelayAction.delay(0.3f));
 		actionManager.addAction(RepeatAction.repeat(group, repeatAmount));
 	}

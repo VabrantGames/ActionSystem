@@ -26,7 +26,7 @@ public class ChangeColorRGBTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		actionManager.addAction(ColorAction.changeColor(testObject, endColor, 1f, false, Interpolation.linear));
+		actionManager.addAction(ColorAction.changeColor(testObject, endColor, 1f, Interpolation.linear));
 	}
 	
 	@Override

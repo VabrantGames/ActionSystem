@@ -9,73 +9,73 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return getAction(MoveAction.class);
 	}
 	
-	public static MoveAction moveXBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveXBy(Movable movable, float amount, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveXBy(amount);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveYBy(Movable movable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveYBy(Movable movable, float amount, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveYBy(amount);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveBy(Movable movable, float xAmount, float yAmount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveBy(Movable movable, float xAmount, float yAmount, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveBy(xAmount, yAmount);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveByAngle(angle, amount);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveXTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveXTo(Movable movable, float end, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveXTo(end);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveYTo(Movable movable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveYTo(Movable movable, float end, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveYTo(end);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
-	public static MoveAction moveTo(Movable movable, float xEnd, float yEnd, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static MoveAction moveTo(Movable movable, float xEnd, float yEnd, float duration,  Interpolation interpolation) {
 		MoveAction action = getAction();
 		action.moveTo(xEnd, yEnd);
-		action.set(movable, duration, reverseBackToStart, interpolation);
+		action.set(movable, duration, interpolation);
 		return action;
 	}
 	
 	public static MoveAction setX(Movable movable, float x) {
 		MoveAction action = getAction();
 		action.moveXTo(x);
-		action.set(movable, 0, false, null);
+		action.set(movable, 0, null);
 		return action;
 	}
 	
 	public static MoveAction setY(Movable movable, float y) {
 		MoveAction action = getAction();
 		action.moveYTo(y);
-		action.set(movable, 0, false, null);
+		action.set(movable, 0, null);
 		return action;
 	}
 	
 	public static MoveAction setPosition(Movable movable, float x, float y) {
 		MoveAction action = getAction();
 		action.moveTo(x, y);
-		action.set(movable, 0, false, null);
+		action.set(movable, 0, null);
 		return action;
 	}
 	

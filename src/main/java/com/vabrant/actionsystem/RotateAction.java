@@ -9,24 +9,24 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return getAction(RotateAction.class);
 	}
 	
-	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, Interpolation interpolation) {
 		RotateAction action = getAction();
 		action.rotateTo(end);
-		action.set(rotatable, duration, reverseBackToStart, interpolation);
+		action.set(rotatable, duration, interpolation);
 		return action;
 	}
 	
-	public static RotateAction rotateBy(Rotatable rotatable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static RotateAction rotateBy(Rotatable rotatable, float amount, float duration, Interpolation interpolation) {
 		RotateAction action = getAction();
 		action.rotateBy(amount);
-		action.set(rotatable, duration, reverseBackToStart, interpolation);
+		action.set(rotatable, duration, interpolation);
 		return action;
 	}
 	
 	public static RotateAction setRotation(Rotatable rotatable, float end) {
 		RotateAction action = getAction();
 		action.rotateTo(end);
-		action.set(rotatable, 0, false, Interpolation.linear);
+		action.set(rotatable, 0, Interpolation.linear);
 		return action;
 	}
 	

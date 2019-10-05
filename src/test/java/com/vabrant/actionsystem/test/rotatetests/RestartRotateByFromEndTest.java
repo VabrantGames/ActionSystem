@@ -32,7 +32,7 @@ public class RestartRotateByFromEndTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		RotateAction action = RotateAction.rotateBy(testObject, amount, 1f, false, Interpolation.linear);
+		RotateAction action = RotateAction.rotateBy(testObject, amount, 1f, Interpolation.linear);
 		action.setName("RestartRotate");
 		action.restartRotateByFromEnd();
 		actionManager.addAction(

@@ -26,7 +26,7 @@ public class NestedRepeatTest extends ActionSystemTestScreen {
 	public void runTest() {
 		GroupAction group = GroupAction.getAction()
 				.sequence()
-				.add(RotateAction.rotateBy(testObject, 30f, 1f, false, Interpolation.linear))
+				.add(RotateAction.rotateBy(testObject, 30f, 1f, Interpolation.linear))
 				.add(DelayAction.delay(0.3f));
 		RepeatAction nestedRepeat = RepeatAction.repeat(group, 2);
 		nestedRepeat.setName("Nested");

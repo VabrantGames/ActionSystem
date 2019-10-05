@@ -54,7 +54,7 @@ public class ChainingTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		actionManager.addAction(
-				ScaleAction.scaleBy(testObject, 2, 2, 1f, false, Interpolation.linear)
+				ScaleAction.scaleBy(testObject, 2, 2, 1f, Interpolation.linear)
 					.setName("ScaleAction")
 					.addListener(createActionListener())
 					.setPauseCondition(createPauseCondition())

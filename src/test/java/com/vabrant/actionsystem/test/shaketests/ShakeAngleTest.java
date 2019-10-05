@@ -23,7 +23,7 @@ public class ShakeAngleTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		ShakeAction action = ShakeAction.shakeAngle(testObject, maxAngle, 1f, false, Interpolation.linear);
+		ShakeAction action = ShakeAction.shakeAngle(testObject, maxAngle, 1f, Interpolation.linear);
 		action.setName("ShakeAngle");
 		actionManager.addAction(action);
 	}

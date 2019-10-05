@@ -30,7 +30,7 @@ public class ZoomByTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		start = testObject.getZoom();
-		ZoomAction action = ZoomAction.zoomBy(testObject, amount, 1f, false, Interpolation.linear);
+		ZoomAction action = ZoomAction.zoomBy(testObject, amount, 1f, Interpolation.linear);
 		action.setName("ZoomBy");
 		actionManager.addAction(action);
 	}

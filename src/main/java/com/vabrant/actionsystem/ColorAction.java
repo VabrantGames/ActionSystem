@@ -10,45 +10,45 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		return getAction(ColorAction.class);
 	}
 	
-	public static ColorAction changeColor(Colorable colorable, Color endColor, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ColorAction changeColor(Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
 		ColorAction action = getAction();
 		action.changeColor(endColor);
-		action.set(colorable, duration, reverseBackToStart, interpolation);
+		action.set(colorable, duration, interpolation);
 		return action;
 	}
 	
-	public static ColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, Interpolation interpolation) {
 		ColorAction action = getAction();
 		action.changeColor(hue, saturation, brightness, alpha);
-		action.set(colorable, duration, reverseBackToStart, interpolation);
+		action.set(colorable, duration, interpolation);
 		return action;
 	}
 	
-	public static ColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
 		ColorAction action = getAction();
 		action.changeAlpha(endAlpha);
-		action.set(colorable, duration, reverseBackToStart, interpolation);
+		action.set(colorable, duration, interpolation);
 		return action;
 	}
 	
-	public static ColorAction changeHue(Colorable colorable, float endHue, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ColorAction changeHue(Colorable colorable, float endHue, float duration, Interpolation interpolation) {
 		ColorAction action = getAction();
 		action.changeHue(endHue);
-		action.set(colorable, duration, reverseBackToStart, interpolation);
+		action.set(colorable, duration, interpolation);
 		return action;
 	}
 	
 	public static ColorAction setColor(Colorable colorable, Color color) {
 		ColorAction action = getAction();
 		action.changeColor(color);
-		action.set(colorable, 0, false, Interpolation.linear);
+		action.set(colorable, 0, Interpolation.linear);
 		return action;
 	}
 	
 	public static ColorAction setColor(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
 		ColorAction action = getAction();
 		action.changeColor(hue, saturation, brightness, alpha);
-		action.set(colorable, 0, false, Interpolation.linear);
+		action.set(colorable, 0, Interpolation.linear);
 		return action;
 	}
 

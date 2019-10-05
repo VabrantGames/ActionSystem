@@ -62,7 +62,7 @@ public class TestingPlayground extends BaseScreen{
 	}
 	
 	public void singleMoveTest() {
-		actionManager.addAction(MoveAction.moveXBy(testObject, 50, 0.5f, false, Interpolation.linear));
+		actionManager.addAction(MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.linear));
 	}
 	
 	public void repeatTest() {
@@ -72,7 +72,7 @@ public class TestingPlayground extends BaseScreen{
 		
 		GroupAction group = ActionPools.obtain(GroupAction.class);
 		group.sequence();
-		group.add(MoveAction.moveXBy(testObject, 50, 0.5f, false, Interpolation.linear).restartMoveXByFromEnd());
+		group.add(MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.linear).restartMoveXByFromEnd());
 		group.add(delay);
 		
 		RepeatAction repeat = ActionPools.obtain(RepeatAction.class);

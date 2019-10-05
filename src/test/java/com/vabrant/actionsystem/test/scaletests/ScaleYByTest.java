@@ -31,7 +31,7 @@ public class ScaleYByTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		start = testObject.getScaleY();
-		ScaleAction action = ScaleAction.scaleYBy(testObject, amount, 1f, false, Interpolation.linear);
+		ScaleAction action = ScaleAction.scaleYBy(testObject, amount, 1f, Interpolation.linear);
 		action.setName("ScaleYBy");
 		actionManager.addAction(action);
 	}

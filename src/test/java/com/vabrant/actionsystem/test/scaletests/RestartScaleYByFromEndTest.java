@@ -22,7 +22,7 @@ public class RestartScaleYByFromEndTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		ScaleAction scale = ScaleAction.scaleYBy(testObject, scaleAmount, 1f, false, Interpolation.linear);
+		ScaleAction scale = ScaleAction.scaleYBy(testObject, scaleAmount, 1f, Interpolation.linear);
 		scale.setName("FromEnd");
 		scale.addListener(getListener());
 		scale.restartScaleYByFromEnd();

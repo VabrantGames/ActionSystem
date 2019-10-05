@@ -18,7 +18,7 @@ public class ChangeHueTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		actionManager.addAction(ColorAction.changeHue(testObject, endHue, 1f, false, Interpolation.linear));
+		actionManager.addAction(ColorAction.changeHue(testObject, endHue, 1f, Interpolation.linear));
 	}
 	
 	@Override

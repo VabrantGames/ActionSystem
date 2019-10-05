@@ -20,7 +20,7 @@ public class ChangeAlphaTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		actionManager.addAction(ColorAction.changeAlpha(testObject, endAlpha, 1f, false, Interpolation.linear));
+		actionManager.addAction(ColorAction.changeAlpha(testObject, endAlpha, 1f, Interpolation.linear));
 	}
 	
 	@Override

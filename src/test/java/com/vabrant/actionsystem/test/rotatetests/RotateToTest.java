@@ -30,7 +30,7 @@ public class RotateToTest extends ActionSystemTestScreen {
 	
 	@Override
 	public void runTest() {
-		actionManager.addAction(RotateAction.rotateTo(testObject, end, 1f, false, Interpolation.linear));
+		actionManager.addAction(RotateAction.rotateTo(testObject, end, 1f, Interpolation.linear));
 	}
 	
 	@Override

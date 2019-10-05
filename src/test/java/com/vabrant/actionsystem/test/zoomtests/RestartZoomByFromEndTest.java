@@ -32,7 +32,7 @@ public class RestartZoomByFromEndTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 		GroupAction group = GroupAction.getAction()
-				.add(ZoomAction.zoomBy(testObject, amount, 1f, false, Interpolation.linear).restartZoomByFromEnd())
+				.add(ZoomAction.zoomBy(testObject, amount, 1f, Interpolation.linear).restartZoomByFromEnd())
 				.add(DelayAction.delay(0.3f));
 		actionManager.addAction(RepeatAction.repeat(group, 2));
 	}

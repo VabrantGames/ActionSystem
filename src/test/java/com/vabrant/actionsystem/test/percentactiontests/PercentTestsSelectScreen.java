@@ -3,13 +3,16 @@ package com.vabrant.actionsystem.test.percentactiontests;
 import com.vabrant.testbase.TestApplication;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class PercentActionTestsScreen extends TestSelectScreen {
+public class PercentTestsSelectScreen extends TestSelectScreen {
 
 	Class<?>[] tests = {
 		KillTest.class,
+		EndTest.class,
+		ReverseTest.class,
+		ReverseBackToStartTest.class
 	};
 	
-	public PercentActionTestsScreen(TestApplication app) {
+	public PercentTestsSelectScreen(TestApplication app) {
 		super(app);
 		addTests(tests);
 	}

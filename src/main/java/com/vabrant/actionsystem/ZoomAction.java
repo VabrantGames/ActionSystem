@@ -9,24 +9,24 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		return getAction(ZoomAction.class);
 	}
 	
-	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, Interpolation interpolation) {
 		ZoomAction action = getAction();
 		action.zoomTo(end);
-		action.set(zoomable, duration, reverseBackToStart, interpolation);
+		action.set(zoomable, duration,  interpolation);
 		return action;
 	}
 	
-	public static ZoomAction zoomBy(Zoomable zoomable, float amount, float duration, boolean reverseBackToStart, Interpolation interpolation) {
+	public static ZoomAction zoomBy(Zoomable zoomable, float amount, float duration, Interpolation interpolation) {
 		ZoomAction action = getAction();
 		action.zoomBy(amount);
-		action.set(zoomable, duration, reverseBackToStart, interpolation);
+		action.set(zoomable, duration, interpolation);
 		return action;
 	}
 	
 	public static ZoomAction setZoom(Zoomable zoomable, float zoom) {
 		ZoomAction action = getAction();
 		action.zoomTo(zoom);
-		action.set(zoomable, 0, false, null);
+		action.set(zoomable, 0, null);
 		return action;
 	}
 

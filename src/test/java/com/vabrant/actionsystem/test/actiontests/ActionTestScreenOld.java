@@ -53,7 +53,7 @@ public class ActionTestScreenOld extends ActionSystemTestScreen {
 		RotateAction unmanagedAction;
 		
 		public UnmanagedTest() {
-			unmanagedAction = RotateAction.rotateBy(testObject, 45f, 0.5f, false, Interpolation.circleOut).restartRotateByFromEnd();
+			unmanagedAction = RotateAction.rotateBy(testObject, 45f, 0.5f, Interpolation.circleOut).restartRotateByFromEnd();
 			unmanagedAction.unmanage();
 			unmanagedAction.addListener(getUnmanagedActionListener());
 			actionManager.addUnmanagedAction(unmanagedAction);
@@ -102,10 +102,10 @@ public class ActionTestScreenOld extends ActionSystemTestScreen {
 		
 		@Override
 		public void runTest1() {
-			ScaleAction scale = ScaleAction.scaleTo(testObject, 0.5f, 0.5f, 0.5f, true, Interpolation.linear);
+			ScaleAction scale = ScaleAction.scaleTo(testObject, 0.5f, 0.5f, 0.5f, Interpolation.linear);
 			scale.setName("Main");
 			
-			ScaleAction preAction = ScaleAction.scaleTo(preObject, 0.5f, 0.5f, 2, true, Interpolation.linear);
+			ScaleAction preAction = ScaleAction.scaleTo(preObject, 0.5f, 0.5f, 2, Interpolation.linear);
 			preAction.setName("PreAction");
 			scale.addPreAction(preAction);
 			actionManager.addAction(scale);

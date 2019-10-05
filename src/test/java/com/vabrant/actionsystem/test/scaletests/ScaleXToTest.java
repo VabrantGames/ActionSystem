@@ -28,7 +28,7 @@ public class ScaleXToTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		ScaleAction action = ScaleAction.scaleXTo(testObject, end, 1f, false, Interpolation.linear);
+		ScaleAction action = ScaleAction.scaleXTo(testObject, end, 1f, Interpolation.linear);
 		action.setName("ScaleXTo");
 		actionManager.addAction(action);
 	}
