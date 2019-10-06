@@ -7,6 +7,7 @@ public class PerformanceTestsSelectScreen extends TestSelectScreen {
 
 	Class[] tests = {
 			BooleanVSEmptyCompute.class,
+			HSBToRGBTest.class,
 	};
 	
 	public PerformanceTestsSelectScreen(TestApplication app) {

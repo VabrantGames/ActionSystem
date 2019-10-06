@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem;
 
-public class RepeatAction extends Action {
+public class RepeatAction extends Action<RepeatAction> {
 
 	private int count;
 	private int amount;

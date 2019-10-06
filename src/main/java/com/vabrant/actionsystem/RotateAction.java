@@ -30,11 +30,8 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return action;
 	}
 	
-	private enum RotationType{
-		ROTATE_TO,
-		ROTATE_BY,
-		NONE
-	}
+	private static final int ROTATE_TO = 0;
+	private static final int ROTATE_BY = 1;
 	
 	private boolean setupRotation = true;
 	private boolean cap;
@@ -42,17 +39,17 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	private float byAmount;
 	private float start;
 	private float end;
-	private RotationType type = RotationType.NONE;
+	private int type = -1;
 	
 	public RotateAction rotateTo(float end) {
 		this.end = end;
-		type = RotationType.ROTATE_TO;
+		type = ROTATE_TO;
 		return this;
 	}
 	
 	public RotateAction rotateBy(float amount) {
 		byAmount = amount;
-		type = RotationType.ROTATE_BY;
+		type = ROTATE_BY;
 		return this;
 	}
 	
@@ -100,14 +97,14 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	@Override
 	public void end() {
 		super.end();
-		if(!type.equals(RotationType.ROTATE_BY) || type.equals(RotationType.ROTATE_BY) && !restartRotateByFromEnd) setupRotation = false;
+		if(type != ROTATE_BY || type == ROTATE_BY && !restartRotateByFromEnd) setupRotation = false;
 		if(cap) percentable.setRotation(percentable.getRotation() % 360f);
 	}
 	
 	@Override
 	public void reset() {
 		super.reset();
-		type = RotationType.NONE;
+		type = -1;
 		setupRotation = true;
 		cap = false;
 		start = 0;

@@ -78,18 +78,9 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		action.set(movable, 0, null);
 		return action;
 	}
-	
-	private enum XMoveType{
-		MOVE_X_TO,
-		MOVE_X_BY,
-		NONE
-	}
-	
-	private enum YMoveType{
-		MOVE_Y_TO,
-		MOVE_Y_BY,
-		NONE
-	}
+
+	private static final int MOVE_TO = 0;
+	private static final int MOVE_BY = 1;
 
 	private boolean setupX = true;
 	private boolean setupY = true;
@@ -101,52 +92,52 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	private float yEnd;
 	private float yAmount;
 	private float xAmount;
-	private XMoveType xMoveType = XMoveType.NONE;
-	private YMoveType yMoveType = YMoveType.NONE;
+	private int xType = -1;
+	private int yType = -1;
 	
 	public void moveXTo(float end) {
 		this.xEnd = end;
-		xMoveType = XMoveType.MOVE_X_TO;
+		xType = MOVE_TO;
 	}
 	
 	public void moveYTo(float end) {
 		this.yEnd = end;
-		yMoveType = YMoveType.MOVE_Y_TO;
+		yType = MOVE_TO;
 	}
 	
 	public void moveTo(float xEnd, float yEnd) {
 		this.xEnd = xEnd;
 		this.yEnd = yEnd;
-		xMoveType = XMoveType.MOVE_X_TO;
-		yMoveType = YMoveType.MOVE_Y_TO;
+		xType = MOVE_TO;
+		yType = MOVE_TO;
 	}
 
 	public MoveAction moveByAngle(float angle, float amount) {
 		angle %= 360;
 		xAmount = amount * MathUtils.cosDeg(angle);
 		yAmount = amount * MathUtils.sinDeg(angle);
-		xMoveType = XMoveType.MOVE_X_BY;
-		yMoveType = YMoveType.MOVE_Y_BY;
+		xType = MOVE_BY;
+		yType = MOVE_BY;
 		return this;
 	}
 	
 	public MoveAction moveXBy(float amount) {
 		xAmount = amount;
-		xMoveType = XMoveType.MOVE_X_BY;
+		xType = MOVE_BY;
 		return this;
 	}
 
 	public MoveAction moveYBy(float amount) {
 		yAmount = amount;
-		yMoveType = YMoveType.MOVE_Y_BY;
+		yType = MOVE_BY;
 		return this;
 	}
 	
 	public MoveAction moveBy(float xAmount, float yAmount) {
 		this.xAmount = xAmount;
 		this.yAmount = yAmount;
-		xMoveType = XMoveType.MOVE_X_BY;
-		yMoveType = YMoveType.MOVE_Y_BY;
+		xType = MOVE_BY;
+		yType = MOVE_BY;
 		return this;
 	}
 
@@ -162,16 +153,16 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 
 	@Override
 	protected void percent(float percent) {
-		switch(xMoveType) {
-			case MOVE_X_BY:
-			case MOVE_X_TO:
+		switch(xType) {
+			case MOVE_BY:
+			case MOVE_TO:
 				percentable.setX(MathUtils.lerp(xStart, xEnd, percent));
 				break;
 		}
 		
-		switch(yMoveType) {
-			case MOVE_Y_BY:
-			case MOVE_Y_TO:
+		switch(yType) {
+			case MOVE_BY:
+			case MOVE_TO:
 				percentable.setY(MathUtils.lerp(yStart, yEnd, percent));
 				break;
 		}
@@ -179,24 +170,24 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	
 	private void setup() {
 		if(setupX) {
-			switch(xMoveType) {
-				case MOVE_X_BY:
+			switch(xType) {
+				case MOVE_BY:
 					xStart = percentable.getX();
 					xEnd = xStart + xAmount;
 					break;
-				case MOVE_X_TO:
+				case MOVE_TO:
 					xStart = percentable.getX();
 					break;
 			}
 		}
 		
 		if(setupY) {	
-			switch(yMoveType) {
-				case MOVE_Y_BY:
+			switch(yType) {
+				case MOVE_BY:
 					yStart = percentable.getY();
 					yEnd = yStart + yAmount;
 					break;
-				case MOVE_Y_TO:
+				case MOVE_TO:
 					yStart = percentable.getY();
 					break;
 			}
@@ -218,8 +209,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	@Override
 	public void end() {
 		super.end();
-		if(!xMoveType.equals(XMoveType.MOVE_X_BY) || xMoveType.equals(XMoveType.MOVE_X_BY) && !restartMoveXByFromEnd) setupX = false;
-		if(!yMoveType.equals(YMoveType.MOVE_Y_BY) || yMoveType.equals(YMoveType.MOVE_Y_BY) && !restartMoveYByFromEnd) setupY = false;
+		if(xType != MOVE_BY || xType == MOVE_BY && !restartMoveXByFromEnd) setupX = false;
+		if(yType != MOVE_BY || yType == MOVE_BY && !restartMoveYByFromEnd) setupY = false;
 	}
 	
 	@Override
@@ -235,8 +226,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		setupY = true;
 		restartMoveXByFromEnd = false;
 		restartMoveYByFromEnd = false;
-		xMoveType = XMoveType.NONE;
-		yMoveType = YMoveType.NONE;
+		xType = -1;
+		yType = -1;
 	}
 
 }

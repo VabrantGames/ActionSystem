@@ -37,35 +37,32 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		return action;
 	}
 	
-	private enum ShakeType{
-		SHAKE_X,
-		SHAKE_Y,
-		SHAKE_ANGLE,
-		SHAKE_ALL,
-		NONE
-	}
+	private static final int SHAKE_X = 0;
+	private static final int SHAKE_Y = 1;
+	private static final int SHAKE_ANGLE = 2;
+	private static final int SHAKE_ALL = 3;
 	
 	private boolean usePercent;
 	private float x;
 	private float y;
 	private float angle;
-	private ShakeType type = ShakeType.NONE;
+	private int type = -1;
 	
 	public ShakeAction shakeX(float amount) {
 		this.x = amount;
-		type = ShakeType.SHAKE_X;
+		type = SHAKE_X;
 		return this;
 	}
 	
 	public ShakeAction shakeY(float amount) {
 		this.y = amount;
-		type = ShakeType.SHAKE_Y;
+		type = SHAKE_Y;
 		return this;
 	}
 	
 	public ShakeAction shakeAngle(float amount) {
 		this.angle = amount;
-		type = ShakeType.SHAKE_ANGLE;
+		type = SHAKE_ANGLE;
 		return this;
 	}
 	
@@ -73,7 +70,7 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		this.x = xAmount;
 		this.y = yAmount;
 		this.angle = angle;
-		type = ShakeType.SHAKE_ALL;
+		type = SHAKE_ALL;
 		return this;
 	}
 	
@@ -130,6 +127,6 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		y = 0;
 		angle = 0;
 		usePercent = false;
-		type = ShakeType.NONE;
+		type = -1;
 	}
 }

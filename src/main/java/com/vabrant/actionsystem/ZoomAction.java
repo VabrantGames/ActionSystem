@@ -30,28 +30,25 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		return action;
 	}
 
-	private enum ZoomType{
-		ZOOM_TO,
-		ZOOM_BY,
-		NONE
-	}
+	private static final int ZOOM_TO = 0;
+	private static final int ZOOM_BY = 1;
 	
 	private boolean restartZoomByFromEnd;
 	private boolean setupZoom = true;
 	private float start;
 	private float end;
 	private float amount;
-	private ZoomType type = ZoomType.NONE;
+	private int type = -1;
 
 	public ZoomAction zoomTo(float end) {
 		this.end = end;
-		type = ZoomType.ZOOM_TO;
+		type = ZOOM_TO;
 		return this;
 	}
 	
 	public ZoomAction zoomBy(float amount) {
 		this.amount = amount;
-		type = ZoomType.ZOOM_BY;
+		type = ZOOM_BY;
 		return this;
 	}
 	
@@ -94,7 +91,7 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	@Override
 	public void end() {
 		super.end();
-		if(!type.equals(ZoomType.ZOOM_BY) || type.equals(ZoomType.ZOOM_BY) && !restartZoomByFromEnd) setupZoom = false;
+		if(type != ZOOM_BY || type == ZOOM_BY && !restartZoomByFromEnd) setupZoom = false;
 	}
 	
 	@Override
@@ -105,6 +102,6 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		end = 0;
 		amount = 0;
 		restartZoomByFromEnd = false;
-		type = ZoomType.NONE;
+		type = -1;
 	}
 }

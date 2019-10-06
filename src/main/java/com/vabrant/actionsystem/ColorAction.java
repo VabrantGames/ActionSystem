@@ -51,14 +51,12 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		action.set(colorable, 0, Interpolation.linear);
 		return action;
 	}
-
-	private enum ColorType{
-		RGBA,
-		HSBA,
-		ALPHA,
-		HUE,
-		NONE
-	}
+	
+	private static final int RGBA = 0;
+	private static final int HSBA = 1;
+	private static final int ALPHA = 2;
+	private static final int HUE = 3;
+	private int type = -1;
 	
 	private boolean setupAction = true;
 	private float startHue;
@@ -67,15 +65,14 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	private float[] endHSBA = new float[4];
 	private Color startColor = new Color(Color.WHITE);
 	private Color endColor = new Color(Color.WHITE);
-	private ColorType colorType = ColorType.NONE;
 	
 	public void changeColor(Color endColor) {
+		type = RGBA;
 		this.endColor.set(endColor);
-		colorType = ColorType.RGBA;
 	}
 	
 	public void changeColor(float hue, float saturation, float brightness, float alpha) {
-		colorType = ColorType.HSBA;
+		type = HSBA;
 		endHSBA[0] = hue / 360f;
 		endHSBA[1] = saturation;
 		endHSBA[2] = brightness;
@@ -83,26 +80,26 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	public void changeHue(float hue) {
+		type = HUE;
 		this.endHue = hue / 360f;
-		colorType = ColorType.HUE;
 	}
 	
 //	public void changeSaturation(float saturation) {
 //		
 //	}
-//	
+	
 //	public void changeBrightness(float brightness) {
 //		
 //	}
 	
 	public void changeAlpha(float endAlpha) {
+		type = ALPHA;
 		endColor.a = endAlpha;
-		colorType = ColorType.ALPHA;
 	}
 
 	@Override
 	protected void percent(float percent) {
-		switch(colorType) {
+		switch(type) {
 			case RGBA:
 				float rgbaR = startColor.r + (endColor.r - startColor.r) * percent;
 				float rgbaG = startColor.g + (endColor.g - startColor.g) * percent;
@@ -135,7 +132,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		super.start();
 		
 		if(setupAction) {
-			switch(colorType) {
+			switch(type) {
 				case RGBA:
 					startColor.set(percentable.getColor());
 					break;
@@ -171,7 +168,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
-		colorType = ColorType.NONE;
+		type = -1;
 		startHSBA[0] = 0;
 		startHSBA[1] = 0;
 		startHSBA[2] = 0;
@@ -182,19 +179,24 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		endHSBA[3] = 0;
 	}
 	
-	//TODO the (hue / 60f) doesn't need to be computed twice
 	public static void HSBToRGB(Color color, float hue, float saturation, float brightness, float alpha) {
-		if(hue >= 360) hue %= 360;
+		if(hue >= 360) Math.abs(hue %= 360);
 		saturation = MathUtils.clamp(saturation, 0f, 1f);
 		brightness = MathUtils.clamp(brightness, 0f, 1f);
 		
+		if(saturation == 0) {
+			color.r = color.g = color.b = brightness;
+			return;
+		}
+		
+		float h = hue / 60f;
 		float c = brightness * saturation;
-		float x = c * (1f - Math.abs((hue / 60f) % 2f - 1f));
+		float x = c * (1f - Math.abs(h % 2f - 1f));
 		float m = brightness - c;
 		
 		color.a = alpha;
 		
-		switch((int)(hue / 60f)) {
+		switch((int)h) {
 			case 0:
 				color.r = c + m;
 				color.g = x + m;

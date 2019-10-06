@@ -72,17 +72,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		return action;
 	}
 	
-	private enum XScaleType{
-		SCALE_X_TO,
-		SCALE_X_BY,
-		NONE
-	}
-	
-	private enum YScaleType{
-		SCALE_Y_TO,
-		SCALE_Y_BY,
-		NONE
-	}
+	private static final int SCALE_TO = 0;
+	private static final int SCALE_BY = 1;
 	
 	private boolean restartScaleXByFromEnd;
 	private boolean restartScaleYByFromEnd;
@@ -94,46 +85,46 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	private float yEnd;
 	private float xAmount;
 	private float yAmount;
-	private XScaleType xScaleType = XScaleType.NONE;
-	private YScaleType yScaleType = YScaleType.NONE;
+	private int xType = -1;
+	private int yType = -1;
 	
 	public ScaleAction scaleXBy(float amount) {
 		xAmount = amount;
-		xScaleType = XScaleType.SCALE_X_BY;
+		xType = SCALE_BY;
 		return this;
 	}
 	
 	public ScaleAction scaleYBy(float amount) {
 		yAmount = amount;
-		yScaleType = YScaleType.SCALE_Y_BY;
+		yType = SCALE_BY;
 		return this;
 	}
 	
 	public ScaleAction scaleBy(float xAmount, float yAmount) {
 		this.xAmount = xAmount;
 		this.yAmount = yAmount;
-		xScaleType = XScaleType.SCALE_X_BY;
-		yScaleType = YScaleType.SCALE_Y_BY;
+		xType = SCALE_BY;
+		yType = SCALE_BY;
 		return this;
 	}
 	
 	public ScaleAction scaleXTo(float end) {
 		this.xEnd = end;
-		xScaleType = XScaleType.SCALE_X_TO;
+		xType = SCALE_TO;
 		return this;
 	}
 	
 	public ScaleAction scaleYTo(float end) {
 		this.yEnd = end;
-		yScaleType = YScaleType.SCALE_Y_TO;
+		yType = SCALE_TO;
 		return this;
 	}
 	
 	public ScaleAction scaleTo(float xEnd, float yEnd) {
 		this.xEnd = xEnd;
 		this.yEnd = yEnd;
-		xScaleType = XScaleType.SCALE_X_TO;
-		yScaleType = YScaleType.SCALE_Y_TO;
+		xType = SCALE_TO;
+		yType = SCALE_TO;
 		return this;
 	}
 
@@ -149,16 +140,16 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
 	@Override
 	protected void percent(float percent) {
-		switch(xScaleType) {
-			case SCALE_X_BY:
-			case SCALE_X_TO:
+		switch(xType) {
+			case SCALE_BY:
+			case SCALE_TO:
 				percentable.setScaleX(MathUtils.lerp(xStart, xEnd, percent));
 				break;
 		}
 		
-		switch(yScaleType) {
-			case SCALE_Y_BY:
-			case SCALE_Y_TO:
+		switch(yType) {
+			case SCALE_BY:
+			case SCALE_TO:
 				percentable.setScaleY(MathUtils.lerp(yStart, yEnd, percent));
 				break;
 		}
@@ -166,24 +157,24 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
 	private void setup() {
 		if(setupX) {
-			switch(xScaleType) {
-				case SCALE_X_BY:
+			switch(xType) {
+				case SCALE_BY:
 					xStart = percentable.getScaleX();
 					xEnd = xStart + xAmount;
 					break;
-				case SCALE_X_TO:
+				case SCALE_TO:
 					xStart = percentable.getScaleX();
 					break;
 			}
 		}
 		
 		if(setupY) {
-			switch(yScaleType) {
-				case SCALE_Y_BY:
+			switch(yType) {
+				case SCALE_BY:
 					yStart = percentable.getScaleY();
 					yEnd = yStart + yAmount;
 					break;
-				case SCALE_Y_TO:
+				case SCALE_TO:
 					yStart = percentable.getScaleY();
 					break;
 			}
@@ -205,8 +196,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	@Override
 	public void end() {
 		super.end();
-		if(!xScaleType.equals(XScaleType.SCALE_X_BY) || xScaleType.equals(XScaleType.SCALE_X_BY) && !restartScaleXByFromEnd) setupX = false;
-		if(!yScaleType.equals(YScaleType.SCALE_Y_BY) || yScaleType.equals(YScaleType.SCALE_Y_BY) && !restartScaleYByFromEnd) setupY = false;
+		if(xType != SCALE_BY || xType == SCALE_BY && !restartScaleXByFromEnd) setupX = false;
+		if(yType != SCALE_BY || yType == SCALE_BY && !restartScaleYByFromEnd) setupY = false;
 	}
 	
 	@Override
@@ -222,8 +213,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		xEnd = 0;
 		yStart = 0;
 		yEnd = 0;
-		xScaleType = XScaleType.NONE;
-		yScaleType = YScaleType.NONE;
+		xType = -1;
+		yType = -1;
 	}
 
 }

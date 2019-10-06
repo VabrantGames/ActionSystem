@@ -9,7 +9,7 @@ import com.vabrant.testbase.TestSelectScreen;
 
 public class MoveByAngleTest extends ActionSystemTestScreen {
 
-	final int angle = 90;
+	final int angle = 60;
 	final int amount = 50;
 	
 	public MoveByAngleTest(TestSelectScreen screen) {
