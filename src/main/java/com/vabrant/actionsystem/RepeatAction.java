@@ -36,7 +36,7 @@ public class RepeatAction extends Action<RepeatAction> {
 				count++;
 			}
 			if(isContinuous || count <= amount) {
-				if(!isContinuous) logger.debug("Repeat", Integer.toString(count));
+				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(count));
 				action.restart();
 			}
 			else {

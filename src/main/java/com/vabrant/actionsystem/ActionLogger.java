@@ -25,6 +25,10 @@ public class ActionLogger {
 		}
 	}
 	
+	public static ActionLogger getLogger(Class<?> c, int level) {
+		return isRelease ? null : new ActionLogger(c, level);
+	}
+	
 	public static void setReleaseMode(boolean releaseMode) {
 		ActionLogger.isRelease = releaseMode;
 	}
@@ -40,11 +44,11 @@ public class ActionLogger {
 	private String className;
 	private int level;
 	
-	public ActionLogger(Class<?> c) {
+	private ActionLogger(Class<?> c) {
 		this(c, NONE);
 	}
 	
-	public ActionLogger(Class<?> c, int level) {
+	private ActionLogger(Class<?> c, int level) {
 		if(!isRelease) {
 			className = c.getSimpleName();
 			this.level = level;

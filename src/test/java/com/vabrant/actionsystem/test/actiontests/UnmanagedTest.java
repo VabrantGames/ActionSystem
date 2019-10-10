@@ -24,11 +24,6 @@ public class UnmanagedTest extends ActionSystemTestScreen {
 			unmanagedAction.restart();
 		}
 		else {
-//			unmanagedAction.clear();
-			unmanagedAction
-//				.rotateBy(45)
-//				.setDuration(1f)
-				.setInterpolation(Interpolation.linear);
 			unmanagedAction.start();
 		}
 	}

@@ -16,7 +16,7 @@ public class ActionManager {
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
-		logger = new ActionLogger(this.getClass());
+		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
 		
 		//DEBUG remove
 		logger.setLevel(Logger.DEBUG);
@@ -43,7 +43,7 @@ public class ActionManager {
 		if(action.isManaged()) throw new ActionSystemRuntimeException("Action is not unmanaged.");
 		action.setActionManager(this);
 		unmanagedActions.add(action);
-		logger.info("Unmanaged action added");
+		if(logger != null) logger.info("Unmanaged action added");
 	}
 	
 	void poolUnmanagedAction(Action unmanagedAction) {
@@ -55,7 +55,7 @@ public class ActionManager {
 	public void addAction(Action action) {
 		if(action.preActions.size > 0) action.setActionManager(this);
 		actions.add(action);
-		logger.debug(action.getLogger().getClassName() + " added");
+		if(logger != null) logger.debug(action.getLogger().getClassName() + " added");
 	}
 	
 	public void update(float delta) {

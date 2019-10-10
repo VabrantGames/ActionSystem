@@ -27,14 +27,14 @@ public class Action<T extends Action> implements Poolable{
 	public Action() {
 		listeners = new Array<>(2);
 		preActions = new Array<>(2);
-		logger = new ActionLogger(this.getClass());
+		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
 		
-	//DEBUG remove
+		//DEBUG remove
 		logger.setLevel(Logger.DEBUG);
 	}
 	
 	public T setLoggingLevel(int level) {
-		logger.setLevel(level);
+		if(logger != null) logger.setLevel(level);
 		return (T)this;
 	}
 	
@@ -90,7 +90,7 @@ public class Action<T extends Action> implements Poolable{
 	public T setName(String name) {
 		if(name == null) throw new IllegalArgumentException("Name can't be null.");
 		this.name = name;
-		logger.setActionName(name);
+		if(logger != null) logger.setActionName(name);
 		return (T)this;
 	}
 	
@@ -152,7 +152,7 @@ public class Action<T extends Action> implements Poolable{
 		isPaused = false;
 		isRunning = false;
 		isFinished = false;
-		logger.clearActionName();
+		if(logger != null) logger.clearActionName();
 	}
 	
 	public T clear() {
