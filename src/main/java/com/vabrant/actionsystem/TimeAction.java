@@ -5,12 +5,13 @@ public class TimeAction<T extends Action> extends Action<T> {
 	public float timer;
 	protected float duration;
 
-	protected void setDuration(float duration) {
-		this.duration = duration;
-	}
-
 	public float getCurrentTime() {
 		return timer;
+	}
+	
+	public T setDuration(float duration) {
+		this.duration = duration;
+		return (T)this;
 	}
 	
 	public float getDuration() {
@@ -30,6 +31,12 @@ public class TimeAction<T extends Action> extends Action<T> {
 			end();
 		}
 		return isFinished;
+	}
+
+	@Override
+	public void start() {
+		super.start();
+		timer = 0;
 	}
 	
 	@Override

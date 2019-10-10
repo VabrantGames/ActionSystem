@@ -212,6 +212,23 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		if(xType != MOVE_BY || xType == MOVE_BY && !restartMoveXByFromEnd) setupX = false;
 		if(yType != MOVE_BY || yType == MOVE_BY && !restartMoveYByFromEnd) setupY = false;
 	}
+
+	@Override
+	public void clear() {
+		super.clear();
+		xAmount = 0;
+		yAmount = 0;
+		xStart = 0;
+		yStart = 0;
+		xEnd = 0;
+		yEnd = 0;
+		setupX = true;
+		setupY = true;
+		restartMoveXByFromEnd = false;
+		restartMoveYByFromEnd = false;
+		xType = -1;
+		yType = -1;
+	}
 	
 	@Override
 	public void reset() {

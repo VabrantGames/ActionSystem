@@ -7,7 +7,7 @@ public class ActionManager {
 	
 	private Array<Action> unmanagedActions;
 	private Array<Action> actions;
-	private final Logger logger;
+	private final ActionLogger logger;
 	
 	public ActionManager() {
 		this(10);
@@ -16,10 +16,13 @@ public class ActionManager {
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
-		logger = new Logger(this.getClass().getSimpleName(), Logger.DEBUG);
+		logger = new ActionLogger(this.getClass());
+		
+		//DEBUG remove
+		logger.setLevel(Logger.DEBUG);
 	}
 	
-	public Logger getLogger() {
+	public ActionLogger getLogger() {
 		return logger;
 	}
 	
@@ -52,14 +55,14 @@ public class ActionManager {
 	public void addAction(Action action) {
 		if(action.preActions.size > 0) action.setActionManager(this);
 		actions.add(action);
-		logger.debug(action.getClass().getSimpleName() + " added");
+		logger.debug(action.getLogger().getClassName() + " added");
 	}
 	
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
 			if(action.update(delta)) {
-				action.onComplete();
+				action.complete();
 				ActionPools.free(actions.removeIndex(i));
 			}
 		}
@@ -117,6 +120,7 @@ public class ActionManager {
 		action.setPause(value);
 	}
 	
+	//TODO use a better name. Release, PoolAllAction etc
 	/**
 	 * Pools all actions held. Running actions will be killed.
 	 */

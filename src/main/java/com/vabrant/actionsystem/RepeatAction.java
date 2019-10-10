@@ -70,9 +70,9 @@ public class RepeatAction extends Action<RepeatAction> {
 	}
 	
 	@Override
-	protected void onComplete() {
-		super.onComplete();
-		if(action != null) action.onComplete();
+	protected void complete() {
+		super.complete();
+		if(action != null) action.complete();
 	}
 	
 	@Override

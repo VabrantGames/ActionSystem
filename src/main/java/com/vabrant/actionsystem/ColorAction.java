@@ -59,8 +59,6 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	private int type = -1;
 	
 	private boolean setupAction = true;
-	private float startHue;
-	private float endHue;
 	private float[] startHSBA = new float[4];
 	private float[] endHSBA = new float[4];
 	private Color startColor = new Color(Color.WHITE);
@@ -81,7 +79,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	public void changeHue(float hue) {
 		type = HUE;
-		this.endHue = hue / 360f;
+		endHSBA[0] = hue / 360f;
 	}
 	
 //	public void changeSaturation(float saturation) {
@@ -116,7 +114,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 				percentable.getColor().set(endColor);
 				break;
 			case HUE:
-				float hue = startHue + (endHue - startHue) * percent;
+				float hue = startHSBA[0] + (endHSBA[0] - startHSBA[0]) * percent;
 				HSBToRGB(endColor, hue * 360, 1f, 1f, 1);
 				percentable.getColor().set(endColor);
 				break;
@@ -148,7 +146,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 					break;
 				case HUE:
 					startColor.set(percentable.getColor());
-					startHue = getHue(startColor) / 360f;
+					startHSBA[0] = getHue(startColor) / 360;
 					break;
 			}
 		}
@@ -159,12 +157,27 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		super.end();
 		setupAction = false;
 	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		setupAction = true;
+		startColor.set(Color.WHITE);
+		endColor.set(Color.WHITE);
+		type = -1;
+		startHSBA[0] = 0;
+		startHSBA[1] = 0;
+		startHSBA[2] = 0;
+		startHSBA[3] = 0;
+		endHSBA[0] = 0;
+		endHSBA[1] = 0;
+		endHSBA[2] = 0;
+		endHSBA[3] = 0;
+	}
 
 	@Override
 	public void reset() {
 		super.reset();
-		startHue = 0;
-		endHue = 0;
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);

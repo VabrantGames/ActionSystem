@@ -102,6 +102,18 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	}
 	
 	@Override
+	public void clear() {
+		super.clear();
+		type = -1;
+		setupRotation = true;
+		cap = false;
+		start = 0;
+		end = 0;
+		byAmount = 0;
+		restartRotateByFromEnd = false;
+	}
+	
+	@Override
 	public void reset() {
 		super.reset();
 		type = -1;

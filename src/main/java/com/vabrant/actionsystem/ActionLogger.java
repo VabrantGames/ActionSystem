@@ -34,6 +34,8 @@ public class ActionLogger {
 		soloLogger = logger;
 	}
 	
+	private static final String EMPTY_STRING = ""; 
+	
 	private String actionName;
 	private String className;
 	private int level;
@@ -57,6 +59,14 @@ public class ActionLogger {
 		STRING_BUILDER.append(actionName);
 		STRING_BUILDER.append(')');
 		this.actionName = STRING_BUILDER.toString();
+	}
+	
+	public String getClassName() {
+		return className;
+	}
+	
+	public String getActionName() {
+		return actionName == null ? EMPTY_STRING : actionName;
 	}
 	
 	public void clearActionName() {

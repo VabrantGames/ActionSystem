@@ -138,11 +138,21 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
-	protected void onComplete() {
-		super.onComplete();
+	protected void complete() {
+		super.complete();
 		for(int i = 0; i < actions.size; i++) {
-			actions.get(i).onComplete();
+			actions.get(i).complete();
 		}
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		actions.clear();
+		offset = 0;
+		index = 0;
+		timer = 0;
+		restartSequenceActions = false;
 	}
 	
 	@Override

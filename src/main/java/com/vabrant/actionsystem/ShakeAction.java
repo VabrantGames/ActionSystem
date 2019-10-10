@@ -119,6 +119,16 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		percentable.setShakeY(0);
 		percentable.setShakeAngle(0);
 	}
+	 
+	 @Override
+	public void clear() {
+		super.clear();
+		x = 0;
+		y = 0;
+		angle = 0;
+		usePercent = false;
+		type = -1;
+	}
 	
 	@Override
 	public void reset() {

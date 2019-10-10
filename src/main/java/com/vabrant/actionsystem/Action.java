@@ -12,6 +12,7 @@ public class Action<T extends Action> implements Poolable{
 	//TODO still needed?
 	private boolean hasBeenPooled;
 	
+	protected boolean isCompleted;
 	protected boolean isFinished;
 	protected boolean isRunning;
 	protected boolean isPaused;
@@ -135,15 +136,18 @@ public class Action<T extends Action> implements Poolable{
 	public boolean update(float delta) {
 		return false;
 	}
-	
+
 	@Override
 	public void reset() {
 		if(logger != null) logger.info("Reset");
+		
+		//TODO maybe use a flag for when this needs to be reset so it isn't used by accident with unmanaged actions
 		if(isManaged) actionManager = null;
 		preActions.clear();
 		listeners.clear();
 		pauseCondition = null;
 		name = null;
+		isCompleted = false;
 		isPaused = false;
 		isRunning = false;
 		isFinished = false;
@@ -152,6 +156,7 @@ public class Action<T extends Action> implements Poolable{
 	
 	public void clear() {
 		if(logger != null) logger.info("Clear");		
+		isCompleted = false;
 		isRunning = false;
 		isFinished = false;
 		isPaused = false;
@@ -161,19 +166,20 @@ public class Action<T extends Action> implements Poolable{
 		if(logger != null) logger.info("Start");		
 		
 		if(!isManaged()) {
-			if(actionManager == null) throw new GdxRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
+			if(actionManager == null) throw new ActionSystemRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
 			actionManager.startUnmanagedAction(this);
 		}
 		
 		if(preActions.size > 0) {
 			//exception will be thrown when if the action is managed and start is called
-			//TODO add exception message
+			//TODO add exception message. Can this be null?
 			if(actionManager == null) throw new ActionSystemRuntimeException("");
 			for(int i = preActions.size - 1; i >= 0; i--) {
 				actionManager.addAction(preActions.pop());
 			}
 		}
 		
+		isCompleted = false;
 		isRunning = true;
 		isFinished = false;
 		
@@ -183,6 +189,7 @@ public class Action<T extends Action> implements Poolable{
 	}
 	
 	public void restart() {
+		if(isCompleted) return;
 		if(logger != null) logger.info("Restart");		
 
 		isRunning = true;
@@ -209,10 +216,6 @@ public class Action<T extends Action> implements Poolable{
 		}
 	}
 	
-	protected void onComplete() {
-		if(logger != null) logger.info("Completed");	
-	}
-	
 	/**
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
@@ -227,6 +230,11 @@ public class Action<T extends Action> implements Poolable{
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);
 		}
+	}
+
+	protected void complete() {
+		if(logger != null) logger.info("Completed");	
+		isCompleted = true;
 	}
 	
 	public static <T extends Action> T getAction(Class<T> c) {

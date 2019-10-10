@@ -201,6 +201,23 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	}
 	
 	@Override
+	public void clear() {
+		super.clear();
+		restartScaleXByFromEnd = false;
+		restartScaleYByFromEnd = false;
+		setupX = true;
+		setupY = true;
+		xAmount = 0;
+		yAmount = 0;
+		xStart = 0;
+		xEnd = 0;
+		yStart = 0;
+		yEnd = 0;
+		xType = -1;
+		yType = -1;
+	}
+	
+	@Override
 	public void reset() {
 		super.reset();
 		restartScaleXByFromEnd = false;

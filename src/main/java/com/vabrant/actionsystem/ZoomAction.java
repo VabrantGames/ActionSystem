@@ -95,6 +95,17 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 	
 	@Override
+	public void clear() {
+		super.clear();
+		setupZoom = true;
+		start = 0;
+		end = 0;
+		amount = 0;
+		restartZoomByFromEnd = false;
+		type = -1;
+	}
+	
+	@Override
 	public void reset() {
 		super.reset();
 		setupZoom = true;

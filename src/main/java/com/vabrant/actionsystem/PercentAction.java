@@ -18,10 +18,11 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 		return percent;
 	}
 	
-	public void set(T percentable, float duration, Interpolation interpolation) {
+	public S set(T percentable, float duration, Interpolation interpolation) {
 		setDuration(duration);
 		this.percentable = percentable;
 		this.interpolation = interpolation;
+		return (S)this;
 	}
 	
 	public S reverseBackToStart(boolean reverseBackToStart) {
@@ -32,6 +33,19 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	public S setReverse(boolean reverse) {
 		this.reverse = reverse;
 		return (S)this;
+	}
+	
+	public S setInterpolation(Interpolation interpolation) {
+		this.interpolation = interpolation;
+		return (S)this;
+	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		reverseBackToStart = false;
+		interpolation = null;
+		percent = 0;
 	}
 
 	@Override
