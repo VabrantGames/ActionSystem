@@ -41,11 +41,12 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	}
 	
 	@Override
-	public void clear() {
+	public S clear() {
 		super.clear();
 		reverseBackToStart = false;
 		interpolation = null;
 		percent = 0;
+		return (S)this;
 	}
 
 	@Override
@@ -58,9 +59,10 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	}
 
 	@Override
-	public void end() {
+	public S end() {
 		percent(percent);
 		super.end();
+		return (S)this;
 	}
 	
 	@Override

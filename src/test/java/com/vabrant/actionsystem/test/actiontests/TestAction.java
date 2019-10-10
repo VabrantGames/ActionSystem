@@ -34,9 +34,10 @@ public class TestAction extends Action {
 	}
 	
 	@Override
-	public void restart() {
+	public Action restart() {
 		super.restart();
 		timer = 0;
+		return this;
 	}
 
 	@Override

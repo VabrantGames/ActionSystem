@@ -83,26 +83,29 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	}
 	
 	@Override
-	public void start() {
+	public RotateAction start() {
 		super.start();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public RotateAction restart() {
 		super.restart();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void end() {
+	public RotateAction end() {
 		super.end();
 		if(type != ROTATE_BY || type == ROTATE_BY && !restartRotateByFromEnd) setupRotation = false;
 		if(cap) percentable.setRotation(percentable.getRotation() % 360f);
+		return this;
 	}
 	
 	@Override
-	public void clear() {
+	public RotateAction clear() {
 		super.clear();
 		type = -1;
 		setupRotation = true;
@@ -111,6 +114,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		end = 0;
 		byAmount = 0;
 		restartRotateByFromEnd = false;
+		return this;
 	}
 	
 	@Override

@@ -34,15 +34,17 @@ public class TimeAction<T extends Action> extends Action<T> {
 	}
 
 	@Override
-	public void start() {
+	public T start() {
 		super.start();
 		timer = 0;
+		return (T)this;
 	}
 	
 	@Override
-	public void restart() {
+	public T restart() {
 		super.restart();
 		timer = 0;
+		return (T)this;
 	}
 	
 	@Override
@@ -53,10 +55,11 @@ public class TimeAction<T extends Action> extends Action<T> {
 	}
 	
 	@Override
-	public void clear() {
+	public T clear() {
 		super.clear();
 		timer = 0;
 		duration = 0;
+		return (T)this;
 	}
 
 }

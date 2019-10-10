@@ -126,7 +126,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	@Override
-	public void start() {
+	public ColorAction start() {
 		super.start();
 		
 		if(setupAction) {
@@ -150,16 +150,18 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 					break;
 			}
 		}
+		return this;
 	}
 	
 	@Override
-	public void end() {
+	public ColorAction end() {
 		super.end();
 		setupAction = false;
+		return this;
 	}
 	
 	@Override
-	public void clear() {
+	public ColorAction clear() {
 		super.clear();
 		setupAction = true;
 		startColor.set(Color.WHITE);
@@ -173,6 +175,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		endHSBA[1] = 0;
 		endHSBA[2] = 0;
 		endHSBA[3] = 0;
+		return this;
 	}
 
 	@Override

@@ -182,26 +182,29 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	}
 	
 	@Override
-	public void start() {
+	public ScaleAction start() {
 		super.start();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public ScaleAction restart() {
 		super.restart();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void end() {
+	public ScaleAction end() {
 		super.end();
 		if(xType != SCALE_BY || xType == SCALE_BY && !restartScaleXByFromEnd) setupX = false;
 		if(yType != SCALE_BY || yType == SCALE_BY && !restartScaleYByFromEnd) setupY = false;
+		return this;
 	}
 	
 	@Override
-	public void clear() {
+	public ScaleAction clear() {
 		super.clear();
 		restartScaleXByFromEnd = false;
 		restartScaleYByFromEnd = false;
@@ -215,6 +218,7 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		yEnd = 0;
 		xType = -1;
 		yType = -1;
+		return this;
 	}
 	
 	@Override

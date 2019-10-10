@@ -51,22 +51,25 @@ public class RepeatAction extends Action<RepeatAction> {
 	}
 	
 	@Override
-	public void end() {
+	public RepeatAction end() {
 		super.end();
 		if(action != null) action.end();
+		return this;
 	}
 	
 	@Override
-	public void kill() {
+	public RepeatAction kill() {
 		super.kill();
 		if(action != null) action.kill();
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public RepeatAction restart() {
 		super.restart();
 		count = 0;
 		if(action != null) action.restart();
+		return this;
 	}
 	
 	@Override

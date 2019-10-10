@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+@SuppressWarnings("unchecked")
 public class Action<T extends Action> implements Poolable{
 	
 	boolean hasBeenReset;
@@ -154,15 +155,16 @@ public class Action<T extends Action> implements Poolable{
 		logger.clearActionName();
 	}
 	
-	public void clear() {
+	public T clear() {
 		if(logger != null) logger.info("Clear");		
 		isCompleted = false;
 		isRunning = false;
 		isFinished = false;
 		isPaused = false;
+		return (T)this;
 	}
 	
-	public void start() {
+	public T start() {
 		if(logger != null) logger.info("Start");		
 		
 		if(!isManaged()) {
@@ -186,10 +188,11 @@ public class Action<T extends Action> implements Poolable{
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionStart(this);
 		}
+		return (T)this;
 	}
 	
-	public void restart() {
-		if(isCompleted) return;
+	public T restart() {
+		if(isCompleted) return (T)this;
 		if(logger != null) logger.info("Restart");		
 
 		isRunning = true;
@@ -198,13 +201,14 @@ public class Action<T extends Action> implements Poolable{
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionRestart(this);
 		}
+		return (T)this;
 	}
 	
 	/**
 	 * Ends the action as if it's completed.
 	 */
-	public void end() {
-		if(!isRunning) return;
+	public T end() {
+		if(!isRunning) return (T)this;
 		
 		if(logger != null) logger.info("End");		
 		
@@ -214,13 +218,14 @@ public class Action<T extends Action> implements Poolable{
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd(this);
 		}
+		return (T)this;
 	}
 	
 	/**
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
-	public void kill() {
-		if(!isRunning) return;
+	public T kill() {
+		if(!isRunning) return (T)this;
 		
 		if(logger != null) logger.info("Kill");		
 		
@@ -230,6 +235,7 @@ public class Action<T extends Action> implements Poolable{
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);
 		}
+		return(T)this;
 	}
 
 	protected void complete() {

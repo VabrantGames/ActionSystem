@@ -105,23 +105,25 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
-	public void end() {
+	public GroupAction end() {
 		super.end();
 		for(int i = 0, size = actions.size; i < size; i++) {
 			actions.get(i).end();
 		}
+		return this;
 	}
 	
 	@Override
-	public void kill() {
+	public GroupAction kill() {
 		super.kill();
 		for(int i = 0, size = actions.size; i < size; i++) {
 			actions.get(i).kill();
 		}
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public GroupAction restart() {
 		super.restart();
 		index = 0;
 		timer = 0;
@@ -135,6 +137,7 @@ public class GroupAction extends Action<GroupAction> {
 			restartSequenceActions = true;
 			if(actions.size > 0) actions.first().restart();
 		}
+		return this;
 	}
 	
 	@Override
@@ -146,13 +149,14 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
-	public void clear() {
+	public GroupAction clear() {
 		super.clear();
 		actions.clear();
 		offset = 0;
 		index = 0;
 		timer = 0;
 		restartSequenceActions = false;
+		return this;
 	}
 	
 	@Override

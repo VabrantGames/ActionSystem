@@ -195,26 +195,29 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 	
 	@Override
-	public void start() {
+	public MoveAction start() {
 		super.start();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public MoveAction restart() {
 		super.restart();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void end() {
+	public MoveAction end() {
 		super.end();
 		if(xType != MOVE_BY || xType == MOVE_BY && !restartMoveXByFromEnd) setupX = false;
 		if(yType != MOVE_BY || yType == MOVE_BY && !restartMoveYByFromEnd) setupY = false;
+		return this;
 	}
 
 	@Override
-	public void clear() {
+	public MoveAction clear() {
 		super.clear();
 		xAmount = 0;
 		yAmount = 0;
@@ -228,6 +231,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		restartMoveYByFromEnd = false;
 		xType = -1;
 		yType = -1;
+		return this;
 	}
 	
 	@Override

@@ -77,25 +77,28 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 	
 	@Override
-	public void start() {
+	public ZoomAction start() {
 		super.start();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void restart() {
+	public ZoomAction restart() {
 		super.restart();
 		setup();
+		return this;
 	}
 	
 	@Override
-	public void end() {
+	public ZoomAction end() {
 		super.end();
 		if(type != ZOOM_BY || type == ZOOM_BY && !restartZoomByFromEnd) setupZoom = false;
+		return this;
 	}
 	
 	@Override
-	public void clear() {
+	public ZoomAction clear() {
 		super.clear();
 		setupZoom = true;
 		start = 0;
@@ -103,6 +106,7 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		amount = 0;
 		restartZoomByFromEnd = false;
 		type = -1;
+		return this;
 	}
 	
 	@Override
