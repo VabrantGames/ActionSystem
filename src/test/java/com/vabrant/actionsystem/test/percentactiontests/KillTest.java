@@ -80,5 +80,9 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 	@Override
 	public void actionRestart(Action a) {
 	}
+	
+	@Override
+	public void actionComplete(Action a) {
+	}
 
 }

@@ -5,4 +5,5 @@ public interface ActionListener {
 	public void actionEnd(Action a);
 	public void actionKill(Action a);
 	public void actionRestart(Action a);
+	public void actionComplete(Action a);
 }

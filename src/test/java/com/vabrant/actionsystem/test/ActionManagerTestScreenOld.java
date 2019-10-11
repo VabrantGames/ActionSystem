@@ -58,7 +58,7 @@ public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 		
 		@Override
 		public void runTest2() {
-			testClass.actionManager.dispose();
+			testClass.actionManager.freeAll();
 			testClass = null;
 		}
 		

@@ -17,5 +17,9 @@ public class ActionAdapter implements ActionListener {
 	@Override
 	public void actionRestart(Action a) {
 	}
+	
+	@Override
+	public void actionComplete(Action a) {
+	}
 
 }

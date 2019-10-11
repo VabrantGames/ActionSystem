@@ -8,6 +8,7 @@ public class ActionTestsSelectScreen extends TestSelectScreen {
 	Class[] tests = {
 			UnmanagedTest.class,
 			ChainingTest.class,
+			PreActionsTest.class,
 	};
 	
 	public ActionTestsSelectScreen(TestApplication app) {

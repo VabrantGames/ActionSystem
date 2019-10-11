@@ -49,7 +49,7 @@ public abstract class ActionSystemTestScreen extends TestScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		actionManager.dispose();
+		actionManager.freeAll();
 	}
 
 }

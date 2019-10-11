@@ -102,7 +102,7 @@ public class ActionManager {
 		for(int i = 0, size = actions.size; i < size; i++) {
 			Action action = actions.get(i);
 			if(action == null) continue;
-			action.setPause(true);
+			action.pause();
 		}
 	}
 	
@@ -110,21 +110,23 @@ public class ActionManager {
 		for(int i = 0, size = actions.size; i < size; i++) {
 			Action action = actions.get(i);
 			if(action == null) continue;
-			action.setPause(false);
+			action.resume();
 		}
 	}
 	
-	public void pauseAction(String name, boolean value) {
+	public void pauseAction(String name) {
 		Action action = getActionByName(name);
 		if(action == null) return;
-		action.setPause(value);
+		action.pause();
 	}
 	
-	//TODO use a better name. Release, PoolAllAction etc
-	/**
-	 * Pools all actions held. Running actions will be killed.
-	 */
-	public void dispose() {
+	public void resumeAction(String name) {
+		Action action = getActionByName(name);
+		if(action == null) return;
+		action.resume();
+	}
+	
+	public void freeAll() {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			ActionPools.free(actions.removeIndex(i));
 		}

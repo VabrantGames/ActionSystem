@@ -54,5 +54,9 @@ public class ParallelTest extends ActionSystemTestScreen implements ActionListen
 	public void actionRestart(Action a) {
 		log(a.getName(), "Restart");
 	}
+	
+	@Override
+	public void actionComplete(Action a) {
+	}
 
 }

@@ -55,5 +55,9 @@ public class RepeatedSequenceTest extends ActionSystemTestScreen implements Acti
 	public void actionRestart(Action a) {
 		log(a.getName(), "Restart");
 	}
+	
+	@Override
+	public void actionComplete(Action a) {
+	}
 
 }

@@ -97,17 +97,15 @@ public class Action<T extends Action> implements Poolable{
 	public String getName() {
 		return name;
 	}
-
-	public void setPause(boolean pause) {
-		if(!isRunning) return;
-		if(pause) {
-			if(isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
-			isPaused = pause;
-		}
-		else {
-			if(!isPaused || pauseCondition != null && !pauseCondition.shouldResume()) return;
-			isPaused = false;
-		}
+	
+	public void pause() {
+		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
+		isPaused = true;
+	}
+	
+	public void resume() {
+		if(!isRunning || !isPaused || pauseCondition != null && !pauseCondition.shouldResume()) return;
+		isPaused = false;
 	}
 	
 	public boolean isPaused() {

@@ -67,6 +67,10 @@ public class RestartScaleYByFromEndTest extends ActionSystemTestScreen {
 			public void actionRestart(Action a) {
 				log(a.getName(), "Restart");
 			}
+			
+			@Override
+			public void actionComplete(Action a) {
+			}
 		};
 	}
 
