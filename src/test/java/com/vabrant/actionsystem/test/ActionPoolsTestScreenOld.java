@@ -17,7 +17,7 @@ public class ActionPoolsTestScreenOld extends ActionSystemTestScreen {
 	public ActionPoolsTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		ActionPools.logger.setLevel(Logger.DEBUG);
+//		ActionPools.logger.setLevel(Logger.DEBUG);
 	}
 	
 	@Override

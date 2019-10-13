@@ -24,7 +24,7 @@ public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 	public ActionManagerTestScreenOld(TestSelectScreen screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		ActionPools.logger.setLevel(Logger.DEBUG);
+//		ActionPools.logger.setLevel(Logger.DEBUG);
 		testObject = new ActionSystemTestObject();
 	}
 	

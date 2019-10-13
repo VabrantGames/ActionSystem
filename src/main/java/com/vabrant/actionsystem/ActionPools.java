@@ -1,8 +1,6 @@
 package com.vabrant.actionsystem;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
@@ -11,7 +9,12 @@ public class ActionPools {
 	
 	private static final int defaultPoolMaxCapacity = 100;
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
-	public static final Logger logger = new Logger(ActionPools.class.getSimpleName(), Logger.NONE);
+	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.NONE);
+	
+	//DEBUG remove
+	static {
+		logger.setLevel(ActionLogger.DEBUG);
+	}
 
 	/**
 	 * Where you want the pool to be filled to.
@@ -22,7 +25,7 @@ public class ActionPools {
 		if(amount == 0) throw new IllegalArgumentException("Fill amount can't be 0.");
 		
 		Pool<T> pool = get(type);
-		logger.debug("AmountToAdd: " + (amount - pool.getFree()));
+		if(logger != null) logger.debug("AmountToAdd", Integer.toString(amount - pool.getFree()));
 		if(amount > pool.max) throw new IllegalArgumentException("Fill amount is greater than the Pool max.");
 		if(pool.getFree() >= amount) return;
 		
@@ -77,12 +80,26 @@ public class ActionPools {
 		freeAction(action);
 	}
 	
-	private static void freeAction(Action action) {
+	private static void freeAction(Action<?> action) {
 		if(action.hasBeenPooled() || !action.isManaged()) return;
+		
+		if(action.getPreActions().size > 0) {
+			for(int i = action.getPreActions().size - 1; i >= 0; i--) {
+				free(action.getPreActions().pop());
+			}
+		}
+		
+		if(action.getPostActions().size > 0) {
+			for(int i = action.getPostActions().size - 1; i >= 0; i--) {
+				free(action.getPostActions().pop());
+			}
+		}
+		
+		
  		Pool pool = pools.get(action.getClass());
 		if(pool == null) return;
 		action.setPooled(true);
-		logger.info("(" + action.getClass().getSimpleName() + ")" + (action.getName() != null ? action.getName() : "") + " - pooled");	
+		if(logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 		pool.free(action);
 	}
 	

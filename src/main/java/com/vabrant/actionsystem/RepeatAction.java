@@ -26,17 +26,23 @@ public class RepeatAction extends Action<RepeatAction> {
 		return this;
 	}
 	
+	@Override
+	void setRootAction(Action root) {
+		super.setRootAction(root);
+		if(action != null) action.setRootAction(root);
+	}
+	
 	public boolean update(float delta) {
 		if(isFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
 		if(action.update(delta)) {
-			
 			if(!isContinuous) {
 				count++;
 			}
 			if(isContinuous || count <= amount) {
-				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(count));
+				if(logger != null && !isContinuous) logger.debug("Repeat Count", Integer.toString(count));
+				lastCycle();
 				action.restart();
 			}
 			else {
@@ -44,6 +50,15 @@ public class RepeatAction extends Action<RepeatAction> {
 			}
 		}
 		return isFinished;
+	}
+	
+	@Override
+	protected void lastCycle() {
+		if(!isContinuous) {
+			if(count == amount || amount == 0) {
+				super.lastCycle();
+			}
+		}
 	}
 	
 	public Action getRepeatAction() {
@@ -71,13 +86,7 @@ public class RepeatAction extends Action<RepeatAction> {
 		if(action != null) action.restart();
 		return this;
 	}
-	
-	@Override
-	protected void complete() {
-		super.complete();
-		if(action != null) action.complete();
-	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();

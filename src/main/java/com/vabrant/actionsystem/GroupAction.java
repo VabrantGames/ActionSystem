@@ -59,6 +59,14 @@ public class GroupAction extends Action<GroupAction> {
 		actions.add(action);
 		return this;
 	}
+	
+	@Override
+	void setRootAction(Action root) {
+		super.setRootAction(root);
+		for(int i = 0; i < actions.size; i++) {
+			actions.get(i).setRootAction(root);
+		}
+	}
 
 	@Override
 	public boolean update(float delta) {
@@ -123,6 +131,13 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
+	public GroupAction start() {
+		super.start();
+//		lastCycle();
+		return this;
+	}
+	
+	@Override
 	public GroupAction restart() {
 		super.restart();
 		index = 0;
@@ -139,15 +154,7 @@ public class GroupAction extends Action<GroupAction> {
 		}
 		return this;
 	}
-	
-	@Override
-	protected void complete() {
-		super.complete();
-		for(int i = 0; i < actions.size; i++) {
-			actions.get(i).complete();
-		}
-	}
-	
+
 	@Override
 	public GroupAction clear() {
 		super.clear();

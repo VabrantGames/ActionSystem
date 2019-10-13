@@ -9,6 +9,9 @@ public class ActionTestsSelectScreen extends TestSelectScreen {
 			UnmanagedTest.class,
 			ChainingTest.class,
 			PreActionsTest.class,
+			PreActionsEarlyEndTest.class,
+			PostActionsTest.class,
+			ActionListenerTest.class,
 	};
 	
 	public ActionTestsSelectScreen(TestApplication app) {

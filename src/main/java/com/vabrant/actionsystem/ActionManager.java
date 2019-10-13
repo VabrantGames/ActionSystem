@@ -40,7 +40,8 @@ public class ActionManager {
 	}
 	
 	public void addUnmanagedAction(Action action) {
-		if(action.isManaged()) throw new ActionSystemRuntimeException("Action is not unmanaged.");
+		if(action == null) throw new IllegalArgumentException("Action is null");
+		if(action.isManaged()) throw new IllegalArgumentException("Action is not unmanaged.");
 		action.setActionManager(this);
 		unmanagedActions.add(action);
 		if(logger != null) logger.info("Unmanaged action added");
@@ -53,7 +54,10 @@ public class ActionManager {
 	}
 	
 	public void addAction(Action action) {
-		if(action.preActions.size > 0) action.setActionManager(this);
+		if(action == null) throw new IllegalArgumentException("Action is null");
+		action.setRoot();
+		action.setRootAction(action);
+		action.setActionManager(this);
 		actions.add(action);
 		if(logger != null) logger.debug(action.getLogger().getClassName() + " added");
 	}
@@ -62,7 +66,6 @@ public class ActionManager {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
 			if(action.update(delta)) {
-				action.complete();
 				ActionPools.free(actions.removeIndex(i));
 			}
 		}
