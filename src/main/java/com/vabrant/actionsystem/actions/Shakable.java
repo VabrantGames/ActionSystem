@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 public interface Shakable extends Percentable{
 	public void setShakeX(float x);

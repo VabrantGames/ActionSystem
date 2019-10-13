@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;

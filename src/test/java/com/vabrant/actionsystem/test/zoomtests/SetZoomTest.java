@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem.test.zoomtests;
 
-import com.vabrant.actionsystem.ZoomAction;
+import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

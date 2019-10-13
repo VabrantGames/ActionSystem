@@ -3,7 +3,7 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.vabrant.actionsystem.ActionManager;
+import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.testbase.TestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

@@ -2,8 +2,8 @@ package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.vabrant.actionsystem.Colorable;
-import com.vabrant.actionsystem.Scalable;
+import com.vabrant.actionsystem.actions.Colorable;
+import com.vabrant.actionsystem.actions.Scalable;
 
 public class FontGlyph implements Scalable, Colorable{
 	

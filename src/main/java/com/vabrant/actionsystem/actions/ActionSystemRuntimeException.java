@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 public class ActionSystemRuntimeException extends RuntimeException {
 	

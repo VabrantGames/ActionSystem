@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Keys;
 import com.badlogic.gdx.utils.ObjectMap.Values;
-import com.vabrant.actionsystem.Movable;
+import com.vabrant.actionsystem.actions.Movable;
 
 public class Font implements Movable{
 	

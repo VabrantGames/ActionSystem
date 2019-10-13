@@ -5,12 +5,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.ActionManager;
-import com.vabrant.actionsystem.ActionPools;
-import com.vabrant.actionsystem.DelayAction;
-import com.vabrant.actionsystem.GroupAction;
-import com.vabrant.actionsystem.MoveAction;
-import com.vabrant.actionsystem.RepeatAction;
+import com.vabrant.actionsystem.actions.ActionManager;
+import com.vabrant.actionsystem.actions.ActionPools;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.MoveAction;
+import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.testbase.BaseScreen;
 import com.vabrant.testbase.TestApplication;
 

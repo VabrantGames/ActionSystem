@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem.test.scaletests;
 
-import com.vabrant.actionsystem.ScaleAction;
+import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 public class RepeatAction extends Action<RepeatAction> {
 

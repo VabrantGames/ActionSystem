@@ -1,7 +1,7 @@
 package com.vabrant.actionsystem.test.performancetests;
 
 import com.badlogic.gdx.graphics.Color;
-import com.vabrant.actionsystem.ColorAction;
+import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

@@ -3,12 +3,12 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.vabrant.actionsystem.Colorable;
-import com.vabrant.actionsystem.Movable;
-import com.vabrant.actionsystem.Rotatable;
-import com.vabrant.actionsystem.Scalable;
-import com.vabrant.actionsystem.Shakable;
-import com.vabrant.actionsystem.Zoomable;
+import com.vabrant.actionsystem.actions.Colorable;
+import com.vabrant.actionsystem.actions.Movable;
+import com.vabrant.actionsystem.actions.Rotatable;
+import com.vabrant.actionsystem.actions.Scalable;
+import com.vabrant.actionsystem.actions.Shakable;
+import com.vabrant.actionsystem.actions.Zoomable;
 
 public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
 	

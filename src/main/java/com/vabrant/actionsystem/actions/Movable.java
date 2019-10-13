@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 public interface Movable extends Percentable{
 	public void setX(float x);

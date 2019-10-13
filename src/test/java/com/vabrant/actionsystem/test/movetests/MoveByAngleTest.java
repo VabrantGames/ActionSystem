@@ -1,10 +1,11 @@
 package com.vabrant.actionsystem.test.movetests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.DelayAction;
-import com.vabrant.actionsystem.GroupAction;
-import com.vabrant.actionsystem.MoveAction;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
+import com.vabrant.templates.ActionTemplate;
 import com.vabrant.testbase.TestSelectScreen;
 
 public class MoveByAngleTest extends ActionSystemTestScreen {

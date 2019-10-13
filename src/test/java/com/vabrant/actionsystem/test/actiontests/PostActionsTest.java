@@ -1,11 +1,11 @@
 package com.vabrant.actionsystem.test.actiontests;
 
-import com.vabrant.actionsystem.Action;
-import com.vabrant.actionsystem.ActionAdapter;
-import com.vabrant.actionsystem.ActionListener;
-import com.vabrant.actionsystem.DelayAction;
-import com.vabrant.actionsystem.GroupAction;
-import com.vabrant.actionsystem.RepeatAction;
+import com.vabrant.actionsystem.actions.Action;
+import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

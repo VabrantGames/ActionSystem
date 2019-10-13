@@ -3,11 +3,11 @@ package com.vabrant.actionsystem.test.repeattests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.Action;
-import com.vabrant.actionsystem.ActionAdapter;
-import com.vabrant.actionsystem.ActionListener;
-import com.vabrant.actionsystem.RepeatAction;
-import com.vabrant.actionsystem.RotateAction;
+import com.vabrant.actionsystem.actions.Action;
+import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.RepeatAction;
+import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

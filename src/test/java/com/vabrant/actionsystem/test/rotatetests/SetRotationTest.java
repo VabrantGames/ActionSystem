@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem.test.rotatetests;
 
-import com.vabrant.actionsystem.RotateAction;
+import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

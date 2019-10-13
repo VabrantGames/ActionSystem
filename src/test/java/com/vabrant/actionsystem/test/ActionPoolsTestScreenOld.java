@@ -3,8 +3,8 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Logger;
-import com.vabrant.actionsystem.ActionPools;
-import com.vabrant.actionsystem.MoveAction;
+import com.vabrant.actionsystem.actions.ActionPools;
+import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.testbase.Test;
 import com.vabrant.testbase.TestSelectScreen;
 

@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem;
+package com.vabrant.actionsystem.actions;
 
 public interface Scalable extends Percentable{
 	public void setScaleX(float scaleX);

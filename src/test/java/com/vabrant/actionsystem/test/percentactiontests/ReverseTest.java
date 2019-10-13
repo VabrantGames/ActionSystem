@@ -1,7 +1,7 @@
 package com.vabrant.actionsystem.test.percentactiontests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.MoveAction;
+import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

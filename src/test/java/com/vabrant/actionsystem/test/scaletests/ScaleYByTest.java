@@ -1,8 +1,8 @@
 package com.vabrant.actionsystem.test.scaletests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.GroupAction;
-import com.vabrant.actionsystem.ScaleAction;
+import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

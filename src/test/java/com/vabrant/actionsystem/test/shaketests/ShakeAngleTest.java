@@ -1,7 +1,7 @@
 package com.vabrant.actionsystem.test.shaketests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.ShakeAction;
+import com.vabrant.actionsystem.actions.ShakeAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

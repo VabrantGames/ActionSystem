@@ -1,10 +1,10 @@
 package com.vabrant.actionsystem.test.repeattests;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.DelayAction;
-import com.vabrant.actionsystem.GroupAction;
-import com.vabrant.actionsystem.RepeatAction;
-import com.vabrant.actionsystem.RotateAction;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.RepeatAction;
+import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

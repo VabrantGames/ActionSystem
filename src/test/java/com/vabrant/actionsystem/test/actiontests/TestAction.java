@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem.test.actiontests;
 
-import com.vabrant.actionsystem.Action;
+import com.vabrant.actionsystem.actions.Action;
 
 public class TestAction extends Action {
 	
