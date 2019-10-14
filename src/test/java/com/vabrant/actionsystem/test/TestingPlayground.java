@@ -1,32 +1,36 @@
 package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
+import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.testbase.BaseScreen;
-import com.vabrant.testbase.TestApplication;
+import com.vabrant.testbase.TestSelectScreen;
 
-public class TestingPlayground extends BaseScreen{
+public class TestingPlayground extends ActionSystemTestScreen{
 	
-	private ActionManager actionManager;
-	private ActionSystemTestObject testObject;
-	
-	public TestingPlayground(TestApplication app) {
+	public TestingPlayground(TestSelectScreen app) {
 		super(app);
-		
-		debug = true;
-		actionManager = new ActionManager(20);
-		testObject = new ActionSystemTestObject();
+		createTestObject();
 		testObject.setX(100);
 		testObject.setY(100);
+		testObject.setSize(100, 40);
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		testObject.setX(screenCenterX - (testObject.width / 2));
+		testObject.setY(screenCenterY - (testObject.height / 2));
+	}
+	
+	@Override
+	public void runTest() {
+		
 	}
 	
 	@Override
@@ -81,41 +85,5 @@ public class TestingPlayground extends BaseScreen{
 		
 		actionManager.addAction(repeat);
 	}
-	
-	public void actions() {
-//		MoveAction first = Pools.obtain(MoveAction.class);
-//		first.moveYBy(testObject, 50, true);
-//		first.set(0.5f, false, Interpolation.linear);
-//		
-//		MoveAction second = Pools.obtain(MoveAction.class);
-//		second.moveXBy(testObject, 50, true);
-//		second.set(0.5f, false, Interpolation.linear);
-//		
-//		MoveAction third = Pools.obtain(MoveAction.class);
-//		third.moveYBy(testObject, 50, true);
-//		third.set(0.5f, false, Interpolation.linear);
-//		
-//		GroupAction group = Pools.obtain(GroupAction.class);
-//		group.sequence();
-//		group.add(first);
-//		group.add(second);
-//		group.add(third);
-//		
-//		RepeatAction repeat = Pools.obtain(RepeatAction.class);
-//		repeat.set(group);
-//		repeat.setRepeatAmount(1);
-//		
-//		actionsController.addAction(repeat);
-		
-	}
 
-	@Override
-	public void debug(ShapeRenderer renderer) {
-		renderer.set(ShapeType.Filled);
-		renderer.setColor(Color.BLACK);
-		renderer.rect(testObject.getX(), testObject.getY(), 10, 10);
-		
-		renderer.rect(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 20, 20);
-	}
-	
 }

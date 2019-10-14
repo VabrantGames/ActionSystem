@@ -38,6 +38,20 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		return action;
 	}
 	
+	public static ColorAction changeSaturation(Colorable colorable, float endSaturation, float duration, Interpolation interpolation) {
+		ColorAction action = getAction();
+		action.changeSaturation(endSaturation);
+		action.set(colorable, duration, interpolation);
+		return action;
+	}
+	
+	public static ColorAction changeBrightness(Colorable colorable, float endBrightness, float duration, Interpolation interpolation) {
+		ColorAction action = getAction();
+		action.changeBrightness(endBrightness);
+		action.set(colorable, duration, interpolation);
+		return action;
+	}
+	
 	public static ColorAction setColor(Colorable colorable, Color color) {
 		ColorAction action = getAction();
 		action.changeColor(color);
@@ -56,6 +70,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	private static final int HSBA = 1;
 	private static final int ALPHA = 2;
 	private static final int HUE = 3;
+	private static final int SATURATION =  4;
+	private static final int BRIGHTNESS = 5;
 	private int type = -1;
 	
 	private boolean setupAction = true;
@@ -71,7 +87,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	public void changeColor(float hue, float saturation, float brightness, float alpha) {
 		type = HSBA;
-		endHSBA[0] = hue / 360f;
+		endHSBA[0] = hue;
 		endHSBA[1] = saturation;
 		endHSBA[2] = brightness;
 		endHSBA[3] = alpha;
@@ -79,16 +95,18 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	public void changeHue(float hue) {
 		type = HUE;
-		endHSBA[0] = hue / 360f;
+		endHSBA[0] = hue;
 	}
 	
-//	public void changeSaturation(float saturation) {
-//		
-//	}
+	public void changeSaturation(float saturation) {
+		type = SATURATION;
+		endHSBA[1] = saturation;
+	}
 	
-//	public void changeBrightness(float brightness) {
-//		
-//	}
+	public void changeBrightness(float brightness) {
+		type = BRIGHTNESS;
+		endHSBA[2] = brightness;
+	}
 	
 	public void changeAlpha(float endAlpha) {
 		type = ALPHA;
@@ -110,17 +128,27 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 				float hsbaS = startHSBA[1] + (endHSBA[1] - startHSBA[1]) * percent;
 				float hsbaB = startHSBA[2] + (endHSBA[2] - startHSBA[2]) * percent;
 				float hsbaA = startHSBA[3] + (endHSBA[3] - startHSBA[3]) * percent;
-				HSBToRGB(endColor, hsbaH * 360f, hsbaS, hsbaB, hsbaA);
+				HSBToRGB(endColor, hsbaH, hsbaS, hsbaB, hsbaA);
 				percentable.getColor().set(endColor);
 				break;
 			case HUE:
 				float hue = startHSBA[0] + (endHSBA[0] - startHSBA[0]) * percent;
-				HSBToRGB(endColor, hue * 360, 1f, 1f, 1);
+				HSBToRGB(endColor, hue, startHSBA[1], startHSBA[2], startHSBA[3]);
 				percentable.getColor().set(endColor);
 				break;
 			case ALPHA:
-				float aaa = startColor.a + (endColor.a - startColor.a) * percent;
-				percentable.getColor().a = aaa;
+				float alpha = startColor.a + (endColor.a - startColor.a) * percent;
+				percentable.getColor().a = alpha;
+				break;
+			case SATURATION:
+				float saturation = startHSBA[1] + (endHSBA[1] - startHSBA[1]) * percent;
+				HSBToRGB(endColor, startHSBA[0], saturation, startHSBA[2], startHSBA[3]);
+				percentable.getColor().set(endColor);
+				break;
+			case BRIGHTNESS:
+				float brightness = startHSBA[2] + (endHSBA[2] - startHSBA[2]) * percent;
+				HSBToRGB(endColor, startHSBA[0], startHSBA[1], brightness, startHSBA[3]);
+				percentable.getColor().set(endColor);
 				break;
 		}
 	}
@@ -136,7 +164,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 					break;
 				case HSBA:
 					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor) / 360f;
+					startHSBA[0] = getHue(startColor);
 					startHSBA[1] = getSaturation(startColor);
 					startHSBA[2] = getBrightness(startColor);
 					startHSBA[3] = startColor.a;
@@ -146,7 +174,24 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 					break;
 				case HUE:
 					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor) / 360;
+					startHSBA[0] = getHue(startColor);
+					startHSBA[1] = getSaturation(startColor);
+					startHSBA[2] = getBrightness(startColor);
+					startHSBA[3] = startColor.a;
+					break;
+				case SATURATION:
+					startColor.set(percentable.getColor());
+					startHSBA[0] = getHue(startColor);
+					startHSBA[1] = getSaturation(startColor);
+					startHSBA[2] = getBrightness(startColor);
+					startHSBA[3] = startColor.a;
+					break;
+				case BRIGHTNESS:
+					startColor.set(percentable.getColor());
+					startHSBA[0] = getHue(startColor);
+					startHSBA[1] = getSaturation(startColor);
+					startHSBA[2] = getBrightness(startColor);
+					startHSBA[3] = startColor.a;
 					break;
 			}
 		}

@@ -27,7 +27,8 @@ public class ActionSystemTestSelectScreen extends TestSelectScreen{
 			GroupTestsSelectScreen.class,
 			ZoomTestsSelectScreen.class,
 			ShakeTestsSelectScreen.class,
-			PercentTestsSelectScreen.class
+			PercentTestsSelectScreen.class,
+			PlaygroundSelectScreen.class,
 	};
 	
 	public ActionSystemTestSelectScreen(TestApplication app) {

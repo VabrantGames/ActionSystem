@@ -7,6 +7,7 @@ import com.vabrant.testbase.TestSelectScreen;
 
 public class ChangeHueTest extends ActionSystemTestScreen {
 
+	private float start;
 	private final float startHue = 0;
 	private final float endHue = 270f;
 	
@@ -18,6 +19,7 @@ public class ChangeHueTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
+		start = ColorAction.getSaturation(testObject.getColor());
 		actionManager.addAction(
 				ColorAction.changeHue(testObject, endHue, 1f, Interpolation.linear)
 					.setName("Hue Test")
@@ -33,7 +35,13 @@ public class ChangeHueTest extends ActionSystemTestScreen {
 	
 	@Override
 	public void reset() {
-		ColorAction.HSBToRGB(testObject.getColor(), startHue, 1, 1, 1);
+		ColorAction.HSBToRGB(testObject.getColor(), startHue, 0.5f, 1, 1);
+	}
+	
+	@Override
+	public void runCheck1() {
+		log("StartSaturation: ", Float.toString(start));
+		log("EndSaturation: ", Float.toString(ColorAction.getSaturation(testObject.getColor())));
 	}
 
 }

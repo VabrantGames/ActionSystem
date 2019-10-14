@@ -10,6 +10,8 @@ public class ColorTestsSelectScreen extends TestSelectScreen {
 			ChangeColorHSBTest.class,
 			ChangeHueTest.class,
 			ChangeAlphaTest.class,
+			ChangeSaturationTest.class,
+			ChangeBrightnessTest.class
 	};
 	
 	public ColorTestsSelectScreen(TestApplication app) {
