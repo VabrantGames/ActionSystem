@@ -70,20 +70,6 @@ public class ActionManager {
 			}
 		}
 	}
-
-	public Action getActionByName(String name) {
-		for(int i = 0; i < actions.size; i++) {
-			Action action = actions.get(i);
-			if(action.getName() != null && action.getName().equals(name)) return action;
-		}
-		return null;
-	}
-	
-	public void killAction(String name) {
-		Action action = getActionByName(name);
-		if(action == null) return;
-		action.kill();
-	}
 	
 	public void endAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
@@ -116,19 +102,7 @@ public class ActionManager {
 			action.resume();
 		}
 	}
-	
-	public void pauseAction(String name) {
-		Action action = getActionByName(name);
-		if(action == null) return;
-		action.pause();
-	}
-	
-	public void resumeAction(String name) {
-		Action action = getActionByName(name);
-		if(action == null) return;
-		action.resume();
-	}
-	
+
 	public void freeAll() {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			ActionPools.free(actions.removeIndex(i));
