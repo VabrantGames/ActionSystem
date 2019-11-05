@@ -194,6 +194,10 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		}
 	}
 	
+	public boolean checkForConflict() {
+		return false;
+	}
+	
 	@Override
 	public MoveAction start() {
 		super.start();

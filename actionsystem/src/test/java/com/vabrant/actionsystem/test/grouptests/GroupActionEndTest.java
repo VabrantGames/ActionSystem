@@ -3,6 +3,7 @@ package com.vabrant.actionsystem.test.grouptests;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
@@ -11,16 +12,18 @@ import com.vabrant.testbase.TestSelectScreen;
 public class GroupActionEndTest extends ActionSystemTestScreen{
 
 	private final String actionName = "Group";
+	private ActionWatcher actionWatcher;
 	
 	public GroupActionEndTest(TestSelectScreen screen) {
 		super(screen);
+		actionWatcher = new ActionWatcher();
 	}
 
 	private ActionListener getEndListener() {
 		return new ActionAdapter() {
 			@Override
 			public void actionEnd(Action a) {
-				Action action = actionManager.getActionByName(actionName);
+				Action action = actionWatcher.getAction(actionName);
 				if(action != null) {
 					action.end();
 				}
@@ -42,8 +45,9 @@ public class GroupActionEndTest extends ActionSystemTestScreen{
 				.sequence()
 				.add(one)
 				.add(two)
-				.add(three);
-		group.setName(actionName);
+				.add(three)
+				.setName(actionName)
+				.watch(actionWatcher);
 		actionManager.addAction(group);
 	}
 

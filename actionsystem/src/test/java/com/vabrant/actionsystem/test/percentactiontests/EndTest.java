@@ -2,6 +2,7 @@ package com.vabrant.actionsystem.test.percentactiontests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
@@ -10,13 +11,15 @@ public class EndTest extends ActionSystemTestScreen {
 	
 	private final String actionName = "End Test";
 	private float start;
-	private final float duration = 2f;
+	private final float duration = 5f;
 	private final float endTime = 1f;
-	private final float amount = 50;
+	private final float amount = 100;
+	private final ActionWatcher actionWatcher;
 
 	public EndTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
+		actionWatcher = new ActionWatcher();
 	}
 
 	@Override
@@ -38,6 +41,7 @@ public class EndTest extends ActionSystemTestScreen {
 		actionManager.addAction(
 				MoveAction.moveXBy(testObject, amount, duration, Interpolation.linear)
 					.setName(actionName)
+					.watch(actionWatcher)
 				);
 	}
 	
@@ -45,7 +49,7 @@ public class EndTest extends ActionSystemTestScreen {
 	public void update(float delta) {
 		super.update(delta);
 		
-		MoveAction action = (MoveAction)actionManager.getActionByName(actionName);
+		MoveAction action = (MoveAction)actionWatcher.getAction(actionName);
 		if(action != null) {
 			if(action.getCurrentTime() > endTime) {
 				action.end();

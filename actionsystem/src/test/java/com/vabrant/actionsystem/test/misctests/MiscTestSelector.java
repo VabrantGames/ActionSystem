@@ -6,7 +6,8 @@ import com.vabrant.testbase.TestSelectScreen;
 public class MiscTestSelector extends TestSelectScreen {
 
 	Class[] tests = {
-			ActionWatcherTest.class
+			ActionWatcherTest.class,
+			CountDownActionTest.class
 	};
 	
 	public MiscTestSelector(TestApplication app) {

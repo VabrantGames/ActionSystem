@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
@@ -16,10 +17,12 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 	private final float killTime = 1f;
 	private float percentKilled;
 	private final float amount = 50;
+	private final ActionWatcher actionWatcher;
 	
 	public KillTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
+		actionWatcher = new ActionWatcher();
 	}
 	
 	@Override
@@ -40,6 +43,7 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 		actionManager.addAction(
 				MoveAction.moveXBy(testObject, amount, duration, Interpolation.linear)
 					.setName(actionName)
+					.watch(actionWatcher)
 					.addListener(this)
 				);
 	}
@@ -47,7 +51,7 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 	@Override
 	public void update(float delta) {
 		super.update(delta);
-		MoveAction action = (MoveAction)actionManager.getActionByName(actionName);
+		MoveAction action = (MoveAction)actionWatcher.getAction(actionName);
 		if(action != null) {
 			if(action.getCurrentTime() > killTime) {
 				percentKilled = action.getPercent(); 

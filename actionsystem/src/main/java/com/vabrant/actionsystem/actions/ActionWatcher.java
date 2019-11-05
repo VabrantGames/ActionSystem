@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class ActionWatcher extends ActionAdapter{
+public class ActionWatcher extends ActionAdapter {
 
 	private final ActionLogger logger;
 	private final ObjectMap<String, Action> actions;
@@ -53,4 +53,5 @@ public class ActionWatcher extends ActionAdapter{
 	public void actionComplete(Action a) {
 		removeAction(a);
 	}
+
 }

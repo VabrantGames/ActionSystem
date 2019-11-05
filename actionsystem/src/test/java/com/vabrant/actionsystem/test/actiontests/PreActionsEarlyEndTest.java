@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
@@ -15,9 +16,11 @@ import com.vabrant.testbase.TestSelectScreen;
 public class PreActionsEarlyEndTest extends ActionSystemTestScreen {
 	
 	private final String actionName = "PreActionTest";
+	private final ActionWatcher actionWatcher;
 	
 	public PreActionsEarlyEndTest(TestSelectScreen screen) {
 		super(screen);
+		actionWatcher = new ActionWatcher();
 		createTestObject();
 		reset();
 	}
@@ -37,7 +40,9 @@ public class PreActionsEarlyEndTest extends ActionSystemTestScreen {
 		return new ActionAdapter() {
 			@Override
 			public void actionEnd(Action a) {
-				actionManager.killAction(actionName);
+				Action action = actionWatcher.getAction(actionName);
+				if(action != null) action.kill();
+//				actionManager.killAction(actionName);
 			}
 		};
 	}
@@ -48,6 +53,7 @@ public class PreActionsEarlyEndTest extends ActionSystemTestScreen {
 				GroupAction.getAction()
 					.sequence()
 					.setName(actionName)
+					.watch(actionWatcher)
 					.add(DelayAction.delay(0.5f).addListener(createKillListener()))
 					.add(
 						RotateAction.rotateBy(testObject, 180f, 1f, Interpolation.linear)

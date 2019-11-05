@@ -48,12 +48,12 @@ public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 		@Override
 		public void check1() {
 			if(testClass == null) return;
-			Action unmanagedRunningAction = testClass.actionManager.getActionByName(unmanagedRunningActionName);
-			Action unmanagedNonRunningAction = testClass.actionManager.getActionByName(unmanagedNonRunningActionName);
-			Action managedRunningAction = testClass.actionManager.getActionByName(managedRunningActionName);
-			printRunning(unmanagedRunningAction);
-			printRunning(unmanagedNonRunningAction);
-			printRunning(managedRunningAction);
+//			Action unmanagedRunningAction = testClass.actionManager.getActionByName(unmanagedRunningActionName);
+//			Action unmanagedNonRunningAction = testClass.actionManager.getActionByName(unmanagedNonRunningActionName);
+//			Action managedRunningAction = testClass.actionManager.getActionByName(managedRunningActionName);
+//			printRunning(unmanagedRunningAction);
+//			printRunning(unmanagedNonRunningAction);
+//			printRunning(managedRunningAction);
 		}
 		
 		@Override
