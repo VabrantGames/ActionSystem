@@ -1,24 +1,42 @@
-apply from: "../publish.gradle"
 
-ext{
-    testClassName = "com.vabrant.actionsystem.test.ActionSystemTestApplication"
-    artifactId = "action-system"
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    }
+    dependencies {
+    }
 }
 
-group += "actionsystem"
-version = "$actionSystemVersion"
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
 
-dependencies{
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    testImplementation "com.vabrant.testbase:test-base:0.0.0"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
 }
 
-task runTest(dependsOn: classes, type: JavaExec){
-    main = project.ext.testClassName
-    classpath = sourceSets.main.runtimeClasspath += sourceSets.test.runtimeClasspath
-    workingDir = project.file("src/test/resources").path
-    standardInput = System.in
-    ignoreExitValue = true
+subprojects{
+    apply plugin: "java-library"
+    group = "$baseGroup"
+    sourceCompatibility = 1.8
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    compileJava{
+        options.incremental = true
+    }
+}
+
+tasks.eclipse.doLast{
+    delete ".project"
+    delete ".classpath"
+    delate ".settings/"
 }
