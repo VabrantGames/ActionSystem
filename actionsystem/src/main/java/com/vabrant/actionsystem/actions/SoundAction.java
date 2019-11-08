@@ -1,8 +1,6 @@
 package com.vabrant.actionsystem.actions;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class SoundAction extends Action<SoundAction> {
 
@@ -22,10 +20,31 @@ public class SoundAction extends Action<SoundAction> {
 		action.play(sound);
 		return action;
 	}
+	
+	public static SoundAction playSound(Sound sound, float volume) {
+		SoundAction action = getAction();
+		action.play(sound);
+		action.setVolume(volume);
+		return action;
+	}
+	
+	public static SoundAction playSound(Sound sound, float volume, float pitch) {
+		SoundAction action = getAction();
+		return action;
+	}
+	
+	public static SoundAction playSound(Sound sound, float volume, float pitch, float pan) {
+		SoundAction action = getAction();
+		action.setVolume(volume);
+		action.setPitch(pitch);
+		action.setPan(pan);
+		return action;
+	}
 
 	private long soundId;
-	private float volume;
-	private float pan;
+	private float volume = 1;
+	private float pitch = 1;
+	private float pan = 0;
 	private Sound sound;
 	
 	public SoundAction play(Sound sound) {
@@ -33,15 +52,28 @@ public class SoundAction extends Action<SoundAction> {
 		this.sound = sound;
 		return this;
 	}
+
+	public SoundAction setVolume(float volume) {
+		this.volume = volume;
+		return this;
+	}
+	
+	public SoundAction setPitch(float pitch) {
+		this.pitch = pitch;
+		return this;
+	}
+	
+	public SoundAction setPan(float pan) {
+		this.pan = pan;
+		return this;
+	}
 	
 	@Override
 	public SoundAction start() {
 		super.start();
-		soundId = sound.play();
+		soundId = sound.play(volume, pitch, pan);
 		return this;
 	}
-	
-	float timer;
 	
 	@Override
 	public boolean update(float delta) {
@@ -56,4 +88,12 @@ public class SoundAction extends Action<SoundAction> {
 		return isFinished;
 	}
 	
+	@Override
+	public void reset() {
+		super.reset();
+		soundId = 0;
+		volume = 1;
+		pitch = 1;
+		pan = 0;
+	}
 }

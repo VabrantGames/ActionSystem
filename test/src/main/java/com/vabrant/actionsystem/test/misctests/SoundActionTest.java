@@ -8,18 +8,21 @@ import com.vabrant.testbase.TestSelectScreen;
 
 public class SoundActionTest extends ActionSystemTestScreen {
 
-	private final String soundPath = "moveSound.mp3";
+	private Sound sound;
+	private final String soundPath = "simpleSawMono.mp3";
 	
 	public SoundActionTest(TestSelectScreen screen) {
 		super(screen);
+		SoundAction.init(new SoundActionDesktopListener());
 		application.assetManager.load(soundPath, Sound.class);
 		application.assetManager.finishLoading();
-		SoundAction.init(new SoundActionDesktopListener());
+		sound = application.assetManager.get(soundPath);
 	}
 
 	@Override
 	public void runTest() {
-		actionManager.addAction(SoundAction.playSound(application.assetManager.get(soundPath)).setName("SoundAction"));
+//		actionManager.addAction(SoundAction.playSound(application.assetManager.get(soundPath)).setName("SoundAction"));
+		actionManager.addAction(SoundAction.playSound(sound).setPan(-1f));
 	}
 
 }

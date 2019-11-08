@@ -11,6 +11,11 @@ import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.SoundActionPlatformListener;
 
+/** 
+ * 
+ *	@author Rafaskb
+ *	@see <a href="https://github.com/rafaskb/Boom/blob/master/lwjgl3/src/main/java/com/rafaskoberg/boom/BoomLwjgl3.java">BoomLwjgl</a>
+ */
 public class SoundActionDesktopListener implements SoundActionPlatformListener{
 	
 	private static Field soundIdToSourceId;
