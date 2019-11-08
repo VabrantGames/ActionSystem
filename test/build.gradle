@@ -1,0 +1,28 @@
+apply from: "../publish.gradle"
+
+eclipse.project.name = rootProject.name + '-Test'
+
+ext{
+    testClassName = "com.vabrant.actionsystem.test.ActionSystemTestApplication"
+    artifactId = "test"
+}
+
+group += "actionsystem"
+version = "$actionSystemVersion"
+
+dependencies{
+	api project(":actionsystem")
+	implementation project(":desktopaudio")
+	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+	implementation "com.vabrant.testbase:test-base:0.0.0"
+	implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+	implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+task runTest(dependsOn: classes, type: JavaExec){
+    main = project.ext.testClassName
+    classpath = sourceSets.main.runtimeClasspath += sourceSets.test.runtimeClasspath
+    workingDir = project.file("src/test/resources").path
+    standardInput = System.in
+    ignoreExitValue = true
+}

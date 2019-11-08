@@ -1,0 +1,26 @@
+apply from: "../publish.gradle"
+
+eclipse.project.name = rootProject.name + '-DesktopAudio'
+
+ext{
+    testClassName = ""
+    artifactId = "action-system"
+}
+
+group += "actionsystem"
+version = "$actionSystemVersion"
+
+dependencies{
+	api project(":actionsystem")
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+   	api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+task runTest(dependsOn: classes, type: JavaExec){
+    main = project.ext.testClassName
+    classpath = sourceSets.main.runtimeClasspath += sourceSets.test.runtimeClasspath
+    workingDir = project.file("src/main/resources").path
+    standardInput = System.in
+    ignoreExitValue = true
+}
