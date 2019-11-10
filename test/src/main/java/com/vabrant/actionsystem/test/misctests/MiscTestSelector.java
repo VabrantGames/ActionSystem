@@ -8,7 +8,8 @@ public class MiscTestSelector extends TestSelectScreen {
 	Class[] tests = {
 			ActionWatcherTest.class,
 			CountDownActionTest.class,
-			SoundActionTest.class
+			SoundActionTest.class,
+			ConflictCheckerTest.class,
 	};
 	
 	public MiscTestSelector(TestApplication app) {

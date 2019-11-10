@@ -43,7 +43,7 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 		actionManager.addAction(
 				MoveAction.moveXBy(testObject, amount, duration, Interpolation.linear)
 					.setName(actionName)
-					.watch(actionWatcher)
+					.watchAction(actionWatcher)
 					.addListener(this)
 				);
 	}

@@ -22,7 +22,7 @@ public class SoundActionTest extends ActionSystemTestScreen {
 	@Override
 	public void runTest() {
 //		actionManager.addAction(SoundAction.playSound(application.assetManager.get(soundPath)).setName("SoundAction"));
-		actionManager.addAction(SoundAction.playSound(sound).setPan(-1f));
+		actionManager.addAction(SoundAction.playSound(sound));
 	}
 
 }

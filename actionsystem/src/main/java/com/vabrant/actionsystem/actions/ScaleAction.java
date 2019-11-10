@@ -1,7 +1,11 @@
 package com.vabrant.actionsystem.actions;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.ObjectMap.Entries;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
@@ -201,6 +205,45 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		if(xType != SCALE_BY || xType == SCALE_BY && !restartScaleXByFromEnd) setupX = false;
 		if(yType != SCALE_BY || yType == SCALE_BY && !restartScaleYByFromEnd) setupY = false;
 		return this;
+	}
+	
+	@Override
+	protected boolean hasConflict(Action action) {
+		if(action instanceof ScaleAction) {
+			ScaleAction newAction = (ScaleAction)action;
+			
+			//both the x and y are being scaled
+			if(newAction.xType > -1 && newAction.yType > -1) return true;
+
+			//only x is being scaled so as long as the other action is not using the x there is no conflict
+			if(newAction.xType > 0) {
+				if(xType > -1) return true;
+			}
+			else if(newAction.yType > -1) {
+				if(yType > -1) return true;
+			}
+		}
+		
+//			Iterator<Entry<Action, Class<?>>> entries = conflictWatcher.getIterator();
+//			while(entries.hasNext()) {
+//				Entry<Action, Class<?>> entry = entries.next();
+//				
+//				if(entry.key instanceof ScaleAction) {
+//					ScaleAction action = (ScaleAction)entry.key;
+//					
+//					//both the x and y are being scaled
+//					if(action.xType > -1 && action.yType > -1) return true;
+//
+//					//only x is being scaled so as long as the other action is not using the x there is no conflict
+//					if(action.xType > 0) {
+//						if(xType > -1) return true;
+//					}
+//					else if(action.yType > -1) {
+//						if(yType > -1) return true;
+//					}
+//				}
+//			}
+		return false;
 	}
 	
 	@Override

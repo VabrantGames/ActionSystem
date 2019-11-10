@@ -219,7 +219,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		if(yType != MOVE_BY || yType == MOVE_BY && !restartMoveYByFromEnd) setupY = false;
 		return this;
 	}
-
+	
 	@Override
 	public MoveAction clear() {
 		super.clear();

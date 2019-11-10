@@ -47,7 +47,7 @@ public class GroupActionEndTest extends ActionSystemTestScreen{
 				.add(two)
 				.add(three)
 				.setName(actionName)
-				.watch(actionWatcher);
+				.watchAction(actionWatcher);
 		actionManager.addAction(group);
 	}
 

@@ -53,7 +53,7 @@ public class PreActionsEarlyEndTest extends ActionSystemTestScreen {
 				GroupAction.getAction()
 					.sequence()
 					.setName(actionName)
-					.watch(actionWatcher)
+					.watchAction(actionWatcher)
 					.add(DelayAction.delay(0.5f).addListener(createKillListener()))
 					.add(
 						RotateAction.rotateBy(testObject, 180f, 1f, Interpolation.linear)

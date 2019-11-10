@@ -41,7 +41,7 @@ public class EndTest extends ActionSystemTestScreen {
 		actionManager.addAction(
 				MoveAction.moveXBy(testObject, amount, duration, Interpolation.linear)
 					.setName(actionName)
-					.watch(actionWatcher)
+					.watchAction(actionWatcher)
 				);
 	}
 	

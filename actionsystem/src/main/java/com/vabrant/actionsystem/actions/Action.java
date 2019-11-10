@@ -22,6 +22,9 @@ public class Action<T extends Action> implements Poolable{
 	//has the current cycle finished
 	protected boolean isFinished;
 	
+	private boolean forceKill;
+	private boolean forceEnd;
+	
 	//is the current cycle running
 	protected boolean isRunning;
 	protected boolean isPaused;
@@ -31,6 +34,7 @@ public class Action<T extends Action> implements Poolable{
 	private Array<ActionListener> listeners;
 	final Array<Action> preActions;
 	final Array<Action> postActions;
+	private ConflictChecker conflictWatcher;
 	protected ActionLogger logger;
 	
 	public Action() {
@@ -48,19 +52,29 @@ public class Action<T extends Action> implements Poolable{
 		return (T)this;
 	}
 	
-//	public T soloLogger() {
-//		if(logger != null) logger.solo();
-//		return (T)this;
-//	}
+	public T soloLogger() {
+		if(logger != null) logger.solo();
+		return (T)this;
+	}
 	
 	public ActionLogger getLogger() {
 		return logger;
 	}
 	
-	public T watch(ActionWatcher watcher) {
+	public T watchAction(ActionWatcher watcher) {
 		if(watcher == null) throw new IllegalArgumentException("ActionWatcher is null.");
 		watcher.watch(this);
 		return (T)this;
+	}
+	
+	public T setConflictChecker(ConflictChecker conflictChecker) {
+		if(conflictChecker == null) throw new IllegalArgumentException("ConflictChecker is null.");
+		this.conflictWatcher = conflictChecker;
+		return (T)this;
+	}
+	
+	protected boolean hasConflict(Action action) {
+		return false;
 	}
 	
 	public T addPreAction(Action action) {
@@ -205,6 +219,8 @@ public class Action<T extends Action> implements Poolable{
 		lastCycle = false;
 		isRoot = false;
 		rootAction = null;
+		forceKill = false;
+		forceEnd = false;
 		if(logger != null) logger.clearActionName();
 	}
 	
@@ -220,8 +236,20 @@ public class Action<T extends Action> implements Poolable{
 		return (T)this;
 	}
 	
+	void forceKill() {
+		forceKill = true;
+		kill();
+	}
+	
+	void forceEnd() {
+		forceEnd = true;
+		end();
+	}
+	
 	public T start() {
-		if(logger != null) logger.info("Start");	
+		if(conflictWatcher != null) {
+			if(conflictWatcher.checkForConflict(this)) return null;
+		}
 		
 		if(!isManaged()) {
 			if(actionManager == null) throw new ActionSystemRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
@@ -242,6 +270,8 @@ public class Action<T extends Action> implements Poolable{
 		isFinished = false;
 		
 		lastCycle();
+
+		if(logger != null) logger.info("Start");	
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionStart(this);
@@ -269,7 +299,7 @@ public class Action<T extends Action> implements Poolable{
 	 * Ends the action as if it's completed.
 	 */
 	public T end() {
-		if(!isRunning) return (T)this;
+		if(!isRunning && !forceEnd) return (T)this;
 		
 		if(logger != null) logger.info("End");		
 		
@@ -301,7 +331,7 @@ public class Action<T extends Action> implements Poolable{
 	 * Ends the action at it's current position but not as if it were completed.
 	 */
 	public T kill() {
-		if(!isRunning) return (T)this;
+		if(!isRunning && !forceKill) return (T)this;
 		
 		if(logger != null) logger.info("Kill");		
 		
