@@ -30,8 +30,10 @@ public class ActionWatcherTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		RotateAction rotate = RotateAction.rotateBy(testObject, 50, 0.5f, Interpolation.linear);
-		actionManager.addAction(RepeatAction.continuous(rotate).setName(actionName).watchAction(actionWatcher));
+		RotateAction rotate = RotateAction.rotateBy(testObject, 50, 0.5f, Interpolation.linear).restartRotateByFromEnd();
+		actionManager.addAction(RepeatAction.continuous(rotate)
+				.setName(actionName)
+				.watchAction(actionWatcher));
 	}
 	
 	@Override

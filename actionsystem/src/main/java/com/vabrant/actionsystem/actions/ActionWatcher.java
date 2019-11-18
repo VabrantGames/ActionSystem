@@ -32,7 +32,7 @@ public class ActionWatcher extends ActionAdapter {
 	
 	public void watch(String name, Action action) {
 		if(action == null) return;
-		action.addListener(this);
+		action.addLibraryListener(this);
 		actions.put(name, action);
 		if(logger != null) logger.info("Watching", name);
 	}

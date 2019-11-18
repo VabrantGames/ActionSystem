@@ -17,7 +17,7 @@ public class ConflictCheckerTest extends ActionSystemTestScreen {
 		super(screen);
 		createTestObject();
 		conflictChecker = new ConflictChecker();
-		conflictChecker.watch(ScaleAction.class, ConflictActionType.KILL_OLD);
+		conflictChecker.watch(ScaleAction.class, ConflictActionType.END_OLD);
 	}
 	
 	@Override

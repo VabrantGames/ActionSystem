@@ -32,6 +32,7 @@ public class Action<T extends Action> implements Poolable{
 	private PauseCondition pauseCondition;
 	private ActionManager actionManager;
 	private Array<ActionListener> listeners;
+	private Array<ActionListener> libraryListeners;
 	final Array<Action> preActions;
 	final Array<Action> postActions;
 	private ConflictChecker conflictWatcher;
@@ -39,6 +40,7 @@ public class Action<T extends Action> implements Poolable{
 	
 	public Action() {
 		listeners = new Array<>(2);
+		libraryListeners = new Array<>(3);
 		preActions = new Array<>(1);
 		postActions = new Array<>(1);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
@@ -142,6 +144,14 @@ public class Action<T extends Action> implements Poolable{
 		if(!isRoot) rootAction = root;
 	}
 	
+	public void DEBUG_setRoot() {
+		isRoot = true;
+	}
+	
+	public void DEBUG_setRootAction(Action root) {
+		rootAction = root;
+	}
+	
 	public Action getRootAction() {
 		return rootAction;
 	}
@@ -185,6 +195,17 @@ public class Action<T extends Action> implements Poolable{
 		return (T)this;
 	}
 	
+	protected T addLibraryListener(ActionListener listener) {
+		if(listener == null) throw new IllegalArgumentException("LibraryListener is null.");
+		libraryListeners.add(listener);
+		return (T)this;
+	}
+	
+	protected T removeLibraryListener(ActionListener listener) {
+		libraryListeners.removeValue(listener, false);
+		return (T)this;
+	}
+	
 	public T addListener(ActionListener listener) {
 		if(listener == null) throw new IllegalArgumentException("Listener is null.");
 		listeners.add(listener);
@@ -209,6 +230,7 @@ public class Action<T extends Action> implements Poolable{
 	public void reset() {
 		if(logger != null) logger.info("Reset");
 		lastCycle = false;
+		libraryListeners.clear();
 		listeners.clear();
 		pauseCondition = null;
 		name = null;
@@ -272,10 +294,15 @@ public class Action<T extends Action> implements Poolable{
 		lastCycle();
 
 		if(logger != null) logger.info("Start");	
+
+		for(int i = 0; i < libraryListeners.size; i++) {
+			libraryListeners.get(i).actionStart(this);
+		}
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionStart(this);
 		}
+		
 		return (T)this;
 	}
 	
@@ -289,9 +316,14 @@ public class Action<T extends Action> implements Poolable{
 		
 		lastCycle();
 		
+		for(int i = 0; i < libraryListeners.size; i++) {
+			libraryListeners.get(i).actionRestart(this);
+		}
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionRestart(this);
 		}
+		
 		return (T)this;
 	}
 	
@@ -306,6 +338,10 @@ public class Action<T extends Action> implements Poolable{
 		isRunning = false;
 		isFinished = true;
 		
+		for(int i = 0; i < libraryListeners.size; i++) {
+			libraryListeners.get(i).actionEnd(this);
+		}
+		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd(this);
 		}
@@ -313,6 +349,10 @@ public class Action<T extends Action> implements Poolable{
 		//check if this is the last cycle
 		isComplete = !isRoot ? rootAction.lastCycle : this.lastCycle;
 		if(isComplete) {
+			for(int i = 0; i < libraryListeners.size; i++) {
+				libraryListeners.get(i).actionComplete(this);
+			}
+			
 			for(int i = 0; i < listeners.size; i++) {
 				listeners.get(i).actionComplete(this);
 			}
@@ -338,6 +378,10 @@ public class Action<T extends Action> implements Poolable{
 		isRunning = false;
 		isFinished = true;
 		isComplete = true;
+		
+		for(int i = 0; i < libraryListeners.size; i++) {
+			libraryListeners.get(i).actionKill(this);
+		}
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);

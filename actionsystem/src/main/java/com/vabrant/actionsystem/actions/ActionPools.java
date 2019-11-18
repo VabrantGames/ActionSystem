@@ -9,7 +9,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 public class ActionPools {
 	
-	private static final int defaultPoolMaxCapacity = 100;
+//	private static final int defaultPoolMaxCapacity = 100;
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
 	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.NONE);
 	
@@ -60,7 +60,7 @@ public class ActionPools {
 	
 	public static <T extends Action> Pool<T> get(Class<T> type){
 		Pool pool = pools.get(type);
-		if(pool == null) pool = create(type, 4, defaultPoolMaxCapacity);
+		if(pool == null) pool = create(type, 4, Integer.MAX_VALUE);
 		return pool;
 	}
 	

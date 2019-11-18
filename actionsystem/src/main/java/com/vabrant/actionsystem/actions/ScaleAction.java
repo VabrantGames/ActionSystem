@@ -223,26 +223,6 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 				if(yType > -1) return true;
 			}
 		}
-		
-//			Iterator<Entry<Action, Class<?>>> entries = conflictWatcher.getIterator();
-//			while(entries.hasNext()) {
-//				Entry<Action, Class<?>> entry = entries.next();
-//				
-//				if(entry.key instanceof ScaleAction) {
-//					ScaleAction action = (ScaleAction)entry.key;
-//					
-//					//both the x and y are being scaled
-//					if(action.xType > -1 && action.yType > -1) return true;
-//
-//					//only x is being scaled so as long as the other action is not using the x there is no conflict
-//					if(action.xType > 0) {
-//						if(xType > -1) return true;
-//					}
-//					else if(action.yType > -1) {
-//						if(yType > -1) return true;
-//					}
-//				}
-//			}
 		return false;
 	}
 	

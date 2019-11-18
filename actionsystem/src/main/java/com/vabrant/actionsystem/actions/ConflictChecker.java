@@ -12,7 +12,7 @@ public class ConflictChecker extends ActionAdapter{
 		KILL_OLD,
 		KILL_NEW,
 		END_OLD,
-		START_WHEN_OLD_FINISHES
+		END_NEW
 	}
 
 	private final ObjectMap<Class<?>, ConflictActionType> conflicts;
@@ -39,7 +39,7 @@ public class ConflictChecker extends ActionAdapter{
 	
 	private void addAction(Action action) {
 		if(runningActions.containsKey(action)) return;
-		action.addListener(this);
+		action.addLibraryListener(this);
 		runningActions.put(action, action.getClass());
 		if(logger != null) logger.info("Watching" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
@@ -65,23 +65,34 @@ public class ConflictChecker extends ActionAdapter{
 			
 			if(oldAction.hasConflict(newAction)) {
 				if(logger != null) logger.debug("Conflict" + oldAction.getLogger().getActionName() + newAction.getLogger().getActionName(), type.toString());
-				doConflictAction(type, oldAction, newAction);
-				return true;
+				if(doConflictAction(type, oldAction, newAction)) {
+					return true;
+				}
+				else {
+					break;
+				}
 			}
 		}
 		addAction(newAction);
 		return false;
 	}
 	
-	private void doConflictAction(ConflictActionType type, Action oldAction, Action newAction) {
+	private boolean doConflictAction(ConflictActionType type, Action oldAction, Action newAction) {
 		switch(type) {
 			case KILL_NEW:
 				newAction.forceKill();
-				break;
+				return true;
 			case KILL_OLD:
 				oldAction.kill();
-				break;
+				return false;
+			case END_OLD:
+				oldAction.end();
+				return false;
+			case END_NEW:
+				newAction.forceEnd();
+				return true;
 		}
+		return true;
 	}
 	
 	@Override
