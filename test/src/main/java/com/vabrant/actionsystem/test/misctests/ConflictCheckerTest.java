@@ -17,7 +17,7 @@ public class ConflictCheckerTest extends ActionSystemTestScreen {
 		super(screen);
 		createTestObject();
 		conflictChecker = new ConflictChecker();
-		conflictChecker.watch(ScaleAction.class, ConflictActionType.END_OLD);
+		conflictChecker.watch(ScaleAction.class, ConflictActionType.END_NEW);
 	}
 	
 	@Override
@@ -29,15 +29,19 @@ public class ConflictCheckerTest extends ActionSystemTestScreen {
 
 	@Override
 	public void runTest() {
-		ScaleAction action1 = ScaleAction.scaleTo(testObject, 2, 2, 2f, Interpolation.linear)
+		ScaleAction xAction = ScaleAction.scaleXTo(testObject, 4, 4f, Interpolation.linear)
 				.setConflictChecker(conflictChecker)
-				.setName("Old Action");
-		ScaleAction action2 = ScaleAction.scaleTo(testObject, 2, 2, 2f, Interpolation.linear)
+				.setName("X Action");
+		ScaleAction yAction = ScaleAction.scaleYTo(testObject, 4, 4f, Interpolation.linear)
 				.setConflictChecker(conflictChecker)
-				.setName("New Action");
-		actionManager.addAction(action1);
+				.setName("Y Action");
+		ScaleAction conflictAction = ScaleAction.scaleTo(testObject, 4, 4, 4f, Interpolation.linear)
+				.setConflictChecker(conflictChecker)
+				.setName("ConflictAction");
+		actionManager.addAction(xAction);
+		actionManager.addAction(yAction);
 		actionManager.addAction(DelayAction.delay(1.5f)
-				.addPostAction(action2));
+				.addPostAction(conflictAction));
 	}
 
 }

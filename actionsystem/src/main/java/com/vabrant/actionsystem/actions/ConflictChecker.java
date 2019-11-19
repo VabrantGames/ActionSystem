@@ -56,6 +56,7 @@ public class ConflictChecker extends ActionAdapter{
 		if(!conflicts.containsKey(newAction.getClass())) return false;
 		
 		ConflictActionType type = conflicts.get(newAction.getClass());
+		boolean watchNewAction = type.equals(ConflictActionType.END_OLD) || type.equals(ConflictActionType.KILL_OLD) ? true : false;
 		
 		while(running.hasNext()) {
 			Entry<Action, Class<?>> entry = running.next();
@@ -65,34 +66,31 @@ public class ConflictChecker extends ActionAdapter{
 			
 			if(oldAction.hasConflict(newAction)) {
 				if(logger != null) logger.debug("Conflict" + oldAction.getLogger().getActionName() + newAction.getLogger().getActionName(), type.toString());
-				if(doConflictAction(type, oldAction, newAction)) {
-					return true;
-				}
-				else {
-					break;
-				}
+				doConflictAction(type, oldAction, newAction);
+				
+				//Return true if the type is kill_new or end_new because it is terminated after its first conflict.
+				if(!watchNewAction) return true;
 			}
 		}
 		addAction(newAction);
 		return false;
 	}
 	
-	private boolean doConflictAction(ConflictActionType type, Action oldAction, Action newAction) {
+	private void doConflictAction(ConflictActionType type, Action oldAction, Action newAction) {
 		switch(type) {
 			case KILL_NEW:
 				newAction.forceKill();
-				return true;
+				break;
 			case KILL_OLD:
 				oldAction.kill();
-				return false;
+				break;
 			case END_OLD:
 				oldAction.end();
-				return false;
+				break;
 			case END_NEW:
 				newAction.forceEnd();
-				return true;
+				break;
 		}
-		return true;
 	}
 	
 	@Override
