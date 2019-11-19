@@ -105,6 +105,15 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	}
 	
 	@Override
+	protected boolean hasConflict(Action action) {
+		if(action instanceof RotateAction) {
+			RotateAction conflictAction = (RotateAction)action;
+			if(conflictAction.type > -1) return true; 
+		}
+		return false;
+	}
+	
+	@Override
 	public RotateAction clear() {
 		super.clear();
 		type = -1;

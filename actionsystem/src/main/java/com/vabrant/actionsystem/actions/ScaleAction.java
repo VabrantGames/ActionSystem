@@ -210,16 +210,16 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	@Override
 	protected boolean hasConflict(Action action) {
 		if(action instanceof ScaleAction) {
-			ScaleAction newAction = (ScaleAction)action;
+			ScaleAction conflictAction = (ScaleAction)action;
 			
 			//both the x and y are being scaled
-			if(newAction.xType > -1 && newAction.yType > -1) return true;
+			if(conflictAction.xType > -1 && conflictAction.yType > -1) return true;
 
 			//only x is being scaled so as long as the other action is not using the x there is no conflict
-			if(newAction.xType > 0) {
+			if(conflictAction.xType > -1) {
 				if(xType > -1) return true;
 			}
-			else if(newAction.yType > -1) {
+			else if(conflictAction.yType > -1) {
 				if(yType > -1) return true;
 			}
 		}

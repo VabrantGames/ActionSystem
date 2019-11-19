@@ -10,7 +10,8 @@ public class MoveTestsSelectScreen extends TestSelectScreen {
 		RestartMoveXByFromEndTest.class,
 		MoveYByTest.class,
 		RestartMoveYByFromEndTest.class,
-		MoveByAngleTest.class
+		MoveByAngleTest.class,
+		MoveConflictTest.class,
 	};
 	
 	public MoveTestsSelectScreen(TestApplication app) {

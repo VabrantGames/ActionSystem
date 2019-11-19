@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem.test.misctests;
+package com.vabrant.actionsystem.test.scaletests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ConflictChecker;
@@ -9,15 +9,20 @@ import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 
-public class ConflictCheckerTest extends ActionSystemTestScreen {
+public class ScaleConflictTest extends ActionSystemTestScreen {
 
 	private ConflictChecker conflictChecker;
 	
-	public ConflictCheckerTest(TestSelectScreen screen) {
+	public ScaleConflictTest(TestSelectScreen screen) {
 		super(screen);
 		createTestObject();
 		conflictChecker = new ConflictChecker();
 		conflictChecker.watch(ScaleAction.class, ConflictActionType.END_NEW);
+	}
+	
+	@Override
+	public void reset() {
+		testObject.setScale(1, 1);
 	}
 	
 	@Override

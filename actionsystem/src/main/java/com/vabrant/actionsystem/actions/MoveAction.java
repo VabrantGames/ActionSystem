@@ -221,6 +221,24 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 	
 	@Override
+	protected boolean hasConflict(Action action) {
+		if(action instanceof MoveAction) {
+			MoveAction conflictAction = (MoveAction)action;
+			
+			if(conflictAction.xType > -1 && conflictAction.yType > -1) return true;
+			
+			//only x is being scaled so as long as the other action is not using the x there is no conflict
+			if(conflictAction.xType > -1) {
+				if(xType > -1) return true;
+			}
+			else if(conflictAction.yType > -1) {
+				if(yType > -1) return true;
+			}		
+		}
+		return false;
+	}
+	
+	@Override
 	public MoveAction clear() {
 		super.clear();
 		xAmount = 0;
