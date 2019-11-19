@@ -107,10 +107,10 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	 protected boolean hasConflict(Action action) {
 		 if(action instanceof ShakeAction) {
 			 ShakeAction conflictAction = (ShakeAction)action;
-			 
-//			 if(conflictAction.shakeX > -1)
-			 
-//			 if(conflictAction.type > -1) return true; 
+			 if(conflictAction.shakeX && conflictAction.shakeY && conflictAction.shakeAngle) return true;
+			 if(conflictAction.shakeX && shakeX) return true;
+			 if(conflictAction.shakeY && shakeY) return true;
+			 if(conflictAction.shakeAngle && shakeAngle) return true;
 		 }
 		 return false;
 	 }

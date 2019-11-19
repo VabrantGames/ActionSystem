@@ -20,6 +20,7 @@ public class MoveConflictTest extends ActionSystemTestScreen {
 		conflictChecker = new ConflictChecker();
 		conflictChecker.watch(MoveAction.class, ConflictActionType.END_OLD);
 		conflictChecker.watch(RotateAction.class, ConflictActionType.END_NEW);
+		conflictChecker.watch(ShakeAction.class, ConflictActionType.END_OLD);
 	}
 
 	@Override
@@ -49,13 +50,13 @@ public class MoveConflictTest extends ActionSystemTestScreen {
 //		actionManager.addAction(DelayAction.delay(1.5f)
 //				.addPostAction(conflictAction));
 		
-		ShakeAction rotate = ShakeAction.shakeX(testObject, 4, 4f, Interpolation.linear)
+		ShakeAction oldAction = ShakeAction.shakeX(testObject, 4, 4f, Interpolation.linear)
 				.setConflictChecker(conflictChecker)
 				.setName("Old Action");
 		ShakeAction conflictAction = ShakeAction.shakeX(testObject, 4, 4f, Interpolation.linear)
 				.setConflictChecker(conflictChecker)
 				.setName("New Action");
-		actionManager.addAction(rotate);
+		actionManager.addAction(oldAction);
 		actionManager.addAction(DelayAction.delay(1.5f)
 			.addPostAction(conflictAction));
 		

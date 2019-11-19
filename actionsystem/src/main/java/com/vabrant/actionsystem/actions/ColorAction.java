@@ -206,6 +206,15 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	@Override
+	protected boolean hasConflict(Action action) {
+		if(action instanceof ColorAction) {
+			ColorAction conflictAction = (ColorAction)action;
+//			if(conflictAction.type > -1) return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public ColorAction clear() {
 		super.clear();
 		setupAction = true;

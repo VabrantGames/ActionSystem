@@ -98,6 +98,15 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 	
 	@Override
+	protected boolean hasConflict(Action action) {
+		if(action instanceof ZoomAction) {
+			ZoomAction conflictAction = (ZoomAction)action;
+			if(conflictAction.type > -1) return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public ZoomAction clear() {
 		super.clear();
 		setupZoom = true;
