@@ -37,31 +37,29 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		return action;
 	}
 	
-	private static final int SHAKING = 0;
-	
 	private boolean usePercent;
 	private float x;
 	private float y;
 	private float angle;
-	private int shakeX = -1;
-	private int shakeY = -1;
-	private int shakeAngle = -1;
+	private boolean shakeX = false;
+	private boolean shakeY = false;
+	private boolean shakeAngle = false;
 	
 	public ShakeAction shakeX(float amount) {
 		this.x = amount;
-		shakeX = SHAKING;
+		shakeX = true;
 		return this;
 	}
 	
 	public ShakeAction shakeY(float amount) {
 		this.y = amount;
-		shakeY = SHAKING;
+		shakeY = true;
 		return this;
 	}
 	
 	public ShakeAction shakeAngle(float amount) {
 		this.angle = amount;
-		shakeAngle = SHAKING;
+		shakeAngle = true;
 		return this;
 	}
 	
@@ -69,7 +67,7 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		this.x = xAmount;
 		this.y = yAmount;
 		this.angle = angle;
-		shakeX = shakeY = shakeAngle = SHAKING;
+		shakeX = shakeY = shakeAngle = true;
 		return this;
 	}
 	
@@ -82,9 +80,9 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	protected void percent(float percent) {
 		if(!usePercent) percent = 1;
 		
-		if(shakeX > -1) percentable.setShakeX(MathUtils.random(-x, x) * percent);
-		if(shakeY > -1) percentable.setShakeY(MathUtils.random(-y, y) * percent);
-		if(shakeAngle > -1) percentable.setShakeAngle(MathUtils.random(-angle, angle) * percent);
+		if(shakeX) percentable.setShakeX(MathUtils.random(-x, x) * percent);
+		if(shakeY) percentable.setShakeY(MathUtils.random(-y, y) * percent);
+		if(shakeAngle) percentable.setShakeAngle(MathUtils.random(-angle, angle) * percent);
 	}
 	
 	@Override
@@ -109,6 +107,9 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	 protected boolean hasConflict(Action action) {
 		 if(action instanceof ShakeAction) {
 			 ShakeAction conflictAction = (ShakeAction)action;
+			 
+//			 if(conflictAction.shakeX > -1)
+			 
 //			 if(conflictAction.type > -1) return true; 
 		 }
 		 return false;
@@ -121,7 +122,7 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		y = 0;
 		angle = 0;
 		usePercent = false;
-		shakeX = shakeY = shakeAngle = -1;
+		shakeX = shakeY = shakeAngle = false;
 		return this;
 	}
 	
@@ -132,6 +133,6 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		y = 0;
 		angle = 0;
 		usePercent = false;
-		shakeX = shakeY = shakeAngle = -1;
+		shakeX = shakeY = shakeAngle = false;
 	}
 }
