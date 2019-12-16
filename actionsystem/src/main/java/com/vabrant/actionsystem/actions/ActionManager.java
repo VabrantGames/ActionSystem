@@ -36,15 +36,13 @@ public class ActionManager {
 	
 	void startUnmanagedAction(Action action) {
 		int index = unmanagedActions.indexOf(action, false);
+		Action a = unmanagedActions.get(index);
+		
+		if(a.getRootAction() == null) {
+			a.setRoot();
+		}
+
 		actions.add(unmanagedActions.get(index));
-	}
-	
-	public void addUnmanagedAction(Action action) {
-		if(action == null) throw new IllegalArgumentException("Action is null");
-		if(action.isManaged()) throw new IllegalArgumentException("Action is not unmanaged.");
-		action.setActionManager(this);
-		unmanagedActions.add(action);
-		if(logger != null) logger.info("Unmanaged action added");
 	}
 	
 	void poolUnmanagedAction(Action unmanagedAction) {
@@ -55,11 +53,19 @@ public class ActionManager {
 	
 	public void addAction(Action action) {
 		if(action == null) throw new IllegalArgumentException("Action is null");
-		action.setRoot();
-		action.setRootAction(action);
+		
 		action.setActionManager(this);
-		actions.add(action);
-		if(logger != null) logger.debug(action.getLogger().getClassName() + " added");
+		
+		if(action.isManaged()) {
+			action.setRoot();
+			action.setRootAction(action);
+			actions.add(action);
+		}
+		else {
+			unmanagedActions.add(action);
+		}
+		
+		if(logger != null) logger.info("Added" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 	
 	public void update(float delta) {

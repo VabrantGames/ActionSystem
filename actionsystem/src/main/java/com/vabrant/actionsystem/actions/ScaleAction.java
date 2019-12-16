@@ -159,7 +159,10 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		}
 	}
 	
-	private void setup() {
+	@Override
+	public ScaleAction setup() {
+		didInitialSetup = true;
+		
 		if(setupX) {
 			switch(xType) {
 				case SCALE_BY:
@@ -183,12 +186,13 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 					break;
 			}
 		}
+		return this;
 	}
 	
 	@Override
 	public ScaleAction start() {
 		super.start();
-		setup();
+		if(!didInitialSetup) setup();
 		return this;
 	}
 	

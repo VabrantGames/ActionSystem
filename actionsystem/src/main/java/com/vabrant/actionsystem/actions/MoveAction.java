@@ -168,7 +168,10 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		}
 	}
 	
-	private void setup() {
+	@Override
+	public MoveAction setup() {
+		didInitialSetup = true;
+		
 		if(setupX) {
 			switch(xType) {
 				case MOVE_BY:
@@ -192,16 +195,13 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 					break;
 			}
 		}
+		return this;
 	}
-	
-	public boolean checkForConflict() {
-		return false;
-	}
-	
+
 	@Override
 	public MoveAction start() {
 		super.start();
-		setup();
+		if(!didInitialSetup) setup();
 		return this;
 	}
 	

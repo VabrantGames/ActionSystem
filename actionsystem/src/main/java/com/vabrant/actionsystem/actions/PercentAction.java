@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Interpolation;
 
 public abstract class PercentAction<T extends Percentable, S extends Action> extends TimeAction<S> {
 
+	protected boolean didInitialSetup;
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
 	protected float percent;
@@ -12,6 +13,37 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	
 	public T getPercentable() {
 		return percentable;
+	}
+	
+	public S setPercent(float percent) {
+		this.percent = percent;
+		timer = percent * duration;
+		return (S)this;
+	}
+	
+	@Override
+	public S setTime(float time) {
+		super.setTime(time);
+		percent = timer / duration;
+		return (S)this;
+	}
+	
+	public T calculatePercent() {
+		if(timer == 0) {
+			percent = 0;
+		}
+		else if(timer >= duration) {
+			percent = 1;
+		}
+		else {
+			percent = timer / duration;
+		}
+		return (T)this;
+	}
+	
+	public S moveToPercent() {
+		percent(percent);
+		return (S)this;
 	}
 	
 	public float getPercent() {
@@ -43,6 +75,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	@Override
 	public S clear() {
 		super.clear();
+		didInitialSetup = false;
 		reverseBackToStart = false;
 		interpolation = null;
 		percent = 0;
@@ -52,6 +85,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	@Override
 	public void reset() {
 		super.reset();
+		didInitialSetup = false;
 		percentable = null;
 		reverseBackToStart = false;
 		interpolation = null;
@@ -85,11 +119,12 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 				}
 			}
 		}
-		percent = reverse ? 1 - percent : percent;
+		percent = reverse ? 1f - percent : percent;
 		percent(percent);
 		if(finished) end();
 		return isFinished;
 	}
 	
+	public abstract S setup();
 	protected abstract void percent(float percent);
 }

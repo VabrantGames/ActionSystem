@@ -62,7 +62,10 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		percentable.setZoom(MathUtils.lerp(start, end, percent));
 	}
 	
-	private void setup() {
+	@Override
+	public ZoomAction setup() {
+		didInitialSetup = true;
+		
 		if(setupZoom) {
 			switch(type) {
 				case ZOOM_BY:
@@ -74,12 +77,13 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 					break;
 			}
 		}
+		return this;
 	}
 	
 	@Override
 	public ZoomAction start() {
 		super.start();
-		setup();
+		if(!didInitialSetup) setup();
 		return this;
 	}
 	

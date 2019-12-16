@@ -101,12 +101,12 @@ public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 				unmanagedNonRunningAction = MoveAction.moveXBy(testObject, 5, 0.5f, Interpolation.linear);
 				unmanagedNonRunningAction.unmanage();
 				unmanagedNonRunningAction.setName(unmanagedNonRunningActionName);
-				actionManager.addUnmanagedAction(unmanagedNonRunningAction);
+//				actionManager.addUnmanagedAction(unmanagedNonRunningAction);
 				
 				//unmanagedAction that is running
 				unmanagedRunningAction = ZoomAction.zoomTo(testObject, 1.5f, 0.5f, Interpolation.linear);
 				unmanagedRunningAction.unmanage();
-				actionManager.addUnmanagedAction(unmanagedRunningAction);
+//				actionManager.addUnmanagedAction(unmanagedRunningAction);
 				RepeatAction unmanagedContinuousAction = RepeatAction.continuous(unmanagedRunningAction);
 				unmanagedContinuousAction.setName(unmanagedRunningActionName);
 				

@@ -68,7 +68,10 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		percentable.setRotation(MathUtils.lerp(start, end, percent));
 	}
 	
-	private void setup() {
+	@Override
+	public RotateAction setup() {
+		didInitialSetup = true;
+		
 		if(setupRotation) {
 			switch(type) {
 				case ROTATE_TO:
@@ -80,12 +83,13 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 					break;
 			}
 		}
+		return this;
 	}
 	
 	@Override
 	public RotateAction start() {
 		super.start();
-		setup();
+		if(!didInitialSetup) setup();
 		return this;
 	}
 	

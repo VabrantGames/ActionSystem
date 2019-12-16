@@ -4,12 +4,20 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-@SuppressWarnings("unchecked")
-public class Action<T extends Action> implements Poolable{
+/**
+ * The action class is the base class for all actions. Action iterations are called <i>cycles</i> and are ran between {@link #start} or {@link #restart}
+ * and {@link #end}. <code>Start</code> is called at the beginning of every cycle only once and <code>restart</code> is called at the beginning of any following cycle.
+ * {@link #end} is called at the end of every cycle and {@link #complete} is called on the last cycle.
+ * 
+ * @author John Barton
+ *
+ * @param <T> Type of action
+ */
+public class Action<T extends Action<?>> implements Poolable{
 	
 	boolean isRoot;
-	Action rootAction;
-	protected boolean lastCycle;
+	Action<?> rootAction;
+	private boolean lastCycle;
 	
 	boolean isManaged = true;
 	//TODO still needed?
@@ -18,24 +26,25 @@ public class Action<T extends Action> implements Poolable{
 	//are all cycles complete
 	//TODO is needed?
 	protected boolean isComplete;
-	
-	//has the current cycle finished
+	/** Whether the current cycle is finished or not */
 	protected boolean isFinished;
 	
 	private boolean forceKill;
 	private boolean forceEnd;
 	
-	//is the current cycle running
 	protected boolean isRunning;
 	protected boolean isPaused;
 	private String name;
 	private PauseCondition pauseCondition;
 	private ActionManager actionManager;
 	private Array<ActionListener> listeners;
+	
+	//Listeners that can't be removed by the user.
 	private Array<ActionListener> libraryListeners;
 	final Array<Action> preActions;
 	final Array<Action> postActions;
 	private ConflictChecker conflictWatcher;
+	
 	protected ActionLogger logger;
 	
 	public Action() {
@@ -62,7 +71,7 @@ public class Action<T extends Action> implements Poolable{
 	public ActionLogger getLogger() {
 		return logger;
 	}
-	
+
 	public T watchAction(ActionWatcher watcher) {
 		if(watcher == null) throw new IllegalArgumentException("ActionWatcher is null.");
 		watcher.watch(this);
@@ -99,16 +108,18 @@ public class Action<T extends Action> implements Poolable{
 		return postActions;
 	}
 	
-	protected void lastCycle() {
-		if(!isRoot) return;
-		lastCycle = true;
+	protected boolean lastCycle() {
+		return true;
+	}
+	
+	public boolean isLastCycle() {
+		return lastCycle;
 	}
 	
 	void setPooled(boolean pooled) {
 		hasBeenPooled = pooled;
 	}
 	
-	//TODO remove this
 	public boolean hasBeenPooled() {
 		return hasBeenPooled;
 	}
@@ -138,6 +149,7 @@ public class Action<T extends Action> implements Poolable{
 	
 	void setRoot() {
 		isRoot = true;
+		if(logger != null) logger.debug("Is Root");
 	}
 	
 	void setRootAction(Action root) {
@@ -153,7 +165,7 @@ public class Action<T extends Action> implements Poolable{
 	}
 	
 	public Action getRootAction() {
-		return rootAction;
+		return isRoot ? this : rootAction;
 	}
 	
 	public boolean isRunning() {
@@ -193,6 +205,10 @@ public class Action<T extends Action> implements Poolable{
 		if(pauseCondition == null) throw new IllegalArgumentException("PauseCondition is null.");
 		this.pauseCondition = pauseCondition;
 		return (T)this;
+	}
+	
+	protected boolean containsLibraryListener(ActionListener listener) {
+		return libraryListeners.contains(listener, false);
 	}
 	
 	protected T addLibraryListener(ActionListener listener) {
@@ -291,7 +307,8 @@ public class Action<T extends Action> implements Poolable{
 		isRunning = true;
 		isFinished = false;
 		
-		lastCycle();
+		if(isRoot) lastCycle = lastCycle();
+		if(lastCycle) logger.info("Last Cycle");
 
 		if(logger != null) logger.info("Start");	
 
@@ -314,7 +331,8 @@ public class Action<T extends Action> implements Poolable{
 		isRunning = true;
 		isFinished = false;
 		
-		lastCycle();
+		if(isRoot) lastCycle = lastCycle();
+		if(lastCycle) logger.info("Last Cycle");
 		
 		for(int i = 0; i < libraryListeners.size; i++) {
 			libraryListeners.get(i).actionRestart(this);
@@ -338,6 +356,8 @@ public class Action<T extends Action> implements Poolable{
 		isRunning = false;
 		isFinished = true;
 		
+		if(isRoot) lastCycle = true;
+		
 		for(int i = 0; i < libraryListeners.size; i++) {
 			libraryListeners.get(i).actionEnd(this);
 		}
@@ -347,22 +367,10 @@ public class Action<T extends Action> implements Poolable{
 		}
 		
 		//check if this is the last cycle
-		isComplete = !isRoot ? rootAction.lastCycle : this.lastCycle;
+//		isComplete = !isRoot ? rootAction.lastCycle : this.lastCycle;
+		isComplete = getRootAction().lastCycle;
 		if(isComplete) {
-			for(int i = 0; i < libraryListeners.size; i++) {
-				libraryListeners.get(i).actionComplete(this);
-			}
-			
-			for(int i = 0; i < listeners.size; i++) {
-				listeners.get(i).actionComplete(this);
-			}
-			
-			if(postActions.size > 0) {
-				ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
-				for(int i = postActions.size - 1; i >= 0; i--) {
-					manager.addAction(postActions.pop());
-				}
-			}
+			complete();
 		}
 		return (T)this;
 	}
@@ -379,6 +387,8 @@ public class Action<T extends Action> implements Poolable{
 		isFinished = true;
 		isComplete = true;
 		
+		if(isRoot) lastCycle = true;
+		
 		for(int i = 0; i < libraryListeners.size; i++) {
 			libraryListeners.get(i).actionKill(this);
 		}
@@ -389,12 +399,32 @@ public class Action<T extends Action> implements Poolable{
 		
 		if(postActions.size > 0) {
 			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
+//			ActionManager manager = getRootAction().actionManager;
 			for(int i = postActions.size - 1; i >= 0; i--) {
 				manager.addAction(postActions.pop());
 			}
 		}
 		
 		return(T)this;
+	}
+	
+	protected T complete() {
+		for(int i = 0; i < libraryListeners.size; i++) {
+			libraryListeners.get(i).actionComplete(this);
+		}
+		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionComplete(this);
+		}
+		
+		if(postActions.size > 0) {
+//			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
+			ActionManager manager = getRootAction().actionManager;
+			for(int i = postActions.size - 1; i >= 0; i--) {
+				manager.addAction(postActions.pop());
+			}
+		}
+		return (T)this;
 	}
 
 	public static <T extends Action> T getAction(Class<T> c) {

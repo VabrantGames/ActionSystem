@@ -15,7 +15,7 @@ public class UnmanagedTest extends ActionSystemTestScreen {
 		unmanagedAction = RotateAction.rotateBy(testObject, 180f, 1f, Interpolation.linear)
 				.setName("UnManagedAction")
 				.unmanage();
-		actionManager.addUnmanagedAction(unmanagedAction);
+		actionManager.addAction(unmanagedAction);
 	}
 
 	@Override

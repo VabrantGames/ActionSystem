@@ -79,10 +79,14 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	@Override
 	protected void percent(float percent) {
 		if(!usePercent) percent = 1;
-		
 		if(shakeX) percentable.setShakeX(MathUtils.random(-x, x) * percent);
 		if(shakeY) percentable.setShakeY(MathUtils.random(-y, y) * percent);
 		if(shakeAngle) percentable.setShakeAngle(MathUtils.random(-angle, angle) * percent);
+	}
+	
+	@Override
+	public ShakeAction setup() {
+		return this;
 	}
 	
 	@Override

@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.actions;
 
-public interface ActionListener {
-	public void actionStart(Action a);
-	public void actionEnd(Action a);
-	public void actionKill(Action a);
-	public void actionRestart(Action a);
-	public void actionComplete(Action a);
+public interface ActionListener<T extends Action<?>> {
+	public void actionStart(T a);
+	public void actionEnd(T a);
+	public void actionKill(T a);
+	public void actionRestart(T a);
+	public void actionComplete(T a);
 }

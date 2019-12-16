@@ -156,6 +156,13 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	@Override
 	public ColorAction start() {
 		super.start();
+		if(!didInitialSetup) setup();
+		return this;
+	}
+	
+	@Override
+	public ColorAction setup() {
+		didInitialSetup = true;
 		
 		if(setupAction) {
 			switch(type) {

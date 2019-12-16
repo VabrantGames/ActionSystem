@@ -53,12 +53,14 @@ public class RepeatAction extends Action<RepeatAction> {
 	}
 	
 	@Override
-	protected void lastCycle() {
+	protected boolean lastCycle() {
 		if(!isContinuous) {
 			if(count == amount || amount == 0) {
-				super.lastCycle();
+//				super.lastCycle();
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public Action getRepeatAction() {

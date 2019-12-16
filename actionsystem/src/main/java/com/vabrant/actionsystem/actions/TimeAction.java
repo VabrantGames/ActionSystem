@@ -1,5 +1,7 @@
 package com.vabrant.actionsystem.actions;
 
+import com.badlogic.gdx.math.MathUtils;
+
 public class TimeAction<T extends Action> extends Action<T> {
 
 	public float timer;
@@ -9,8 +11,14 @@ public class TimeAction<T extends Action> extends Action<T> {
 		return timer;
 	}
 	
+	public T setTime(float time) {
+		timer = MathUtils.clamp(time, 0, duration);
+		return (T)this;
+	}
+	
 	public T setDuration(float duration) {
 		this.duration = duration;
+		if(this.duration < 0) this.duration = 0;
 		return (T)this;
 	}
 	
@@ -36,13 +44,29 @@ public class TimeAction<T extends Action> extends Action<T> {
 	@Override
 	public T start() {
 		super.start();
-		timer = 0;
+//		timer = 0;
 		return (T)this;
 	}
 	
 	@Override
 	public T restart() {
 		super.restart();
+		timer = 0;
+		return (T)this;
+	}
+	
+	@Override
+	public T kill() {
+		super.kill();
+		if(!isManaged() && getRootAction().isLastCycle()) {
+			timer = 0;
+		}
+		return (T)this;
+	}
+	
+	@Override
+	protected T complete() {
+		super.complete();
 		timer = 0;
 		return (T)this;
 	}

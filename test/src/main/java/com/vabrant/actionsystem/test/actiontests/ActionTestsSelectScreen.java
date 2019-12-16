@@ -12,6 +12,7 @@ public class ActionTestsSelectScreen extends TestSelectScreen {
 			PreActionsEarlyEndTest.class,
 			PostActionsTest.class,
 			ActionListenerTest.class,
+			NotLastCycleEndTest.class,
 	};
 	
 	public ActionTestsSelectScreen(TestApplication app) {

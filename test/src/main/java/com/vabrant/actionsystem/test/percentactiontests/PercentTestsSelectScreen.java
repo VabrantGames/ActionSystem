@@ -9,7 +9,8 @@ public class PercentTestsSelectScreen extends TestSelectScreen {
 		KillTest.class,
 		EndTest.class,
 		ReverseTest.class,
-		ReverseBackToStartTest.class
+		ReverseBackToStartTest.class,
+		MoveToPercentTest.class
 	};
 	
 	public PercentTestsSelectScreen(TestApplication app) {
