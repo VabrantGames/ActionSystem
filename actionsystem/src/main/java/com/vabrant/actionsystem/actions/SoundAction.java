@@ -1,43 +1,52 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.MathUtils;
 
-public class SoundAction extends Action<SoundAction> {
-
-	private static SoundActionPlatformListener isSoundPlayingListener;
-	
-	public static void init(SoundActionPlatformListener listener) {
-		if(listener == null) throw new IllegalArgumentException("Listener is null.");
-		isSoundPlayingListener = listener;
-	}
+public class SoundAction extends TimeAction<SoundAction> {
 
 	public static SoundAction getAction() {
 		return getAction(SoundAction.class);
 	}
 	
-	public static SoundAction playSound(Sound sound) {
+	public static SoundAction play(Sound sound, float duration) {
 		SoundAction action = getAction();
+		action.setDuration(duration);
 		action.play(sound);
 		return action;
 	}
 	
-	public static SoundAction playSound(Sound sound, float volume) {
+	public static SoundAction play(Sound sound, float duration, float volume) {
 		SoundAction action = getAction();
-		action.play(sound);
+		action.setDuration(duration);
 		action.setVolume(volume);
+		action.play(sound);
 		return action;
 	}
 	
-	public static SoundAction playSound(Sound sound, float volume, float pitch) {
+	public static SoundAction play(Sound sound, float duration, float volume, float pitch, float pan) {
 		SoundAction action = getAction();
-		return action;
-	}
-	
-	public static SoundAction playSound(Sound sound, float volume, float pitch, float pan) {
-		SoundAction action = getAction();
+		
+		float actualDuration = duration;
+		if(pitch > 1.0) {
+			actualDuration = duration / pitch;
+		}
+		else if(pitch < 1.0f && pitch >= 0.5f) {
+			actualDuration = duration * MathUtils.map(1, 0.5f, 1, 2, pitch);
+		}
+		else if(pitch < 0.5f) {
+//			actualDuration = duration * MathUtils.map(0.5f, 0, 2, 6, pitch);
+//			actualDuration = duration * 5;//0.2
+//			actualDuration = duration * 3.35f;//0.3
+//			actualDuration = duration * 2.5f;//0.4
+//			actualDuration = duration * 2;//0.5
+		}
+		
+		action.setDuration(actualDuration);
 		action.setVolume(volume);
 		action.setPitch(pitch);
 		action.setPan(pan);
+		action.play(sound);
 		return action;
 	}
 
@@ -76,18 +85,15 @@ public class SoundAction extends Action<SoundAction> {
 	}
 	
 	@Override
-	public boolean update(float delta) {
-		if(isFinished) return true;
-		if(isPaused) return false;
-		if(!isRunning) start();
-		
-		if(!isSoundPlayingListener.isPlaying(soundId)) {
-			end();
-		}
-		
-		return isFinished;
+	protected void customPauseLogic() {
+		sound.pause(soundId);
 	}
 	
+	@Override
+	protected void customResumeLogic() {
+		sound.resume(soundId);
+	}
+
 	@Override
 	public void reset() {
 		super.reset();

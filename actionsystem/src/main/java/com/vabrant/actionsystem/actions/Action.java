@@ -187,15 +187,20 @@ public class Action<T extends Action<?>> implements Poolable{
 		return name;
 	}
 	
-	public void pause() {
+	public final void pause() {
 		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
 		isPaused = true;
+		customPauseLogic();
 	}
 	
-	public void resume() {
+	protected void customPauseLogic() {}
+	
+	public final void resume() {
 		if(!isRunning || !isPaused || pauseCondition != null && !pauseCondition.shouldResume()) return;
 		isPaused = false;
 	}
+	
+	protected void customResumeLogic() {}
 	
 	public boolean isPaused() {
 		return isPaused;
