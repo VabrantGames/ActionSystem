@@ -50,7 +50,7 @@ public class SoundAction extends TimeAction<SoundAction> {
 		return action;
 	}
 
-	private long soundId;
+	private long soundId = -1;
 	private float volume = 1;
 	private float pitch = 1;
 	private float pan = 0;
@@ -64,16 +64,19 @@ public class SoundAction extends TimeAction<SoundAction> {
 
 	public SoundAction setVolume(float volume) {
 		this.volume = volume;
+		if(soundId != -1) sound.setVolume(soundId, volume); 
 		return this;
 	}
 	
 	public SoundAction setPitch(float pitch) {
 		this.pitch = pitch;
+		if(soundId != -1) sound.setPitch(soundId, pitch);
 		return this;
 	}
 	
 	public SoundAction setPan(float pan) {
 		this.pan = pan;
+		if(soundId != -1) sound.setPan(soundId, pan, volume);
 		return this;
 	}
 	
@@ -97,7 +100,8 @@ public class SoundAction extends TimeAction<SoundAction> {
 	@Override
 	public void reset() {
 		super.reset();
-		soundId = 0;
+		sound = null;
+		soundId = -1;
 		volume = 1;
 		pitch = 1;
 		pan = 0;

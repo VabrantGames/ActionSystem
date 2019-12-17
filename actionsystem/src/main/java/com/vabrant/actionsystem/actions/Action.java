@@ -198,6 +198,7 @@ public class Action<T extends Action<?>> implements Poolable{
 	public final void resume() {
 		if(!isRunning || !isPaused || pauseCondition != null && !pauseCondition.shouldResume()) return;
 		isPaused = false;
+		customResumeLogic();
 	}
 	
 	protected void customResumeLogic() {}

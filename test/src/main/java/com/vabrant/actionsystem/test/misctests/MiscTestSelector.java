@@ -11,6 +11,7 @@ public class MiscTestSelector extends TestSelectScreen {
 			CountDownActionTest.class,
 			SoundActionTest.class,
 			ScaleConflictTest.class,
+			MusicActionTest.class
 	};
 	
 	public MiscTestSelector(TestApplication app) {
