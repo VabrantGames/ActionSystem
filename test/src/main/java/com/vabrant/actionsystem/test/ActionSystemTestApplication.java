@@ -1,10 +1,7 @@
 package com.vabrant.actionsystem.test;
 
-import org.lwjgl.openal.AL10;
-
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.vabrant.testbase.TestApplication;
 
 public class ActionSystemTestApplication extends TestApplication{

@@ -1,5 +1,6 @@
 package com.vabrant.actionsystem.test.misctests;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.SoundAction;
@@ -21,7 +22,7 @@ public class SoundActionTest extends ActionSystemTestScreen implements ActionLis
 
 	@Override
 	public void runTest() {
-		SoundAction action = SoundAction.play(sound, duration, 1.2f, 0, 0);
+		SoundAction action = SoundAction.play(sound, duration, 1f, 1, 0);
 		actionManager.addAction(action);
 	}
 

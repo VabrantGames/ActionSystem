@@ -58,6 +58,7 @@ public class MusicAction extends TimeAction<MusicAction> {
 	@Override
 	public void reset() {
 		super.reset();
+		if(music.isPlaying()) music.stop();
 		music = null;
 		volume = 1;
 		pan = 0;

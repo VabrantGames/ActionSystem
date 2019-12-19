@@ -1,10 +1,8 @@
 package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;

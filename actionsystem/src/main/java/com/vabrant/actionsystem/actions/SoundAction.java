@@ -100,6 +100,7 @@ public class SoundAction extends TimeAction<SoundAction> {
 	@Override
 	public void reset() {
 		super.reset();
+		sound.stop(soundId);
 		sound = null;
 		soundId = -1;
 		volume = 1;

@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
-import com.vabrant.actionsystem.templates.ActionTemplates;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.testbase.TestSelectScreen;
 

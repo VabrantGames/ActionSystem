@@ -2,10 +2,11 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class ActionWatcher extends ActionAdapter {
+public class ActionWatcher {
 
 	private final ActionLogger logger;
 	private final ObjectMap<String, Action> actions;
+	private final ActionListener listener;
 	
 	public ActionWatcher() {
 		this(3);
@@ -14,6 +15,21 @@ public class ActionWatcher extends ActionAdapter {
 	public ActionWatcher(int size) {
 		actions = new ObjectMap<>(size);
 		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.NONE);
+		listener = createActionListener();
+	}
+	
+	private ActionListener createActionListener() {
+		return new ActionAdapter() {
+			@Override
+			public void actionKill(Action a) {
+				removeAction(a);
+			}
+			
+			@Override
+			public void actionComplete(Action a) {
+				removeAction(a);
+			}
+		};
 	}
 	
 	public ActionLogger getLogger() {
@@ -32,7 +48,7 @@ public class ActionWatcher extends ActionAdapter {
 	
 	public void watch(String name, Action action) {
 		if(action == null) return;
-		action.addLibraryListener(this);
+		action.addLibraryListener(listener);
 		actions.put(name, action);
 		if(logger != null) logger.info("Watching", name);
 	}
@@ -42,16 +58,6 @@ public class ActionWatcher extends ActionAdapter {
 		String key = actions.findKey(a, false);
 		actions.remove(key);
 		if(logger != null) logger.debug("Stopped Watching", key);
-	}
-	
-	@Override
-	public void actionKill(Action a) {
-		removeAction(a);
-	}
-	
-	@Override
-	public void actionComplete(Action a) {
-		removeAction(a);
 	}
 
 }

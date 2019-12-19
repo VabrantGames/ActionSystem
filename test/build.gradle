@@ -12,7 +12,6 @@ version = "$actionSystemVersion"
 
 dependencies{
 	api project(":actionsystem")
-	implementation project(":desktopaudio")
 	implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
 	implementation "com.vabrant.testbase:test-base:0.0.0"
 	implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"

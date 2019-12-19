@@ -4,13 +4,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.GroupAction;
-import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.PauseCondition;
-import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.actionsystem.actions.RunnableAction;
 import com.vabrant.testbase.TestSelectScreen;
 
 public class PauseConditionTestOld extends ActionSystemTestScreen implements PauseCondition{

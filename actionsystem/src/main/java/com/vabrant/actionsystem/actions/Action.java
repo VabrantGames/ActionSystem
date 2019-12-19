@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  *
  * @param <T> Type of action
  */
-public class Action<T extends Action<?>> implements Poolable{
+public class Action<T extends Action> implements Poolable{
 	
 	boolean isRoot;
 	Action<?> rootAction;
