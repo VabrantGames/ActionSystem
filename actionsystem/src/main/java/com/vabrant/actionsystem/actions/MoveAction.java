@@ -199,10 +199,9 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	@Override
-	public MoveAction start() {
-		super.start();
+	public void customStartLogic() {
+		super.customStartLogic();
 		if(!didInitialSetup) setup();
-		return this;
 	}
 	
 	@Override

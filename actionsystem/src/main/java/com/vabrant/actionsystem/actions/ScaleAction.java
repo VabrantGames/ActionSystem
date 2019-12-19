@@ -188,12 +188,11 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 		}
 		return this;
 	}
-	
+
 	@Override
-	public ScaleAction start() {
-		super.start();
+	protected void customStartLogic() {
+		super.customStartLogic();
 		if(!didInitialSetup) setup();
-		return this;
 	}
 	
 	@Override

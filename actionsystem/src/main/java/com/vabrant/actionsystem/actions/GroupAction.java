@@ -131,13 +131,6 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
-	public GroupAction start() {
-		super.start();
-//		lastCycle();
-		return this;
-	}
-	
-	@Override
 	public GroupAction restart() {
 		super.restart();
 		index = 0;

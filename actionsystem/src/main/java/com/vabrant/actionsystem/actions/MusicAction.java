@@ -38,11 +38,10 @@ public class MusicAction extends TimeAction<MusicAction> {
 	}
 	
 	@Override
-	public MusicAction start() {
-		super.start();
+	protected void customStartLogic() {
+		super.customStartLogic();
 		music.setPan(pan, volume);
 		music.play();
-		return this;
 	}
 	
 	@Override

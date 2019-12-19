@@ -124,12 +124,12 @@ public class ActionUpdateTest extends ActionSystemTestScreen {
 			return isFinished;
 		}
 		
-		@Override
-		public TestGroupAction start() {
-			super.start();
-			index = 0;
-			return this;
-		}
+//		@Override
+//		public TestGroupAction start() {
+//			super.start();
+//			index = 0;
+//			return this;
+//		}
 		
 		boolean over = true;
 		public Action updateNew(float delta) {

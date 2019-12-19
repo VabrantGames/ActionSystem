@@ -40,13 +40,6 @@ public class TimeAction<T extends Action> extends Action<T> {
 		}
 		return isFinished;
 	}
-
-	@Override
-	public T start() {
-		super.start();
-//		timer = 0;
-		return (T)this;
-	}
 	
 	@Override
 	public T restart() {

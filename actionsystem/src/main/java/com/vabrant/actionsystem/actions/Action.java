@@ -290,10 +290,12 @@ public class Action<T extends Action> implements Poolable{
 		end();
 	}
 	
-	public T start() {
+	public final T start() {
 		if(conflictWatcher != null) {
 			if(conflictWatcher.checkForConflict(this)) return null;
 		}
+		
+		customStartLogic();
 		
 		if(!isManaged()) {
 			if(actionManager == null) throw new ActionSystemRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
@@ -328,6 +330,8 @@ public class Action<T extends Action> implements Poolable{
 		
 		return (T)this;
 	}
+	
+	protected void customStartLogic() {}
 	
 	public T restart() {
 		if(isComplete) return (T)this;

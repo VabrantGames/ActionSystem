@@ -79,12 +79,11 @@ public class SoundAction extends TimeAction<SoundAction> {
 		if(soundId != -1) sound.setPan(soundId, pan, volume);
 		return this;
 	}
-	
+
 	@Override
-	public SoundAction start() {
-		super.start();
+	protected void customStartLogic() {
+		super.customStartLogic();
 		soundId = sound.play(volume, pitch, pan);
-		return this;
 	}
 	
 	@Override

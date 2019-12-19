@@ -81,10 +81,9 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 	
 	@Override
-	public ZoomAction start() {
-		super.start();
+	protected void customStartLogic() {
+		super.customStartLogic();
 		if(!didInitialSetup) setup();
-		return this;
 	}
 	
 	@Override

@@ -30,10 +30,9 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 	}
 	
 	@Override
-	public CountDownAction start() {
-		super.start();
+	protected void customStartLogic() {
+		super.customStartLogic();
 		fireCount(nextCount + 1);
-		return this;
 	}
 	
 	@Override
