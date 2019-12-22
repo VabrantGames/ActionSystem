@@ -1,0 +1,19 @@
+apply plugin: "java-library"
+apply plugin: "maven"
+
+group = "com.github.vabrant.actionsystem"
+
+task sourceJar(type: Jar){
+    from sourceSets.main.allSource
+    archiveClassifier = "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc){
+    from javadoc.destinationDir
+    archiveClassifier = "javadoc"
+}
+
+artifacts{
+	archives sourceJar
+	archives javadocJar
+}
