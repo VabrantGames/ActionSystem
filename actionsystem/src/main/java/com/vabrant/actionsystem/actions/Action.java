@@ -53,9 +53,6 @@ public class Action<T extends Action> implements Poolable{
 		preActions = new Array<>(1);
 		postActions = new Array<>(1);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
-		
-		//DEBUG remove
-		logger.setLevel(Logger.DEBUG);
 	}
 	
 	public T setLoggingLevel(int level) {

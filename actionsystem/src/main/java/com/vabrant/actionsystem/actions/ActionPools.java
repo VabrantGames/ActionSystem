@@ -12,11 +12,6 @@ public class ActionPools {
 //	private static final int defaultPoolMaxCapacity = 100;
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
 	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.NONE);
-	
-	//DEBUG remove
-	static {
-		logger.setLevel(ActionLogger.DEBUG);
-	}
 
 	/**
 	 * Where you want the pool to be filled to.

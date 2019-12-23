@@ -17,3 +17,8 @@ artifacts{
 	archives sourceJar
 	archives javadocJar
 }
+
+install{
+	repositories{
+	}
+}

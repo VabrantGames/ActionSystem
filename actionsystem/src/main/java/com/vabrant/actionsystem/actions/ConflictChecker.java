@@ -25,7 +25,7 @@ public class ConflictChecker extends ActionAdapter{
 	public ConflictChecker(int size) {
 		conflicts = new ObjectMap<>(size);
 		runningActions = new ObjectMap<>(size);
-		logger = ActionLogger.getLogger(ConflictChecker.class, ActionLogger.DEBUG);
+		logger = ActionLogger.getLogger(ConflictChecker.class, ActionLogger.NONE);
 	}
 	
 	public ActionLogger getLogger() {
