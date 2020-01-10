@@ -22,7 +22,7 @@ public class ActionWatcher {
 		return new ActionAdapter() {
 			@Override
 			public void actionKill(Action a) {
-				removeAction(a);
+//				removeAction(a);
 			}
 			
 			@Override
