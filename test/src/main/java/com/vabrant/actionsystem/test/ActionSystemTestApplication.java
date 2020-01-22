@@ -2,9 +2,9 @@ package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.vabrant.testbase.TestApplication;
+import com.vabrant.testbase.TestBaseApplicationListener;
 
-public class ActionSystemTestApplication extends TestApplication{
+public class ActionSystemTestApplication extends TestBaseApplicationListener{
 	
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

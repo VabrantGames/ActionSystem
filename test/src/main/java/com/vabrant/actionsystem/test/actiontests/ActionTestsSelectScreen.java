@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.actiontests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class ActionTestsSelectScreen extends TestSelectScreen {
+public class ActionTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			UnmanagedTest.class,
@@ -15,7 +15,7 @@ public class ActionTestsSelectScreen extends TestSelectScreen {
 			NotLastCycleEndTest.class,
 	};
 	
-	public ActionTestsSelectScreen(TestApplication app) {
+	public ActionTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

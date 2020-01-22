@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.movetests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class MoveTestsSelectScreen extends TestSelectScreen {
+public class MoveTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 		MoveXByTest.class,	
@@ -14,7 +14,7 @@ public class MoveTestsSelectScreen extends TestSelectScreen {
 		MoveConflictTest.class,
 	};
 	
-	public MoveTestsSelectScreen(TestApplication app) {
+	public MoveTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

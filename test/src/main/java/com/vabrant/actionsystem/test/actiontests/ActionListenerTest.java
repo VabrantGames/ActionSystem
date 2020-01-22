@@ -6,11 +6,11 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ActionListenerTest extends ActionSystemTestScreen {
 
-	public ActionListenerTest(TestSelectScreen screen) {
+	public ActionListenerTest(ActionSystemTestSelector screen) {
 		super(screen);
 	}
 	

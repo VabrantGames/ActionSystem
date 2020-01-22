@@ -6,13 +6,13 @@ import com.vabrant.actionsystem.actions.ConflictChecker.ConflictActionType;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ScaleConflictTest extends ActionSystemTestScreen {
 
 	private ConflictChecker conflictChecker;
 	
-	public ScaleConflictTest(TestSelectScreen screen) {
+	public ScaleConflictTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		conflictChecker = new ConflictChecker();

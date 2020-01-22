@@ -10,7 +10,7 @@ import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.testbase.Test;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 
@@ -19,7 +19,7 @@ public class ActionManagerTestScreenOld extends ActionSystemTestScreen {
 			};
 	ActionSystemTestObject testObject;
 	
-	public ActionManagerTestScreenOld(TestSelectScreen screen) {
+	public ActionManagerTestScreenOld(ActionSystemTestSelector screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 //		ActionPools.logger.setLevel(Logger.DEBUG);

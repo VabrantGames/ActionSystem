@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.repeattests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class RepeatTestsSelectScreen extends TestSelectScreen {
+public class RepeatTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			ContinuousTest.class,
@@ -11,7 +11,7 @@ public class RepeatTestsSelectScreen extends TestSelectScreen {
 			NestedRepeatTest.class,
 	};
 	
-	public RepeatTestsSelectScreen(TestApplication app) {
+	public RepeatTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

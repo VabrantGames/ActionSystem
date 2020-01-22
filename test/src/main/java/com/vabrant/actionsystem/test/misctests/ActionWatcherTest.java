@@ -7,14 +7,14 @@ import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ActionWatcherTest extends ActionSystemTestScreen {
 
 	private final String actionName = "continuousAction";
 	private ActionWatcher actionWatcher;
 	
-	public ActionWatcherTest(TestSelectScreen testSelectScreen) {
+	public ActionWatcherTest(ActionSystemTestSelector testSelectScreen) {
 		super(testSelectScreen);
 		createTestObject();
 		actionWatcher = new ActionWatcher();

@@ -2,62 +2,71 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
 
+/**
+ * 
+ * @author John
+ *
+ */
 public class ActionWatcher {
 
-	private final ActionLogger logger;
-	private final ObjectMap<String, Action> actions;
-	private final ActionListener listener;
+	private static final ActionWatcher instance = new ActionWatcher();
 	
-	public ActionWatcher() {
-		this(3);
+	public static void watch(Action action) {
+		if(action == null) throw new IllegalArgumentException("Action is null");
+		instance.watchAction(action);
 	}
 	
-	public ActionWatcher(int size) {
-		actions = new ObjectMap<>(size);
+	public static Action stopWatching(String name) {
+		return instance.removeAction(name);
+	}
+	
+	public static Action get(String name) {
+		return instance.actions.get(name);
+	}
+	
+	public static ActionLogger getLogger() {
+		return instance.logger;
+	}
+	
+	private final ActionLogger logger;
+	private final ObjectMap<String, Action<? extends Action>> actions;
+	private final CleanupListener listener;
+	
+	private ActionWatcher() {
+		actions = new ObjectMap<>(20);
 		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.NONE);
 		listener = createActionListener();
 	}
 	
-	private ActionListener createActionListener() {
-		return new ActionAdapter() {
+	private CleanupListener createActionListener() {
+		return new CleanupListener() {
 			@Override
-			public void actionKill(Action a) {
-//				removeAction(a);
-			}
-			
-			@Override
-			public void actionComplete(Action a) {
-				removeAction(a);
+			public void cleanup(Action a) {
+				removeAction(a.getName());
 			}
 		};
 	}
-	
-	public ActionLogger getLogger() {
-		return logger;
-	}
-	
-	public Action getAction(String name) {
-		return actions.get(name);
-	}
 
-	public void watch(Action action) {
-		if(action == null) return;
+	private void watchAction(Action action) {
 		if(action.getName() == null) throw new IllegalArgumentException("Action name is null");
-		watch(action.getName(), action);
+		action.addCleanupListener(listener);
+		actions.put(action.getName(), action);
+		if(logger != null) logger.info("Watching", action.getName());
 	}
 	
-	public void watch(String name, Action action) {
-		if(action == null) return;
-		action.addLibraryListener(listener);
-		actions.put(name, action);
-		if(logger != null) logger.info("Watching", name);
-	}
-	
-	private void removeAction(Action a) {
-		if(!a.isManaged()) return;
-		String key = actions.findKey(a, false);
-		actions.remove(key);
-		if(logger != null) logger.debug("Stopped Watching", key);
+	private Action removeAction(String name) {
+		Action action = actions.remove(name);
+		
+		if(action == null) {
+			if(logger != null) logger.info("Action " + name + " doesn't exist");
+			return null;
+		}
+		
+		action.removeCleanupListener(listener);
+		
+		if(logger != null) logger.debug("Stopped Watching", name);
+		
+		return action;
 	}
 
 }

@@ -3,14 +3,14 @@ package com.vabrant.actionsystem.test.rotatetests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class RotateByTest extends ActionSystemTestScreen {
 
 	public float start;
 	public final float amount = 50;
 	
-	public RotateByTest(TestSelectScreen screen) {
+	public RotateByTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

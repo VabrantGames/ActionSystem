@@ -3,11 +3,11 @@ package com.vabrant.actionsystem.test.percentactiontests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ReverseTest extends ActionSystemTestScreen {
 
-	public ReverseTest(TestSelectScreen screen) {
+	public ReverseTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

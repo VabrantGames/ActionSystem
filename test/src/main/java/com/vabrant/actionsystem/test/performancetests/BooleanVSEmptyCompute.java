@@ -2,14 +2,14 @@ package com.vabrant.actionsystem.test.performancetests;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class BooleanVSEmptyCompute extends ActionSystemTestScreen {
 
 	private final int iterations = 1000;
 	PerformanceTimer timer = new PerformanceTimer(2);
 	
-	public BooleanVSEmptyCompute(TestSelectScreen screen) {
+	public BooleanVSEmptyCompute(ActionSystemTestSelector screen) {
 		super(screen);
 //		timer.setName("Test");
 	}

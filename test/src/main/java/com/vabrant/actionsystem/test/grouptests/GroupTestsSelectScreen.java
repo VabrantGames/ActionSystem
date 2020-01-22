@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.grouptests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class GroupTestsSelectScreen extends TestSelectScreen {
+public class GroupTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			SequenceTest.class,
@@ -13,7 +13,7 @@ public class GroupTestsSelectScreen extends TestSelectScreen {
 			GroupActionEndTest.class
 	};
 	
-	public GroupTestsSelectScreen(TestApplication app) {
+	public GroupTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

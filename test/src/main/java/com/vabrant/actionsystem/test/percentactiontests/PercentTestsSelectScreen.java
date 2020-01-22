@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.percentactiontests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class PercentTestsSelectScreen extends TestSelectScreen {
+public class PercentTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class<?>[] tests = {
 		KillTest.class,
@@ -13,7 +13,7 @@ public class PercentTestsSelectScreen extends TestSelectScreen {
 		MoveToPercentTest.class
 	};
 	
-	public PercentTestsSelectScreen(TestApplication app) {
+	public PercentTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

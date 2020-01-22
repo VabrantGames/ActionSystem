@@ -2,13 +2,13 @@ package com.vabrant.actionsystem.test.rotatetests;
 
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class SetRotationTest extends ActionSystemTestScreen {
 
 	public final float end = 360;
 	
-	public SetRotationTest(TestSelectScreen screen) {
+	public SetRotationTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

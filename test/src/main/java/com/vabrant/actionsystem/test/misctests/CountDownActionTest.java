@@ -3,11 +3,11 @@ package com.vabrant.actionsystem.test.misctests;
 import com.vabrant.actionsystem.actions.CountDownAction;
 import com.vabrant.actionsystem.actions.CountDownAction.CountDownActionListener;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class CountDownActionTest extends ActionSystemTestScreen {
 
-	public CountDownActionTest(TestSelectScreen screen) {
+	public CountDownActionTest(ActionSystemTestSelector screen) {
 		super(screen);
 	}
 	

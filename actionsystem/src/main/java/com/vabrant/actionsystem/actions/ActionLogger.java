@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 public class ActionLogger {
 	
+	private static boolean useSysOut = false;
 	private static boolean isRelease = false;
 	
 	public static final int NONE = 0;
@@ -31,6 +32,10 @@ public class ActionLogger {
 	
 	public static void setReleaseMode(boolean releaseMode) {
 		ActionLogger.isRelease = releaseMode;
+	}
+	
+	public static void useSysOut() {
+		useSysOut = true;
 	}
 	
 	public static void solo(ActionLogger logger) {
@@ -128,10 +133,26 @@ public class ActionLogger {
 			case ERROR:
 				break;
 			case INFO:
-				Gdx.app.log(className, STRING_BUILDER.toString());
+				if(!useSysOut) {
+					Gdx.app.log(className, STRING_BUILDER.toString());
+				}
+				else {
+					STRING_BUILDER.insert(0, "[");
+					STRING_BUILDER.insert(1, className);
+					STRING_BUILDER.insert(1 + className.length(), "] ");
+					System.out.println(STRING_BUILDER.toString());
+				}
 				break;
 			case DEBUG:
-				Gdx.app.debug(className, STRING_BUILDER.toString());
+				if(!useSysOut) {
+					Gdx.app.debug(className, STRING_BUILDER.toString());
+				}
+				else {
+					STRING_BUILDER.insert(0, "[");
+					STRING_BUILDER.insert(1, className);
+					STRING_BUILDER.insert(1 + className.length(), "] ");
+					System.out.println(STRING_BUILDER.toString());
+				}
 				break;
 		}
 	}

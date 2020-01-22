@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ChangeAlphaTest extends ActionSystemTestScreen {
 
 	private final int startAlpha = 1;
 	private final int endAlpha = 0;
 	
-	public ChangeAlphaTest(TestSelectScreen screen) {
+	public ChangeAlphaTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		testObject.setColor(Color.RED);

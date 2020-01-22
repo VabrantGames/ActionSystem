@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.SoundAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class SoundActionTest extends ActionSystemTestScreen implements ActionListener<SoundAction>{
 
@@ -13,7 +13,7 @@ public class SoundActionTest extends ActionSystemTestScreen implements ActionLis
 	private Sound sound;
 	private final String soundPath = "simpleSawMono.mp3";
 	
-	public SoundActionTest(TestSelectScreen screen) {
+	public SoundActionTest(ActionSystemTestSelector screen) {
 		super(screen);
 		application.assetManager.load(soundPath, Sound.class);
 		application.assetManager.finishLoading();

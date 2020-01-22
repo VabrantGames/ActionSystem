@@ -8,14 +8,14 @@ import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class RestartScaleXByFromEndTest extends ActionSystemTestScreen {
 
 	public final int scaleAmount = 1;
 	public final int repeatAmount = 3;
 	
-	public RestartScaleXByFromEndTest(TestSelectScreen screen) {
+	public RestartScaleXByFromEndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

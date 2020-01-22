@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.rotatetests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class RotateTestsSelectScreen extends TestSelectScreen {
+public class RotateTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			RotateToTest.class,
@@ -12,7 +12,7 @@ public class RotateTestsSelectScreen extends TestSelectScreen {
 			RestartRotateByFromEndTest.class
 	};
 	
-	public RotateTestsSelectScreen(TestApplication app) {
+	public RotateTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

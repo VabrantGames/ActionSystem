@@ -5,7 +5,7 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class NotLastCycleEndTest extends ActionSystemTestScreen {
 
@@ -14,7 +14,7 @@ public class NotLastCycleEndTest extends ActionSystemTestScreen {
 	private ActionWatcher actionWatcher;
 	private DelayAction unmanagedAction;
 	
-	public NotLastCycleEndTest(TestSelectScreen screen) {
+	public NotLastCycleEndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		actionWatcher = new ActionWatcher();
 		unmanagedAction = DelayAction.delay(3f)

@@ -1,15 +1,15 @@
 package com.vabrant.actionsystem.test;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class PlaygroundSelectScreen extends TestSelectScreen {
+public class PlaygroundSelectScreen extends ActionSystemTestSelector {
 	
 	Class[] tests = {
 			TestingPlayground.class,
 	};
 
-	public PlaygroundSelectScreen(TestApplication app) {
+	public PlaygroundSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

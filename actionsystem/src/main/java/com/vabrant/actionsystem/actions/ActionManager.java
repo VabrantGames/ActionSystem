@@ -17,9 +17,6 @@ public class ActionManager {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
-		
-		//DEBUG remove
-		logger.setLevel(Logger.DEBUG);
 	}
 	
 	public ActionLogger getLogger() {
@@ -110,6 +107,7 @@ public class ActionManager {
 	}
 
 	public void freeAll() {
+		if(logger != null) logger.debug("Free All");
 		for(int i = actions.size - 1; i >= 0; i--) {
 			ActionPools.free(actions.removeIndex(i));
 		}

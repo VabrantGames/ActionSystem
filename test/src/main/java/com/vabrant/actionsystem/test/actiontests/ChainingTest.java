@@ -7,11 +7,11 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.PauseCondition;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ChainingTest extends ActionSystemTestScreen {
 
-	public ChainingTest(TestSelectScreen screen) {
+	public ChainingTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

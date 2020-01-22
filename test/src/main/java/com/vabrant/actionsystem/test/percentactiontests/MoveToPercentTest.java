@@ -5,13 +5,13 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class MoveToPercentTest extends ActionSystemTestScreen {
 	
 	private final float percent = 0.5f;
 
-	public MoveToPercentTest(TestSelectScreen screen) {
+	public MoveToPercentTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

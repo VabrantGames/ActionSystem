@@ -4,9 +4,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entries;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
-public class ConflictChecker extends ActionAdapter{
-	
-	private final ActionLogger logger;
+public class ConflictChecker {
 	
 	public enum ConflictActionType{
 		KILL_OLD,
@@ -15,8 +13,10 @@ public class ConflictChecker extends ActionAdapter{
 		END_NEW
 	}
 
-	private final ObjectMap<Class<?>, ConflictActionType> conflicts;
-	private final ObjectMap<Action, Class<?>> runningActions;
+	private final ActionLogger logger;
+	private final ObjectMap<Class, ConflictActionType> conflicts;
+	private final ObjectMap<Action, Class> runningActions;
+	private final CleanupListener listener;
 	
 	public ConflictChecker() {
 		this(2);
@@ -26,6 +26,17 @@ public class ConflictChecker extends ActionAdapter{
 		conflicts = new ObjectMap<>(size);
 		runningActions = new ObjectMap<>(size);
 		logger = ActionLogger.getLogger(ConflictChecker.class, ActionLogger.NONE);
+		listener = createActionListener();
+	}
+	
+	private CleanupListener createActionListener() {
+		return new CleanupListener() {
+			@Override
+			public void cleanup(Action a) {
+				removeAction(a);
+			}
+			
+		};
 	}
 	
 	public ActionLogger getLogger() {
@@ -39,7 +50,7 @@ public class ConflictChecker extends ActionAdapter{
 	
 	private void addAction(Action action) {
 		if(runningActions.containsKey(action)) return;
-		action.addLibraryListener(this);
+		action.addCleanupListener(listener);
 		runningActions.put(action, action.getClass());
 		if(logger != null) logger.info("Watching" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
@@ -50,7 +61,7 @@ public class ConflictChecker extends ActionAdapter{
 	}
 
 	public boolean checkForConflict(Action newAction) {
-		Entries<Action, Class<?>> running = runningActions.entries();
+		Entries<Action, Class> running = runningActions.entries();
 		
 		//if the class isn't being watched there are no conflicts
 		if(!conflicts.containsKey(newAction.getClass())) return false;
@@ -59,7 +70,7 @@ public class ConflictChecker extends ActionAdapter{
 		boolean watchNewAction = type.equals(ConflictActionType.END_OLD) || type.equals(ConflictActionType.KILL_OLD) ? true : false;
 		
 		while(running.hasNext()) {
-			Entry<Action, Class<?>> entry = running.next();
+			Entry<Action, Class> entry = running.next();
 			Action oldAction = entry.key;
 			
 			if(oldAction.equals(newAction)) continue;
@@ -92,14 +103,5 @@ public class ConflictChecker extends ActionAdapter{
 				break;
 		}
 	}
-	
-	@Override
-	public void actionKill(Action a) {
-		removeAction(a);
-	}
-	
-	@Override
-	public void actionComplete(Action a) {
-		removeAction(a);
-	}
+
 }

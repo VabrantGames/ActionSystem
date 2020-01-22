@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.colortests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class ColorTestsSelectScreen extends TestSelectScreen {
+public class ColorTestsSelectScreen extends ActionSystemTestSelector {
 	
 	Class[] tests = {
 			ChangeColorRGBTest.class,
@@ -14,7 +14,7 @@ public class ColorTestsSelectScreen extends TestSelectScreen {
 			ChangeBrightnessTest.class
 	};
 	
-	public ColorTestsSelectScreen(TestApplication app) {
+	public ColorTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

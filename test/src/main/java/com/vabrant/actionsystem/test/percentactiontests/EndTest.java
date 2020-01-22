@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class EndTest extends ActionSystemTestScreen {
 	
@@ -16,7 +16,7 @@ public class EndTest extends ActionSystemTestScreen {
 	private final float amount = 100;
 	private final ActionWatcher actionWatcher;
 
-	public EndTest(TestSelectScreen screen) {
+	public EndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		actionWatcher = new ActionWatcher();

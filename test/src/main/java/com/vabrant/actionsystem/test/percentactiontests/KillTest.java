@@ -7,7 +7,7 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class KillTest extends ActionSystemTestScreen implements ActionListener{
 
@@ -19,7 +19,7 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 	private final float amount = 50;
 	private final ActionWatcher actionWatcher;
 	
-	public KillTest(TestSelectScreen screen) {
+	public KillTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		actionWatcher = new ActionWatcher();

@@ -3,14 +3,14 @@ package com.vabrant.actionsystem.test.movetests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class MoveXByTest extends ActionSystemTestScreen{
 	
 	final int amount = 50;
 	float start;
 	
-	public MoveXByTest(TestSelectScreen screen) {
+	public MoveXByTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

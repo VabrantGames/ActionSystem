@@ -12,10 +12,10 @@ import com.vabrant.actionsystem.test.rotatetests.RotateTestsSelectScreen;
 import com.vabrant.actionsystem.test.scaletests.ScaleTestsSelectScreen;
 import com.vabrant.actionsystem.test.shaketests.ShakeTestsSelectScreen;
 import com.vabrant.actionsystem.test.zoomtests.ZoomTestsSelectScreen;
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class ActionSystemTestSelectScreen extends TestSelectScreen{
+public class ActionSystemTestSelectScreen extends ActionSystemTestSelector{
 	
 	Class[] testScreens = {
 			ColorTestsSelectScreen.class,
@@ -33,7 +33,7 @@ public class ActionSystemTestSelectScreen extends TestSelectScreen{
 			MiscTestSelector.class,
 	};
 	
-	public ActionSystemTestSelectScreen(TestApplication app) {
+	public ActionSystemTestSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		setRoot(this);
 		addTests(testScreens);

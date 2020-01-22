@@ -2,13 +2,13 @@ package com.vabrant.actionsystem.test.zoomtests;
 
 import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class SetZoomTest extends ActionSystemTestScreen {
 
 	private final float end = 5;
 	
-	public SetZoomTest(TestSelectScreen screen) {
+	public SetZoomTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

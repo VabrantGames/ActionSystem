@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ActionUpdateTest extends ActionSystemTestScreen {
 	
@@ -13,7 +13,7 @@ public class ActionUpdateTest extends ActionSystemTestScreen {
 	private final PerformanceTimer timer = new PerformanceTimer(2);
 	private final TestActionManager testActionManager = new TestActionManager();
 	
-	public ActionUpdateTest(TestSelectScreen screen) {
+	public ActionUpdateTest(ActionSystemTestSelector screen) {
 		super(screen);
 		
 		Pool<TestAction> pool = new Pool<TestAction>(maxActions) {

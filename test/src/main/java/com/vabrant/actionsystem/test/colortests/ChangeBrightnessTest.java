@@ -3,11 +3,11 @@ package com.vabrant.actionsystem.test.colortests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ChangeBrightnessTest extends ActionSystemTestScreen {
 
-	public ChangeBrightnessTest(TestSelectScreen screen) {
+	public ChangeBrightnessTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

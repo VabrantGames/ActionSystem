@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.testbase.Test;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ActionPoolsTestScreenOld extends ActionSystemTestScreen {
 	
@@ -13,7 +13,7 @@ public class ActionPoolsTestScreenOld extends ActionSystemTestScreen {
 			FillTest.class
 			};
 	
-	public ActionPoolsTestScreenOld(TestSelectScreen screen) {
+	public ActionPoolsTestScreenOld(ActionSystemTestSelector screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 //		ActionPools.logger.setLevel(Logger.DEBUG);

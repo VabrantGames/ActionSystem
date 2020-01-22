@@ -3,14 +3,14 @@ package com.vabrant.actionsystem.test.zoomtests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ZoomByTest extends ActionSystemTestScreen {
 	
 	private float start;
 	private final float amount = 1;
 
-	public ZoomByTest(TestSelectScreen screen) {
+	public ZoomByTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

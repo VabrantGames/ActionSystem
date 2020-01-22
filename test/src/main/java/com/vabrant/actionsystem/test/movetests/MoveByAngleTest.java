@@ -5,14 +5,14 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class MoveByAngleTest extends ActionSystemTestScreen {
 
 	final int angle = 60;
 	final int amount = 50;
 	
-	public MoveByAngleTest(TestSelectScreen screen) {
+	public MoveByAngleTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

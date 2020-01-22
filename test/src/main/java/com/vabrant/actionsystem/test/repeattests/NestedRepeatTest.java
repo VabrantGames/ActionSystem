@@ -6,11 +6,11 @@ import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class NestedRepeatTest extends ActionSystemTestScreen {
 
-	public NestedRepeatTest(TestSelectScreen screen) {
+	public NestedRepeatTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

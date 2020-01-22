@@ -7,11 +7,11 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class TestingPlayground extends ActionSystemTestScreen{
 	
-	public TestingPlayground(TestSelectScreen app) {
+	public TestingPlayground(ActionSystemTestSelector app) {
 		super(app);
 		createTestObject();
 		testObject.setX(100);

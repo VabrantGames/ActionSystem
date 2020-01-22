@@ -6,7 +6,7 @@ import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class RestartMoveXByFromEndTest extends ActionSystemTestScreen {
 	
@@ -14,7 +14,7 @@ public class RestartMoveXByFromEndTest extends ActionSystemTestScreen {
 	final int amount = 50;
 	float start;
 
-	public RestartMoveXByFromEndTest(TestSelectScreen screen) {
+	public RestartMoveXByFromEndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

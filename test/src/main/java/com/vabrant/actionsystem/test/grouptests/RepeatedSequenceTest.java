@@ -6,14 +6,14 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class RepeatedSequenceTest extends ActionSystemTestScreen implements ActionListener{
 
 	private final int repeatAmount = 2;
 	private final float delay = 0.5f;
 	
-	public RepeatedSequenceTest(TestSelectScreen screen) {
+	public RepeatedSequenceTest(ActionSystemTestSelector screen) {
 		super(screen);
 	}
 

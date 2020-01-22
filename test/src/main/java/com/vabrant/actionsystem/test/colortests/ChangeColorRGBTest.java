@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ChangeColorRGBTest extends ActionSystemTestScreen {
 	
 	Color startColor = new Color(Color.BLACK);
 	Color endColor = new Color(Color.RED);
 	
-	public ChangeColorRGBTest(TestSelectScreen screen) {
+	public ChangeColorRGBTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		reset();

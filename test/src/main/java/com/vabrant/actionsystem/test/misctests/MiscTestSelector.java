@@ -1,10 +1,10 @@
 package com.vabrant.actionsystem.test.misctests;
 
 import com.vabrant.actionsystem.test.scaletests.ScaleConflictTest;
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class MiscTestSelector extends TestSelectScreen {
+public class MiscTestSelector extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			ActionWatcherTest.class,
@@ -14,7 +14,7 @@ public class MiscTestSelector extends TestSelectScreen {
 			MusicActionTest.class
 	};
 	
-	public MiscTestSelector(TestApplication app) {
+	public MiscTestSelector(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

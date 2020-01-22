@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class ActionPools {
 	
 //	private static final int defaultPoolMaxCapacity = 100;
-	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
+	private static final ObjectMap<Class, Pool> pools = new ObjectMap<>();
 	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.NONE);
 
 	/**
@@ -76,7 +76,7 @@ public class ActionPools {
 		freeAction(action);
 	}
 	
-	private static void freeAction(Action<?> action) {
+	private static void freeAction(Action<? super Action> action) {
 		if(action.hasBeenPooled() || !action.isManaged()) return;
 		
 		if(action.getPreActions().size > 0) {
@@ -91,12 +91,11 @@ public class ActionPools {
 			}
 		}
 		
-		
  		Pool pool = pools.get(action.getClass());
 		if(pool == null) return;
+		pool.free(action);
 		action.setPooled(true);
 		if(logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
-		pool.free(action);
 	}
 	
 	private static void freeGroup(GroupAction group) {

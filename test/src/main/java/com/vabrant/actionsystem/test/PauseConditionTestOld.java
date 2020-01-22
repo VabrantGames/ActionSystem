@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.vabrant.actionsystem.actions.PauseCondition;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class PauseConditionTestOld extends ActionSystemTestScreen implements PauseCondition{
 	
@@ -13,7 +13,7 @@ public class PauseConditionTestOld extends ActionSystemTestScreen implements Pau
 	private boolean isCharacterStunned;
 	private ActionSystemTestObject testObject;
 	
-	public PauseConditionTestOld(TestSelectScreen screen) {
+	public PauseConditionTestOld(ActionSystemTestSelector screen) {
 		super(screen);
 		
 		debug = true;

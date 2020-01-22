@@ -7,14 +7,14 @@ import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class GroupActionEndTest extends ActionSystemTestScreen{
 
 	private final String actionName = "Group";
 	private ActionWatcher actionWatcher;
 	
-	public GroupActionEndTest(TestSelectScreen screen) {
+	public GroupActionEndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		actionWatcher = new ActionWatcher();
 	}

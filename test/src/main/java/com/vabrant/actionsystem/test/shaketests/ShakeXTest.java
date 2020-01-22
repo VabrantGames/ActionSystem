@@ -3,13 +3,13 @@ package com.vabrant.actionsystem.test.shaketests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ShakeAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ShakeXTest extends ActionSystemTestScreen {
 	
 	private final float amount = 5;
 
-	public ShakeXTest(TestSelectScreen screen) {
+	public ShakeXTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

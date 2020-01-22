@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.performancetests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class PerformanceTestsSelectScreen extends TestSelectScreen {
+public class PerformanceTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			BooleanVSEmptyCompute.class,
@@ -11,7 +11,7 @@ public class PerformanceTestsSelectScreen extends TestSelectScreen {
 			ActionUpdateTest.class,
 	};
 	
-	public PerformanceTestsSelectScreen(TestApplication app) {
+	public PerformanceTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

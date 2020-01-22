@@ -6,14 +6,14 @@ import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class RestartRotateByFromEndTest extends ActionSystemTestScreen {
 	
 	private final int repeatAmount = 3;
 	private final float amount = 30;
 
-	public RestartRotateByFromEndTest(TestSelectScreen screen) {
+	public RestartRotateByFromEndTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

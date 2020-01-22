@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.scaletests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class ScaleTestsSelectScreen extends TestSelectScreen {
+public class ScaleTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			ScaleXByTest.class,
@@ -16,7 +16,7 @@ public class ScaleTestsSelectScreen extends TestSelectScreen {
 			RestartScaleYByFromEndTest.class
 	};
 	
-	public ScaleTestsSelectScreen(TestApplication app) {
+	public ScaleTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

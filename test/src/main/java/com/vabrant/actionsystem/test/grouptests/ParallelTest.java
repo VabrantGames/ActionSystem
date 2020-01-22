@@ -5,13 +5,13 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ParallelTest extends ActionSystemTestScreen implements ActionListener{
 
 	private final float delay = 0.5f;
 	
-	public ParallelTest(TestSelectScreen screen) {
+	public ParallelTest(ActionSystemTestSelector screen) {
 		super(screen);
 	}
 

@@ -6,7 +6,7 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MusicAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class MusicActionTest extends ActionSystemTestScreen implements ActionListener<MusicAction>{
 	
@@ -16,7 +16,7 @@ public class MusicActionTest extends ActionSystemTestScreen implements ActionLis
 	private final String actionName = "Music";
 	ActionWatcher watcher;
 
-	public MusicActionTest(TestSelectScreen screen) {
+	public MusicActionTest(ActionSystemTestSelector screen) {
 		super(screen);
 		application.assetManager.load(musicPath, Music.class);
 		application.assetManager.finishLoading();

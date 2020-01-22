@@ -8,13 +8,13 @@ import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.actions.ShakeAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class MoveConflictTest extends ActionSystemTestScreen {
 
 	private ConflictChecker conflictChecker;
 	
-	public MoveConflictTest(TestSelectScreen screen) {
+	public MoveConflictTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 		conflictChecker = new ConflictChecker();

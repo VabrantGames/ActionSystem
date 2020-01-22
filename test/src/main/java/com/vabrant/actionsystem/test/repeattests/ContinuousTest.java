@@ -6,13 +6,13 @@ import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ContinuousTest extends ActionSystemTestScreen {
 	
 	private final int rotateAmount = 20;
 
-	public ContinuousTest(TestSelectScreen screen) {
+	public ContinuousTest(ActionSystemTestSelector screen) {
 		super(screen);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		createTestObject();

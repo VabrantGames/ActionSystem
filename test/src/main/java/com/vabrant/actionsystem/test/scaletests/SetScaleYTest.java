@@ -2,13 +2,13 @@ package com.vabrant.actionsystem.test.scaletests;
 
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class SetScaleYTest extends ActionSystemTestScreen {
 	
 	public final float end = 7f;
 	
-	public SetScaleYTest(TestSelectScreen screen) {
+	public SetScaleYTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

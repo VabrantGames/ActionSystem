@@ -3,14 +3,14 @@ package com.vabrant.actionsystem.test.scaletests;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class ScaleXByTest extends ActionSystemTestScreen {
 
 	private float start;
 	private final float amount = 3;
 	
-	public ScaleXByTest(TestSelectScreen screen) {
+	public ScaleXByTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 	}

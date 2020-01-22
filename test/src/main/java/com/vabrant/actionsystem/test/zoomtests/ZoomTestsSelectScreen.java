@@ -1,9 +1,9 @@
 package com.vabrant.actionsystem.test.zoomtests;
 
-import com.vabrant.testbase.TestApplication;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.TestBaseApplicationListener;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
-public class ZoomTestsSelectScreen extends TestSelectScreen {
+public class ZoomTestsSelectScreen extends ActionSystemTestSelector {
 
 	Class[] tests = {
 			ZoomToTest.class,
@@ -12,7 +12,7 @@ public class ZoomTestsSelectScreen extends TestSelectScreen {
 			RestartZoomByFromEndTest.class,
 	};
 	
-	public ZoomTestsSelectScreen(TestApplication app) {
+	public ZoomTestsSelectScreen(TestBaseApplicationListener app) {
 		super(app);
 		addTests(tests);
 	}

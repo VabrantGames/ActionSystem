@@ -7,13 +7,13 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.testbase.TestSelectScreen;
+import com.vabrant.testbase.ActionSystemTestSelector;
 
 public class PostActionsTest extends ActionSystemTestScreen {
 
 	private final String actionName = "PostAction";
 	
-	public PostActionsTest(TestSelectScreen screen) {
+	public PostActionsTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
 //		ActionPools.logger.solo();
