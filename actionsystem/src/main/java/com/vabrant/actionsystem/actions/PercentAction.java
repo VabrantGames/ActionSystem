@@ -94,7 +94,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 
 	@Override
 	public S end() {
-		percent(percent);
+//		percent(percent);
 		super.end();
 		return (S)this;
 	}
