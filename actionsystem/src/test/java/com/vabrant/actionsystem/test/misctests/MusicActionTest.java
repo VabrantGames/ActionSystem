@@ -2,13 +2,13 @@ package com.vabrant.actionsystem.test.misctests;
 
 import com.badlogic.gdx.audio.Music;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MusicAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.actionsystem.test.ActionSystemTestSelector;
 
-public class MusicActionTest extends ActionSystemTestScreen implements ActionListener<MusicAction>{
+public class MusicActionTest extends ActionSystemTestScreen {
 	
 	private final float duration = 6.857f;
 	private Music music;
@@ -34,6 +34,15 @@ public class MusicActionTest extends ActionSystemTestScreen implements ActionLis
 		}
 		return super.touchDown(screenX, screenY, pointer, button);
 	}
+	
+	public ActionAdapter<MusicAction> getListener() {
+		return new ActionAdapter<MusicAction>() {
+			@Override
+			public void actionEnd(MusicAction a) {
+				log(a.getName(), "Music Action Over");
+			}
+		};
+	}
 
 	@Override
 	public void runTest() {
@@ -41,34 +50,6 @@ public class MusicActionTest extends ActionSystemTestScreen implements ActionLis
 		action.setName(actionName);
 		action.watchAction();
 		actionManager.addAction(action);
-	}
-
-	@Override
-	public void actionStart(MusicAction a) {
-		
-	}
-
-	@Override
-	public void actionEnd(MusicAction a) {
-		System.out.println("Music Action over");
-	}
-
-	@Override
-	public void actionKill(MusicAction a) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void actionRestart(MusicAction a) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void actionComplete(MusicAction a) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

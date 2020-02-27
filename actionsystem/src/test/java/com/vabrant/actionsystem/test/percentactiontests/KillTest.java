@@ -3,13 +3,14 @@ package com.vabrant.actionsystem.test.percentactiontests;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.actions.Action;
+import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.actionsystem.test.ActionSystemTestSelector;
 
-public class KillTest extends ActionSystemTestScreen implements ActionListener{
+public class KillTest extends ActionSystemTestScreen {
 
 	private final String actionName = "Kill Test";
 	private float start;
@@ -21,6 +22,15 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 	public KillTest(ActionSystemTestSelector screen) {
 		super(screen);
 		createTestObject();
+	}
+	
+	public ActionAdapter getListener() {
+		return new ActionAdapter() {
+			@Override
+			public void actionKill(Action a) {
+				log("Kill Action", "");
+			}
+		};
 	}
 	
 	@Override
@@ -37,12 +47,13 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 
 	@Override
 	public void runTest() {
+		ActionListener listener = getListener();
 		start = testObject.getX();
 		actionManager.addAction(
 				MoveAction.moveXBy(testObject, amount, duration, Interpolation.linear)
 					.setName(actionName)
 					.watchAction()
-					.addListener(this)
+					.addListener(listener)
 				);
 	}
 	
@@ -64,27 +75,6 @@ public class KillTest extends ActionSystemTestScreen implements ActionListener{
 		float end = MathUtils.lerp(start, start + amount, percentKilled);
 		log("Current: ", Float.toString(testObject.getX()));
 		log("End: ", Float.toString(end));
-	}
-
-	@Override
-	public void actionStart(Action a) {
-	}
-
-	@Override
-	public void actionEnd(Action a) {
-	}
-
-	@Override
-	public void actionKill(Action a) {
-		log("Kill Action", "");
-	}
-
-	@Override
-	public void actionRestart(Action a) {
-	}
-	
-	@Override
-	public void actionComplete(Action a) {
 	}
 
 }

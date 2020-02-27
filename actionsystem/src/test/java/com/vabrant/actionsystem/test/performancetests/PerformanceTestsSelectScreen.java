@@ -8,7 +8,6 @@ public class PerformanceTestsSelectScreen extends ActionSystemTestSelector {
 	Class[] tests = {
 			BooleanVSEmptyCompute.class,
 			HSBToRGBTest.class,
-			ActionUpdateTest.class,
 	};
 	
 	public PerformanceTestsSelectScreen(TestBaseApplicationListener app) {

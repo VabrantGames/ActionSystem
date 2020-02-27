@@ -30,9 +30,13 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return action;
 	}
 	
-	public static MoveAction moveByAngle(Movable movable, float angle, float amount, float duration, Interpolation interpolation) {
+	public static MoveAction moveByAngleRad(Movable movable, float radians, float amount, float duration, Interpolation interpolation) {
+		return moveByAngleDeg(movable, MathUtils.radiansToDegrees * radians, amount, duration, interpolation);
+	}
+	
+	public static MoveAction moveByAngleDeg(Movable movable, float degrees, float amount, float duration, Interpolation interpolation) {
 		MoveAction action = getAction();
-		action.moveByAngle(angle, amount);
+		action.moveByAngle(degrees, amount);
 		action.set(movable, duration, interpolation);
 		return action;
 	}
@@ -170,9 +174,9 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	
 	@Override
 	public MoveAction setup() {
-		didInitialSetup = true;
-		
 		if(setupX) {
+			setupX = false;
+			
 			switch(xType) {
 				case MOVE_BY:
 					xStart = percentable.getX();
@@ -185,6 +189,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		}
 		
 		if(setupY) {	
+			setupY = false;
+			
 			switch(yType) {
 				case MOVE_BY:
 					yStart = percentable.getY();
@@ -199,26 +205,14 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	@Override
-	public void customStartLogic() {
-		super.customStartLogic();
-		if(!didInitialSetup) setup();
-	}
-	
-	@Override
-	public MoveAction restart() {
-		super.restart();
-		setup();
-		return this;
-	}
-	
-	@Override
-	public MoveAction end() {
-		super.end();
+	protected void endCycleLogic() {
+		super.endCycleLogic();
+		setupX = true;
+		setupY = true;
 		if(xType != MOVE_BY || xType == MOVE_BY && !restartMoveXByFromEnd) setupX = false;
 		if(yType != MOVE_BY || yType == MOVE_BY && !restartMoveYByFromEnd) setupY = false;
-		return this;
 	}
-	
+
 	@Override
 	protected boolean hasConflict(Action action) {
 		if(action instanceof MoveAction) {

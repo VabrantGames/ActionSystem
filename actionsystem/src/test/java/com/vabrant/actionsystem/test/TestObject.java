@@ -10,7 +10,9 @@ import com.vabrant.actionsystem.actions.Scalable;
 import com.vabrant.actionsystem.actions.Shakable;
 import com.vabrant.actionsystem.actions.Zoomable;
 
-public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
+import space.earlygrey.shapedrawer.ShapeDrawer;
+
+public class TestObject implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
 	
 	private float scaleX = 1;
 	private float scaleY = 1;
@@ -146,6 +148,11 @@ public class ActionSystemTestObject implements Movable, Colorable, Zoomable, Sha
 		if(!renderer.getCurrentType().equals(ShapeType.Filled)) renderer.set(ShapeType.Filled);
 		renderer.setColor(color);
 		renderer.rect(x + shakeX, y + shakeY, width / 2, height / 2, width, height, scaleX * zoom, scaleY * zoom, shakeAngle + rotation);
+	}
+	
+	public void draw(ShapeDrawer shapeDrawer) {
+		shapeDrawer.setColor(color);
+		shapeDrawer.filledRectangle(x + shakeX, y + shakeY, width * scaleX * zoom, height * scaleY * zoom, shakeAngle + rotation);
 	}
 
 }

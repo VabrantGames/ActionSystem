@@ -10,12 +10,12 @@ public class RunnableAction extends Action<RunnableAction>{
 	
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
+		if(isCycleFinished) return true;
 		if(isPaused()) return false;
 		if(!isRunning()) start();
 		runnable.run();
 		end();
-		return isFinished;
+		return isCycleFinished;
 	}
 	
 	@Override

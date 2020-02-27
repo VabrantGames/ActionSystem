@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.test.scaletests;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
@@ -32,8 +32,8 @@ public class RestartScaleXByFromEndTest extends ActionSystemTestScreen {
 		testObject.setScaleX(1);
 	}
 	
-	private ActionListener getListener() {
-		return new ActionListener() {
+	private ActionAdapter getListener() {
+		return new ActionAdapter() {
 			@Override
 			public void actionStart(Action a) {
 				log(a.getName(), "Start");

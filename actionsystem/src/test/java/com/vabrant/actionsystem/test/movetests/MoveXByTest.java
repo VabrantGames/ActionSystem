@@ -1,6 +1,7 @@
 package com.vabrant.actionsystem.test.movetests;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.ActionSystemTestScreen;
 import com.vabrant.actionsystem.test.ActionSystemTestSelector;
@@ -19,7 +20,10 @@ public class MoveXByTest extends ActionSystemTestScreen{
 	@Override
 	public void runTest() {
 		start = testObject.getX();
-		actionManager.addAction(MoveAction.moveXBy(testObject, amount, 1f, Interpolation.linear));
+		actionManager.addAction(MoveAction.moveXBy(testObject, amount, 1f, Interpolation.linear)
+				.setName("MoveXBy")
+				.setLogLevel(ActionLogger.DEBUG)
+		);
 	}
 	
 	@Override

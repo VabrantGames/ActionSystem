@@ -190,8 +190,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	}
 
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
+	protected void startLogic() {
+		super.startLogic();
 		if(!didInitialSetup) setup();
 	}
 	

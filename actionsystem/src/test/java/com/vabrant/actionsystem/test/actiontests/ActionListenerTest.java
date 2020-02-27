@@ -24,8 +24,8 @@ public class ActionListenerTest extends ActionSystemTestScreen {
 		};
 	}
 	
-	private ActionListener createActionListener() {
-		return new ActionListener() {
+	private ActionAdapter createActionListener() {
+		return new ActionAdapter() {
 
 			@Override
 			public void actionStart(Action a) {

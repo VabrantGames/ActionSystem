@@ -154,9 +154,9 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
-		if(!didInitialSetup) setup();
+	protected void startLogic() {
+		super.startLogic();
+	}	if(!didInitialSetup) setup();
 	}
 	
 	@Override

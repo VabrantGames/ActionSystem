@@ -30,8 +30,8 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 	}
 	
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
+	protected void startLogic() {
+		super.startLogic();
 		fireCount(nextCount + 1);
 	}
 	
@@ -72,7 +72,7 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 	
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
+		if(isCycleFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
 		
@@ -87,7 +87,7 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 			}
 		}
 			
-		return isFinished;
+		return isCycleFinished;
 	}
 	
 	public interface CountDownActionListener{

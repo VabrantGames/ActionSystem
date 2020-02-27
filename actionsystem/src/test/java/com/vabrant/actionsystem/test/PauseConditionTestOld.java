@@ -10,13 +10,13 @@ public class PauseConditionTestOld extends ActionSystemTestScreen implements Pau
 	
 	private boolean isGamePaused;
 	private boolean isCharacterStunned;
-	private ActionSystemTestObject testObject;
+	private TestObject testObject;
 	
 	public PauseConditionTestOld(ActionSystemTestSelector screen) {
 		super(screen);
 		
 		debug = true;
-		testObject = new ActionSystemTestObject();
+		testObject = new TestObject();
 	}
 	
 	@Override

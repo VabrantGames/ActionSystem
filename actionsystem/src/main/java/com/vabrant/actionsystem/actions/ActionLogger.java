@@ -14,6 +14,8 @@ public class ActionLogger {
 	public static final int INFO = 2;
 	public static final int DEBUG = 3;
 	
+	private static final String EMPTY_STRING = ""; 
+	
 	private static final StringBuilder STRING_BUILDER;	
 	private static ActionLogger soloLogger;
 	
@@ -24,6 +26,10 @@ public class ActionLogger {
 		else {
 			STRING_BUILDER = null;
 		}
+	}
+	
+	public static ActionLogger getLogger(Class<?> c) {
+		return getLogger(c, NONE);
 	}
 	
 	public static ActionLogger getLogger(Class<?> c, int level) {
@@ -43,8 +49,6 @@ public class ActionLogger {
 		soloLogger = logger;
 	}
 	
-	private static final String EMPTY_STRING = ""; 
-	
 	private String actionName;
 	private String className;
 	private int level;
@@ -61,9 +65,8 @@ public class ActionLogger {
 	}
 	
 	public void setActionName(String actionName) {
-		if(isRelease || actionName == null) return;
+		if(actionName == null || actionName.isEmpty()) return;
 		STRING_BUILDER.clear();
-		STRING_BUILDER.append(' ');
 		STRING_BUILDER.append('(');
 		STRING_BUILDER.append(actionName);
 		STRING_BUILDER.append(')');
@@ -122,8 +125,11 @@ public class ActionLogger {
 		if(soloLogger != null && !soloLogger.equals(this)) return;
 		
 		STRING_BUILDER.clear();
+		if(actionName != null) {
+			STRING_BUILDER.append(actionName);
+			STRING_BUILDER.append(' ');
+		}
 		STRING_BUILDER.append(message);
-		if(actionName != null) STRING_BUILDER.append(actionName);
 		if(body != null) {
 			STRING_BUILDER.append(" : ");
 			STRING_BUILDER.append(body);

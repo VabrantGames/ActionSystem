@@ -87,8 +87,8 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	}
 	
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
+	protected void startLogic() {
+		super.startLogic();
 		if(!didInitialSetup) setup();
 	}
 	

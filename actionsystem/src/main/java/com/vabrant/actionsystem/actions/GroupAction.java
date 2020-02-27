@@ -61,7 +61,7 @@ public class GroupAction extends Action<GroupAction> {
 	}
 	
 	@Override
-	void setRootAction(Action root) {
+	protected void setRootAction(Action root) {
 		super.setRootAction(root);
 		for(int i = 0; i < actions.size; i++) {
 			actions.get(i).setRootAction(root);
@@ -70,7 +70,7 @@ public class GroupAction extends Action<GroupAction> {
 
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
+		if(isCycleFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
 		timer += delta;
@@ -80,7 +80,7 @@ public class GroupAction extends Action<GroupAction> {
 		else {
 			updateSequence(delta);
 		}
-		return isFinished;
+		return isCycleFinished;
 	}
 	
 	private void updateSequence(float delta) {

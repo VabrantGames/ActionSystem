@@ -35,7 +35,7 @@ public class ActionWatcherTest {
 		String name = "Cleanup";
 		TestAction action = TestAction.getAction();
 		action.setName(name);
-		action.setLoggingLevel(ActionLogger.DEBUG);
+		action.setLogLevel(ActionLogger.DEBUG);
 		action.watchAction();
 		action.start();
 		

@@ -8,8 +8,8 @@ import com.vabrant.testbase.TestScreen;
 
 public abstract class ActionSystemTestScreen extends TestScreen {
 	
-	public ActionSystemTestObject testObject;
-	public ActionSystemTestObject[] testObjects;
+	public TestObject testObject;
+	public TestObject[] testObjects;
 	public ActionManager actionManager;
 	
 	public ActionSystemTestScreen(ActionSystemTestSelector screen) {
@@ -19,13 +19,13 @@ public abstract class ActionSystemTestScreen extends TestScreen {
 	}
 	
 	public void createTestObject() {
-		testObject = new ActionSystemTestObject();
+		testObject = new TestObject();
 	}
 	
 	public void createTestObjects(int amount) {
-		testObjects = new ActionSystemTestObject[amount];
+		testObjects = new TestObject[amount];
 		for(int i = 0; i < amount; i++) {
-			testObjects[i] = new ActionSystemTestObject();
+			testObjects[i] = new TestObject();
 		}
 	}
 	

@@ -24,21 +24,21 @@ public class TestAction extends Action {
 	
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
+		if(isCycleFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
 		if((timer += delta) >= duration) {
 			end();
 		}
-		return isFinished;
+		return isCycleFinished;
 	}
 	
-	@Override
-	public Action restart() {
-		super.restart();
-		timer = 0;
-		return this;
-	}
+//	@Override
+//	public Action restart() {
+//		super.restart();
+//		timer = 0;
+//		return this;
+//	}
 
 	@Override
 	public void reset() {

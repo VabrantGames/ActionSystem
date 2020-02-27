@@ -10,9 +10,10 @@ ext{
 version = "$actionSystemVersion"
 
 dependencies{
-    api "com.badlogicgames.gdx:gdx:$gdxVersion"
-    testImplementation "com.vabrant.testbase:test-base:0.0.1"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	implementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
+	testImplementation "com.vabrant.testbase:test-base:0.0.1"
+	testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
 	testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
 	testImplementation "junit:junit:4.13"
 }

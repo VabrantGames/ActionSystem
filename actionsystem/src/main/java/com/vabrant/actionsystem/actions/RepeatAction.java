@@ -33,7 +33,7 @@ public class RepeatAction extends Action<RepeatAction> {
 	}
 	
 	public boolean update(float delta) {
-		if(isFinished) return true;
+		if(isCycleFinished) return true;
 		if(isPaused) return false;
 		if(!isRunning) start();
 		if(action.update(delta)) {
@@ -49,7 +49,7 @@ public class RepeatAction extends Action<RepeatAction> {
 				end();
 			}
 		}
-		return isFinished;
+		return isCycleFinished;
 	}
 	
 	@Override

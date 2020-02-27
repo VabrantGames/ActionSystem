@@ -38,19 +38,19 @@ public class MusicAction extends TimeAction<MusicAction> {
 	}
 	
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
+	protected void startLogic() {
+		super.startLogic();
 		music.setPan(pan, volume);
 		music.play();
 	}
 	
 	@Override
-	protected void customPauseLogic() {
+	protected void pauseLogic() {
 		music.pause();
 	}
 	
 	@Override
-	protected void customResumeLogic() {
+	protected void resumeLogic() {
 		music.play();
 	}
 	

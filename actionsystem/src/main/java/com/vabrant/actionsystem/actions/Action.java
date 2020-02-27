@@ -5,40 +5,42 @@ import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
- * The action class is the base class for all actions. Action iterations are called <i>cycles</i> and are ran between {@link #start} or {@link #restart}
- * and {@link #end}. <code>Start</code> is called at the beginning of every cycle only once and <code>restart</code> is called at the beginning of any following cycle.
- * {@link #end} is called at the end of every cycle and {@link #complete} is called on the last cycle.
+ * The Action class is the base class for all actions... add more
  * 
  * @author John Barton
- *
- * @param <T> Type of action
  */
+@SuppressWarnings("all")
 public class Action<T extends Action> implements Poolable{
-	
+
+	/** Whether this action is the root action. */
 	boolean isRoot;
-	Action rootAction;
-	private boolean lastCycle;
 	
+	/** A reference to the root action for non root action. Root actions will use themselves if requested. */
+	Action rootAction;
+	
+	/** Whether this action is managed by the {@link ActionManager} or by the user.*/
 	boolean isManaged = true;
+	
 	//TODO still needed?
 	private boolean hasBeenPooled;
 	
-	
 	private boolean forceKill;
 	private boolean forceEnd;
-	//are all cycles complete
-	//TODO is needed?
-	protected boolean isComplete;
-	/** Whether the current cycle is finished or not */
-	protected boolean isFinished;
+	
+	/** The amount of cycles this action has ran since {@link #start} or {@link #restart} was called. */
+	private int cycle;
+	
+	/** Whether the current cycle is finished or not. */ 
+	protected boolean isCycleRunning;
 	protected boolean isRunning;
 	protected boolean isPaused;
+	
 	private String name;
 	private PauseCondition pauseCondition;
 	private ActionManager actionManager;
 	private Array<ActionListener> listeners;
 	
-	//Listeners that can't be removed by the user.
+	/** Listeners that can't be removed by the user. */
 	private Array<CleanupListener> cleanupListeners;
 	final Array<Action> preActions;
 	final Array<Action> postActions;
@@ -54,7 +56,7 @@ public class Action<T extends Action> implements Poolable{
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
 	}
 	
-	public T setLoggingLevel(int level) {
+	public T setLogLevel(int level) {
 		if(logger != null) logger.setLevel(level);
 		return (T)this;
 	}
@@ -102,13 +104,9 @@ public class Action<T extends Action> implements Poolable{
 	public Array<Action> getPostActions(){
 		return postActions;
 	}
-	
-	protected boolean lastCycle() {
-		return true;
-	}
-	
-	public boolean isLastCycle() {
-		return lastCycle;
+
+	public int getCycle() {
+		return cycle;
 	}
 	
 	void setPooled(boolean pooled) {
@@ -144,19 +142,15 @@ public class Action<T extends Action> implements Poolable{
 	
 	void setRoot() {
 		isRoot = true;
-		if(logger != null) logger.debug("Is Root");
+		if(logger != null) logger.debug("Is Root: " + isRoot);
 	}
 	
-	void setRootAction(Action root) {
+	protected void setRootAction(Action root) {
 		if(!isRoot) rootAction = root;
 	}
-	
-	public void DEBUG_setRoot() {
-		isRoot = true;
-	}
-	
-	public void DEBUG_setRootAction(Action root) {
-		rootAction = root;
+
+	public boolean isRoot() {
+		return isRoot;
 	}
 	
 	public Action getRootAction() {
@@ -167,10 +161,19 @@ public class Action<T extends Action> implements Poolable{
 		return isRunning;
 	}
 	
-	public boolean isFinished() {
-		return isFinished;
+	public boolean isCycleRunning() {
+		return isCycleRunning;
 	}
 	
+	private void runPostActions() {
+		if(postActions.size > 0) {
+			ActionManager manager = getRootAction().actionManager;
+			for(int i = postActions.size - 1; i >= 0; i--) {
+				manager.addAction(postActions.pop());
+			}
+		}
+	}
+
 	public T setName(String name) {
 		if(name == null) throw new IllegalArgumentException("Name can't be null.");
 		this.name = name;
@@ -185,18 +188,18 @@ public class Action<T extends Action> implements Poolable{
 	public final void pause() {
 		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.shouldPause()) return;
 		isPaused = true;
-		customPauseLogic();
+		pauseLogic();
 	}
 	
-	protected void customPauseLogic() {}
+	protected void pauseLogic() {}
 	
 	public final void resume() {
 		if(!isRunning || !isPaused || pauseCondition != null && !pauseCondition.shouldResume()) return;
 		isPaused = false;
-		customResumeLogic();
+		resumeLogic();
 	}
 	
-	protected void customResumeLogic() {}
+	protected void resumeLogic() {}
 	
 	public boolean isPaused() {
 		return isPaused;
@@ -255,16 +258,17 @@ public class Action<T extends Action> implements Poolable{
 			}
 		}
 		
-		lastCycle = false;
+		if(logger != null) {
+			logger.setLevel(ActionLogger.NONE);
+		}
+		cycle = 0;
 		cleanupListeners.clear();
 		listeners.clear();
 		pauseCondition = null;
 		name = null;
-		isComplete = false;
 		isPaused = false;
 		isRunning = false;
-		isFinished = false;
-		lastCycle = false;
+		isCycleRunning = false;
 		isRoot = false;
 		rootAction = null;
 		forceKill = false;
@@ -275,11 +279,10 @@ public class Action<T extends Action> implements Poolable{
 	public T clear() {
 //		isRoot = false;
 //		rootAction = null;
-		lastCycle = false;
+		cycle = 0;
 		if(logger != null) logger.info("Clear");		
-		isComplete = false;
 		isRunning = false;
-		isFinished = false;
+		isCycleRunning = false;
 		isPaused = false;
 		return (T)this;
 	}
@@ -294,12 +297,15 @@ public class Action<T extends Action> implements Poolable{
 		end();
 	}
 	
+	/**
+	 * Starts the action and the initial cycle.
+	 */
 	public final T start() {
+		if(isRunning) return (T)this;
+		
 		if(conflictWatcher != null) {
 			if(conflictWatcher.checkForConflict(this)) return null;
 		}
-		
-		customStartLogic();
 		
 		if(!isManaged()) {
 			if(actionManager == null) throw new ActionSystemRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
@@ -314,112 +320,233 @@ public class Action<T extends Action> implements Poolable{
 			}
 		}
 		
-		lastCycle = false;
-		isComplete = false;
-		isRunning = true;
-		isFinished = false;
+		if(logger != null) logger.info("Start Action");	
 		
-		if(isRoot) lastCycle = lastCycle();
-		if(lastCycle) logger.info("Last Cycle");
-
-		if(logger != null) logger.info("Start");	
+		isRunning = true;
+		
+		startLogic();
+		startCycle(false);
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionStart(this);
 		}
 		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionCycleStart(this);
+		}
+		
+		return (T)this;
+	}
+
+	/**
+	 * FOR ACTION CREATION <br><br> 
+	 * 
+	 * The logic that will be ran at the start of the action. Will only be ran once.
+	 */
+	protected void startLogic() {}
+	
+	/**
+	 * Starts the cycle.
+	 */
+	public final T startCycle() {
+		if(!isRunning || isCycleRunning) return (T)this;
+		startCycle(true);
 		return (T)this;
 	}
 	
-	protected void customStartLogic() {}
-	
-	public T restart() {
-		if(isComplete) return (T)this;
-		if(logger != null) logger.info("Restart");		
-
-		lastCycle = false;
-		isRunning = true;
-		isFinished = false;
+	//This is to ensure the listeners of the start and restart methods get called before the the startCycle listeners. 
+	private final void startCycle(boolean runListeners) {
+		++cycle;
 		
-		if(isRoot) lastCycle = lastCycle();
-		if(lastCycle) logger.info("Last Cycle");
+		isCycleRunning = true;
+		
+		if(logger != null) logger.debug("Start Cycle: " + cycle);
+		
+		startCycleLogic();
+		
+		if(runListeners) {
+			for(int i = 0; i < listeners.size; i++) {
+				listeners.get(i).actionCycleStart(this);
+			}
+		}
+	}
+	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran at the start of every cycle. Including when {@link #start} is called. 
+	 */
+	protected void startCycleLogic() {}
+	
+	/**
+	 * Restarts the action from its initial cycle. <br>
+	 * <b>Note:</b> This method is not called internally but by the user.
+	 */
+	public final T restart() {
+		if(!isRunning) return (T)this;
+		if(logger != null) logger.info("Restart Action");		
+
+		isRunning = true;
+		cycle = 0;
+		
+		restartLogic();
+		startCycle(false);
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionRestart(this);
 		}
 		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionCycleStart(this);
+		}
+		
 		return (T)this;
 	}
 	
 	/**
-	 * Ends the action as if it's completed.
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran if an action is restarted.
 	 */
-	public T end() {
-		if(!isRunning && !forceEnd) return (T)this;
+	protected void restartLogic() {}
+	
+	/**
+	 * Restarts the current cycle from the beginning.<br>
+	 * <b>Note:</b> This method is not called internally but by the user.
+	 */
+	public final T restartCycle() {
+		if(!isRunning || !isCycleRunning) return (T)this;
 		
-		if(logger != null) logger.info("End");		
+		if(logger != null) logger.info("Restart Cycle");
+		
+		restartCycleLogic();
+		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionCycleRestart(this);
+		}
+		
+		return (T)this;
+	}
+	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran every time a cycle is restarted.
+	 */
+	protected void restartCycleLogic() {}
+	
+	/**
+	 * Ends the action. If the action is running it will be ended as if it were completed.
+	 */
+	public final T end() {
+		if(!isRunning && !forceEnd) return (T)this;
+		 
+		//If the cycle is still running end it 
+		if(isCycleRunning) endCycle();
+		
+		if(logger != null) logger.info("End Action");		
 		
 		isRunning = false;
-		isFinished = true;
 		
-		if(isRoot) lastCycle = true;
+		endLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd(this);
 		}
 		
-		//check if this is the last cycle
-//		isComplete = !isRoot ? rootAction.lastCycle : this.lastCycle;
-		isComplete = getRootAction().lastCycle;
-		if(isComplete) {
-			complete();
-		}
+		runPostActions();
+		
 		return (T)this;
 	}
 	
 	/**
-	 * Ends the action at it's current position but not as if it were completed.
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran if the action is ended.
 	 */
-	public T kill() {
+	protected void endLogic() {}
+	
+	/**
+	 * Ends the current cycle. If this is called before the current cycle has finished it will be ended as if it has. <br> 
+	 */
+	public final T endCycle() {
+		if(!isRunning || !isCycleRunning) return (T)this;
+		
+		if(logger != null) logger.debug("End Cycle");
+		
+		isCycleRunning = false;
+		
+		endCycleLogic();
+		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionCycleEnd(this);
+		}
+		
+		return (T)this;
+	}
+	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran at the end of every cycle.
+	 */
+	protected void endCycleLogic() {}	
+	
+	/**
+	 * Ends the action at it's current position. If the action is running it will end uncompleted. 
+	 */
+	public final T kill() {
 		if(!isRunning && !forceKill) return (T)this;
 		
-		if(logger != null) logger.info("Kill");		
+		if(isCycleRunning) killCycle();
+		
+		if(logger != null) logger.info("Kill Action");	
 		
 		isRunning = false;
-		isFinished = true;
-		isComplete = true;
 		
-		if(isRoot) lastCycle = true;
+		killLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionKill(this);
 		}
 		
-		if(postActions.size > 0) {
-			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
-//			ActionManager manager = getRootAction().actionManager;
-			for(int i = postActions.size - 1; i >= 0; i--) {
-				manager.addAction(postActions.pop());
-			}
-		}
+		runPostActions();
 		
 		return(T)this;
 	}
 	
-	protected T complete() {
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran if an action is killed.
+	 */
+	protected void killLogic() {}
+	
+	/**
+	 * Ends the current cycle at its current position. If this is called before the cycle has finished it will be ended in its unfinished state.
+	 */
+	public final T killCycle() {
+		if(!isRunning || !isCycleRunning) return (T)this;
+		
+		if(logger != null) logger.debug("Kill Cycle");
+		
+		isCycleRunning = false;
+		
+		killCycleLogic();
+		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionComplete(this);
+			listeners.get(i).actionCycleKill(this);
 		}
 		
-		if(postActions.size > 0) {
-//			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
-			ActionManager manager = getRootAction().actionManager;
-			for(int i = postActions.size - 1; i >= 0; i--) {
-				manager.addAction(postActions.pop());
-			}
-		}
 		return (T)this;
 	}
+	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran every time a cycle is killed.
+	 */
+	protected void killCycleLogic() {}
 
 	public static <T extends Action> T getAction(Class<T> c) {
 		return ActionPools.obtain(c);

@@ -81,18 +81,18 @@ public class SoundAction extends TimeAction<SoundAction> {
 	}
 
 	@Override
-	protected void customStartLogic() {
-		super.customStartLogic();
+	protected void startLogic() {
+		super.startLogic();
 		soundId = sound.play(volume, pitch, pan);
 	}
 	
 	@Override
-	protected void customPauseLogic() {
+	protected void pauseLogic() {
 		sound.pause(soundId);
 	}
 	
 	@Override
-	protected void customResumeLogic() {
+	protected void resumeLogic() {
 		sound.resume(soundId);
 	}
 

@@ -4,64 +4,78 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class TimeAction<T extends Action> extends Action<T> {
 
-	public float timer;
+	protected float timer;
 	protected float duration;
 
+	/**
+	 * Get the current time.
+	 */
 	public float getCurrentTime() {
 		return timer;
 	}
 	
+	/**
+	 * Set the time in seconds or/and milliseconds. <br>
+	 * e.g. 2.5f - 2f - 0.5f
+	 * @param time
+	 */
 	public T setTime(float time) {
 		timer = MathUtils.clamp(time, 0, duration);
 		return (T)this;
 	}
 	
+	/**
+	 * Get the remaining time.
+	 * @return remaining time
+	 */
+	public float getRemainingTime() {
+		return duration - timer < 0 ? 0 : duration - timer;
+	}
+	
+	/**
+	 * Set the duration. 
+	 * @param duration
+	 */
 	public T setDuration(float duration) {
+//		this.duration = MathUtils.clamp(duration, 0, Float.MAX_VALUE);
 		this.duration = duration;
-		if(this.duration < 0) this.duration = 0;
 		return (T)this;
 	}
 	
+	/**
+	 * Get the duration.
+	 * @return duration
+	 */
 	public float getDuration() {
 		return duration;
-	}
-	
-	public float getRemainingTime() {
-		return duration - timer < 0 ? 0 : duration - timer;
 	}
 
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
-		if(isPaused) return false;
+		if(!isCycleRunning) return false;
+		if(isPaused) return true;
 		if(!isRunning) start();
 		if((timer += delta) >= duration) {
-			end();
+			endCycle();
 		}
-		return isFinished;
+		return isCycleRunning;
 	}
 	
 	@Override
-	public T restart() {
-		super.restart();
-		timer = 0;
-		return (T)this;
+	protected void startCycleLogic() {
+//		timer = 0;
+		setTime(0);
 	}
 	
 	@Override
-	public T kill() {
-		super.kill();
-		if(!isManaged() && getRootAction().isLastCycle()) {
-			timer = 0;
-		}
-		return (T)this;
+	protected void restartCycleLogic() {
+//		timer = 0;
+		setTime(0);
 	}
 	
 	@Override
-	protected T complete() {
-		super.complete();
-		timer = 0;
-		return (T)this;
+	protected void endCycleLogic() {
+		timer = duration;
 	}
 	
 	@Override

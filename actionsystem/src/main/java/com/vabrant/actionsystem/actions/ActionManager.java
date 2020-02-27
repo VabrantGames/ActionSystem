@@ -1,13 +1,18 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Logger;
 
+/**
+ * 
+ * 
+ * @author John Barton
+ *
+ */
 public class ActionManager {
 	
 	private Array<Action> unmanagedActions;
 	private Array<Action> actions;
-	private final ActionLogger logger;
+	private final ActionLogger logger = ActionLogger.getLogger(ActionManager.class);
 	
 	public ActionManager() {
 		this(10);
@@ -16,7 +21,6 @@ public class ActionManager {
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
 		unmanagedActions = new Array<>(2);
-		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
 	}
 	
 	public ActionLogger getLogger() {
@@ -48,6 +52,10 @@ public class ActionManager {
 		ActionPools.free(action);
 	}
 	
+	/**
+	 * Adds an action to the action manager.
+	 * @param action
+	 */
 	public void addAction(Action action) {
 		if(action == null) throw new IllegalArgumentException("Action is null");
 		
@@ -68,7 +76,8 @@ public class ActionManager {
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
-			if(action.update(delta)) {
+			if(!action.update(delta)) {
+				action.end();
 				ActionPools.free(actions.removeIndex(i));
 			}
 		}

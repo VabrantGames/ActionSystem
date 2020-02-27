@@ -1,44 +1,88 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 
 public abstract class PercentAction<T extends Percentable, S extends Action> extends TimeAction<S> {
 
-	protected boolean didInitialSetup;
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
 	protected float percent;
 	protected Interpolation interpolation;
 	protected T percentable;
 	
+	/**
+	 * Get the percentable object.
+	 * @return percentable object
+	 */
 	public T getPercentable() {
 		return percentable;
 	}
 	
+	/**
+	 * Sets the percent but does not guarantee that the percent will stay the same. {@link com.badlogic.gdx.math.Interpolation Interpolation}, {@link #reverseBackToStart}, and {@link #reverse} can change the percent. 
+	 * The timer will be moved to the correct position. 
+	 * @param percent
+	 */
 	public S setPercent(float percent) {
-		this.percent = percent;
-		timer = percent * duration;
+		this.percent = MathUtils.clamp(percent, 0f, 1f);
+		
+		//Action is finished. 
+		if(percent == 1f) {
+			percent = reverseBackToStart ? 0f : 1f;
+			timer = duration;
+		}
+		else {
+			timer = percent * duration;
+			
+			if(interpolation != null) percent = interpolation.apply(percent);
+			
+			if(reverseBackToStart) {
+				percent *= 2f;
+				
+				if(percent >= 1f) {
+					percent = 2f - percent;
+				}
+			}
+		}
+		
+		percent = reverse ? 1f - percent : percent;
 		return (S)this;
 	}
 	
+	/**
+	 * {@inheritDoc} <br>
+	 * The percent will be moved to the correct position.
+	 */
 	@Override
 	public S setTime(float time) {
 		super.setTime(time);
-		percent = timer / duration;
+		calculatePercent();
 		return (S)this;
 	}
 	
-	public T calculatePercent() {
-		if(timer == 0) {
-			percent = 0;
-		}
-		else if(timer >= duration) {
-			percent = 1;
+	private void calculatePercent() {
+		boolean finished = timer >= duration;
+		percent = 0;
+		
+		if(finished) {
+			percent = reverseBackToStart ? 0 : 1f;
 		}
 		else {
 			percent = timer / duration;
+			
+			if(interpolation != null) percent = interpolation.apply(percent);
+			
+			if(reverseBackToStart) {
+				percent *= 2f;
+				
+				if(percent >= 1f) {
+					percent = 2f - percent;
+				}
+			}
 		}
-		return (T)this;
+		
+		percent = reverse ? 1f - percent : percent;
 	}
 	
 	public S moveToPercent() {
@@ -75,7 +119,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	@Override
 	public S clear() {
 		super.clear();
-		didInitialSetup = false;
+		reverse = false;
 		reverseBackToStart = false;
 		interpolation = null;
 		percent = 0;
@@ -85,7 +129,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	@Override
 	public void reset() {
 		super.reset();
-		didInitialSetup = false;
+		reverse = false;
 		percentable = null;
 		reverseBackToStart = false;
 		interpolation = null;
@@ -93,38 +137,37 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	}
 
 	@Override
-	public S end() {
-//		percent(percent);
-		super.end();
-		return (S)this;
+	protected void startCycleLogic() {
+		super.startCycleLogic();
+		setup();
+		percent(percent);
 	}
-	
+
+	@Override
+	protected void restartCycleLogic() {
+		super.restartCycleLogic();
+		percent(percent);
+	}
+
 	@Override
 	public boolean update(float delta) {
-		if(isFinished) return true;
-		if(isPaused) return false;
 		if(!isRunning) start();
-		boolean finished = (timer += delta) >= duration;
-		percent = 0;
-		if(finished) {
-			percent = reverseBackToStart ? 0 : 1f;
-		}
-		else {
-			percent = timer / duration;
-			if(interpolation != null) percent = interpolation.apply(percent);
-			if(reverseBackToStart) {
-				percent *= 2f;
-				if(percent >= 1f) {
-					percent = 2f - percent;
-				}
-			}
-		}
-		percent = reverse ? 1f - percent : percent;
+		if(!isCycleRunning) return false;
+		if(isPaused) return true;
+		
+		timer += delta;
+		
+		calculatePercent();
 		percent(percent);
-		if(finished) end();
-		return isFinished;
+		if(timer >= duration) endCycle();
+		return isCycleRunning;
 	}
-	
+
+	/**
+	 * Sets up the action for the current cycle. This method is called every time {@link #startCycleLogic} is called.
+	 * If the action doesn't need to be setup per cycle a boolean can be used stop it it from setting up.
+	 */
 	public abstract S setup();
+	
 	protected abstract void percent(float percent);
 }
