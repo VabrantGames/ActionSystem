@@ -3,6 +3,8 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.vabrant.actionsystem.actions.Action;
+import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.Colorable;
 import com.vabrant.actionsystem.actions.Movable;
 import com.vabrant.actionsystem.actions.Rotatable;
@@ -12,8 +14,9 @@ import com.vabrant.actionsystem.actions.Zoomable;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-public class TestObject implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
+public class TestObject extends ActionAdapter implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
 	
+	public boolean isRunning;
 	private float scaleX = 1;
 	private float scaleY = 1;
 	private float rotation;
@@ -142,6 +145,11 @@ public class TestObject implements Movable, Colorable, Zoomable, Shakable, Rotat
 	public void setScale(float scaleX, float scaleY) {
 		setScaleX(scaleX);
 		setScaleY(scaleY);
+	}
+	
+	@Override
+	public void actionEnd(Action a) {
+		isRunning = false;
 	}
 	
 	public void draw(ShapeRenderer renderer) {

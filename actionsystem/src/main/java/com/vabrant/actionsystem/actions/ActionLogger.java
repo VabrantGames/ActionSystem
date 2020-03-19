@@ -129,7 +129,9 @@ public class ActionLogger {
 			STRING_BUILDER.append(actionName);
 			STRING_BUILDER.append(' ');
 		}
+		
 		STRING_BUILDER.append(message);
+		
 		if(body != null) {
 			STRING_BUILDER.append(" : ");
 			STRING_BUILDER.append(body);

@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.MathUtils;
 
-public class TimeAction<T extends Action> extends Action<T> {
+public class TimeAction<T extends Action<?>> extends Action<T> {
 
 	protected float timer;
 	protected float duration;
@@ -37,8 +37,7 @@ public class TimeAction<T extends Action> extends Action<T> {
 	 * @param duration
 	 */
 	public T setDuration(float duration) {
-//		this.duration = MathUtils.clamp(duration, 0, Float.MAX_VALUE);
-		this.duration = duration;
+		this.duration = MathUtils.clamp(duration, 0, Float.MAX_VALUE);
 		return (T)this;
 	}
 	
@@ -52,29 +51,28 @@ public class TimeAction<T extends Action> extends Action<T> {
 
 	@Override
 	public boolean update(float delta) {
-		if(!isCycleRunning) return false;
-		if(isPaused) return true;
-		if(!isRunning) start();
+		if(isDead() || !isRunning()) return false;
+		if(isPaused()) return true;
+		
 		if((timer += delta) >= duration) {
-			endCycle();
+			end();
 		}
-		return isCycleRunning;
+		
+		return isRunning();
 	}
 	
 	@Override
-	protected void startCycleLogic() {
-//		timer = 0;
+	protected void startLogic() {
 		setTime(0);
 	}
 	
 	@Override
-	protected void restartCycleLogic() {
-//		timer = 0;
+	protected void restartLogic() {
 		setTime(0);
 	}
 	
 	@Override
-	protected void endCycleLogic() {
+	protected void endLogic() {
 		timer = duration;
 	}
 	
@@ -83,14 +81,6 @@ public class TimeAction<T extends Action> extends Action<T> {
 		super.reset();
 		timer = 0;
 		duration = 0;
-	}
-	
-	@Override
-	public T clear() {
-		super.clear();
-		timer = 0;
-		duration = 0;
-		return (T)this;
 	}
 
 }

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
 	public static ScaleAction getAction() {
-		return getAction(ScaleAction.class);
+		return obtain(ScaleAction.class);
 	}
 	
 	public static ScaleAction scaleXBy(Scalable scalable, float amount, float duration, Interpolation interpolation) {

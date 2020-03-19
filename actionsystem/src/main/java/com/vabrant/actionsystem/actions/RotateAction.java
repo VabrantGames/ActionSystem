@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	public static RotateAction getAction() {
-		return getAction(RotateAction.class);
+		return obtain(RotateAction.class);
 	}
 	
 	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, Interpolation interpolation) {

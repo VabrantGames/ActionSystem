@@ -70,6 +70,8 @@ public class ActionManager {
 			unmanagedActions.add(action);
 		}
 		
+		action.start();
+		
 		if(logger != null) logger.info("Added" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 	
@@ -77,7 +79,6 @@ public class ActionManager {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action action = actions.get(i);
 			if(!action.update(delta)) {
-				action.end();
 				ActionPools.free(actions.removeIndex(i));
 			}
 		}

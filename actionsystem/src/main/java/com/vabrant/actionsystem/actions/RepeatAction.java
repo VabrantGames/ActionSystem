@@ -1,92 +1,158 @@
 package com.vabrant.actionsystem.actions;
 
-public class RepeatAction extends Action<RepeatAction> {
+/**
+ * Repeats an {@link Action} a specified number of times or indefinitely. 
+ * @author John Barton
+ */
+public class RepeatAction extends Action<RepeatAction> implements SingleParentAction {
 
-	private int count;
-	private int amount;
+	public static RepeatAction obtain() {
+		return obtain(RepeatAction.class);
+	}
+	
+	/**
+	 * Repeats an action one time.
+	 * @param repeatAction Action to repeat.
+	 * @return An action that runs once.
+	 */
+	public static RepeatAction repeat(Action<?> repeatAction) {
+		return obtain()
+				.set(repeatAction)
+				.setAmount(1);
+	}
+
+	/**
+	 * Repeats an action a specified number of times.
+	 * @param repeatAction Action to repeat.
+	 * @param amount Times to repeat.
+	 * @return An action that runs a specified number of times.
+	 */
+	public static RepeatAction repeat(Action<?> repeatAction, int amount) {
+		return obtain()
+				.set(repeatAction)
+				.setAmount(amount);
+	}
+	
+	/**
+	 * Repeats an action indefinitely. 
+	 * @param repeatAction Action to repeat.
+	 * @return An action that runs indefinitely.
+	 */
+	public static RepeatAction continuous(Action<?> repeatAction) {
+		return obtain()
+				.set(repeatAction)
+				.setContinuous(true);
+	}
+	
+	/** How many times the action has been played */
+	private int count = 0;
+	
+	/** How many times to play the action. Includes the initial non repeat play. */
+	private int amount = 0;
 	private boolean isContinuous;
-	private Action action;
+	private Action<?> action;
 
-	public RepeatAction setContinuous() {
-		isContinuous = true;
+	/**
+	 * 
+	 * @param continuous
+	 * @return This action for chaining.
+	 */
+	public RepeatAction setContinuous(boolean continuous) {
+		count = 0;
+		amount = 0;
+		isContinuous = continuous;
 		return this;
+	}
+	
+	/**
+	 * Times to repeat.
+	 * @return This action for chaining.
+	 */
+	public RepeatAction setAmount(int amount) {
+		//times to repeat + initial play
+		this.amount = amount + 1;
+		return this;
+	}
+	
+	public RepeatAction set(Action<?> action) {
+		//Can't change actions while the action is running
+		if(isRunning()) return this;
+		
+		if(action == null) throw new IllegalArgumentException("Action is null.");
+		
+		//Check if we are holding an action. If so pool it.
+		if(this.action != null) {
+			ActionPools.free(action);
+			action = null;
+		}
+		
+		this.action = action;
+		return this;
+	}
+	
+	public int getCount() {
+		return count <= 0 ? 0 : count - 1;
 	}
 	
 	public boolean isContinuous() {
 		return isContinuous;
 	}
-	
-	public RepeatAction setAmount(int amount) {
-		this.amount = amount;
-		return this;
-	}
-	
-	public RepeatAction set(Action action) {
-		this.action = action;
-		return this;
-	}
-	
+
 	@Override
-	void setRootAction(Action root) {
+	protected void setRootAction(Action root) {
 		super.setRootAction(root);
 		if(action != null) action.setRootAction(root);
 	}
 	
+	public Action<?> getAction() {
+		return action;
+	}
+
+	@Override
 	public boolean update(float delta) {
-		if(isCycleFinished) return true;
-		if(isPaused) return false;
-		if(!isRunning) start();
-		if(action.update(delta)) {
-			if(!isContinuous) {
-				count++;
+		if(isDead() || !isRunning()) return false;
+		if(isPaused) return true;
+		
+		if(!action.update(delta)) {
+
+			//Check if the inner action has been permanently ended or killed
+			if(action.isDead()) {
+//				permanentEnd();
+//				end();
+				return false;
 			}
-			if(isContinuous || count <= amount) {
-				if(logger != null && !isContinuous) logger.debug("Repeat Count", Integer.toString(count));
-				lastCycle();
-				action.restart();
+			
+			if(isContinuous || count < amount) {
+				if(!isContinuous) count++;
+				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
+				action.start();
 			}
 			else {
 				end();
 			}
 		}
-		return isCycleFinished;
+		return isRunning();
+	}
+
+	@Override
+	protected void startLogic() {
+		count = 0;
 	}
 	
 	@Override
-	protected boolean lastCycle() {
-		if(!isContinuous) {
-			if(count == amount || amount == 0) {
-//				super.lastCycle();
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public Action getRepeatAction() {
-		return action;
-	}
-	
-	@Override
-	public RepeatAction end() {
-		super.end();
+	protected void endLogic() {
 		if(action != null) action.end();
-		return this;
 	}
 	
 	@Override
-	public RepeatAction kill() {
-		super.kill();
+	protected void killLogic() {
 		if(action != null) action.kill();
-		return this;
 	}
 	
 	@Override
-	public RepeatAction restart() {
-		super.restart();
+	protected void restartLogic() {
 		count = 0;
 		if(action != null) action.restart();
-		return this;
 	}
 
 	@Override
@@ -98,28 +164,4 @@ public class RepeatAction extends Action<RepeatAction> {
 		isContinuous = false;
 	}
 	
-	public static RepeatAction getAction() {
-		return getAction(RepeatAction.class);
-	}
-	
-	@Deprecated
-	public static RepeatAction repeat(Action repeatAction) {
-		RepeatAction action = getAction();
-		action.set(repeatAction);
-		return action;
-	}
-	
-	public static RepeatAction repeat(Action repeatAction, int amount) {
-		RepeatAction action = getAction();
-		action.set(repeatAction);
-		action.setAmount(amount);
-		return action;
-	}
-	
-	public static RepeatAction continuous(Action repeatAction) {
-		RepeatAction action = getAction();
-		action.set(repeatAction);
-		action.setContinuous();
-		return action;
-	}
 }

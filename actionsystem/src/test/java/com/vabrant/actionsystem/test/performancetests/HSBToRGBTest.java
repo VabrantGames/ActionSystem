@@ -2,10 +2,8 @@ package com.vabrant.actionsystem.test.performancetests;
 
 import com.badlogic.gdx.graphics.Color;
 import com.vabrant.actionsystem.actions.ColorAction;
-import com.vabrant.actionsystem.test.ActionSystemTestScreen;
-import com.vabrant.actionsystem.test.ActionSystemTestSelector;
 
-public class HSBToRGBTest extends ActionSystemTestScreen {
+public class HSBToRGBTest {
 
 	private final float h = 300;
 	private final float s = 0f;
@@ -14,11 +12,9 @@ public class HSBToRGBTest extends ActionSystemTestScreen {
 	private final PerformanceTimer timer = new PerformanceTimer(2);
 	private final Color testColor = new Color();
 	
-	public HSBToRGBTest(ActionSystemTestSelector screen) {
-		super(screen);
+	public HSBToRGBTest() {
 	}
 
-	@Override
 	public void runTest() {
 		timer.clear();
 		testOne();

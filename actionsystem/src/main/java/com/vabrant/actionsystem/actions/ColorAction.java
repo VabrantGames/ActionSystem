@@ -6,198 +6,422 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
-	public static ColorAction getAction() {
-		return getAction(ColorAction.class);
+	public static ColorAction obtain() {
+		return obtain(ColorAction.class);
 	}
 	
 	public static ColorAction changeColor(Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeColor(endColor);
-		action.set(colorable, duration, interpolation);
-		return action;
+		return obtain()
+				.changeColor(endColor)
+				.set(colorable, duration, interpolation);
 	}
 	
-	public static ColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeColor(hue, saturation, brightness, alpha);
-		action.set(colorable, duration, interpolation);
-		return action;
+	public static ColorAction changeColorRGB(Colorable colorable, float[] rgb, float duration, Interpolation interpolation) {
+		if(rgb.length < 3 || rgb.length > 3) throw new IllegalArgumentException("RGB array length has to be 3.");
+		return changeColorRGB(colorable, rgb[0], rgb[1], rgb[2], duration, interpolation);
 	}
 	
-	public static ColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeAlpha(endAlpha);
-		action.set(colorable, duration, interpolation);
-		return action;
+	public static ColorAction changeColorRGB(Colorable colorable, float red, float blue, float green, float duration, Interpolation interpolation) {
+		return obtain()
+				.changeColorRGB(red, blue, green)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeColorRGBA(Colorable colorable, float[] rgba, float duration, Interpolation interpolation) {
+		if(rgba.length < 4 || rgba.length > 4) throw new IllegalArgumentException("RGBA array length has to be 4");
+		return changeColorRGBA(colorable, rgba[0], rgba[1], rgba[2], rgba[3], duration, interpolation);
+	}
+	
+	public static ColorAction changeColorRGBA(Colorable colorable, float red, float blue, float green, float alpha, float duration, Interpolation interpolation) {
+		return obtain()
+				.changeColorRGBA(red, blue, green, alpha)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeRed(Colorable colorable, float red, float duration, Interpolation interpolation) {
+		return obtain()
+				.changeRed(red)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeGreen(Colorable colorable, float green, float duration, Interpolation interpolation) {
+		return obtain()
+			.changeGreen(green)
+			.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeBlue(Colorable colorable, float blue, float duration, Interpolation interpolation) {
+		return obtain()
+				.changeBlue(blue)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeColorHSB(Colorable colorable, float[] hsb, float duration, Interpolation interpolation) {
+		if(hsb.length < 3 || hsb.length > 3) throw new IllegalArgumentException("HSB array length has to be 3.");
+		return changeColorHSB(colorable, hsb[0], hsb[1], hsb[2], duration, interpolation);
+	}
+	
+	public static ColorAction changeColorHSB(Colorable colorable, float hue, float saturation, float brightness, float duration, Interpolation interpolation) {
+		return changeColorHSB(colorable, hue, saturation, brightness, duration, interpolation, false);
+	}
+	
+	public static ColorAction changeColorHSB(Colorable colorable, float[] hsb, float duration, Interpolation interpolation, boolean useHSBValues) {
+		if(hsb.length < 3 || hsb.length > 3) throw new IllegalArgumentException("HSB array length has to be 3.");
+		return changeColorHSB(colorable, hsb[0], hsb[1], hsb[2], duration, interpolation, useHSBValues);
+	}
+	
+	public static ColorAction changeColorHSB(Colorable colorable, float hue, float saturation, float brightness, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return obtain()
+				.changeColorHSB(hue, saturation, brightness, useHSBValues)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeColorHSBA(Colorable colorable, float[] hsba, float duration, Interpolation interpolation) {
+		if(hsba.length < 4 || hsba.length > 4) throw new IllegalArgumentException("HSBA array length has to be 4.");
+		return changeColorHSBA(colorable, hsba[0], hsba[1], hsba[2], hsba[3], duration, interpolation);
+	}
+	
+	public static ColorAction changeColorHSBA(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, Interpolation interpolation) {
+		return changeColorHSBA(colorable, hue, saturation, brightness, alpha, duration, interpolation, false);
+	}
+	
+	public static ColorAction changeColorHSBA(Colorable colorable, float[] hsba, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return changeColorHSBA(colorable, hsba[0], hsba[1], hsba[2], hsba[3], duration, interpolation, useHSBValues);
+	}
+	
+	public static ColorAction changeColorHSBA(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return obtain()
+				.changeColorHSBA(hue, saturation, brightness, alpha, useHSBValues)
+				.set(colorable, duration, interpolation);
 	}
 	
 	public static ColorAction changeHue(Colorable colorable, float endHue, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeHue(endHue);
-		action.set(colorable, duration, interpolation);
-		return action;
+		return changeHue(colorable, endHue, duration, interpolation, false);
+	}
+	
+	public static ColorAction changeHue(Colorable colorable, float endHue, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return obtain()
+				.changeHue(endHue, useHSBValues)
+				.set(colorable, duration, interpolation);
 	}
 	
 	public static ColorAction changeSaturation(Colorable colorable, float endSaturation, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeSaturation(endSaturation);
-		action.set(colorable, duration, interpolation);
-		return action;
+		return changeSaturation(colorable, endSaturation, duration, interpolation, false);
+	}
+	
+	public static ColorAction changeSaturation(Colorable colorable, float endSaturation, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return obtain()
+				.changeSaturation(endSaturation, useHSBValues)
+				.set(colorable, duration, interpolation);
 	}
 	
 	public static ColorAction changeBrightness(Colorable colorable, float endBrightness, float duration, Interpolation interpolation) {
-		ColorAction action = getAction();
-		action.changeBrightness(endBrightness);
-		action.set(colorable, duration, interpolation);
-		return action;
+		return changeBrightness(colorable, endBrightness, duration, interpolation, false);
+	}
+	
+	public static ColorAction changeBrightness(Colorable colorable, float endBrightness, float duration, Interpolation interpolation, boolean useHSBValues) {
+		return obtain()
+				.changeBrightness(endBrightness, useHSBValues)
+				.set(colorable, duration, interpolation);
+	}
+	
+	public static ColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
+		return obtain()
+				.changeAlpha(endAlpha)
+				.set(colorable, duration, interpolation);
 	}
 	
 	public static ColorAction setColor(Colorable colorable, Color color) {
-		ColorAction action = getAction();
-		action.changeColor(color);
-		action.set(colorable, 0, Interpolation.linear);
-		return action;
+		return obtain()
+				.changeColor(color)
+				.set(colorable, 0, Interpolation.linear);
 	}
 	
-	public static ColorAction setColor(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
-		ColorAction action = getAction();
-		action.changeColor(hue, saturation, brightness, alpha);
-		action.set(colorable, 0, Interpolation.linear);
-		return action;
+	public static ColorAction setColorRGB(Colorable colorable, float red, float green, float blue) {
+		return obtain() 
+				.changeColorRGB(red, green, blue)
+				.set(colorable, 0, Interpolation.linear);
 	}
 	
-	private static final int RGBA = 0;
-	private static final int HSBA = 1;
-	private static final int ALPHA = 2;
-	private static final int HUE = 3;
-	private static final int SATURATION =  4;
-	private static final int BRIGHTNESS = 5;
-	private int type = -1;
+	public static ColorAction setColorRGBA(Colorable colorable, float red, float green, float blue, float alpha) {
+		return obtain()
+				.changeColorRGBA(red, green, blue, alpha)
+				.set(colorable, 0, Interpolation.linear);
+	}
 	
+	public static ColorAction setColorHSB(Colorable colorable, float hue, float saturation, float brightness) {
+		return obtain()
+				.changeColorHSB(hue, saturation, brightness, false)
+				.set(colorable, 0, Interpolation.linear);
+	}
+	
+	public static ColorAction setColorHSBA(Colorable colorable, float hue, float saturation, float brightness, float alpha) {
+		return obtain()
+				.changeColorHSBA(hue, saturation, brightness, alpha, false)
+				.set(colorable, 0, Interpolation.linear);
+	}
+
+	public static float[] rgbTemp(float r, float g, float b, boolean normalize) {
+		if(normalize) {
+			return v3Temp(r / 255f, g / 255f, b / 255f);
+		}
+		else {
+			return v3Temp(r, g, b);
+		}
+	}
+	
+	public static float[] rgbaTemp(float r, float g, float b, float a, boolean normalize) {
+		if(normalize) {
+			return v4Temp(r / 255f, g / 255f, b / 255f, a);
+		}
+		else {
+			return v4Temp(r, g, b, a);
+		}
+	}
+	
+	public static float[] v3Temp(float v1, float v2, float v3) {
+		V3_TEMP[0] = v1;
+		V3_TEMP[1] = v2;
+		V3_TEMP[2] = v3;
+		return V3_TEMP;
+	}
+	
+	public static float[] v4Temp(float v1, float v2, float v3, float v4) {
+		V4_TEMP[0] = v1;
+		V4_TEMP[1] = v2;
+		V4_TEMP[2] = v3;
+		V4_TEMP[3] = v4;
+		return V4_TEMP;
+	}
+	
+	private static final float[] V3_TEMP = new float[3];
+	private static final float[] V4_TEMP = new float[4];
+	
+	private static final int RGB = 0;
+	private static final int HSB = 1;
+	private static final int RED = 2;
+	private static final int GREEN = 3;
+	private static final int BLUE = 4;
+	private static final int HUE = 5;
+	private static final int SATURATION = 6;
+	private static final int BRIGHTNESS = 7;
+	
+	private int valueType = -1;
+	private int constructType = -1;
+
+	private boolean soloChannel;
+	private boolean useAlpha;
+	private boolean constructEndColor;
 	private boolean setupAction = true;
-	private float[] startHSBA = new float[4];
-	private float[] endHSBA = new float[4];
+	private float[] startHSB = new float[3];
+	private float[] endHSB = new float[3];
 	private Color startColor = new Color(Color.WHITE);
 	private Color endColor = new Color(Color.WHITE);
 	
-	public void changeColor(Color endColor) {
-		type = RGBA;
+	public ColorAction changeColor(Color endColor) {
+		valueType = RGB;
 		this.endColor.set(endColor);
+		useAlpha = true;
+		return this;
 	}
 	
-	public void changeColor(float hue, float saturation, float brightness, float alpha) {
-		type = HSBA;
-		endHSBA[0] = hue;
-		endHSBA[1] = saturation;
-		endHSBA[2] = brightness;
-		endHSBA[3] = alpha;
+	public ColorAction changeColorRGB(float red, float green, float blue) {
+		valueType = RGB;
+		endColor.r = red;
+		endColor.g = green;
+		endColor.b = blue;
+		return this;
 	}
 	
-	public void changeHue(float hue) {
-		type = HUE;
-		endHSBA[0] = hue;
+	public ColorAction changeColorRGBA(float red, float green, float blue, float alpha) {
+		valueType = RGB;
+		endColor.set(red, green, blue, alpha);
+		useAlpha = true;
+		return this;
 	}
 	
-	public void changeSaturation(float saturation) {
-		type = SATURATION;
-		endHSBA[1] = saturation;
+	public ColorAction changeRed(float red) {
+		valueType = RED;
+		endColor.r = red;
+		return this;
 	}
 	
-	public void changeBrightness(float brightness) {
-		type = BRIGHTNESS;
-		endHSBA[2] = brightness;
+	public ColorAction changeGreen(float green) {
+		valueType = GREEN;
+		endColor.g = green;
+		return this;
 	}
 	
-	public void changeAlpha(float endAlpha) {
-		type = ALPHA;
+	public ColorAction changeBlue(float blue) {
+		valueType = BLUE;
+		endColor.b = blue;
+		return this;
+	}
+	
+	public ColorAction changeColorHSB(float hue, float saturation, float brightness, boolean useHSBValues) {
+		valueType = useHSBValues ? HSB : RGB;
+		
+		if(valueType == RGB) {
+			HSBToRGB(endColor, hue, saturation, brightness);
+		}
+		else {
+			endHSB[0] = hue;
+			endHSB[1] = saturation;
+			endHSB[2] = brightness;
+		}
+		return this;
+	}
+	
+	public ColorAction changeColorHSBA(float hue, float saturation, float brightness, float alpha, boolean useHSBValues) {
+		valueType = useHSBValues ? HSB : RGB;
+
+		useAlpha = true;
+		
+		if(valueType == RGB) {
+			HSBToRGB(endColor, hue, saturation, brightness);
+			endColor.a = alpha;
+		}
+		else {
+			endHSB[0] = hue;
+			endHSB[1] = saturation;
+			endHSB[2] = brightness;
+		}
+		return this;
+	}
+
+	public ColorAction changeHue(float hue, boolean useHSBValues) {
+		valueType = useHSBValues ? HUE : RGB;
+		endHSB[0] = hue;
+		
+		if(valueType == RGB) {
+			constructEndColor = true;
+			constructType = HUE;
+		}
+		return this;
+	}
+	
+	public ColorAction changeSaturation(float saturation, boolean useHSBValues) {
+		valueType = useHSBValues ? SATURATION : RGB;
+		endHSB[1] = saturation;
+		
+		if(valueType == RGB) {
+			constructEndColor = true;
+			constructType = SATURATION;
+		}
+		return this;
+	}
+	
+	public ColorAction changeBrightness(float brightness, boolean useHSBValues) {
+		valueType = useHSBValues ? BRIGHTNESS : RGB;
+		endHSB[2] = brightness;
+		
+		if(valueType == RGB) {
+			constructEndColor = true;
+			constructType = BRIGHTNESS;
+		}
+		return this;
+	}
+	
+	public ColorAction changeAlpha(float endAlpha) {
+		useAlpha = true;
 		endColor.a = endAlpha;
+		return this;
+	}
+	
+	public ColorAction soloChannel() {
+		soloChannel = true;
+		return this;
 	}
 
 	@Override
 	protected void percent(float percent) {
-		switch(type) {
-			case RGBA:
-				float rgbaR = startColor.r + (endColor.r - startColor.r) * percent;
-				float rgbaG = startColor.g + (endColor.g - startColor.g) * percent;
-				float rgbaB = startColor.b + (endColor.b - startColor.b) * percent;
-				float rgbaA = startColor.a + (endColor.a - startColor.a) * percent;
-				percentable.getColor().set(rgbaR, rgbaG, rgbaB, rgbaA);
+		Color color = percentable.getColor();
+		
+		if(useAlpha) color.a = MathUtils.lerp(startColor.a, endColor.a, percent);
+		
+		switch(valueType) {
+			case RGB:
+				color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
+				color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
+				color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
 				break;
-			case HSBA:
-				float hsbaH = startHSBA[0] + (endHSBA[0] - startHSBA[0]) * percent;
-				float hsbaS = startHSBA[1] + (endHSBA[1] - startHSBA[1]) * percent;
-				float hsbaB = startHSBA[2] + (endHSBA[2] - startHSBA[2]) * percent;
-				float hsbaA = startHSBA[3] + (endHSBA[3] - startHSBA[3]) * percent;
-				HSBToRGB(endColor, hsbaH, hsbaS, hsbaB, hsbaA);
-				percentable.getColor().set(endColor);
+			case RED:
+				color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
+				break;
+			case GREEN:
+				color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
+				break;
+			case BLUE:
+				color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
+				break;
+			case HSB:
+				float h = MathUtils.lerp(startHSB[0], endHSB[0], percent);
+				float s = MathUtils.lerp(startHSB[1], endHSB[1], percent);
+				float b = MathUtils.lerp(startHSB[2], endHSB[2], percent);
+				color.set(HSBToRGB(endColor, h, s, b));
 				break;
 			case HUE:
-				float hue = startHSBA[0] + (endHSBA[0] - startHSBA[0]) * percent;
-				HSBToRGB(endColor, hue, startHSBA[1], startHSBA[2], startHSBA[3]);
-				percentable.getColor().set(endColor);
-				break;
-			case ALPHA:
-				float alpha = startColor.a + (endColor.a - startColor.a) * percent;
-				percentable.getColor().a = alpha;
+				float hh = MathUtils.lerp(startHSB[0], endHSB[0], percent);
+				float hS = !soloChannel ? startHSB[1] : getSaturation(color);
+				float hB = !soloChannel ? startHSB[2] : getBrightness(color);
+				color.set(HSBToRGB(endColor, hh, hS, hB));
 				break;
 			case SATURATION:
-				float saturation = startHSBA[1] + (endHSBA[1] - startHSBA[1]) * percent;
-				HSBToRGB(endColor, startHSBA[0], saturation, startHSBA[2], startHSBA[3]);
-				percentable.getColor().set(endColor);
+				float sH = !soloChannel ? startHSB[0] : getHue(color);
+				float sS = MathUtils.lerp(startHSB[1], endHSB[1], percent);
+				float sB = !soloChannel ? startHSB[2] : getSaturation(color);
+				color.set(HSBToRGB(endColor, sH, sS, sB));
 				break;
 			case BRIGHTNESS:
-				float brightness = startHSBA[2] + (endHSBA[2] - startHSBA[2]) * percent;
-				HSBToRGB(endColor, startHSBA[0], startHSBA[1], brightness, startHSBA[3]);
-				percentable.getColor().set(endColor);
+				float bH = !soloChannel ? startHSB[0] : getHue(color);
+				float bS = !soloChannel ? startHSB[1] : getSaturation(color);
+				float bB = MathUtils.lerp(startHSB[2], endHSB[2], percent);
+				color.set(HSBToRGB(endColor, bH, bS, bB));
 				break;
 		}
 	}
 	
 	@Override
-	protected void startLogic() {
-		super.startLogic();
-	}	if(!didInitialSetup) setup();
-	}
-	
-	@Override
 	public ColorAction setup() {
-		didInitialSetup = true;
-		
 		if(setupAction) {
-			switch(type) {
-				case RGBA:
-					startColor.set(percentable.getColor());
+			setupAction = false;
+			
+			startColor.set(percentable.getColor());
+			
+			switch(valueType) {
+				case RGB:
+					if(constructEndColor) {
+						float h = 0;
+						float s = 0;
+						float b = 0;
+						
+						switch(constructType) {
+							case HUE:
+								h = endHSB[0];
+								s = getSaturation(startColor);
+								b = getBrightness(startColor);
+								break;
+							case SATURATION:
+								h = getHue(startColor);
+								s = endHSB[1];
+								b = getBrightness(startColor);
+								break;
+							case BRIGHTNESS:
+								h = getHue(startColor);
+								s = getSaturation(startColor);
+								b = endHSB[2];
+								break;
+						}
+						HSBToRGB(endColor, h, s, b);
+					}
 					break;
-				case HSBA:
-					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor);
-					startHSBA[1] = getSaturation(startColor);
-					startHSBA[2] = getBrightness(startColor);
-					startHSBA[3] = startColor.a;
-					break;
-				case ALPHA:
-					startColor.a = percentable.getColor().a;
-					break;
+				case HSB:
 				case HUE:
-					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor);
-					startHSBA[1] = getSaturation(startColor);
-					startHSBA[2] = getBrightness(startColor);
-					startHSBA[3] = startColor.a;
-					break;
 				case SATURATION:
-					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor);
-					startHSBA[1] = getSaturation(startColor);
-					startHSBA[2] = getBrightness(startColor);
-					startHSBA[3] = startColor.a;
-					break;
 				case BRIGHTNESS:
-					startColor.set(percentable.getColor());
-					startHSBA[0] = getHue(startColor);
-					startHSBA[1] = getSaturation(startColor);
-					startHSBA[2] = getBrightness(startColor);
-					startHSBA[3] = startColor.a;
+					startHSB[0] = getHue(startColor);
+					startHSB[1] = getSaturation(startColor);
+					startHSB[2] = getBrightness(startColor);
 					break;
 			}
 		}
@@ -205,72 +429,69 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	@Override
-	public ColorAction end() {
-		super.end();
-		setupAction = false;
-		return this;
+	protected void startLogic() {
+		super.startLogic();
+		
+		//By default the color of the action should go back to exactly where it started whether it was changing one channel or
+		//multiple channels. When single channels are used they only update their channel and skip the others. This will make
+		//sure the other channels will be set to where they were started. They will not be changed when updating just when start 
+		//is called. If the channel is being soloed (Allowing you to individually animate each channel) then the other channels won't be set. 
+		switch(valueType) {
+			case RED:
+			case GREEN:
+			case BLUE:
+			case HUE:
+			case SATURATION:
+			case BRIGHTNESS:
+				if(!soloChannel) {
+					percentable.setColor(startColor);
+				}
+				break;
+		}
 	}
 	
 	@Override
-	protected boolean hasConflict(Action action) {
+	public boolean hasConflict(Action<?> action) {
 		if(action instanceof ColorAction) {
 			ColorAction conflictAction = (ColorAction)action;
 //			if(conflictAction.type > -1) return true;
 		}
 		return false;
 	}
-	
-	@Override
-	public ColorAction clear() {
-		super.clear();
-		setupAction = true;
-		startColor.set(Color.WHITE);
-		endColor.set(Color.WHITE);
-		type = -1;
-		startHSBA[0] = 0;
-		startHSBA[1] = 0;
-		startHSBA[2] = 0;
-		startHSBA[3] = 0;
-		endHSBA[0] = 0;
-		endHSBA[1] = 0;
-		endHSBA[2] = 0;
-		endHSBA[3] = 0;
-		return this;
-	}
 
 	@Override
 	public void reset() {
 		super.reset();
+		soloChannel = false;
+		useAlpha = false;
+		constructEndColor = false;
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
-		type = -1;
-		startHSBA[0] = 0;
-		startHSBA[1] = 0;
-		startHSBA[2] = 0;
-		startHSBA[3] = 0;
-		endHSBA[0] = 0;
-		endHSBA[1] = 0;
-		endHSBA[2] = 0;
-		endHSBA[3] = 0;
+		valueType = -1;
+		constructType = -1;
+		startHSB[0] = 0;
+		startHSB[1] = 0;
+		startHSB[2] = 0;
+		endHSB[0] = 0;
+		endHSB[1] = 0;
+		endHSB[2] = 0;
 	}
 	
-	public static void HSBToRGB(Color color, float hue, float saturation, float brightness, float alpha) {
+	public static Color HSBToRGB(Color color, float hue, float saturation, float brightness) {
 		if(hue >= 360) Math.abs(hue %= 360);
 		saturation = MathUtils.clamp(saturation, 0f, 1f);
 		brightness = MathUtils.clamp(brightness, 0f, 1f);
 		
 		if(saturation == 0) {
 			color.r = color.g = color.b = brightness;
-			return;
+			return color;
 		}
 		
 		float h = hue / 60f;
 		float c = brightness * saturation;
 		float x = c * (1f - Math.abs(h % 2f - 1f));
 		float m = brightness - c;
-		
-		color.a = alpha;
 		
 		switch((int)h) {
 			case 0:
@@ -304,6 +525,11 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 				color.b = x + m;
 				break;
 		}
+		return color;
+	}
+	
+	public static float normalize(float value) {
+		return value / 255f;
 	}
 	
 	public static float getHue(Color color) {

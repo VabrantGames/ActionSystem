@@ -3,8 +3,6 @@ package com.vabrant.actionsystem.test.tests;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -15,6 +13,7 @@ import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.PercentAction;
 import com.vabrant.actionsystem.actions.Percentable;
 
@@ -22,90 +21,89 @@ public class PercentActionTest {
 
 	static final float end = 10;
 	static final int duration = 1;
-	static TestClass testClass = null;
-	static TestAction action = null;
+	private TestClass testClass = new TestClass();
 	
 	@BeforeClass
 	public static void init() throws ReflectionException{
 		ActionLogger.useSysOut();
-
-		testClass = new TestClass();
-		action = TestAction.getAction();
-		action.setLogLevel(ActionLogger.DEBUG);
-		
-		//set this action as the root action
-		Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", null);
-		m.setAccessible(true);
-		m.invoke(action, null);
 	}
+	
+	public TestAction getTestAction() {
+		TestAction action = TestAction.set(testClass, end, duration)
+				.setLogLevel(ActionLogger.DEBUG);
 
-	@Before
-	public void clearAction(){
-		testClass.reset();
-		action.clear();
-		TestAction.set(action, testClass, end, duration);
-		action.setLogLevel(ActionLogger.DEBUG);
-		System.out.println();
+		//Make root action (Usually done by the action manager)
+		try {
+			//set this action as the root action
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", null);
+			m.setAccessible(true);
+			m.invoke(action, null);
+		}
+		catch(ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		return action;
 	}
 
 	public void printTestHeader(String name) {
+		System.out.println();
 		String pattern = "//----------//";
 		System.out.println(pattern + ' ' + name + ' ' + pattern);
 	}
 
 	@Test
-	public void singleCycleTest() {
-		printTestHeader("Single Cycle Test");
+	public void singleRunTest() {
+		printTestHeader("Single Run Test");
 
+		TestAction action = getTestAction();
+		
 		action.start();
 
-		//Somewhat mimic updating. Update values will most likely be a lot smaller. Duration is 1 so update with 0.25f is called 4 times.
-		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
 		
-		assertFalse("Cycle is running", action.isCycleRunning());
-
-		//End will be called by the Action Manager
-		action.end();
+		//the after this update the timer will be the same as the duration
+		//the action should end
+		action.update(0.25f);
+		
+		ActionPools.free(action);
 
 		assertEquals("Value is incorrect", end, testClass.getValue());
 	}
 
 	@Test
-	public void multiCycleTest(){
-		printTestHeader("Multi Cycle Test");
+	public void multirunTest(){
+		printTestHeader("Multi Run Test");
+		
+		TestAction action = getTestAction();
 
-		//---------// Run Cycle 1 //----------//
+		//---------// Run 1 //----------//
 		action.start();
 		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
 
-		assertFalse("Cycle is running", action.isCycleRunning());
-
-		//---------// Run Cycle 2 //----------//
-		action.startCycle();
+		//---------// Run 2 //----------//
+		action.start();
+		action.update(0.25f);
+		action.update(0.25f);
+		action.update(0.25f);
+		action.update(0.25f);
 		
-		assertEquals("Value is incorrect", 0f, testClass.getValue());
-		
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-
-		assertFalse("Cycle is running", action.isCycleRunning());
-
-		action.end();
-
 		assertEquals("Value is incorrect", end, testClass.getValue());
+		
+		ActionPools.free(action);
 	}
 
 	@Test
-	public void restartCycleTest(){
+	public void restartRunTest(){
 		printTestHeader("Restart Cycle Test");
+		
+		TestAction action = getTestAction();
 
 		action.start();
 
@@ -117,27 +115,27 @@ public class PercentActionTest {
 		final float expected = (50 * end) / 100;
 		assertEquals("Value is incorrect", expected, testClass.getValue());
 
-		//this cycle should be reset to the beginning
-		action.restartCycle();
+		action.restart();
 
+		assertEquals("Percent is incorrent", 0f, action.getPercent());
 		assertEquals("Value is incorrect", 0f, testClass.getValue());
 
 		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
 		action.update(0.25f);
-
-		assertFalse("Cycle is running", action.isCycleRunning());
-		
-		action.end();
 		
 		assertFalse("Action is running", action.isRunning());
 		assertEquals("End value is incorrect", end, testClass.getValue());
+		
+		ActionPools.free(action);
 	}
 	
 	@Test
 	public void setPercentTest() {
 		printTestHeader("Set Percent Test");
+		
+		TestAction action = getTestAction();
 		
 		float expected = 0;
 		float percent = 0;
@@ -166,6 +164,8 @@ public class PercentActionTest {
 		assertEquals("Time is not correct", expected, action.getCurrentTime());
 		
 		action.end();
+		
+		ActionPools.free(action);
 	}
 
 	public static class TestClass implements TestPercentable {
@@ -196,13 +196,14 @@ public class PercentActionTest {
 	 */
 	private static class TestAction extends PercentAction<TestPercentable, TestAction> {
 
-		public static TestAction getAction(){
-			return getAction(TestAction.class);
+		public static TestAction obtain(){
+			return obtain(TestAction.class);
 		}
 
-		public static void set(TestAction action, TestPercentable percentable, float end, float duration){
-			action.moveTo(end);
-			action.set(percentable, duration, Interpolation.linear);
+		public static TestAction set(TestPercentable percentable, float end, float duration){
+			return obtain()
+					.moveTo(end)
+					.set(percentable, duration, Interpolation.linear);
 		}
 
 		private boolean setup;
@@ -228,12 +229,11 @@ public class PercentActionTest {
 		}
 
 		@Override
-		public TestAction clear() {
-			super.clear();
+		public void reset() {
+			super.reset();
 			start = 0;
 			end = 0;
 			setup = false;
-			return this;
 		}
 	}
 

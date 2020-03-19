@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	
 	public static ZoomAction getAction() {
-		return getAction(ZoomAction.class);
+		return obtain(ZoomAction.class);
 	}
 	
 	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, Interpolation interpolation) {

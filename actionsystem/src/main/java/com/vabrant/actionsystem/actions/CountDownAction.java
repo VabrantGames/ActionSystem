@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 public class CountDownAction extends TimeAction<CountDownAction> {
 	
 	public static CountDownAction getAction() {
-		return getAction(CountDownAction.class);
+		return obtain(CountDownAction.class);
 	}
 	
 	public static CountDownAction CountDown(int duration) {

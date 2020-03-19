@@ -2,6 +2,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public abstract class PercentAction<T extends Percentable, S extends Action> extends TimeAction<S> {
 
@@ -115,16 +116,6 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 		this.interpolation = interpolation;
 		return (S)this;
 	}
-	
-	@Override
-	public S clear() {
-		super.clear();
-		reverse = false;
-		reverseBackToStart = false;
-		interpolation = null;
-		percent = 0;
-		return (S)this;
-	}
 
 	@Override
 	public void reset() {
@@ -137,35 +128,28 @@ public abstract class PercentAction<T extends Percentable, S extends Action> ext
 	}
 
 	@Override
-	protected void startCycleLogic() {
-		super.startCycleLogic();
+	protected void startLogic() {
+		super.startLogic();
 		setup();
 		percent(percent);
 	}
 
 	@Override
-	protected void restartCycleLogic() {
-		super.restartCycleLogic();
-		percent(percent);
-	}
-
-	@Override
 	public boolean update(float delta) {
-		if(!isRunning) start();
-		if(!isCycleRunning) return false;
-		if(isPaused) return true;
+		if(isDead() || !isRunning()) return false;
+		if(isPaused()) return true;
 		
 		timer += delta;
 		
 		calculatePercent();
 		percent(percent);
-		if(timer >= duration) endCycle();
-		return isCycleRunning;
+		if(timer >= duration) end();
+		return isRunning();
 	}
 
 	/**
-	 * Sets up the action for the current cycle. This method is called every time {@link #startCycleLogic} is called.
-	 * If the action doesn't need to be setup per cycle a boolean can be used stop it it from setting up.
+	 * Sets up the action for the current cycle. This method is called every time {@link #startLogic} is called.
+	 * If the action doesn't need to be setup per cycle a boolean can be used stop it from setting up.
 	 */
 	public abstract S setup();
 	

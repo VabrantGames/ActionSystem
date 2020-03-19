@@ -2,6 +2,12 @@ package com.vabrant.actionsystem.actions;
 
 public class RunnableAction extends Action<RunnableAction>{
 
+	public static RunnableAction runnable(Runnable runnable) {
+		RunnableAction action = obtain(RunnableAction.class);
+		action.set(runnable);
+		return action;
+	}
+	
 	private Runnable runnable;
 	
 	public void set(Runnable runnable) {
@@ -10,12 +16,13 @@ public class RunnableAction extends Action<RunnableAction>{
 	
 	@Override
 	public boolean update(float delta) {
-		if(isCycleFinished) return true;
-		if(isPaused()) return false;
+		if(isDead) return false; 
 		if(!isRunning()) start();
+		if(!isCycleRunning) return false;
+		if(isPaused()) return true;
 		runnable.run();
-		end();
-		return isCycleFinished;
+		endCycle();
+		return isCycleRunning;
 	}
 	
 	@Override
@@ -24,9 +31,4 @@ public class RunnableAction extends Action<RunnableAction>{
 		runnable = null;
 	}
 	
-	public static RunnableAction runnable(Runnable runnable) {
-		RunnableAction action = getAction(RunnableAction.class);
-		action.set(runnable);
-		return action;
-	}
 }

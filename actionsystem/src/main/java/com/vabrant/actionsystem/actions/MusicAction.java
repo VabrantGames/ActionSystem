@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Music;
 public class MusicAction extends TimeAction<MusicAction> {
 	
 	public static MusicAction getAction() {
-		return getAction(MusicAction.class);
+		return obtain(MusicAction.class);
 	}
 	
 	public static MusicAction play(Music music, float duration) {

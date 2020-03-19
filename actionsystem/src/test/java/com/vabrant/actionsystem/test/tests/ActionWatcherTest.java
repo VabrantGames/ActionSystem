@@ -16,7 +16,7 @@ public class ActionWatcherTest {
 	private static class TestAction extends Action<TestAction> {
 		
 		public static TestAction getAction() {
-			return getAction(TestAction.class);
+			return obtain(TestAction.class);
 		}
 	}
 	

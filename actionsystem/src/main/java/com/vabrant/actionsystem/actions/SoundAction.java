@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class SoundAction extends TimeAction<SoundAction> {
 
 	public static SoundAction getAction() {
-		return getAction(SoundAction.class);
+		return obtain(SoundAction.class);
 	}
 	
 	public static SoundAction play(Sound sound, float duration) {

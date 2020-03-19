@@ -10,6 +10,13 @@ public class Lwjgl2TestLauncher {
 	
 	public static Class<? extends Lwjgl2Config> CONFIG_CLASS = null;
 	
+	public static LwjglApplicationConfiguration getDefaultConfig() {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 960;
+		config.height = 640;
+		return config;
+	}
+	
 	public interface Lwjgl2Config {
 		public LwjglApplicationConfiguration getConfig();
 		public ApplicationListener getListener();
@@ -25,11 +32,7 @@ public class Lwjgl2TestLauncher {
 			
 			appConfig = config.getConfig();
 			
-			if(appConfig == null) {
-				appConfig = new LwjglApplicationConfiguration();
-				appConfig.width = 960;
-				appConfig.height = 640;
-			}
+			if(appConfig == null) appConfig = Lwjgl2TestLauncher.getDefaultConfig();
 			
 			listener = config.getListener();
 			

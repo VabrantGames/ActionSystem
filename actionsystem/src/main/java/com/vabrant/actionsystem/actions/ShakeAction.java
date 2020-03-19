@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	
 	public static ShakeAction getAction() {
-		return getAction(ShakeAction.class);
+		return obtain(ShakeAction.class);
 	}
 	
 	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, Interpolation interpolation) {
