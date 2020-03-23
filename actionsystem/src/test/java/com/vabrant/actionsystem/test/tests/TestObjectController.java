@@ -15,7 +15,7 @@
  */
 package com.vabrant.actionsystem.test.tests;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vabrant.actionsystem.test.TestObject;
@@ -50,6 +50,18 @@ public class TestObjectController {
 		float x = (viewport.getWorldWidth() - object.width) / 2;
 		float y = (viewport.getWorldHeight() - object.height) / 2;
 		object.setPosition(x, y);
+	}
+	
+	public void draw(ShapeRenderer shapeRenderer) {
+		for(int i = testObjects.size - 1; i >= 0; i--) {
+			TestObject o = testObjects.get(i);
+			
+			o.draw(shapeRenderer);
+			
+			if(!testObjects.get(i).isRunning) {
+				testObjects.pop();
+			}
+		}
 	}
 
 	public void draw(ShapeDrawer shapeDrawer) {

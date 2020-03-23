@@ -33,7 +33,7 @@ public class HSBToRGBTest {
 	private void testTwo() {
 		timer.start();
 		for(int i = 0; i < iterations; i++) {
-			ColorAction.HSBToRGB(testColor, h, s, v, 1f);
+			ColorAction.HSBToRGB(testColor, h, s, v);
 		}
 		timer.end();
 	}

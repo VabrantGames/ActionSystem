@@ -153,7 +153,7 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	}
 	
 	public void draw(ShapeRenderer renderer) {
-		if(!renderer.getCurrentType().equals(ShapeType.Filled)) renderer.set(ShapeType.Filled);
+		renderer.set(ShapeType.Filled);
 		renderer.setColor(color);
 		renderer.rect(x + shakeX, y + shakeY, width / 2, height / 2, width, height, scaleX * zoom, scaleY * zoom, shakeAngle + rotation);
 	}

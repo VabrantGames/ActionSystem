@@ -16,13 +16,11 @@ public class RunnableAction extends Action<RunnableAction>{
 	
 	@Override
 	public boolean update(float delta) {
-		if(isDead) return false; 
-		if(!isRunning()) start();
-		if(!isCycleRunning) return false;
+		if(isDead() || !isRunning()) return false;
 		if(isPaused()) return true;
 		runnable.run();
-		endCycle();
-		return isCycleRunning;
+		end();
+		return isRunning();
 	}
 	
 	@Override

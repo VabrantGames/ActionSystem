@@ -5,26 +5,26 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
-	public static RotateAction getAction() {
+	public static RotateAction obtain() {
 		return obtain(RotateAction.class);
 	}
 	
 	public static RotateAction rotateTo(Rotatable rotatable, float end, float duration, Interpolation interpolation) {
-		RotateAction action = getAction();
+		RotateAction action = obtain();
 		action.rotateTo(end);
 		action.set(rotatable, duration, interpolation);
 		return action;
 	}
 	
 	public static RotateAction rotateBy(Rotatable rotatable, float amount, float duration, Interpolation interpolation) {
-		RotateAction action = getAction();
+		RotateAction action = obtain();
 		action.rotateBy(amount);
 		action.set(rotatable, duration, interpolation);
 		return action;
 	}
 	
 	public static RotateAction setRotation(Rotatable rotatable, float end) {
-		RotateAction action = getAction();
+		RotateAction action = obtain();
 		action.rotateTo(end);
 		action.set(rotatable, 0, Interpolation.linear);
 		return action;
@@ -33,7 +33,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	private static final int ROTATE_TO = 0;
 	private static final int ROTATE_BY = 1;
 	
-	private boolean setupRotation = true;
+	private boolean setup = true;
 	private boolean cap;
 	private boolean restartRotateByFromEnd;
 	private float byAmount;
@@ -70,45 +70,31 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	
 	@Override
 	public RotateAction setup() {
-		didInitialSetup = true;
-		
-		if(setupRotation) {
+		if(setup) {
+			setup = false;
+			
 			switch(type) {
-				case ROTATE_TO:
-					start = percentable.getRotation();
-					break;
-				case ROTATE_BY:
-					start = percentable.getRotation();
-					end = start + byAmount;
-					break;
+			case ROTATE_TO:
+				start = percentable.getRotation();
+				break;
+			case ROTATE_BY:
+				start = percentable.getRotation();
+				end = start + byAmount;
+				break;
 			}
 		}
 		return this;
 	}
 	
 	@Override
-	protected void startLogic() {
-		super.startLogic();
-		if(!didInitialSetup) setup();
-	}
-	
-	@Override
-	public RotateAction restart() {
-		super.restart();
-		setup();
-		return this;
-	}
-	
-	@Override
-	public RotateAction end() {
-		super.end();
-		if(type != ROTATE_BY || type == ROTATE_BY && !restartRotateByFromEnd) setupRotation = false;
+	public void endLogic() {
+		super.endLogic();
+		if(type == ROTATE_BY && restartRotateByFromEnd) setup = true;
 		if(cap) percentable.setRotation(percentable.getRotation() % 360f);
-		return this;
 	}
 	
 	@Override
-	protected boolean hasConflict(Action action) {
+	public boolean hasConflict(Action<?> action) {
 		if(action instanceof RotateAction) {
 			RotateAction conflictAction = (RotateAction)action;
 			if(conflictAction.type > -1) return true; 
@@ -117,23 +103,10 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	}
 	
 	@Override
-	public RotateAction clear() {
-		super.clear();
-		type = -1;
-		setupRotation = true;
-		cap = false;
-		start = 0;
-		end = 0;
-		byAmount = 0;
-		restartRotateByFromEnd = false;
-		return this;
-	}
-	
-	@Override
 	public void reset() {
 		super.reset();
 		type = -1;
-		setupRotation = true;
+		setup = true;
 		cap = false;
 		start = 0;
 		end = 0;

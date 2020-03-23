@@ -225,8 +225,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 //				ColorAction.changeGreen(object, 1, 1f, Interpolation.linear),
 //				ColorAction.changeBlue(object, 1, 1f, Interpolation.linear))
 				ColorAction.changeBrightness(object, 0.5f, 1f, Interpolation.linear, true),
-				ColorAction.changeHue(object, 50, 1f, Interpolation.linear, true))
-//				ColorAction.changeSaturation(object, 0.2f, 1f, Interpolation.linear))
+				ColorAction.changeHue(object, 50, 1f, Interpolation.linear, true),
+				ColorAction.changeSaturation(object, 0.2f, 1f, Interpolation.linear, true))
 		.setName("Sequence")
 		.setLogLevel(ActionLogger.DEBUG);
 		

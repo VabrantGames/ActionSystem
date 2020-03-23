@@ -5,33 +5,33 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	
-	public static ShakeAction getAction() {
+	public static ShakeAction obtain() {
 		return obtain(ShakeAction.class);
 	}
 	
 	public static ShakeAction shakeX(Shakable shakable, float amount, float duration, Interpolation interpolation) {
-		ShakeAction action = getAction();
+		ShakeAction action = obtain();
 		action.shakeX(amount);
 		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shakeY(Shakable shakable, float amount, float duration,  Interpolation interpolation) {
-		ShakeAction action = getAction();
+		ShakeAction action = obtain();
 		action.shakeY(amount);
 		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shakeAngle(Shakable shakable, float maxAngle, float duration, Interpolation interpolation) {
-		ShakeAction action = getAction();
+		ShakeAction action = obtain();
 		action.shakeAngle(maxAngle);
 		action.set(shakable, duration, interpolation);
 		return action;
 	}
 	
 	public static ShakeAction shake(Shakable shakable, float xAmount, float yAmount, float angleAmount, float duration, Interpolation interpolation) {
-		ShakeAction action = getAction();
+		ShakeAction action = obtain();
 		action.shake(xAmount, yAmount, angleAmount);
 		action.set(shakable, duration, interpolation);
 		return action;
@@ -90,25 +90,23 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	}
 	
 	@Override
-	public ShakeAction kill() {
-		super.kill();
+	public void killLogic() {
+		super.killLogic();
 		percentable.setShakeX(0);
 		percentable.setShakeY(0);
 		percentable.setShakeAngle(0);
-		return this;
 	}
 	
 	 @Override
-	public ShakeAction end() {
-		super.end();
+	public void endLogic() {
+		super.endLogic();
 		percentable.setShakeX(0);
 		percentable.setShakeY(0);
 		percentable.setShakeAngle(0);
-		return this;
 	}
 	 
 	 @Override
-	 protected boolean hasConflict(Action action) {
+	 public boolean hasConflict(Action action) {
 		 if(action instanceof ShakeAction) {
 			 ShakeAction conflictAction = (ShakeAction)action;
 			 if(conflictAction.shakeX && conflictAction.shakeY && conflictAction.shakeAngle) return true;
@@ -118,18 +116,7 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		 }
 		 return false;
 	 }
-	 
-	 @Override
-	public ShakeAction clear() {
-		super.clear();
-		x = 0;
-		y = 0;
-		angle = 0;
-		usePercent = false;
-		shakeX = shakeY = shakeAngle = false;
-		return this;
-	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
@@ -139,4 +126,31 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		usePercent = false;
 		shakeX = shakeY = shakeAngle = false;
 	}
+	
+//	public static interface ShakeLogic {
+//		public void getX(float percent);
+//		public void getY(float percent);
+//		public void getAngle(float percent);
+//	}
+//	
+//	private static class DefaultShakeLogic implements ShakeLogic {
+//
+//		@Override
+//		public void getX(float percent) {
+//			
+//		}
+//
+//		@Override
+//		public void getY(float percent) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//
+//		@Override
+//		public void getAngle(float percent) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//		
+//	}
 }

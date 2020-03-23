@@ -5,26 +5,26 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	
-	public static ZoomAction getAction() {
+	public static ZoomAction obtain() {
 		return obtain(ZoomAction.class);
 	}
 	
 	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, Interpolation interpolation) {
-		ZoomAction action = getAction();
+		ZoomAction action = obtain();
 		action.zoomTo(end);
 		action.set(zoomable, duration,  interpolation);
 		return action;
 	}
 	
 	public static ZoomAction zoomBy(Zoomable zoomable, float amount, float duration, Interpolation interpolation) {
-		ZoomAction action = getAction();
+		ZoomAction action = obtain();
 		action.zoomBy(amount);
 		action.set(zoomable, duration, interpolation);
 		return action;
 	}
 	
 	public static ZoomAction setZoom(Zoomable zoomable, float zoom) {
-		ZoomAction action = getAction();
+		ZoomAction action = obtain();
 		action.zoomTo(zoom);
 		action.set(zoomable, 0, null);
 		return action;
@@ -34,7 +34,7 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	private static final int ZOOM_BY = 1;
 	
 	private boolean restartZoomByFromEnd;
-	private boolean setupZoom = true;
+	private boolean setup = true;
 	private float start;
 	private float end;
 	private float amount;
@@ -64,9 +64,9 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	
 	@Override
 	public ZoomAction setup() {
-		didInitialSetup = true;
-		
-		if(setupZoom) {
+		if(setup) {
+			setup = false;
+			
 			switch(type) {
 				case ZOOM_BY:
 					start = percentable.getZoom();
@@ -79,52 +79,26 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		}
 		return this;
 	}
-	
+
 	@Override
-	protected void startLogic() {
-		super.startLogic();
-		if(!didInitialSetup) setup();
+	public void endLogic() {
+		super.endLogic();
+		if(type == ZOOM_BY && restartZoomByFromEnd) setup = true;
 	}
 	
 	@Override
-	public ZoomAction restart() {
-		super.restart();
-		setup();
-		return this;
-	}
-	
-	@Override
-	public ZoomAction end() {
-		super.end();
-		if(type != ZOOM_BY || type == ZOOM_BY && !restartZoomByFromEnd) setupZoom = false;
-		return this;
-	}
-	
-	@Override
-	protected boolean hasConflict(Action action) {
+	public boolean hasConflict(Action<?> action) {
 		if(action instanceof ZoomAction) {
 			ZoomAction conflictAction = (ZoomAction)action;
 			if(conflictAction.type > -1) return true;
 		}
 		return false;
 	}
-	
-	@Override
-	public ZoomAction clear() {
-		super.clear();
-		setupZoom = true;
-		start = 0;
-		end = 0;
-		amount = 0;
-		restartZoomByFromEnd = false;
-		type = -1;
-		return this;
-	}
-	
+
 	@Override
 	public void reset() {
 		super.reset();
-		setupZoom = true;
+		setup = true;
 		start = 0;
 		end = 0;
 		amount = 0;

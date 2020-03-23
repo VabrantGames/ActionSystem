@@ -109,14 +109,24 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	public GroupAction addAll(Action<?>[] actions) {
-		ActionPools.freeAll(this.actions);
 		this.actions.addAll(actions);
 		return this;
 	}
 	
 	public GroupAction addAll(Array<Action<?>> actions) {
-		ActionPools.freeAll(this.actions);
 		this.actions.addAll(actions);
+		return this;
+	}
+	
+	public GroupAction set(Action<?>[] actions) {
+		ActionPools.freeAll(this.actions);
+		addAll(actions);
+		return this;
+	}
+	
+	public GroupAction set(Array<Action<?>> actions) {
+		ActionPools.freeAll(this.actions);
+		addAll(actions);
 		return this;
 	}
 

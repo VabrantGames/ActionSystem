@@ -71,15 +71,7 @@ public class TestActions {
 		public Action<?> getAction() {
 			return action;
 		}
-		
-		@Override
-		public SingleParentTestAction clear() {
-			super.clear();
-			ActionPools.free(action);
-			action = null;
-			return this;
-		}
-		
+
 		@Override
 		public void reset() {
 			super.reset();
@@ -104,13 +96,6 @@ public class TestActions {
 		@Override
 		public Array<Action<?>> getActions() {
 			return actions;
-		}
-		
-		@Override
-		public MultiParentTestAction clear() {
-			super.clear();
-			ActionPools.freeAll(actions);
-			return this;
 		}
 		
 		@Override

@@ -239,10 +239,12 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	@Override
 	protected void endLogic() {
 		super.endLogic();
-		setupX = true;
-		setupY = true;
-		if(xType != MOVE_BY || xType == MOVE_BY && !startXByFromEnd) setupX = false;
-		if(yType != MOVE_BY || yType == MOVE_BY && !startYByFromEnd) setupY = false;
+//		setupX = true;
+//		setupY = true;
+		if(xType == MOVE_BY && startXByFromEnd) setupX = true;
+		if(yType == MOVE_BY && startYByFromEnd) setupY = true;
+//		if(xType != MOVE_BY || xType == MOVE_BY && !startXByFromEnd) setupX = false;
+//		if(yType != MOVE_BY || yType == MOVE_BY && !startYByFromEnd) setupY = false;
 	}
 
 	@Override
