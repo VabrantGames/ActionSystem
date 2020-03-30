@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public abstract class PercentAction<T extends Percentable, S extends Action> extends TimeAction<S> {
+public abstract class PercentAction<T extends Percentable, S extends Action<?>> extends TimeAction<S> {
 
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
