@@ -9,13 +9,13 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * @author John Barton
  */
 //@SuppressWarnings("all")
-public class Action<T extends Action<?>> implements Poolable {
+public class Action<T extends Action<T>> implements Poolable {
 	
 	/**
 	 * Returns the specified action.
 	 * @param c Class of the action.
 	 */
-	public static <T extends Action<?>> T obtain(Class<T> c) {
+	public static <T extends Action<T>> T obtain(Class<T> c) {
 		return ActionPools.obtain(c);
 	}
 

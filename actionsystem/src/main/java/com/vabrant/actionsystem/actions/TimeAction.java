@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.MathUtils;
 
-public class TimeAction<T extends Action<?>> extends Action<T> {
+public class TimeAction<T extends Action<T>> extends Action<T> {
 
 	protected float timer;
 	protected float duration;

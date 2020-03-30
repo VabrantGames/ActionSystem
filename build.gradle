@@ -23,6 +23,14 @@ allprojects {
         maven { url "https://jitpack.io" }
         jcenter()
     }
+    
+	if (JavaVersion.current().isJava8Compatible()) {
+	 	allprojects {
+			tasks.withType(Javadoc) {
+				options.addStringOption('Xdoclint:none', '-quiet')
+			}
+		}
+  	}
 }
 
 subprojects{

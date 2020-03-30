@@ -4,19 +4,19 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public abstract class PercentAction<T extends Percentable, S extends Action<?>> extends TimeAction<S> {
+public abstract class PercentAction<P extends Percentable, A extends Action<A>> extends TimeAction<A> {
 
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
 	protected float percent;
 	protected Interpolation interpolation;
-	protected T percentable;
+	protected P percentable;
 	
 	/**
 	 * Get the percentable object.
 	 * @return percentable object
 	 */
-	public T getPercentable() {
+	public P getPercentable() {
 		return percentable;
 	}
 	
@@ -25,7 +25,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action<?>> 
 	 * The timer will be moved to the correct position. 
 	 * @param percent
 	 */
-	public S setPercent(float percent) {
+	public A setPercent(float percent) {
 		this.percent = MathUtils.clamp(percent, 0f, 1f);
 		
 		//Action is finished. 
@@ -48,7 +48,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action<?>> 
 		}
 		
 		percent = reverse ? 1f - percent : percent;
-		return (S)this;
+		return (A)this;
 	}
 	
 	/**
@@ -56,10 +56,10 @@ public abstract class PercentAction<T extends Percentable, S extends Action<?>> 
 	 * The percent will be moved to the correct position.
 	 */
 	@Override
-	public S setTime(float time) {
+	public A setTime(float time) {
 		super.setTime(time);
 		calculatePercent();
-		return (S)this;
+		return (A)this;
 	}
 	
 	private void calculatePercent() {
@@ -86,35 +86,35 @@ public abstract class PercentAction<T extends Percentable, S extends Action<?>> 
 		percent = reverse ? 1f - percent : percent;
 	}
 	
-	public S moveToPercent() {
+	public A moveToPercent() {
 		percent(percent);
-		return (S)this;
+		return (A)this;
 	}
 	
 	public float getPercent() {
 		return percent;
 	}
 	
-	public S set(T percentable, float duration, Interpolation interpolation) {
+	public A set(P percentable, float duration, Interpolation interpolation) {
 		setDuration(duration);
 		this.percentable = percentable;
 		this.interpolation = interpolation;
-		return (S)this;
+		return (A)this;
 	}
 	
-	public S reverseBackToStart(boolean reverseBackToStart) {
+	public A reverseBackToStart(boolean reverseBackToStart) {
 		this.reverseBackToStart = reverseBackToStart;
-		return (S)this;
+		return (A)this;
 	}
 	
-	public S setReverse(boolean reverse) {
+	public A setReverse(boolean reverse) {
 		this.reverse = reverse;
-		return (S)this;
+		return (A)this;
 	}
 	
-	public S setInterpolation(Interpolation interpolation) {
+	public A setInterpolation(Interpolation interpolation) {
 		this.interpolation = interpolation;
-		return (S)this;
+		return (A)this;
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public abstract class PercentAction<T extends Percentable, S extends Action<?>> 
 	 * Sets up the action for the current cycle. This method is called every time {@link #startLogic} is called.
 	 * If the action doesn't need to be setup per cycle a boolean can be used stop it from setting up.
 	 */
-	public abstract S setup();
+	public abstract A setup();
 	
 	protected abstract void percent(float percent);
 }
