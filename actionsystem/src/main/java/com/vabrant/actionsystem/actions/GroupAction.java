@@ -221,7 +221,7 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	@Override
-	public boolean hasConflict(Action<?> action) {
+	public boolean hasConflict(Action<GroupAction> action) {
 		if(action instanceof GroupAction) {
 			GroupAction conflictAction = (GroupAction)action;
 			if(getName() == null || conflictAction.getName() == null) return false;

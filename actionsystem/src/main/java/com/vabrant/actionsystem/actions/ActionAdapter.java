@@ -1,6 +1,6 @@
 package com.vabrant.actionsystem.actions;
 
-public class ActionAdapter<T extends Action<?>> implements ActionListener<T> {
+public class ActionAdapter<T extends Action<T>> implements ActionListener<T> {
 
 	@Override
 	public void actionStart(T a) {

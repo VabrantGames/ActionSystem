@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
- * The Action class is the base class for all actions... add more
+ * The base class for all actions.
  * 
  * @author John Barton
  */
@@ -84,7 +84,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-	public boolean hasConflict(Action<?> action) {
+	public boolean hasConflict(Action<T> action) {
 		return false;
 	}
 	

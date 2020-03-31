@@ -248,7 +248,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	@Override
-	public boolean hasConflict(Action<?> action) {
+	public boolean hasConflict(Action<MoveAction> action) {
 		if(action instanceof MoveAction) {
 			MoveAction conflictAction = (MoveAction)action;
 			

@@ -113,9 +113,9 @@ public class ActionTest {
 	public void restartTest() {
 		printTestHeader("Restart Test");
 		
-		ActionListener listener = new ActionAdapter<Action<?>>() {
+		ActionListener listener = new ActionAdapter() {
 			@Override
-			public void actionRestart(Action<?> a) {
+			public void actionRestart(Action a) {
 				ActionLogger logger = a.getLogger();
 				logger.info("Name: " + a.getName());
 				logger.info("IsRunning: " + a.isRunning());
