@@ -23,7 +23,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	boolean isRoot;
 	
 	/** A reference to the root action for non root action. Root actions will use themselves if requested. */
-	Action<?> rootAction;
+	Action<T> rootAction;
 	
 	/** Whether this action is managed by the {@link ActionManager} or by the user.*/
 	boolean isManaged = true;
