@@ -99,7 +99,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	}
 
 	@Override
-	protected void setRootAction(Action root) {
+	public void setRootAction(Action<?> root) {
 		super.setRootAction(root);
 		if(action != null) action.setRootAction(root);
 	}

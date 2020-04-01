@@ -40,7 +40,8 @@ public class ActionManager {
 		Action a = unmanagedActions.get(index);
 		
 		if(a.getRootAction() == null) {
-			a.setRoot();
+//			a.setRoot();
+			a.setRootAction(a);
 		}
 
 		actions.add(unmanagedActions.get(index));
@@ -56,7 +57,7 @@ public class ActionManager {
 	 * Adds an action to the action manager.
 	 * @param action
 	 */
-	public void addAction(Action action) {
+	public void addAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null");
 		
 		action.setActionManager(this);

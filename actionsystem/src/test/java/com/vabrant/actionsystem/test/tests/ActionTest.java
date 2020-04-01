@@ -14,6 +14,7 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
+import com.vabrant.actionsystem.test.tests.TestActions.SingleParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -27,9 +28,10 @@ public class ActionTest {
     public void makeRoot(Action<?> action) {
     	try {
 	    	//set this action as the root action
-	    	Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", null);
+	    	Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot");
 	    	m.setAccessible(true);
 	    	m.invoke(action, null);
+	    	action.setRootAction(action);
     	}
     	catch(ReflectionException e) {
     		e.printStackTrace();
@@ -108,7 +110,7 @@ public class ActionTest {
 		
 		ActionPools.free(action);
 	}
-	
+
 	@Test 
 	public void restartTest() {
 		printTestHeader("Restart Test");
@@ -128,6 +130,8 @@ public class ActionTest {
 				.setName("p1")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
+		
+		makeRoot(p1);
 		
 		//Child 1 of parent 1
 		TestAction p1C1 = TestAction.obtain()

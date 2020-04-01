@@ -68,6 +68,12 @@ public class TestActions {
 		}
 		
 		@Override
+		public void setRootAction(Action<?> root) {
+			super.setRootAction(root);
+			if(action != null) action.setRootAction(root);
+		}
+		
+		@Override
 		public Action<?> getAction() {
 			return action;
 		}
@@ -91,6 +97,14 @@ public class TestActions {
 		public MultiParentTestAction add(Action<?> action) {
 			actions.add(action);
 			return this;
+		}
+		
+		@Override
+		public void setRootAction(Action<?> root) {
+			super.setRootAction(root);
+			for(int i = 0; i < actions.size; i++) {
+				actions.get(i).setRootAction(root);
+			}
 		}
 		
 		@Override

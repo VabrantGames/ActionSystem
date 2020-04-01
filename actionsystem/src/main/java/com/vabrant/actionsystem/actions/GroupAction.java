@@ -131,7 +131,7 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 
 	@Override
-	protected void setRootAction(Action root) {
+	public void setRootAction(Action<?> root) {
 		super.setRootAction(root);
 		for(int i = 0; i < actions.size; i++) {
 			actions.get(i).setRootAction(root);

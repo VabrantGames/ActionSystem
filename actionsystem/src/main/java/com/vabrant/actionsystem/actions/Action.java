@@ -23,13 +23,13 @@ public class Action<T extends Action<T>> implements Poolable {
 	boolean isRoot;
 	
 	/** A reference to the root action for non root action. Root actions will use themselves if requested. */
-	Action<T> rootAction;
+	Action<?> rootAction;
 	
 	/** Whether this action is managed by the {@link ActionManager} or by the user.*/
 	boolean isManaged = true;
 	
 	boolean canReset;
-	boolean canPool;
+//	boolean canPool;
 	private boolean hasBeenPooled;
 	private boolean forceKill;
 	private boolean forceEnd;
@@ -38,8 +38,8 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected boolean isPaused;
 	
 	private String name;
-	private Condition pauseCondition;
-	private Condition resumeCondition;
+	private Condition<T> pauseCondition;
+	private Condition<T> resumeCondition;
 	private ActionManager actionManager;
 	private Array<ActionListener> listeners;
 	
@@ -51,12 +51,15 @@ public class Action<T extends Action<T>> implements Poolable {
 	
 	protected final ActionLogger logger;
 	
+	private T instance;
+	
 	public Action() {
 		listeners = new Array<>(2);
 		cleanupListeners = new Array<>(3);
 		preActions = new Array<>(2);
 		postActions = new Array<>(2);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
+		instance = (T)this;
 	}
 	
 	public T setLogLevel(int level) {
@@ -88,7 +91,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return false;
 	}
 	
-	public T addPreAction(Action action) {
+	public T addPreAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
 		preActions.add(action);
 		return (T)this;
@@ -98,7 +101,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return preActions;
 	}
 	
-	public T addPostAction(Action action) {
+	public T addPostAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
 		postActions.add(action);
 		return (T)this;
@@ -112,7 +115,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		hasBeenPooled = pooled;
 	}
 	
-	public boolean hasBeenPooled() {
+	boolean hasBeenPooled() {
 		return hasBeenPooled;
 	}
 	
@@ -138,22 +141,21 @@ public class Action<T extends Action<T>> implements Poolable {
 	void setActionManager(ActionManager actionManager) {
 		this.actionManager = actionManager;
 	}
-	
+
 	void setRoot() {
 		isRoot = true;
-		if(logger != null) logger.debug("Is Root: " + isRoot);
 	}
 	
-	protected void setRootAction(Action root) {
-		if(!isRoot) rootAction = root;
+	public void setRootAction(Action<?> root) {
+		rootAction = root;
 	}
 
 	public boolean isRoot() {
 		return isRoot;
 	}
 	
-	public Action getRootAction() {
-		return isRoot ? this : rootAction;
+	public Action<?> getRootAction() {
+		return rootAction;
 	}
 	
 	public boolean isDead() {
@@ -185,33 +187,41 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	public final void pause() {
-		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue()) return;
+		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue(instance)) return;
 		isPaused = true;
 		pauseLogic();
 	}
 	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran every time pause is called.
+	 */
 	protected void pauseLogic() {}
 	
 	public final void resume() {
-		if(!isRunning || !isPaused || resumeCondition != null && !resumeCondition.isTrue()) return;
+		if(!isRunning || !isPaused || resumeCondition != null && !resumeCondition.isTrue(instance)) return;
 		isPaused = false;
 		resumeLogic();
 	}
 	
+	/**
+	 * FOR ACTION CREATION <br><br>
+	 * 
+	 * The logic that will be ran every time resume is called.
+	 */
 	protected void resumeLogic() {}
 	
 	public boolean isPaused() {
 		return isPaused;
 	}
 	
-	public T setPauseCondition(Condition pauseCondition) {
-		if(pauseCondition == null) throw new IllegalArgumentException("PauseCondition is null.");
+	public T setPauseCondition(Condition<T> pauseCondition) {
 		this.pauseCondition = pauseCondition;
 		return (T)this;
 	}
 	
-	public T setResumeCondition(Condition resumeCondition) {
-		if(resumeCondition == null) throw new IllegalArgumentException("ResumeCondition is null");
+	public T setResumeCondition(Condition<T> resumeCondition) {
 		this.resumeCondition = resumeCondition;
 		return (T)this;
 	}
@@ -237,7 +247,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-	public T removeListener(ActionListener listener) {
+	public T removeListener(ActionListener<?> listener) {
 		listeners.removeValue(listener, false);
 		return (T)this;
 	}
@@ -249,6 +259,26 @@ public class Action<T extends Action<T>> implements Poolable {
 	
 	public boolean update(float delta) {
 		return false;
+	}
+
+	void forceKill() {
+		forceKill = true;
+		kill();
+	}
+	
+	void forceEnd() {
+		forceEnd = true;
+		end();
+	}
+	
+	public void permanentKill() {
+		isDead = true;
+		kill();
+	}
+	
+	public void permanentEnd() {
+		isDead = true;
+		end();
 	}
 
 	@Override
@@ -282,26 +312,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		forceEnd = false;
 		if(logger != null) logger.clearActionName();
 	}
-
-	void forceKill() {
-		forceKill = true;
-		kill();
-	}
-	
-	void forceEnd() {
-		forceEnd = true;
-		end();
-	}
-	
-	public void permanentKill() {
-		isDead = true;
-		kill();
-	}
-	
-	public void permanentEnd() {
-		isDead = true;
-		end();
-	}
 	
 	/**
 	 * Starts the action
@@ -329,7 +339,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(logger != null) logger.info("Start Action");	
 		
 		isRunning = true;
-		
 		startLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
@@ -350,12 +359,13 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Restarts the action and its children. <br>
 	 */
 	public final T restart() {
+		if(!getRootAction().isRunning()) return (T)this;
 		restartChildren(this);
 		restart(true);
 		return (T)this;
 	}
 	
-	protected void restart(boolean invokedAction) {
+	protected final void restart(boolean invokedAction) {
 		if(logger != null) logger.info("Restart Action");	
 		
 		boolean start = !invokedAction ? false : isRunning;
@@ -370,7 +380,12 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(start) start();
 	}
 	
-	private void restartChildren(Action<?> action) {
+	/**
+	 *  Recursively restart all children and it's children of an action.
+	 *  
+	 * @param action
+	 */
+	protected void restartChildren(Action<?> action) {
 		if(action instanceof SingleParentAction) {
 			Action<?> child = ((SingleParentAction)action).getAction();
 			if(child == null) return;
@@ -381,6 +396,7 @@ public class Action<T extends Action<T>> implements Poolable {
 			Array<Action<?>> children = ((MultiParentAction)action).getActions();
 			for(int i = 0, size = children.size; i < size; i++) {
 				Action<?> child = children.get(i);
+				if(child == null) continue;
 				restartChildren(child);
 				child.restart(false);
 			}
@@ -402,7 +418,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		
 		if(isRoot()) isDead = true;
 		isRunning = false;
-		
 		endLogic();
 		
 		if(logger != null) logger.info("End Action");		
