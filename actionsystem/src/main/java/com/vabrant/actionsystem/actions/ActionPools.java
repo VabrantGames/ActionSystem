@@ -79,7 +79,7 @@ public class ActionPools {
 		}
 	}
 	
-	public static <T extends Action<?>> T obtain(Class<T> type) {
+	public static <T extends Action<T>> T obtain(Class<T> type) {
 		T action = get(type).obtain();
 		action.setPooled(false);
 		return action;
@@ -91,6 +91,7 @@ public class ActionPools {
 		freeAction(action);
 	}
 	
+	//TODO: What is this? Remove?
 	public static void alternativeFree(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null");
 		freeAction(action);
@@ -156,28 +157,36 @@ public class ActionPools {
 	 * Frees an action. 
 	 */
 	private static void freeAction(Action<?> action) {
-		if(action.hasBeenPooled() || !action.isManaged()) return;
+		if(action.isManaged && action.hasBeenPooled()) return;
 		
 		action.canReset = true;
 		
 		//Free any unused PreActions
-		if(action.getPreActions().size > 0) {
-			for(int i = action.getPreActions().size - 1; i >= 0; i--) {
-				free(action.getPreActions().pop());
+		Array<Action<?>> actions = action.getPreActions();
+		if(actions.size > 0) {
+			for(int i = actions.size - 1; i >= 0; i--) {
+				free(actions.pop());
 			}
 		}
 		
 		//Free any unused PostActions
-		if(action.getPostActions().size > 0) {
-			for(int i = action.getPostActions().size - 1; i >= 0; i--) {
-				free(action.getPostActions().pop());
+		actions = action.getPostActions();
+		if(actions.size > 0) {
+			for(int i = actions.size - 1; i >= 0; i--) {
+				free(actions.pop());
 			}
 		}
 		
- 		Pool pool = pools.get(action.getClass());
-		if(pool == null) return;
-		pool.free(action);
-		action.setPooled(true);
+		if(action.isManaged()) {
+	 		Pool pool = pools.get(action.getClass());
+			if(pool == null) return;
+			pool.free(action);
+			action.setPooled(true);
+		}
+		else {
+			action.reset();
+		}
+		
 		if(logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 

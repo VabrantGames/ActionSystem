@@ -1,5 +1,8 @@
 package com.vabrant.actionsystem.test.tests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -12,16 +15,19 @@ import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
-import com.vabrant.actionsystem.test.tests.TestActions.SingleParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActionTest {
+	
+	private static ActionManager manager;
 
     @BeforeClass
     public static void init() {
+    	manager = new ActionManager();
         ActionLogger.useSysOut();
     }
 
@@ -46,16 +52,21 @@ public class ActionTest {
     }
 
 	@Test
-	public void runTest() {
-		printTestHeader("Single Cycle Test");
+	public void basicTest() {
+		printTestHeader("Basic Test");
 		
 		TestAction action = TestAction.obtain();
 		makeRoot(action);
 		
 		//---------// Run 1 //----------//
 		action.start();
+		
+		assertTrue(action.isRunning());
+		
 		action.update(0);
 		action.end();
+		
+		assertFalse(action.isRunning());
 		
 		ActionPools.free(action);
 	}
@@ -109,6 +120,52 @@ public class ActionTest {
 		action.end();
 		
 		ActionPools.free(action);
+	}
+	
+	@Test
+	public void basicUnmanagedTest() {
+		printTestHeader("Basic Unmanaged Test");
+		
+		TestAction action = TestAction.obtain()
+				.setName("BasicUnmanaged")
+				.setLogLevel(ActionLogger.INFO)
+				.unmanage();
+		makeRoot(action);
+		
+		action.start();
+		
+		//An action that is managed by the ActionManager can not be used again is permanently ended or killed.
+		//Unmanaged actions however can be started again.
+		action.permanentEnd();
+		
+		action.start();
+		
+		assertTrue(action.isRunning());
+		
+		action.end();
+		
+		action.free();
+	}
+	
+	@Test
+	public void resetButNotPoolUnmanagedTest() {
+		printTestHeader("Reset But Not Pool UnManaged Test");
+		
+		TestAction action = TestAction.obtain()
+				.setName("ResetButNotPool")
+				.setLogLevel(ActionLogger.INFO)
+				.unmanage();
+		makeRoot(action);
+		
+		action.start();
+		action.end();
+
+		//Since the action is unmanaged it should not be pooled but reset
+		//If an unmanaged action is nested inside another action and that action is pooled unmanaged actions
+		//are just reset. All values are not reset.
+		ActionPools.free(action);
+			
+		action.free();
 	}
 
 	@Test 

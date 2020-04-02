@@ -123,7 +123,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
 	public T unmanage() {
-//		isManaged = false;
+		isManaged = false;
 		return (T)this;
 	}
 	
@@ -176,7 +176,6 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	public T setName(String name) {
-		if(name == null) throw new IllegalArgumentException("Name can't be null.");
 		this.name = name;
 		if(logger != null) logger.setActionName(name);
 		return (T)this;
@@ -281,9 +280,18 @@ public class Action<T extends Action<T>> implements Poolable {
 		end();
 	}
 
+	/**
+	 * Pools an unmanaged action. 
+	 */
+	public void free() {
+		if(isManaged) return;
+		isManaged = true;
+		ActionPools.free(this);
+	}
+
 	@Override
 	public void reset() {
-		if(!canReset) throw new RuntimeException("Reset can't be called externally.");
+		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
 		
 		if(logger != null) logger.info("Reset");
 		
@@ -295,29 +303,39 @@ public class Action<T extends Action<T>> implements Poolable {
 			}
 		}
 		
-		if(logger != null) logger.setLevel(ActionLogger.NONE);
-		
-		canReset = false;
 		isDead = false;
-		cleanupListeners.clear();
-		listeners.clear();
-		pauseCondition = null;
-		resumeCondition = null;
-		name = null;
 		isPaused = false;
 		isRunning = false;
 		isRoot = false;
 		rootAction = null;
 		forceKill = false;
 		forceEnd = false;
-		if(logger != null) logger.clearActionName();
+		canReset = false;
+		
+		if(isManaged) {
+			if(logger != null) logger.setLevel(ActionLogger.NONE);
+			if(logger != null) logger.clearActionName();
+			pauseCondition = null;
+			resumeCondition = null;
+			cleanupListeners.clear();
+			listeners.clear();
+			name = null;
+		}
 	}
 	
 	/**
 	 * Starts the action
 	 */
 	public final T start() {
-		if(isDead || isRunning) return (T)this;
+		if(isRunning) return (T)this;
+		if(isDead) {
+			if(isManaged) return (T)this;
+			
+			//Reset some values if an unmanaged action is dead
+			isDead = false;
+			forceKill = false;
+			forceEnd = false;
+		}
 		
 		if(conflictWatcher != null) {
 			if(conflictWatcher.checkForConflict(this)) return null;

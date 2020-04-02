@@ -52,6 +52,12 @@ public class TestActions {
 		protected void killLogic() {
 			logger.debug("Run Kill Logic");
 		}
+		
+		@Override
+		public boolean update(float delta) {
+			if(isDead() || !isRunning()) return false;
+			return true;
+		}
 	}
 	
 	public static class SingleParentTestAction extends Action<SingleParentTestAction> implements SingleParentAction {
@@ -84,6 +90,12 @@ public class TestActions {
 			action = null;
 		}
 		
+		@Override
+		public boolean update(float delta) {
+			if(isDead() || !isRunning()) return false;
+			return true;
+		}
+		
 	}
 	
 	public static class MultiParentTestAction extends Action<MultiParentTestAction> implements MultiParentAction {
@@ -113,9 +125,9 @@ public class TestActions {
 		}
 		
 		@Override
-		public void reset() {
-			super.reset();
-			System.out.println("Pool Children");
+		public boolean update(float delta) {
+			if(isDead() || !isRunning()) return false;
+			return true;
 		}
 		
 	}
