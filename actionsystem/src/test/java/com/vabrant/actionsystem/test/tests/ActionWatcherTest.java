@@ -43,7 +43,7 @@ public class ActionWatcherTest {
 		manager.addAction(action);
 		
 		//pools action instantly
-		manager.freeAll();
+//		manager.freeAll();
 		
 		assertTrue(ActionWatcher.get(name) == null);
 	}

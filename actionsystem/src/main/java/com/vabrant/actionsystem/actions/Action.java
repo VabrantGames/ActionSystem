@@ -130,14 +130,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public boolean isManaged() {
 		return isManaged;
 	}
-	
-	public void poolUnmanagedAction() {
-		if(!isManaged && actionManager != null) {
-			isManaged = true;
-			actionManager.poolUnmanagedAction(this);
-		}
-	}
-	
+
 	void setActionManager(ActionManager actionManager) {
 		this.actionManager = actionManager;
 	}
