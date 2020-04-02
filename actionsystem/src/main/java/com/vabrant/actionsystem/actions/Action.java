@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Pool.Poolable;
  * @author John Barton
  */
 //@SuppressWarnings("all")
+@SuppressWarnings("unchecked")
 public class Action<T extends Action<T>> implements Poolable {
 	
 	/**
@@ -29,7 +30,6 @@ public class Action<T extends Action<T>> implements Poolable {
 	boolean isManaged = true;
 	
 	boolean canReset;
-//	boolean canPool;
 	private boolean hasBeenPooled;
 	private boolean forceKill;
 	private boolean forceEnd;
@@ -41,17 +41,14 @@ public class Action<T extends Action<T>> implements Poolable {
 	private Condition<T> pauseCondition;
 	private Condition<T> resumeCondition;
 	private ActionManager actionManager;
-	private Array<ActionListener> listeners;
+	private Array<ActionListener<T>> listeners;
 	
 	/** Listeners that can't be removed by the user. */
 	private Array<CleanupListener> cleanupListeners;
 	final Array<Action<?>> preActions;
 	final Array<Action<?>> postActions;
-	private ConflictChecker conflictWatcher;
 	
 	protected final ActionLogger logger;
-	
-	private T instance;
 	
 	public Action() {
 		listeners = new Array<>(2);
@@ -59,7 +56,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		preActions = new Array<>(2);
 		postActions = new Array<>(2);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
-		instance = (T)this;
 	}
 	
 	public T setLogLevel(int level) {
@@ -78,12 +74,6 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	public T watchAction() {
 		ActionWatcher.watch(this);
-		return (T)this;
-	}
-	
-	public T setConflictChecker(ConflictChecker conflictChecker) {
-		if(conflictChecker == null) throw new IllegalArgumentException("ConflictChecker is null.");
-//		this.conflictWatcher = conflictChecker;
 		return (T)this;
 	}
 	
@@ -179,7 +169,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	public final void pause() {
-		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue(instance)) return;
+		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue((T)this)) return;
 		isPaused = true;
 		pauseLogic();
 	}
@@ -192,7 +182,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected void pauseLogic() {}
 	
 	public final void resume() {
-		if(!isRunning || !isPaused || resumeCondition != null && !resumeCondition.isTrue(instance)) return;
+		if(!isRunning || !isPaused || resumeCondition != null && !resumeCondition.isTrue((T)this)) return;
 		isPaused = false;
 		resumeLogic();
 	}
@@ -218,17 +208,17 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-	protected boolean containsCleanupListener(CleanupListener listener) {
+	protected boolean containsCleanupListener(CleanupListener<T> listener) {
 		return cleanupListeners.contains(listener, false);
 	}
 	
-	protected T addCleanupListener(CleanupListener listener) {
+	protected T addCleanupListener(CleanupListener<T> listener) {
 		if(listener == null) throw new IllegalArgumentException("LibraryListener is null.");
 		cleanupListeners.add(listener);
 		return (T)this;
 	}
 	
-	protected T removeCleanupListener(CleanupListener listener) {
+	protected T removeCleanupListener(CleanupListener<T> listener) {
 		cleanupListeners.removeValue(listener, false);
 		return (T)this;
 	}
@@ -239,7 +229,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-	public T removeListener(ActionListener<?> listener) {
+	public T removeListener(ActionListener<T> listener) {
 		listeners.removeValue(listener, false);
 		return (T)this;
 	}
@@ -330,15 +320,6 @@ public class Action<T extends Action<T>> implements Poolable {
 			forceEnd = false;
 		}
 		
-		if(conflictWatcher != null) {
-			if(conflictWatcher.checkForConflict(this)) return null;
-		}
-//		
-//		if(!isManaged()) {
-//			if(actionManager == null) throw new ActionSystemRuntimeException("Unmanaged Actions need to be added to an Action Manager.");
-//			actionManager.startUnmanagedAction(this);
-//		}
-		
 		if(preActions.size > 0) {
 			if(!isRoot && rootAction == null) throw new ActionSystemRuntimeException("Root Action has to be added to a Action Manager.");
 			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
@@ -353,7 +334,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		startLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionStart(this);
+			listeners.get(i).actionStart((T)this);
 		}
 
 		return (T)this;
@@ -385,7 +366,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		restartLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionRestart(this);
+			listeners.get(i).actionRestart((T)this);
 		}
 		
 		if(start) start();
@@ -434,7 +415,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(logger != null) logger.info("End Action");		
 		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionEnd(this);
+			listeners.get(i).actionEnd((T)this);
 		}
 		
 		runPostActions();
@@ -463,7 +444,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		killLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionKill(this);
+			listeners.get(i).actionKill((T)this);
 		}
 		
 		runPostActions();
