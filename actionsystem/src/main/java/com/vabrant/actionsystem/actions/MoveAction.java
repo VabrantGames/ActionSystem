@@ -2,6 +2,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class MoveAction extends PercentAction<Movable, MoveAction> {
 	
@@ -66,17 +67,25 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 				.moveYTo(y)
 				.set(movable, 0, null);
 	}
-	
+
 	public static MoveAction setPosition(Movable movable, float x, float y) {
 		return obtain()
 				.moveTo(x, y)
 				.set(movable, 0, null);
 	}
 
+	public static float offsetX(float angle, float amount) {
+		return amount * MathUtils.cosDeg(angle);
+	}
+	
+	public static float offsetY(float angle, float amount) {
+		return amount * MathUtils.sinDeg(angle);
+	}
+
 	private static final int MOVE_TO = 0;
 	private static final int MOVE_BY = 1;
 
-	private boolean useBothStartPositions = true;
+	private boolean solo;
 	private boolean setupX = true;
 	private boolean setupY = true;
 	private boolean startXByFromEnd;
@@ -112,8 +121,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 
 	public MoveAction moveByAngle(float angle, float amount) {
 		angle %= 360;
-		xAmount = amount * MathUtils.cosDeg(angle);
-		yAmount = amount * MathUtils.sinDeg(angle);
+		xAmount = offsetX(angle, amount);
+		yAmount = offsetY(angle, amount);
 		xType = MOVE_BY;
 		yType = MOVE_BY;
 		return this;
@@ -150,24 +159,12 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 	
 	/**
-	 * Whether this action should start at the exact position since {@link #setup} was called. Will only be used when one direction is used. <br><br>
-	 * 
-	 * e.g <br><br>
-	 * 
-	 * If this value is false and you're only moving the x value then only the x value will be changed.
-	 * Meaning if this action is repeated with a {@link RepeatAction} then every call to {@link Action #start start} after the initial call would only move the x
-	 * back to where it was. Leaving the y unchanged. <br><br>
-	 * 
-	 * If this value is true and you're only moving the x value then the x and y values will be moved to where they started. <br><br>
-	 * 
-	 * This is useful for when you have 2 move actions, each changing a different direction, that you don't wan't to collide with each other. If one is restarted
-	 * it won't change the value of the other.  
-	 * 
+	 * Solos the direction. Has no use if both x and y are being moved.
 	 * @param value
-	 * @return This action for chaining
+	 * @return
 	 */
-	public MoveAction useBothStartPositions(boolean value) {
-		useBothStartPositions = value;
+	public MoveAction solo(boolean value) {
+		solo = value;
 		return this;
 	}
 
@@ -229,8 +226,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	@Override
 	protected void startLogic() {
 		super.startLogic();
-		
-		if(useBothStartPositions) {
+		if(!solo) {
 			percentable.setX(xStart);
 			percentable.setY(yStart);
 		}
@@ -239,12 +235,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	@Override
 	protected void endLogic() {
 		super.endLogic();
-//		setupX = true;
-//		setupY = true;
 		if(xType == MOVE_BY && startXByFromEnd) setupX = true;
 		if(yType == MOVE_BY && startYByFromEnd) setupY = true;
-//		if(xType != MOVE_BY || xType == MOVE_BY && !startXByFromEnd) setupX = false;
-//		if(yType != MOVE_BY || yType == MOVE_BY && !startYByFromEnd) setupY = false;
 	}
 
 	@Override
@@ -252,7 +244,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		if(action instanceof MoveAction) {
 			MoveAction conflictAction = (MoveAction)action;
 			
-			//ConflictAction is moving both x and y
+			//Conflict action is moving both x and y
 			if(conflictAction.xType > -1 && conflictAction.yType > -1) return true;
 			
 			//only x is being scaled so as long as the other action is not using the x there is no conflict
@@ -265,7 +257,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	@Override
 	public void reset() {
 		super.reset();
-		useBothStartPositions = true;
+		solo = false;
 		xAmount = 0;
 		yAmount = 0;
 		xStart = 0;

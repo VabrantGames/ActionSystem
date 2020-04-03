@@ -99,7 +99,7 @@ public class MoveActionTest extends ActionSystemTestListener{
 		amountX = 0;
 		amountY = 0;
 	}
-	
+
 	private ActionListener<MoveAction> getEndListener() {
 		return new ActionAdapter<MoveAction>() {
 			@Override
