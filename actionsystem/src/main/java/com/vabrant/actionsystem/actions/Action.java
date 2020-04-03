@@ -272,6 +272,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionPools.free(this);
 	}
 
+	public void clear() {}
+	
 	@Override
 	public void reset() {
 		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
