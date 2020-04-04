@@ -116,15 +116,20 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 		this.interpolation = interpolation;
 		return (A)this;
 	}
+	
+	@Override
+	public void clear() {
+		super.clear();
+		reverse = false;
+		reverseBackToStart = false;
+		interpolation = null;
+		percent = 0;
+	}
 
 	@Override
 	public void reset() {
 		super.reset();
-		reverse = false;
 		percentable = null;
-		reverseBackToStart = false;
-		interpolation = null;
-		percent = 0;
 	}
 
 	@Override

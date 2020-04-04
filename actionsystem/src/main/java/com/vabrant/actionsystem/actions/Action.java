@@ -264,7 +264,8 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	/**
-	 * Pools an unmanaged action. 
+	 * Pools an unmanaged action. Any references to the action should be nulled to avoid multiple
+	 * objects from having access to it. 
 	 */
 	public void free() {
 		if(isManaged) return;
@@ -272,22 +273,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionPools.free(this);
 	}
 
-	public void clear() {}
-	
-	@Override
-	public void reset() {
-		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
-		
-		if(logger != null) logger.info("Reset");
-		
-		//clean up
-		if(!hasBeenPooled) {
-			if(logger != null) logger.debug("Cleanup");
-			for(int i = 0; i < cleanupListeners.size; i++) {
-				cleanupListeners.get(i).cleanup(this);
-			}
-		}
-		
+	public void clear() {
 		isDead = false;
 		isPaused = false;
 		isRunning = false;
@@ -296,16 +282,36 @@ public class Action<T extends Action<T>> implements Poolable {
 		forceKill = false;
 		forceEnd = false;
 		canReset = false;
-		
-		if(isManaged) {
-			if(logger != null) logger.setLevel(ActionLogger.NONE);
-			if(logger != null) logger.clearActionName();
-			pauseCondition = null;
-			resumeCondition = null;
-			cleanupListeners.clear();
-			listeners.clear();
-			name = null;
+	}
+	
+	public final void clear(boolean clearRoot) {
+		if(clearRoot) {
+			isRoot = false;
+			rootAction = null;
 		}
+		clear();
+	}
+	
+	@Override
+	public void reset() {
+		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
+		
+		if(logger != null) logger.info("Reset");
+		
+		if(logger != null) logger.debug("Cleanup");
+		for(int i = 0; i < cleanupListeners.size; i++) {
+			cleanupListeners.get(i).cleanup(this);
+		}
+		
+		clear(true);
+		
+		if(logger != null) logger.setLevel(ActionLogger.NONE);
+		if(logger != null) logger.clearActionName();
+		pauseCondition = null;
+		resumeCondition = null;
+		cleanupListeners.clear();
+		listeners.clear();
+		name = null;
 	}
 	
 	/**

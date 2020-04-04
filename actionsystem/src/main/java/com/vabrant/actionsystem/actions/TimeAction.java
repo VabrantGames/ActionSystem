@@ -77,8 +77,8 @@ public class TimeAction<T extends Action<T>> extends Action<T> {
 	}
 	
 	@Override
-	public void reset() {
-		super.reset();
+	public void clear() {
+		super.clear();
 		timer = 0;
 		duration = 0;
 	}
