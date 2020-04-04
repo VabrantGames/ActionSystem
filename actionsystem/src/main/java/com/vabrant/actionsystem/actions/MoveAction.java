@@ -253,10 +253,10 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		}
 		return false;
 	}
-
+	
 	@Override
-	public void reset() {
-		super.reset();
+	public void clear() {
+		super.clear();
 		solo = false;
 		xAmount = 0;
 		yAmount = 0;
