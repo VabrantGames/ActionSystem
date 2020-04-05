@@ -241,13 +241,12 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	@Override
-	public boolean hasConflict(Action<MoveAction> action) {
+	public boolean hasConflict(Action<?> action) {
 		if(action instanceof MoveAction) {
 			MoveAction conflictAction = (MoveAction)action;
-			
-			//Conflict action is moving both x and y
-			if(conflictAction.xType > -1 && conflictAction.yType > -1) return true;
-			
+	
+			if(xType > -1 && yType > -1) return true;
+	
 			//only x is being scaled so as long as the other action is not using the x there is no conflict
 			if(conflictAction.xType > -1 && xType > -1) return true;
 			if(conflictAction.yType > -1 && yType > -1) return true;

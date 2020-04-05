@@ -77,7 +77,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-	public boolean hasConflict(Action<T> action) {
+	public boolean hasConflict(Action<?> action) {
 		return false;
 	}
 	

@@ -60,7 +60,7 @@ public class ConflictChecker {
 		if(logger != null) logger.debug("No longer watching" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 
-	public boolean checkForConflict(Action newAction) {
+	public boolean checkForConflict(Action<?> newAction) {
 		Entries<Action, Class> running = runningActions.entries();
 		
 		//if the class isn't being watched there are no conflicts
@@ -71,7 +71,7 @@ public class ConflictChecker {
 		
 		while(running.hasNext()) {
 			Entry<Action, Class> entry = running.next();
-			Action oldAction = entry.key;
+			Action<?> oldAction = entry.key;
 			
 			if(oldAction.equals(newAction)) continue;
 			

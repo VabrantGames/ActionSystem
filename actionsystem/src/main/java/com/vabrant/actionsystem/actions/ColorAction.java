@@ -163,30 +163,30 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 
 	public static float[] rgbTemp(float r, float g, float b, boolean normalize) {
 		if(normalize) {
-			return v3Temp(r / 255f, g / 255f, b / 255f);
+			return temp(r / 255f, g / 255f, b / 255f);
 		}
 		else {
-			return v3Temp(r, g, b);
+			return temp(r, g, b);
 		}
 	}
 	
 	public static float[] rgbaTemp(float r, float g, float b, float a, boolean normalize) {
 		if(normalize) {
-			return v4Temp(r / 255f, g / 255f, b / 255f, a);
+			return temp(r / 255f, g / 255f, b / 255f, a);
 		}
 		else {
-			return v4Temp(r, g, b, a);
+			return temp(r, g, b, a);
 		}
 	}
 	
-	public static float[] v3Temp(float v1, float v2, float v3) {
+	public static float[] temp(float v1, float v2, float v3) {
 		V3_TEMP[0] = v1;
 		V3_TEMP[1] = v2;
 		V3_TEMP[2] = v3;
 		return V3_TEMP;
 	}
 	
-	public static float[] v4Temp(float v1, float v2, float v3, float v4) {
+	public static float[] temp(float v1, float v2, float v3, float v4) {
 		V4_TEMP[0] = v1;
 		V4_TEMP[1] = v2;
 		V4_TEMP[2] = v3;
@@ -414,7 +414,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	@Override
-	public boolean hasConflict(Action<ColorAction> action) {
+	public boolean hasConflict(Action<?> action) {
 		if(!isRunning) return false;
 		
 		//This action is using all channels so there is always a conflict

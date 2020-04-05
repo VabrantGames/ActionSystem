@@ -163,7 +163,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		float[] hsba = {190, 0.8f, 1f, 0.4f};
 		TestObject object = getTestObject();
 		object.setColor(Color.RED);
-		ColorAction action = ColorAction.changeColorHSBA(object, ColorAction.v4Temp(190, 0.8f, 1f, 0.1f), 1f, Interpolation.linear);
+		ColorAction action = ColorAction.changeColorHSBA(object, ColorAction.temp(190, 0.8f, 1f, 0.1f), 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
