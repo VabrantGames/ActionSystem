@@ -62,31 +62,32 @@ public class ColorActionTest extends ActionSystemTestListener {
 		switch(keycode) {
 			case Keys.NUMPAD_1:
 				changeColorTest();
-				break;
-			case Keys.NUMPAD_2:
-				changeColorRGBTest();
+//				changeColorRGBTest();
 //				changeColorRGBATest();
 				break;
+			case Keys.NUMPAD_2:
+				changeRedTest();
+//				changeGreenTest();
+//				changeBlueTest();
+				break;
 			case Keys.NUMPAD_3:
-				changeColorHSBTest();
-//				changeColorHSBATest();
+//				changeColorHSBTest();
+				changeColorHSBATest();
 				break;
 			case Keys.NUMPAD_4:
-				changeHueTest();
-				break;
-			case Keys.NUMPAD_5:
-				changeSaturationTest();
-				break;
-			case Keys.NUMPAD_6:
+//				changeHueTest();
+//				changeSaturationTest();
 				changeBrightnessTest();
 				break;
+			case Keys.NUMPAD_5:
+				changeAlphaTest();
+				break;
+			case Keys.NUMPAD_6:
+				soloHSBGroup();
+				break;
 			case Keys.NUMPAD_7:
-//				changeAlphaTest();
-				group();
 				break;
 			case Keys.NUMPAD_8:
-				changeRedTest();
-//				changeBlueTest();
 				break;
 			case Keys.NUMPAD_9:
 				restartTest();
@@ -99,7 +100,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		TestObject object = getTestObject();
 		object.setColor(Color.RED);
 		Color end = new Color(Color.GREEN);
-		ColorAction action = ColorAction.changeColor(object, end, 1f, Interpolation.smooth2);
+		ColorAction action = ColorAction.changeColor(object, end, 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -123,8 +124,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	public void changeRedTest() {
 		TestObject object = getTestObject();
-		object.setColor(Color.RED);
-		ColorAction action = ColorAction.changeRed(object, 0f, 1f, Interpolation.linear).soloChannel();
+		object.setColor(new Color(0, 171f / 255f, 130f / 255f, 1));
+		ColorAction action = ColorAction.changeRed(object, 1f, 1f, Interpolation.linear).solo();
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -132,6 +133,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	public void changeGreenTest() {
 		TestObject object = getTestObject();
+		object.setColor(new Color(1, 0, 0, 1));
 		ColorAction action = ColorAction.changeGreen(object, 1, 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
@@ -140,6 +142,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	public void changeBlueTest() {
 		TestObject object = getTestObject();
+		object.setColor(new Color(1, 0, 0, 1));
 		ColorAction action = ColorAction.changeBlue(object, 1, 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
@@ -149,7 +152,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	public void changeColorHSBTest() {
 		float[] hsb = {190, 0.8f, 1f};
 		TestObject object = getTestObject();
-		ColorAction action = ColorAction.changeColorHSB(object, hsb[0], hsb[1], hsb[2], 1f, Interpolation.linear, false);
+		object.setColor(Color.RED);
+		ColorAction action = ColorAction.changeColorHSB(object, hsb[0], hsb[1], hsb[2], 1f, Interpolation.linear, true);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -158,7 +162,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	public void changeColorHSBATest() {
 		float[] hsba = {190, 0.8f, 1f, 0.4f};
 		TestObject object = getTestObject();
-		ColorAction action = ColorAction.changeColorHSBA(object, ColorAction.v4Temp(190, 0.8f, 1f, 0.4f), 1f, Interpolation.linear);
+		object.setColor(Color.RED);
+		ColorAction action = ColorAction.changeColorHSBA(object, ColorAction.v4Temp(190, 0.8f, 1f, 0.1f), 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -174,8 +179,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	private void changeHueTest() {
 		TestObject object = getTestObject();
-		object.setColor(Color.RED);
-		ColorAction action = ColorAction.changeHue(object, 250, 0.5f, Interpolation.linear, true);
+		ColorAction.HSBToRGB(object.getColor(), 30, 1, 1);
+		ColorAction action = ColorAction.changeHue(object, 250, 0.5f, Interpolation.linear, false);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -183,8 +188,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	private void changeSaturationTest() {
 		TestObject object = getTestObject();
-		object.setColor(Color.RED);
-		ColorAction action = ColorAction.changeSaturation(object, 0.1f, 0.5f, Interpolation.linear, false);
+		ColorAction.HSBToRGB(object.getColor(), 30, 1, 1);
+		ColorAction action = ColorAction.changeSaturation(object, 0.3f, 0.5f, Interpolation.linear, true);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -192,24 +197,30 @@ public class ColorActionTest extends ActionSystemTestListener {
 	
 	private void changeBrightnessTest() {
 		TestObject object = getTestObject();
-		object.setColor(Color.RED);
-		ColorAction action = ColorAction.changeBrightness(object, 0.2f, 0.5f, Interpolation.linear, true);
+		ColorAction.HSBToRGB(object.getColor(), 30, 1, 1);
+		ColorAction action = ColorAction.changeBrightness(object, 0f, 0.5f, Interpolation.linear, true);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
 	}
 	
-	private void group() {
+	private void soloHSBGroup() {
 		TestObject object = getTestObject();
-		
-//		GroupAction action = GroupAction.parallel(
-//				ColorAction.changeHue(object, 250, 1f, Interpolation.linear, true).soloChannel(),
-//				ColorAction.changeSaturation(object, 0.1f, 1f, Interpolation.linear, true).soloChannel());
+		ColorAction.HSBToRGB(object.getColor(), 0, 1f, 1);
 		
 		GroupAction action = GroupAction.parallel(
-				ColorAction.changeRed(object, 1, 1f, Interpolation.linear).soloChannel(),
-				ColorAction.changeGreen(object, 1, 1f, Interpolation.linear).soloChannel(),
-				ColorAction.changeBlue(object, 1, 1f, Interpolation.linear).soloChannel());
+				ColorAction.changeHue(object, 150, 0.5f, Interpolation.linear, true).solo(),
+				ColorAction.changeSaturation(object, 0.2f, 0.5f, Interpolation.linear, true).solo());
+		
+//		GroupAction action = GroupAction.parallel(
+//				ColorAction.changeRed(object, 1, 1f, Interpolation.linear).solo(),
+//				ColorAction.changeGreen(object, 1, 1f, Interpolation.linear).solo(),
+//				ColorAction.changeBlue(object, 1, 1f, Interpolation.linear).solo());
+		
+//		ColorAction action = ColorAction.obtain()
+//				.set(object, 0.5f, Interpolation.linear)
+//				.changeHue(150, true)
+//				.changeSaturation(0.2f, true);
 		
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);

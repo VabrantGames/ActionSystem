@@ -199,18 +199,22 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	private static final int RGB = 0;
 	private static final int HSB = 1;
-	private static final int RED = 2;
-	private static final int GREEN = 3;
-	private static final int BLUE = 4;
-	private static final int HUE = 5;
-	private static final int SATURATION = 6;
-	private static final int BRIGHTNESS = 7;
+	private static final int ON = 2;
 	
-	private int valueType = -1;
-	private int constructType = -1;
+	private int colorModel = -1;
+	
+	//Red or Hue
+	private int channel1 = -1;
+	
+	//Green or Saturation
+	private int channel2 = -1;
+	
+	//Blue or Brightness
+	private int channel3 = -1;
+	
+	private int alphaChannel = -1;
 
 	private boolean soloChannel;
-	private boolean useAlpha;
 	private boolean constructEndColor;
 	private boolean setupAction = true;
 	private float[] startHSB = new float[3];
@@ -219,14 +223,15 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	private Color endColor = new Color(Color.WHITE);
 	
 	public ColorAction changeColor(Color endColor) {
-		valueType = RGB;
+		colorModel = RGB;
+		channel1 = channel2 = channel3 = alphaChannel = ON;
 		this.endColor.set(endColor);
-		useAlpha = true;
 		return this;
 	}
 	
 	public ColorAction changeColorRGB(float red, float green, float blue) {
-		valueType = RGB;
+		colorModel = RGB;
+		channel1 = channel2 = channel3 = ON;
 		endColor.r = red;
 		endColor.g = green;
 		endColor.b = blue;
@@ -234,37 +239,46 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	public ColorAction changeColorRGBA(float red, float green, float blue, float alpha) {
-		valueType = RGB;
+		colorModel = RGB;
+		channel1 = channel2 = channel3 = alphaChannel = ON;
 		endColor.set(red, green, blue, alpha);
-		useAlpha = true;
 		return this;
 	}
 	
 	public ColorAction changeRed(float red) {
-		valueType = RED;
+		if(colorModel == HSB) return this;
+		colorModel = RGB;
+		channel1 = ON;
 		endColor.r = red;
 		return this;
 	}
 	
 	public ColorAction changeGreen(float green) {
-		valueType = GREEN;
+		if(colorModel == HSB) return this; 
+		colorModel = RGB;
+		channel2 = ON;
 		endColor.g = green;
 		return this;
 	}
 	
 	public ColorAction changeBlue(float blue) {
-		valueType = BLUE;
+		if(colorModel == HSB) return this;
+		colorModel = RGB;
+		channel3 = ON;
 		endColor.b = blue;
 		return this;
 	}
 	
 	public ColorAction changeColorHSB(float hue, float saturation, float brightness, boolean useHSBValues) {
-		valueType = useHSBValues ? HSB : RGB;
+		colorModel = useHSBValues ? HSB : RGB;
 		
-		if(valueType == RGB) {
+		if(colorModel == RGB) {
+			//Convert from HSB to RGB
 			HSBToRGB(endColor, hue, saturation, brightness);
+			changeColorRGB(endColor.r, endColor.g, endColor.b);
 		}
 		else {
+			channel1 = channel2 = channel3 = ON;
 			endHSB[0] = hue;
 			endHSB[1] = saturation;
 			endHSB[2] = brightness;
@@ -273,62 +287,71 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	public ColorAction changeColorHSBA(float hue, float saturation, float brightness, float alpha, boolean useHSBValues) {
-		valueType = useHSBValues ? HSB : RGB;
-
-		useAlpha = true;
-		
-		if(valueType == RGB) {
-			HSBToRGB(endColor, hue, saturation, brightness);
-			endColor.a = alpha;
-		}
-		else {
-			endHSB[0] = hue;
-			endHSB[1] = saturation;
-			endHSB[2] = brightness;
-		}
+		changeColorHSB(hue, saturation, brightness, useHSBValues);
+		changeAlpha(alpha);
 		return this;
 	}
 
 	public ColorAction changeHue(float hue, boolean useHSBValues) {
-		valueType = useHSBValues ? HUE : RGB;
-		endHSB[0] = hue;
-		
-		if(valueType == RGB) {
-			constructEndColor = true;
-			constructType = HUE;
+		//If the color model has already been set we can not change it from setting individual channels.
+
+		if(useHSBValues) {
+			if(colorModel == RGB) return this;
+			colorModel = HSB;
+			channel1 = ON;
 		}
+		else {
+			if(colorModel == HSB) return this;
+			colorModel = RGB;
+			channel1 = ON;
+			constructEndColor = true;
+		}
+		
+		endHSB[0] = hue;
 		return this;
 	}
 	
 	public ColorAction changeSaturation(float saturation, boolean useHSBValues) {
-		valueType = useHSBValues ? SATURATION : RGB;
-		endHSB[1] = saturation;
-		
-		if(valueType == RGB) {
-			constructEndColor = true;
-			constructType = SATURATION;
+		if(useHSBValues) {
+			if(colorModel == RGB) return this;
+			colorModel = HSB;
+			channel2 = ON;
 		}
+		else {
+			if(colorModel == HSB) return this;
+			colorModel = RGB;
+			channel2 = ON;
+			constructEndColor = true;
+		}
+		
+		endHSB[1] = saturation;
 		return this;
 	}
 	
 	public ColorAction changeBrightness(float brightness, boolean useHSBValues) {
-		valueType = useHSBValues ? BRIGHTNESS : RGB;
-		endHSB[2] = brightness;
-		
-		if(valueType == RGB) {
-			constructEndColor = true;
-			constructType = BRIGHTNESS;
+		if(useHSBValues) {
+			if(colorModel == RGB) return this;
+			colorModel = HSB;
+			channel3 = ON;
 		}
+		else {
+			if(colorModel == HSB) return this;
+			colorModel = RGB;
+			channel3 = ON;
+			constructEndColor = true;
+		}
+		
+		endHSB[2] = brightness;
 		return this;
 	}
 	
 	public ColorAction changeAlpha(float endAlpha) {
-		useAlpha = true;
+		alphaChannel = ON;
 		endColor.a = endAlpha;
 		return this;
 	}
 	
-	public ColorAction soloChannel() {
+	public ColorAction solo() {
 		soloChannel = true;
 		return this;
 	}
@@ -337,46 +360,19 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	protected void percent(float percent) {
 		Color color = percentable.getColor();
 		
-		if(useAlpha) color.a = MathUtils.lerp(startColor.a, endColor.a, percent);
+		if(alphaChannel != -1) color.a = MathUtils.lerp(startColor.a, endColor.a, percent);
 		
-		switch(valueType) {
+		switch(colorModel) {
 			case RGB:
-				color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
-				color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
-				color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
-				break;
-			case RED:
-				color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
-				break;
-			case GREEN:
-				color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
-				break;
-			case BLUE:
-				color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
+				if(channel1 != -1) color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
+				if(channel2 != -1) color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
+				if(channel3 != -1) color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
 				break;
 			case HSB:
-				float h = MathUtils.lerp(startHSB[0], endHSB[0], percent);
-				float s = MathUtils.lerp(startHSB[1], endHSB[1], percent);
-				float b = MathUtils.lerp(startHSB[2], endHSB[2], percent);
+				float h = channel1 == ON ? MathUtils.lerp(startHSB[0], endHSB[0], percent) : getHue(color);
+				float s = channel2 == ON ? MathUtils.lerp(startHSB[1], endHSB[1], percent) : getSaturation(color);
+				float b = channel3 == ON ? MathUtils.lerp(startHSB[2], endHSB[2], percent) : getBrightness(color);
 				color.set(HSBToRGB(endColor, h, s, b));
-				break;
-			case HUE:
-				float hh = MathUtils.lerp(startHSB[0], endHSB[0], percent);
-				float hS = !soloChannel ? startHSB[1] : getSaturation(color);
-				float hB = !soloChannel ? startHSB[2] : getBrightness(color);
-				color.set(HSBToRGB(endColor, hh, hS, hB));
-				break;
-			case SATURATION:
-				float sH = !soloChannel ? startHSB[0] : getHue(color);
-				float sS = MathUtils.lerp(startHSB[1], endHSB[1], percent);
-				float sB = !soloChannel ? startHSB[2] : getSaturation(color);
-				color.set(HSBToRGB(endColor, sH, sS, sB));
-				break;
-			case BRIGHTNESS:
-				float bH = !soloChannel ? startHSB[0] : getHue(color);
-				float bS = !soloChannel ? startHSB[1] : getSaturation(color);
-				float bB = MathUtils.lerp(startHSB[2], endHSB[2], percent);
-				color.set(HSBToRGB(endColor, bH, bS, bB));
 				break;
 		}
 	}
@@ -388,37 +384,18 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 			
 			startColor.set(percentable.getColor());
 			
-			switch(valueType) {
+			switch(colorModel) {
 				case RGB:
 					if(constructEndColor) {
-						float h = 0;
-						float s = 0;
-						float b = 0;
+						float h = channel1 == ON ? endHSB[0] : getHue(startColor);
+						float s = channel2 == ON ? endHSB[1] : getSaturation(startColor);
+						float b = channel3 == ON ? endHSB[2] : getBrightness(startColor);
 						
-						switch(constructType) {
-							case HUE:
-								h = endHSB[0];
-								s = getSaturation(startColor);
-								b = getBrightness(startColor);
-								break;
-							case SATURATION:
-								h = getHue(startColor);
-								s = endHSB[1];
-								b = getBrightness(startColor);
-								break;
-							case BRIGHTNESS:
-								h = getHue(startColor);
-								s = getSaturation(startColor);
-								b = endHSB[2];
-								break;
-						}
 						HSBToRGB(endColor, h, s, b);
+						channel1 = channel2 = channel3 = ON;
 					}
 					break;
 				case HSB:
-				case HUE:
-				case SATURATION:
-				case BRIGHTNESS:
 					startHSB[0] = getHue(startColor);
 					startHSB[1] = getSaturation(startColor);
 					startHSB[2] = getBrightness(startColor);
@@ -431,31 +408,24 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	@Override
 	protected void startLogic() {
 		super.startLogic();
-		
-		//By default the color of the action should go back to exactly where it started whether it was changing one channel or
-		//multiple channels. When single channels are used they only update their channel and skip the others. This will make
-		//sure the other channels will be set to where they were started. They will not be changed when updating just when start 
-		//is called. If the channel is being soloed (Allowing you to individually animate each channel) then the other channels won't be set. 
-		switch(valueType) {
-			case RED:
-			case GREEN:
-			case BLUE:
-			case HUE:
-			case SATURATION:
-			case BRIGHTNESS:
-				if(!soloChannel) {
-					percentable.setColor(startColor);
-				}
-				break;
+		if(!soloChannel) {
+			percentable.setColor(startColor);
 		}
 	}
 	
 	@Override
 	public boolean hasConflict(Action<ColorAction> action) {
-		if(action instanceof ColorAction) {
-			ColorAction conflictAction = (ColorAction)action;
-//			if(conflictAction.type > -1) return true;
-		}
+		if(!isRunning) return false;
+		
+		//This action is using all channels so there is always a conflict
+		if(channel1 == ON && channel2 == ON && channel3 == ON && alphaChannel == ON) return true;
+		
+		ColorAction a = (ColorAction)action;
+		
+		if(channel1 == ON && a.channel1 == ON) return true;
+		if(channel2 == ON && a.channel2 == ON) return true;
+		if(channel3 == ON && a.channel3 == ON) return true;
+		if(alphaChannel == ON && a.alphaChannel == ON) return true;
 		return false;
 	}
 
@@ -463,13 +433,15 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	public void reset() {
 		super.reset();
 		soloChannel = false;
-		useAlpha = false;
+		channel1 = -1;
+		channel2 = -1;
+		channel3 = -1;
+		alphaChannel = -1;
 		constructEndColor = false;
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
-		valueType = -1;
-		constructType = -1;
+		colorModel = -1;
 		startHSB[0] = 0;
 		startHSB[1] = 0;
 		startHSB[2] = 0;

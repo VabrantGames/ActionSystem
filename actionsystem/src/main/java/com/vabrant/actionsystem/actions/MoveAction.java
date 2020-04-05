@@ -85,6 +85,9 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	private static final int MOVE_TO = 0;
 	private static final int MOVE_BY = 1;
 
+	private int xType = -1;
+	private int yType = -1;
+	
 	private boolean solo;
 	private boolean setupX = true;
 	private boolean setupY = true;
@@ -96,8 +99,6 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	private float yEnd;
 	private float yAmount;
 	private float xAmount;
-	private int xType = -1;
-	private int yType = -1;
 	
 	public MoveAction moveXTo(float end) {
 		this.xEnd = end;
