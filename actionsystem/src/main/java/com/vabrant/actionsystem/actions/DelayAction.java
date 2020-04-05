@@ -7,9 +7,8 @@ public class DelayAction extends TimeAction<DelayAction> {
 	}
 	
 	public static DelayAction delay(float delay) {
-		DelayAction action = obtain();
-		action.setDuration(delay);
-		return action;
+		return obtain()
+				.setDuration(delay);
 	}
 
 }
