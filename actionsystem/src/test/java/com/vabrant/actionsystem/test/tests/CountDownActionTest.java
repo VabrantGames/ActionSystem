@@ -24,8 +24,19 @@ import com.vabrant.actionsystem.actions.CountDownAction.CountDownActionListener;
  *
  */
 public class CountDownActionTest extends ActionSystemTestListener {
+
+	CountDownAction action;
 	
 	public CountDownActionTest() {
+		action = CountDownAction.obtain()
+				.unmanage()
+				.setDuration(5)
+				.addCountDownListener(new CountDownActionListener() {
+					@Override
+					public void currentCount(int count) {
+						System.out.println(count);
+					}
+				});
 	}
 	
 	@Override
@@ -34,20 +45,14 @@ public class CountDownActionTest extends ActionSystemTestListener {
 			case Keys.NUMPAD_0:
 				countDownTest();
 				break;
+			case Keys.NUMPAD_1:
+				action.setDuration(7);
+				break;
 			}
 		return super.keyDown(keycode);
 	}
 	
 	public void countDownTest() {
-		CountDownAction action = CountDownAction.countDown(5);
-		action.addCountDownListener(new CountDownActionListener() {
-
-			@Override
-			public void currentCount(int count) {
-				System.out.println(count);
-			}
-			
-		});
 		actionManager.addAction(action);
 	}
 

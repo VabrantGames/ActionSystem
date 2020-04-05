@@ -80,6 +80,11 @@ public class TimeAction<T extends Action<T>> extends Action<T> {
 	public void clear() {
 		super.clear();
 		timer = 0;
+	}
+	
+	@Override
+	public void reset() {
+		super.reset();
 		duration = 0;
 	}
 

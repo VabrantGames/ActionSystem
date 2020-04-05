@@ -4,21 +4,38 @@ import com.badlogic.gdx.utils.Array;
 
 public class CountDownAction extends TimeAction<CountDownAction> {
 	
+	public interface CountDownActionListener{
+		public void currentCount(int count);
+	}
+	
 	public static CountDownAction obtain() {
 		return obtain(CountDownAction.class);
 	}
 	
 	public static CountDownAction countDown(int duration) {
 		return obtain()
-				.count(duration);
+				.setDuration(duration);
 	}
 	
 	private int nextCount;
-	private final Array<CountDownActionListener> countDownListeners = new Array<>(1);
-	
-	private CountDownAction count(int duration) {
-		setDuration(duration);
-		nextCount = duration - 1;
+	private final Array<CountDownActionListener> countDownListeners = new Array<>(2);
+
+	@Override
+	public CountDownAction setDuration(float duration) {
+		int newDuration = (int)duration;
+		
+		//Set the timer to the correct position
+		if(newDuration > this.duration) {
+			timer = 0;
+			super.setDuration(newDuration);
+		}
+		else {
+			timer = (int)this.duration - newDuration;
+		}
+		
+		nextCount = newDuration - 1;
+		
+		if(isRunning()) fireCount(nextCount + 1);
 		return this;
 	}
 	
@@ -26,6 +43,12 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 		if(listener == null) return this;
 		countDownListeners.add(listener);
 		return this;
+	}
+	
+	public void fireCount(int count) {
+		for(int i = countDownListeners.size - 1; i >= 0; i--) {
+			countDownListeners.get(i).currentCount(count);
+		}
 	}
 	
 	@Override
@@ -41,17 +64,16 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 		fireCount(0);
 	}
 	
-	private void fireCount(int count) {
-		for(int i = 0; i < countDownListeners.size; i++) {
-			countDownListeners.get(i).currentCount(count);
-		}
+	@Override
+	public void clear() {
+		super.clear();
+		nextCount = 0;
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
 		countDownListeners.clear();
-		nextCount = 0;
 	}
 	
 	@Override
@@ -69,12 +91,7 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 				fireCount(nextCount + 1);
 			}
 		}
-
 		return isRunning();
-	}
-	
-	public interface CountDownActionListener{
-		public void currentCount(int count);
 	}
 
 }
