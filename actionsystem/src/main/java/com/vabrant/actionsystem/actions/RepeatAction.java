@@ -97,6 +97,10 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	public boolean isContinuous() {
 		return isContinuous;
 	}
+	
+	public Action<?> getAction() {
+		return action;
+	}
 
 	@Override
 	public void setRootAction(Action<?> root) {
@@ -104,36 +108,6 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		if(action != null) action.setRootAction(root);
 	}
 	
-	public Action<?> getAction() {
-		return action;
-	}
-
-	@Override
-	public boolean update(float delta) {
-		if(isDead() || !isRunning()) return false;
-		if(isPaused) return true;
-		
-		if(!action.update(delta)) {
-
-			//Check if the inner action has been permanently ended or killed
-			if(action.isDead()) {
-//				permanentEnd();
-//				end();
-				return false;
-			}
-			
-			if(isContinuous || count < amount) {
-				if(!isContinuous) count++;
-				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
-				action.start();
-			}
-			else {
-				end();
-			}
-		}
-		return isRunning();
-	}
-
 	@Override
 	protected void startLogic() {
 		count = 0;
@@ -148,20 +122,37 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	protected void killLogic() {
 		if(action != null) action.kill();
 	}
+
+	@Override
+	public boolean update(float delta) {
+		if(isDead() || !isRunning()) return false;
+		if(isPaused) return true;
+		
+		if(!action.update(delta)) {
+			if(isContinuous || count < amount) {
+				if(!isContinuous) count++;
+				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
+				action.start();
+			}
+			else {
+				end();
+			}
+		}
+		return isRunning();
+	}
 	
 	@Override
-	protected void restartLogic() {
+	public void clear() {
+		super.clear();
+		amount = 0;
 		count = 0;
-		if(action != null) action.restart();
+		isContinuous = false;
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
 		action = null;
-		amount = 0;
-		count = 0;
-		isContinuous = false;
 	}
 	
 }
