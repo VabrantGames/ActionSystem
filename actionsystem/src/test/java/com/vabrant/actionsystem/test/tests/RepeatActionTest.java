@@ -59,10 +59,10 @@ public class RepeatActionTest extends ActionSystemTestListener {
 		actionManager.addAction(
 				RepeatAction.repeat(
 						MoveAction.moveXBy(testObject, 50, 1f, Interpolation.exp5Out)
-								.startXByFromEnd()
-								.setName("Move")
-								.setLogLevel(ActionLogger.DEBUG),
-						amount)
+						.startXByFromEnd()
+						.setName("Move")
+						.setLogLevel(ActionLogger.DEBUG),
+				amount)
 				.setName("Repeat")
 				.setLogLevel(ActionLogger.DEBUG)
 				);
@@ -87,9 +87,9 @@ public class RepeatActionTest extends ActionSystemTestListener {
 					MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.linear)
 					.setName("Move")
 					.setLogLevel(ActionLogger.DEBUG), 
-					2)
-				.setName("Repeat")
-				.setLogLevel(ActionLogger.DEBUG);
+		2)
+		.setName("Repeat")
+		.setLogLevel(ActionLogger.DEBUG);
 		
 		ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
 			boolean restart = true;
