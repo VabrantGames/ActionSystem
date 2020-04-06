@@ -143,7 +143,7 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		index = parallel ? 0 : -1;
 		timer =  0;
 	}
-	
+
 	@Override
 	public void endLogic() {
 		for(int i = 0, size = actions.size; i < size; i++) {
@@ -159,11 +159,6 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	private void updateSequence(float delta) {
-		if(actions.size == 0) {
-			end();
-			return;
-		}
-
 		if(index < 0 || !actions.get(index).update(delta)) {
 			if(++index == actions.size) {
 				end();
@@ -188,7 +183,6 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 				continue;
 			}
 			
-			//Check if the action is still running
 			if(i == index) {
 				actions.get(index++).start();
 				finished = false;
@@ -205,6 +199,11 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		if(isDead() || !isRunning()) return false;
 		if(isPaused()) return true;
 		
+		if(actions.size == 0) {
+			end();
+			return isRunning();
+		}
+		
 		if(parallel) {
 			updateParallel(delta);
 		}
@@ -212,12 +211,6 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 			updateSequence(delta);
 		}
 		return isRunning();
-	}
-	
-	@Override
-	public void restartLogic() {
-		index = parallel ? 0 : -1;
-		timer = 0;
 	}
 	
 	@Override
@@ -231,12 +224,12 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	@Override
-	public void reset() {
-		super.reset();
+	public void clear() {
+		super.clear();
 		parallel = true;
 		startOffset = 0;
 		index = 0;
 		timer = 0;
 	}
-
+	
 }
