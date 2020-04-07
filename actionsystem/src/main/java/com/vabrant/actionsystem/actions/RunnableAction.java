@@ -3,15 +3,15 @@ package com.vabrant.actionsystem.actions;
 public class RunnableAction extends Action<RunnableAction>{
 
 	public static RunnableAction runnable(Runnable runnable) {
-		RunnableAction action = obtain(RunnableAction.class);
-		action.set(runnable);
-		return action;
+		return obtain(RunnableAction.class)
+				.set(runnable);
 	}
 	
 	private Runnable runnable;
 	
-	public void set(Runnable runnable) {
+	public RunnableAction set(Runnable runnable) {
 		this.runnable = runnable;
+		return this;
 	}
 	
 	@Override
