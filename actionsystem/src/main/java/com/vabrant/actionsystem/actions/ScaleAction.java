@@ -223,6 +223,7 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	@Override
 	public void clear() {
 		super.clear();
+		solo = false;
 		startXByFromEnd = false;
 		startYByFromEnd = false;
 		setupX = true;
