@@ -16,8 +16,10 @@
 package com.vabrant.actionsystem.test.tests;
 
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.DelayAction;
@@ -61,7 +63,6 @@ public class ShakeActionTest extends ActionSystemTestListener {
 				DelayAction.delay(1f));
 	}
 	
-	
 	@Override
 	public boolean keyDown(int keycode) {
 		switch(keycode) {
@@ -83,7 +84,9 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	
 	public void shakeXTest() {
 		TestObject object = getTestObject();
-		ShakeAction action = ShakeAction.shakeX(object, 5, 1f, Interpolation.linear);
+		ShakeAction action = ShakeAction.shakeX(object, ShakeAction.LOGIC_2, 5, 1f, Interpolation.circleOut);
+//		action.usePercent(true);
+		action.reverseBackToStart(true);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -91,7 +94,7 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	
 	public void shakeYTest() {
 		TestObject object = getTestObject();
-		ShakeAction action = ShakeAction.shakeY(object, 5, 1f, Interpolation.linear);
+		ShakeAction action = ShakeAction.shakeY(object, ShakeAction.LOGIC_2, 5, 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -99,7 +102,7 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	
 	public void shakeAngleTest() {
 		TestObject object = getTestObject();
-		ShakeAction action = ShakeAction.shakeAngle(object, 0.2f, 1f, Interpolation.linear);
+		ShakeAction action = ShakeAction.shakeAngle(object, ShakeAction.LOGIC_2, 2f, 1f, Interpolation.linear);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -107,7 +110,10 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	
 	public void shakeTest() {
 		TestObject object = getTestObject();
-		ShakeAction action = ShakeAction.shake(object, 5, 2, 0.2f, 1f, Interpolation.linear);
+		ShakeAction action = ShakeAction.shake(object, ShakeAction.LOGIC_2, 3, 3, 3, 0.5f, Interpolation.fade);
+		
+//		action.usePercent(true);
+		action.reverseBackToStart(true);
 		GroupAction wrap = wrap(action);
 		wrap.addListener(object);
 		actionManager.addAction(wrap);
@@ -115,6 +121,14 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	
 	@Override
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
-		testObjectController.draw(shapeDrawer);
+		batch.end();
+		
+		renderer.begin();
+		renderer.set(ShapeType.Filled);
+		renderer.setColor(Color.BLACK);
+		testObjectController.draw(renderer);
+		renderer.end();
+		
+		batch.begin();
 	}
 }
