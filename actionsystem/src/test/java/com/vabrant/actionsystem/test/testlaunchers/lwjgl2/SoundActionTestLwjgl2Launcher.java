@@ -17,13 +17,13 @@ package com.vabrant.actionsystem.test.testlaunchers.lwjgl2;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.vabrant.actionsystem.test.tests.ShakeActionTest;
+import com.vabrant.actionsystem.test.tests.SoundActionTest;
 
 /**
- * @author jaylb
+ * @author John Barton
  *
  */
-public class ShakeActionTestLauncher extends Lwjgl2TestLauncher {
+public class SoundActionTestLwjgl2Launcher extends Lwjgl2TestLauncher {
 	
 	static {
 		Lwjgl2TestLauncher.CONFIG_CLASS = Config.class;
@@ -38,7 +38,7 @@ public class ShakeActionTestLauncher extends Lwjgl2TestLauncher {
 
 		@Override
 		public ApplicationListener getListener() {
-			return new ShakeActionTest();
+			return new SoundActionTest();
 		}
 		
 	}
