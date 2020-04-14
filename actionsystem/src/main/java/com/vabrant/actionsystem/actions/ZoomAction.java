@@ -10,35 +10,33 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 	
 	public static ZoomAction zoomTo(Zoomable zoomable, float end, float duration, Interpolation interpolation) {
-		ZoomAction action = obtain();
-		action.zoomTo(end);
-		action.set(zoomable, duration,  interpolation);
-		return action;
+		return obtain()
+				.zoomTo(end)
+				.set(zoomable, duration,  interpolation);
 	}
 	
 	public static ZoomAction zoomBy(Zoomable zoomable, float amount, float duration, Interpolation interpolation) {
-		ZoomAction action = obtain();
-		action.zoomBy(amount);
-		action.set(zoomable, duration, interpolation);
-		return action;
+		return obtain()
+				.zoomBy(amount)
+				.set(zoomable, duration, interpolation);
 	}
 	
 	public static ZoomAction setZoom(Zoomable zoomable, float zoom) {
-		ZoomAction action = obtain();
-		action.zoomTo(zoom);
-		action.set(zoomable, 0, null);
-		return action;
+		return obtain()
+				.zoomTo(zoom)
+				.set(zoomable, 0, null);
 	}
 
 	private static final int ZOOM_TO = 0;
 	private static final int ZOOM_BY = 1;
 	
-	private boolean restartZoomByFromEnd;
+	private int type = -1;
+	
+	private boolean startZoomByFromEnd;
 	private boolean setup = true;
 	private float start;
 	private float end;
 	private float amount;
-	private int type = -1;
 
 	public ZoomAction zoomTo(float end) {
 		this.end = end;
@@ -52,8 +50,8 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		return this;
 	}
 	
-	public ZoomAction restartZoomByFromEnd() {
-		this.restartZoomByFromEnd = true;
+	public ZoomAction startZoomByFromEnd() {
+		this.startZoomByFromEnd = true;
 		return this;
 	}
 	
@@ -83,7 +81,7 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	@Override
 	public void endLogic() {
 		super.endLogic();
-		if(type == ZOOM_BY && restartZoomByFromEnd) setup = true;
+		if(type == ZOOM_BY && startZoomByFromEnd) setup = true;
 	}
 	
 	@Override
@@ -96,13 +94,13 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	}
 
 	@Override
-	public void reset() {
-		super.reset();
+	public void clear() {
+		super.clear();
 		setup = true;
 		start = 0;
 		end = 0;
 		amount = 0;
-		restartZoomByFromEnd = false;
+		startZoomByFromEnd = false;
 		type = -1;
 	}
 }
