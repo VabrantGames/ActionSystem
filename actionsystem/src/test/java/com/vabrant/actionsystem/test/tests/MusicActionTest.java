@@ -17,69 +17,45 @@ package com.vabrant.actionsystem.test.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.actions.MusicAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.actionsystem.actions.SoundAction;
 
 /**
  * @author John Barton
  *
  */
-public class SoundActionTest extends ActionSystemTestListener {
+public class MusicActionTest extends ActionSystemTestListener {
 
-	SoundAction action;
-	Sound sound;
+	MusicAction action;
+	Music music;
 	
 	@Override
 	public void create() {
 		super.create();
-
-		sound = Gdx.audio.newSound(Gdx.files.internal("testMusic.wav"));
 		
-		action = SoundAction.obtain()
+		music = Gdx.audio.newMusic(Gdx.files.internal("testMusic.wav"));
+		
+		action = MusicAction.play(music, 6.857f)
 				.unmanage()
-				.setPitch(1f)
-				.setSound(sound, 6.857f);
+				.setLogLevel(ActionLogger.DEBUG);
 	}
-	
+
 	@Override
 	public boolean keyDown(int keycode) {
 		switch(keycode) {
 			case Keys.NUMPAD_0:
 				playTest();
-				break;
-			case Keys.NUMPAD_1:
-				pitchTest();
-				break;
-			case Keys.NUMPAD_2:
-				panTest();
-				break;
-			case Keys.NUMPAD_3:
-				volumeTest();
+//				music.setLooping(true);
+//				music.play();
 				break;
 		}
 		return super.keyDown(keycode);
 	}
 	
 	public void playTest() {
-		action.setVolume(1f);
-		actionManager.addAction(action);
-	}
-	
-	public void pitchTest() {
-		action.setPitch(0.5f);
-		actionManager.addAction(action);
-	}
-	
-	public void panTest() {
-		action.setPan(1);
-		actionManager.addAction(action);
-	}
-	
-	public void volumeTest() {
-		action.setVolume(0.2f);
-		actionManager.addAction(action);
+		actionManager.addAction(RepeatAction.continuous(action));
 	}
 
 }
