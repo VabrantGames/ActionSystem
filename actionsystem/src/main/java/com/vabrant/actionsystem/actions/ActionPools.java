@@ -185,7 +185,7 @@ public class ActionPools {
 		}
 		else {
 //			action.reset();
-			action.clear();
+//			action.clear();
 		}
 		
 		if(logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());

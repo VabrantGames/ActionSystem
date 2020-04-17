@@ -19,14 +19,10 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.DelayAction;
-import com.vabrant.actionsystem.actions.GroupAction;
-import com.vabrant.actionsystem.actions.MoveAction;
-import com.vabrant.actionsystem.actions.RunnableAction;
 import com.vabrant.actionsystem.actions.ScaleAction;
+import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 import com.vabrant.actionsystem.test.TestObject;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -44,33 +40,32 @@ public class ScaleActionTest extends ActionSystemTestListener {
 	private float amountX;
 	private float amountY;
 	private TestObject testObject;
-	private ShapeRenderer renderer;
 	private ActionListener<ScaleAction> listener;
 	
 	@Override
 	public void create() {
 		super.create();
 		testObject = new TestObject();
-		renderer = new ShapeRenderer();
-		renderer.setAutoShapeType(true);
-		shapeDrawer.setDefaultSnap(false);
-		shapeDrawer.setPixelSize(2);
 		listener = createListener();
 		reset();
+	}
+	
+	@Override
+	public void resize(int width, int height) {
+		super.resize(width, height);
+		TestObjectController.getInstance().center(testObject, viewport);
 	}
 
 	private void reset() {
 		testObject.setScaleX(1);
 		testObject.setScaleY(1);
-		TestObjectController.getInstance().center(testObject, viewport);
 	}
 
 	private ActionListener<ScaleAction> createListener(){
 		return new ActionAdapter<ScaleAction>() {
 			@Override
 			public void actionEnd(ScaleAction a) {
-				System.out.println();
-				System.out.println(a.getName());
+				ActionSystemTestConstantsAndUtils.printTestHeader(a.getName());
 				System.out.println("StartX: " + startX);
 				System.out.println("StartY: " + startY);
 				System.out.println("EndX: " + endX);
@@ -99,7 +94,7 @@ public class ScaleActionTest extends ActionSystemTestListener {
 		}
 		return super.keyDown(keycode);
 	}
-	
+
 	public void scaleXByTest() {
 		reset();
 		
@@ -153,16 +148,10 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				.setName("ScaleYTo")
 				.addListener(listener));
 	}
-
-	@Override
-	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
-		batch.end();
-		
-		renderer.begin();
-		testObject.draw(renderer);
-		renderer.end();
-		
-		batch.begin();
-	}
 	
+	@Override
+	public void drawWithShapeRenderer(ShapeRenderer renderer) {
+		testObject.draw(renderer);
+	}
+
 }

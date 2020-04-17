@@ -1,5 +1,7 @@
 package com.vabrant.actionsystem.test.tests;
 
+import javax.swing.Renderer;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -43,9 +45,13 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		pixelTexture = new Texture(pixmap);
 		
 		shapeDrawer = new ShapeDrawer(batch, new TextureRegion(pixelTexture));
+		shapeDrawer.setDefaultSnap(false);
 		
 		actionManager = new ActionManager();
 		assetManager = new AssetManager();
+		
+		shapeRenderer = new ShapeRenderer();
+		shapeRenderer.setAutoShapeType(true);
 		
 		Gdx.input.setInputProcessor(this);
 	}
@@ -59,10 +65,12 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	public void dispose() {
 		batch.dispose();
 		assetManager.dispose();
+		pixelTexture.dispose();
 	}
 	
 	public void update(float delta) {}
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {}
+	public void drawWithShapeRenderer(ShapeRenderer renderer) {}
 	
 	@Override
 	public void render() {
@@ -78,8 +86,11 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		batch.begin();
 		draw(batch, shapeDrawer);
 		batch.end();
-
-//		System.out.println(batch.renderCalls);
+		
+		shapeRenderer.setProjectionMatrix(viewport.getCamera().combined);
+		shapeRenderer.begin();
+		drawWithShapeRenderer(shapeRenderer);
+		shapeRenderer.end();
 	}
 
 	@Override
