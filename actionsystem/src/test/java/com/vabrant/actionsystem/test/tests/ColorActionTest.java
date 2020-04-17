@@ -203,9 +203,9 @@ public class ColorActionTest extends ActionSystemTestListener {
 				changeColorHSBATest();
 				break;
 			case Keys.NUMPAD_3:
-//				changeHueTest();
+				changeHueTest();
 //				changeSaturationTest();
-				changeBrightnessTest();
+//				changeBrightnessTest();
 				break;
 			case Keys.NUMPAD_4:
 				changeAlphaTest();
