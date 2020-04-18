@@ -329,7 +329,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		}
 		
 		if(preActions.size > 0) {
-			if(!isRoot && rootAction == null) throw new ActionSystemRuntimeException("Root Action has to be added to a Action Manager.");
+			if(!isRoot && rootAction == null) throw new RuntimeException("Root Action has to be added to a Action Manager.");
 			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
 			for(int i = preActions.size - 1; i >= 0; i--) {
 				manager.addAction(preActions.pop());
