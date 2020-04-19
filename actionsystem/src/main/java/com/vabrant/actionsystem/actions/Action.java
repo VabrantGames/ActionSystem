@@ -71,9 +71,14 @@ public class Action<T extends Action<T>> implements Poolable {
 	public ActionLogger getLogger() {
 		return logger;
 	}
+	
+	public T watchAction(ActionWatcher watcher) {
+		watcher.watch(this);
+		return (T)this;
+	}
 
 	public T watchAction() {
-		ActionWatcher.watch(this);
+		ActionWatcher.getInstance().watch(this);
 		return (T)this;
 	}
 	
