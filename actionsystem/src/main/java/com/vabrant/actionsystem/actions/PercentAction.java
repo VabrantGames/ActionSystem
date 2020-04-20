@@ -138,6 +138,12 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 		setup();
 		percent(percent);
 	}
+	
+	@Override
+	protected void restartLogic() {
+		super.restartLogic();
+		percent(percent);
+	}
 
 	@Override
 	public boolean update(float delta) {
