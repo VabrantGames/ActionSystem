@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 
 public class Lwjgl2TestLauncher {
 	
@@ -12,8 +13,8 @@ public class Lwjgl2TestLauncher {
 	
 	public static LwjglApplicationConfiguration getDefaultConfig() {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 960;
-		config.height = 640;
+		config.width = ActionSystemTestConstantsAndUtils.DEFAULT_WIDTH;
+		config.height = ActionSystemTestConstantsAndUtils.DEFAULT_HEIGHT;
 		return config;
 	}
 	
