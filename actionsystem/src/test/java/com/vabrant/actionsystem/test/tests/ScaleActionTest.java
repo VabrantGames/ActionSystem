@@ -16,16 +16,14 @@
 package com.vabrant.actionsystem.test.tests;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 import com.vabrant.actionsystem.test.TestObject;
-
-import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * @author John Barton
@@ -91,6 +89,9 @@ public class ScaleActionTest extends ActionSystemTestListener {
 			case Keys.NUMPAD_3:
 				scaleYToTest();
 				break;
+			case Keys.NUMPAD_4:
+				pingPongTest();
+				break;
 		}
 		return super.keyDown(keycode);
 	}
@@ -147,6 +148,22 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				ScaleAction.scaleYTo(testObject, endY, 0.5f, Interpolation.linear)
 				.setName("ScaleYTo")
 				.addListener(listener));
+	}
+	
+	public void pingPongTest() {
+		reset();
+		
+		actionManager.addAction(
+				RepeatAction.continuous(
+						ScaleAction.scaleXTo(testObject, 2, 0.25f, Interpolation.sineOut)) 
+				.pingPong(true));
+		
+//		actionManager.addAction(
+//				RepeatAction.repeat(
+//						ScaleAction.scaleYTo(testObject, 2, 1f, Interpolation.linear),
+//						4) 
+//				.pingPong(true));
+		
 	}
 	
 	@Override

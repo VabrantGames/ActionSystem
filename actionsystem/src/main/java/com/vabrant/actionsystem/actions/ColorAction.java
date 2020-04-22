@@ -408,8 +408,36 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	@Override
 	protected void startLogic() {
 		super.startLogic();
+		
+		//By default this action is solo by nature. It will only change what you tell it to change. However, 
+		//this being the default behavior is very misleading in my opinion. So the default behavior is to 
+		//put the action back to its starting position, but it will only change what you told it to change.
+		//So if this action started at red and transitioned to green and you repeated it with a RepeatAction,
+		//then every time this action is repeated it will start at red every time. So lets use the same example 
+		//from above but this time we are doing something with the blue channel. Since we are changing the blue
+		//channel elsewhere with another action or some other logic we don't wan't this action to touch anything 
+		//about the blue channel. Doing so can ruin what we were trying to do. So what we would do is solo this action.
+		//Soloing would force this action to only change only the red and green channels and leave the blue channel untouched. Doesn't matter if i restart, move to end,
+		//or anything else this action will never touch the blue channel.
+		
 		if(!soloChannel) {
-			percentable.setColor(startColor);
+			Color c = percentable.getColor();
+			
+			c.a = alphaChannel == -1 ? startColor.a : (!reverse ? startColor.a : endColor.a);
+			
+			switch(colorModel) {
+				case RGB:
+					c.r = channel1 == -1 ? startColor.r : (!reverse ? startColor.r : endColor.r);
+					c.g = channel2 == -1 ? startColor.g : (!reverse ? startColor.g : endColor.g);
+					c.b = channel3 == -1 ? startColor.b : (!reverse ? startColor.b : endColor.b);
+					break;
+				case HSB:
+					float h = channel1 == -1 ? startHSB[0] : (!reverse ? startHSB[0] : endHSB[0]);
+					float s = channel2 == -1 ? startHSB[1] : (!reverse ? startHSB[1] : endHSB[1]);
+					float b = channel3 == -1 ? startHSB[2] : (!reverse ? startHSB[2] : endHSB[2]);
+					c.set(HSBToRGB(endColor, h, s, b));
+					break;
+			}
 		}
 	}
 	
