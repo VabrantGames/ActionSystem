@@ -141,7 +141,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 				reversible.setReverse(originalReverseState);
 			}
 			
-			reverseState = originalReverseState;
+			reverseState = !isContinuous ? originalReverseState : !originalReverseState;
 		}
 	}
 	
@@ -170,7 +170,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 			if(isContinuous || count < amount) {
 				if(!isContinuous) count++;
 				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
-				if(pingPong && count > 1) reversible.setReverse(reverseState = !reverseState);
+				if(pingPong && count > 1 || pingPong && isContinuous) reversible.setReverse(reverseState = !reverseState);
 				action.start();
 			}
 			else {

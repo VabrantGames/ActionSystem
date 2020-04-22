@@ -25,6 +25,7 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.GroupAction;
+import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 import com.vabrant.actionsystem.test.TestObject;
 
@@ -215,6 +216,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				
 				break;
 			case Keys.NUMPAD_6:
+				pingPongTest();
 				break;
 			case Keys.NUMPAD_7:
 				break;
@@ -459,6 +461,32 @@ public class ColorActionTest extends ActionSystemTestListener {
 	}
 	
 	private void conflitTest() {
+	}
+	
+	private void pingPongTest() {
+		reset();
+		
+//		testObject.getColor().set(0, 1, 0, 1);
+//		actionManager.addAction(
+//				RepeatAction.repeat(
+//						ColorAction.changeRed(testObject, 1, 1f, Interpolation.linear), 
+//						2)
+//				.pingPong(true));
+		
+//		testObject.getColor().set(1, 0, 0, 1);
+//		actionManager.addAction(
+//				RepeatAction.repeat(
+//						ColorAction.changeHue(testObject, 50, 1f, Interpolation.linear), 
+//						3)
+//				.pingPong(true));
+
+		testObject.getColor().set(1, 0, 0, 1);
+		actionManager.addAction(
+				RepeatAction.repeat(
+						ColorAction.changeColorRGBA(testObject, ColorAction.normalize(255), ColorAction.normalize(213), 0, 0.5f, 1f, Interpolation.linear),
+						3)
+				.pingPong(true));
+		
 	}
 	
 	@Override

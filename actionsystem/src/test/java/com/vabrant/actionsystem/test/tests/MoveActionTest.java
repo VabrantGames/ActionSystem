@@ -12,6 +12,7 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
+import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.TestObject;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -81,6 +82,9 @@ public class MoveActionTest extends ActionSystemTestListener{
 				catch(Exception e) {
 					e.printStackTrace();
 				}
+				break;
+			case Keys.NUMPAD_0:
+				pingPongTest();
 				break;
 		}
 		return super.keyDown(keycode);
@@ -279,6 +283,16 @@ public class MoveActionTest extends ActionSystemTestListener{
 		ActionPools.free(moveAction);
 		ActionPools.free(moveXAction);
 		ActionPools.free(moveYAction);
+	}
+	
+	public void pingPongTest() {
+		reset();
+		
+		actionManager.addAction(
+				RepeatAction.repeat(
+						MoveAction.moveXBy(testObject, 100, 1f, Interpolation.linear), 
+						2)
+				.pingPong(true));
 	}
 	
 	@Override

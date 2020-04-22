@@ -193,8 +193,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	protected void startLogic() {
 		super.startLogic();
 		if(!solo) {
-			percentable.setScaleX(xStart);
-			percentable.setScaleY(yStart);
+			percentable.setScaleX(xType == -1 ? xStart : (!reverse ? xStart : xEnd));
+			percentable.setScaleY(yType == -1 ? yStart : (!reverse ? yStart : yEnd));
 		}
 	}
 	
