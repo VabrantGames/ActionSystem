@@ -49,6 +49,9 @@ public class RepeatActionTest extends ActionSystemTestListener {
 			case Keys.NUMPAD_4:
 				nestedRepeatTest();
 				break;
+			case Keys.NUMPAD_5:
+				pingPongTest();
+				break;
 		}
 		return super.keyDown(keycode);
 	}
@@ -119,17 +122,15 @@ public class RepeatActionTest extends ActionSystemTestListener {
 				RepeatAction.repeat(move)
 				.setName("Outer")
 				.setLogLevel(ActionLogger.DEBUG));
+	}
+	
+	public void pingPongTest() {
+		reset();
 		
-//		actionManager.addAction(
-//				RepeatAction.repeat(
-//						RepeatAction.repeat(
-//								MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.linear)
-//									.setName("Move"),
-//								2)
-//							.setName("Move"), 
-//						1)
-//					.setName("Repeat Move")
-//				);
+		actionManager.addAction(
+				RepeatAction.repeat(
+						MoveAction.moveXBy(testObject, 100, 1f, Interpolation.linear), 
+						2).pingPong(true));
 	}
 	
 	@Override

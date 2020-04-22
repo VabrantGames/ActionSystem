@@ -228,8 +228,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	protected void startLogic() {
 		super.startLogic();
 		if(!solo) {
-			percentable.setX(xStart);
-			percentable.setY(yStart);
+//			percentable.setX(xStart);
+//			percentable.setY(yStart);
 		}
 	}
 
