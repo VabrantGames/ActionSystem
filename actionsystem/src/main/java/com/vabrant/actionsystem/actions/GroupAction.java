@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
  * Runs a group of {@link Action}'s as a {@link #sequence() sequence} or in {@link #parallel() parallel}. 
  * @author John Barton
  */
-public class GroupAction extends Action<GroupAction> implements MultiParentAction {
+public class GroupAction extends Action<GroupAction> implements MultiParentAction, Reversible<GroupAction> {
 	
 	public static GroupAction obtain() {
 		return obtain(GroupAction.class);
@@ -66,6 +66,8 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 				.addAll(a);
 	}
 
+	boolean hasStarted;
+	private boolean reverse;
 	private boolean parallel = true;
 	private float timer;
 	private float startOffset;
@@ -139,9 +141,21 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	@Override
+	public GroupAction setReverse(boolean reverse) {
+		this.reverse = reverse;
+		return this;
+	}
+	
+	@Override
+	public boolean isReversed() {
+		return reverse;
+	}
+	
+	@Override
 	protected void startLogic() {
 		index = parallel ? 0 : -1;
 		timer =  0;
+		hasStarted = false;
 	}
 
 	@Override
@@ -158,13 +172,19 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		}
 	}
 	
+	private int getActionIndex(int index) {
+		return !reverse ? index : (actions.size - 1) - index;
+	}
+	
 	private void updateSequence(float delta) {
-		if(index < 0 || !actions.get(index).update(delta)) {
+		if(!hasStarted || !actions.get(getActionIndex(index)).update(delta)) {
+			hasStarted = true;
+			
 			if(++index == actions.size) {
 				end();
 			}
 			else {
-				actions.get(index).start();
+				actions.get(getActionIndex(index)).start();
 			}
 		}
 	}
@@ -182,13 +202,17 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 				finished = false;
 				continue;
 			}
+
+			int currentActionIndex = getActionIndex(i);
+			int startActionIndex = getActionIndex(index);
 			
-			if(i == index) {
-				actions.get(index++).start();
+			if(currentActionIndex == startActionIndex) {
+				index++;
+				actions.get(startActionIndex).start();
 				finished = false;
 			}
 			else {
-				if(actions.get(i).update(delta)) finished = false;
+				if(actions.get(currentActionIndex).update(delta)) finished = false;
 			}
 		}
 		if(finished) end();
@@ -226,6 +250,8 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	@Override
 	public void clear() {
 		super.clear();
+		hasStarted = false;
+		reverse = false;
 		parallel = true;
 		startOffset = 0;
 		index = 0;

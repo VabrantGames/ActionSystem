@@ -57,20 +57,26 @@ public class GroupActionTest extends ActionSystemTestListener {
 			case Keys.NUMPAD_5:
 				nestedTest();
 				break;
+			case Keys.NUMPAD_6:
+				parallelReverseTest();
+				break;
+			case Keys.NUMPAD_7:
+				sequenceReverseTest();
+				break;
 		}
 		return super.keyDown(keycode);
 	}
 	
 	public void parallelTest() {
-		TestObject testObject = testObjectController.create();
-		testObjectController.center(testObject, viewport);
+		TestObject ob1 = testObjectController.create();
+		testObjectController.center(ob1, viewport);
 		
 		GroupAction parallel = GroupAction.parallel(
-				MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.exp5Out),
-				MoveAction.moveYBy(testObject, 50, 0.5f, Interpolation.exp5Out))
+				MoveAction.moveXBy(ob1, 50, 0.5f, Interpolation.exp5Out),
+				MoveAction.moveYBy(ob1, 50, 0.5f, Interpolation.exp5Out))
 		.setName("Parallel")
 		.setLogLevel(ActionLogger.DEBUG)
-		.addListener(testObject);
+		.addListener(ob1);
 		
 		actionManager.addAction(parallel);
 	}
@@ -154,6 +160,43 @@ public class GroupActionTest extends ActionSystemTestListener {
 		group.addListener(ob2);
 		
 		actionManager.addAction(group);
+	}
+	
+	public void parallelReverseTest() {
+		TestObject ob1 = testObjectController.create();
+		TestObject ob2 = testObjectController.create();
+		
+		testObjectController.center(ob1, viewport);
+		testObjectController.center(ob2, viewport);
+		
+		ob1.setX(ob1.getX() - ob1.width - 10);
+		ob2.setX(ob2.getX() + ob1.width + 10);
+		
+		GroupAction parallel = GroupAction.parallel(
+				0.8f,
+				MoveAction.moveYBy(ob1, 100, 1f, Interpolation.linear),
+				MoveAction.moveYBy(ob2, -100, 1f, Interpolation.linear))
+		.addListener(ob1)
+		.addListener(ob2)
+		.setReverse(false);
+		
+		actionManager.addAction(parallel);
+	}
+	
+	public void sequenceReverseTest() {
+		TestObject ob1 = testObjectController.create();
+				
+		testObjectController.center(ob1, viewport);
+		
+		GroupAction sequence = GroupAction.sequence(
+				MoveAction.moveXBy(ob1, 100, 0.5f, Interpolation.linear),
+				MoveAction.moveYBy(ob1, -100, 0.5f, Interpolation.linear),
+				MoveAction.moveXBy(ob1, -100, 0.5f, Interpolation.linear),
+				MoveAction.moveYBy(ob1, 100, 0.5f, Interpolation.linear))
+		.addListener(ob1)
+		.setReverse(true);
+
+		actionManager.addAction(sequence);
 	}
 	
 	@Override

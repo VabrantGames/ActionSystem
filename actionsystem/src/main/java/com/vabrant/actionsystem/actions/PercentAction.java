@@ -2,9 +2,8 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 
-public abstract class PercentAction<P extends Percentable, A extends Action<A>> extends TimeAction<A> {
+public abstract class PercentAction<P extends Percentable, A extends Action<A>> extends TimeAction<A> implements Reversible<A> {
 
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
@@ -107,9 +106,15 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 		return (A)this;
 	}
 	
+	@Override
 	public A setReverse(boolean reverse) {
 		this.reverse = reverse;
 		return (A)this;
+	}
+	
+	@Override
+	public boolean isReversed() {
+		return reverse;
 	}
 	
 	public A setInterpolation(Interpolation interpolation) {
