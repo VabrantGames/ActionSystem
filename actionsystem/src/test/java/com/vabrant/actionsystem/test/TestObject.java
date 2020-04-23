@@ -55,7 +55,6 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 		return y;
 	}
 	
-	@Override
 	public void setPosition(float x, float y) {
 		setX(x);
 		setY(y);
@@ -141,7 +140,6 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 		return scaleY;
 	}
 	
-	@Override
 	public void setScale(float scaleX, float scaleY) {
 		setScaleX(scaleX);
 		setScaleY(scaleY);

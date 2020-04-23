@@ -279,7 +279,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeRed(testObject, endColor.r, 1f, Interpolation.linear)
-				.solo()
+				.solo(true)
 				.setName("Change Red Test")
 				.addListener(rgbListener));
 	}
@@ -294,7 +294,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeGreen(testObject, endColor.g, 1f, Interpolation.linear)
-				.solo()
+				.solo(true)
 				.setName("Change Green Test")
 				.addListener(rgbListener));
 	}
@@ -309,7 +309,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeBlue(testObject, endColor.b, 1f, Interpolation.linear)
-				.solo()
+				.solo(true)
 				.setName("Change Blue Test")
 				.addListener(rgbListener));
 	}
@@ -366,7 +366,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeHue(testObject, endValues[0], 1f, Interpolation.linear, true)
-				.solo()
+				.solo(true)
 				.setName("Change Hue Test")
 				.addListener(hsbListener));
 	}
@@ -380,7 +380,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeSaturation(testObject, endValues[1], 1f, Interpolation.linear, true)
-				.solo()
+				.solo(true)
 				.setName("Change Saturation Test")
 				.addListener(hsbListener));
 	}
@@ -394,7 +394,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		
 		actionManager.addAction(
 				ColorAction.changeBrightness(testObject, endValues[2], 1f, Interpolation.linear, true)
-				.solo()
+				.solo(true)
 				.setName("Change Brightness Test")
 				.addListener(hsbListener));
 	}
@@ -407,8 +407,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 
 		actionManager.addAction(
 				GroupAction.parallel(
-						ColorAction.changeHue(testObject, 259, duration, Interpolation.linear, true).solo(),
-						ColorAction.changeSaturation(testObject, 0.2f, duration, Interpolation.linear, true).solo()));
+						ColorAction.changeHue(testObject, 259, duration, Interpolation.linear, true).solo(true),
+						ColorAction.changeSaturation(testObject, 0.2f, duration, Interpolation.linear, true).solo(true)));
 	}
 	
 	private void rgbSoloTest() {
@@ -419,12 +419,12 @@ public class ColorActionTest extends ActionSystemTestListener {
 		actionManager.addAction(
 				GroupAction.parallel(
 						ColorAction.changeRed(testObject, 1, 1f, Interpolation.bounceOut)
-						.solo(),
+						.solo(true),
 						ColorAction.changeGreen(testObject, 1, 0.5f, Interpolation.linear)
-						.solo()
+						.solo(true)
 						.reverseBackToStart(false),
 						ColorAction.changeBlue(testObject, 1f, 1f, Interpolation.bounceOut)
-						.solo()));
+						.solo(true)));
 	}
 	
 	public void restartTest() {

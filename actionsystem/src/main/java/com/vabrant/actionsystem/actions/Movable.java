@@ -5,5 +5,4 @@ public interface Movable extends Percentable{
 	public void setY(float y);
 	public float getX();
 	public float getY();
-	public void setPosition(float x, float y);
 }
