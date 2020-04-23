@@ -237,15 +237,15 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		return isRunning();
 	}
 	
-	@Override
-	public boolean hasConflict(Action<?> action) {
-		if(action instanceof GroupAction) {
-			GroupAction conflictAction = (GroupAction)action;
-			if(getName() == null || conflictAction.getName() == null) return false;
-			if(getName().equals(conflictAction.getName())) return true;
-		}
-		return false;
-	}
+//	@Override
+//	public boolean hasConflict(Action<?> action) {
+//		if(action instanceof GroupAction) {
+//			GroupAction conflictAction = (GroupAction)action;
+//			if(getName() == null || conflictAction.getName() == null) return false;
+//			if(getName().equals(conflictAction.getName())) return true;
+//		}
+//		return false;
+//	}
 	
 	@Override
 	public void clear() {

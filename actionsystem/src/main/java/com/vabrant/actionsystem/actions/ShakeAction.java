@@ -148,17 +148,17 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		percentable.setShakeAngle(0);
 	}
 	 
-	 @Override
-	 public boolean hasConflict(Action<?> action) {
-		 if(action instanceof ShakeAction) {
-			 ShakeAction conflictAction = (ShakeAction)action;
-			 if(shakeX && shakeY && shakeAngle) return true;
-			 if(conflictAction.shakeX && shakeX) return true;
-			 if(conflictAction.shakeY && shakeY) return true;
-			 if(conflictAction.shakeAngle && shakeAngle) return true;
-		 }
-		 return false;
-	 }
+//	 @Override
+//	 public boolean hasConflict(Action<?> action) {
+//		 if(action instanceof ShakeAction) {
+//			 ShakeAction conflictAction = (ShakeAction)action;
+//			 if(shakeX && shakeY && shakeAngle) return true;
+//			 if(conflictAction.shakeX && shakeX) return true;
+//			 if(conflictAction.shakeY && shakeY) return true;
+//			 if(conflictAction.shakeAngle && shakeAngle) return true;
+//		 }
+//		 return false;
+//	 }
 	 
 	 @Override
 	public ShakeAction setup() {

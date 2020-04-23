@@ -441,21 +441,21 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		}
 	}
 	
-	@Override
-	public boolean hasConflict(Action<?> action) {
-		if(!isRunning) return false;
-		
-		//This action is using all channels so there is always a conflict
-		if(channel1 == ON && channel2 == ON && channel3 == ON && alphaChannel == ON) return true;
-		
-		ColorAction a = (ColorAction)action;
-		
-		if(channel1 == ON && a.channel1 == ON) return true;
-		if(channel2 == ON && a.channel2 == ON) return true;
-		if(channel3 == ON && a.channel3 == ON) return true;
-		if(alphaChannel == ON && a.alphaChannel == ON) return true;
-		return false;
-	}
+//	@Override
+//	public boolean hasConflict(Action<?> action) {
+//		if(!isRunning) return false;
+//		
+//		//This action is using all channels so there is always a conflict
+//		if(channel1 == ON && channel2 == ON && channel3 == ON && alphaChannel == ON) return true;
+//		
+//		ColorAction a = (ColorAction)action;
+//		
+//		if(channel1 == ON && a.channel1 == ON) return true;
+//		if(channel2 == ON && a.channel2 == ON) return true;
+//		if(channel3 == ON && a.channel3 == ON) return true;
+//		if(alphaChannel == ON && a.alphaChannel == ON) return true;
+//		return false;
+//	}
 
 	@Override
 	public void reset() {
