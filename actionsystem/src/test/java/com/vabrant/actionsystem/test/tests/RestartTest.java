@@ -171,10 +171,6 @@ public class RestartTest extends ActionSystemTestListener {
 		public float getY() {
 			return y;
 		}
-
-		@Override
-		public void setPosition(float x, float y) {
-		}
 		
 		public void draw(ShapeDrawer shapeDrawer, float radius) {
 			if(!draw) return;

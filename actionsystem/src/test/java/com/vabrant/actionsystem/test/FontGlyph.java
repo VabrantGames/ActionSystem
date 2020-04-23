@@ -73,10 +73,10 @@ public class FontGlyph implements Scalable, Colorable{
 		return scaleY;
 	}
 
-	@Override
-	public void setScale(float scaleX, float scaleY) {
-		
-	}
+//	@Override
+//	public void setScale(float scaleX, float scaleY) {
+//		
+//	}
 	
 //	public void setOrigin(Origin origin) {
 //		switch(origin) {
