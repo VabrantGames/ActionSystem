@@ -84,14 +84,14 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 		if(type == ZOOM_BY && startZoomByFromEnd) setup = true;
 	}
 	
-	@Override
-	public boolean hasConflict(Action<?> action) {
-		if(action instanceof ZoomAction) {
-			ZoomAction conflictAction = (ZoomAction)action;
-			if(conflictAction.type > -1) return true;
-		}
-		return false;
-	}
+//	@Override
+//	public boolean hasConflict(Action<?> action) {
+//		if(action instanceof ZoomAction) {
+//			ZoomAction conflictAction = (ZoomAction)action;
+//			if(conflictAction.type > -1) return true;
+//		}
+//		return false;
+//	}
 
 	@Override
 	public void clear() {
