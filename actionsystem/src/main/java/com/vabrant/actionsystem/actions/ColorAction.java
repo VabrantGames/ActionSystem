@@ -351,8 +351,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		return this;
 	}
 	
-	public ColorAction solo() {
-		soloChannel = true;
+	public ColorAction solo(boolean solo) {
+		soloChannel = solo;
 		return this;
 	}
 
