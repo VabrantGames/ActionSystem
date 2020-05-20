@@ -108,7 +108,7 @@ public class ActionManager {
 			Action<?> action = actions.removeIndex(i);
 			
 			if(action.isManaged()) {
-				ActionPools.free(actions.removeIndex(i));
+				ActionPools.free(action);
 			}
 			else {
 				if(freeUnmanaged) action.free();
