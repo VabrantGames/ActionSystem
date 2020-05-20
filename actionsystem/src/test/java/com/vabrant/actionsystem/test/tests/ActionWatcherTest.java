@@ -1,51 +1,102 @@
 package com.vabrant.actionsystem.test.tests;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
-import com.vabrant.actionsystem.actions.ActionManager;
+import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionWatcher;
+import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.tests.TestActions.SingleParentTestAction;
+import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
 public class ActionWatcherTest {
 	
-	private static class TestAction extends Action<TestAction> {
+	private static ActionWatcher watcher;
+	
+	@BeforeClass
+	public static void init() {
+		ActionLogger.useSysOut();
+		watcher = new ActionWatcher(2);
+		watcher.getLogger().setLevel(ActionLogger.DEBUG);
 		
-		public static TestAction getAction() {
-			return obtain(TestAction.class);
+	}
+	
+	public void makeRoot(Action<?> action) {
+		try {
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot");
+			m.setAccessible(true);
+			m.invoke(action, null);
+			action.setRootAction(action);
+		}
+		catch(ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 	
-	@Before
-	public void init() {
-		ActionLogger.useSysOut();
-		ActionWatcher.getLogger().setLevel(ActionLogger.DEBUG);
-	}
-	
 	@Test
-	public void cleanupTest() {
-		ActionManager manager = new ActionManager();
-		manager.getLogger().setLevel(ActionLogger.DEBUG);
+	public void basicTest() {
+		ActionSystemTestConstantsAndUtils.printTestHeader("Basic Test");
+		
+		final String tag = "basic";
+		
+		//Create parent and child actions
+		SingleParentTestAction parent = SingleParentTestAction.obtain();
+		TestAction child = TestAction.obtain()
+				.setName(tag)
+				.setLogLevel(ActionLogger.DEBUG)
+				.watchAction(watcher);
+		
+		parent.set(child);
+		
+		makeRoot(parent);
+		parent.start();
 
-		//create test action
-		String name = "Cleanup";
-		TestAction action = TestAction.getAction();
-		action.setName(name);
-		action.setLogLevel(ActionLogger.DEBUG);
-		action.watchAction();
+		//Get action from watcher
+		Action<?> action = watcher.get(tag);
+		
+		//Do what ever you want with action
+		if(action != null) {
+			action.getLogger().debug("Hello World");
+			action.end();
+		}
+		
+		parent.end();
+		ActionPools.free(action);
+		
+		assertFalse(watcher.contains(tag));
+	}
+
+	/**
+	 * Creates a test action, starts the action and removes the action from the watcher while the action is running.
+	 */
+	@Test
+	public void explicitRemoveTest() {
+		ActionSystemTestConstantsAndUtils.printTestHeader("Explicit Remove Test");
+		
+		final String tag = "remove";
+		
+		TestAction action = TestAction.obtain()
+				.setName(tag)
+				.setLogLevel(ActionLogger.DEBUG)
+				.watchAction(watcher);
+		
+		makeRoot(action);
 		action.start();
 		
-		//add action
-		manager.addAction(action);
+		boolean removed = watcher.remove(tag);
 		
-		//pools action instantly
-//		manager.freeAll();
+		assertTrue(removed);
 		
-		assertTrue(ActionWatcher.get(name) == null);
+		action.end();
+		ActionPools.free(action);
 	}
-
 }

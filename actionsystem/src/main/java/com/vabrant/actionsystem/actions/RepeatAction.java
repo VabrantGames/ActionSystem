@@ -1,3 +1,18 @@
+/**
+ *	Copyright 2019 John Barton
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
 package com.vabrant.actionsystem.actions;
 
 /**
@@ -44,6 +59,11 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 				.setContinuous(true);
 	}
 	
+	private boolean originalReverseStateSet;
+	private boolean originalReverseState;
+	private boolean pingPong;
+	private boolean reverseState;
+	
 	/** How many times the action has been played */
 	private int count = 0;
 	
@@ -51,6 +71,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	private int amount = 0;
 	private boolean isContinuous;
 	private Action<?> action;
+	private Reversible<?> reversible;
 
 	/**
 	 * 
@@ -87,6 +108,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		}
 		
 		this.action = action;
+		if(action instanceof Reversible) reversible = (Reversible<?>)action;
 		return this;
 	}
 	
@@ -97,6 +119,23 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	public boolean isContinuous() {
 		return isContinuous;
 	}
+	
+	public Action<?> getAction() {
+		return action;
+	}
+	
+	public RepeatAction pingPong(boolean pingPong) {
+		if(reversible != null) {
+			this.pingPong = pingPong;
+			
+			//Restore the original reverse state 
+			if(!pingPong && originalReverseStateSet) {
+				originalReverseStateSet = false;
+				reversible.setReverse(originalReverseState);
+			}
+		}
+		return this;
+	}
 
 	@Override
 	public void setRootAction(Action<?> root) {
@@ -104,8 +143,37 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		if(action != null) action.setRootAction(root);
 	}
 	
-	public Action<?> getAction() {
-		return action;
+	@Override
+	protected void startLogic() {
+		count = 0;
+		
+		if(pingPong) {
+			if(!originalReverseStateSet) {
+				originalReverseStateSet = true;
+				originalReverseState = reversible.isReversed();
+			}
+			else {
+				reversible.setReverse(originalReverseState);
+			}
+			
+			reverseState = !isContinuous ? originalReverseState : !originalReverseState;
+		}
+	}
+	
+	@Override
+	protected void endLogic() {
+		if(action != null) action.end();
+		
+		//Reset the reverse state
+		if(pingPong) {
+			reversible.setReverse(originalReverseState);
+			originalReverseStateSet = false;
+		}
+	}
+	
+	@Override
+	protected void killLogic() {
+		if(action != null) action.kill();
 	}
 
 	@Override
@@ -114,17 +182,10 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		if(isPaused) return true;
 		
 		if(!action.update(delta)) {
-
-			//Check if the inner action has been permanently ended or killed
-			if(action.isDead()) {
-//				permanentEnd();
-//				end();
-				return false;
-			}
-			
 			if(isContinuous || count < amount) {
 				if(!isContinuous) count++;
 				if(logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
+				if(pingPong && count > 1 || pingPong && isContinuous) reversible.setReverse(reverseState = !reverseState);
 				action.start();
 			}
 			else {
@@ -133,35 +194,25 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		}
 		return isRunning();
 	}
-
+	
 	@Override
-	protected void startLogic() {
+	public void clear() {
+		super.clear();
+		pingPong = false;
+		reverseState = false;
+		amount = 0;
 		count = 0;
-	}
-	
-	@Override
-	protected void endLogic() {
-		if(action != null) action.end();
-	}
-	
-	@Override
-	protected void killLogic() {
-		if(action != null) action.kill();
-	}
-	
-	@Override
-	protected void restartLogic() {
-		count = 0;
-		if(action != null) action.restart();
+		isContinuous = false;
+		originalReverseStateSet = false;
+		originalReverseState = false;
+		pingPong = false;
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
 		action = null;
-		amount = 0;
-		count = 0;
-		isContinuous = false;
+		reversible = null;
 	}
 	
 }

@@ -1,3 +1,18 @@
+/**
+ *	Copyright 2019 John Barton
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ */
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
@@ -59,27 +74,32 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	public T setLogLevel(int level) {
-		if(logger != null) logger.setLevel(level);
+		logger.setLevel(level);
 		return (T)this;
 	}
 	
-	public T soloLogger() {
-		if(logger != null) logger.solo();
+	public T soloLogger(boolean solo) {
+		logger.solo(solo);
 		return (T)this;
 	}
 	
 	public ActionLogger getLogger() {
 		return logger;
 	}
+	
+	public T watchAction(ActionWatcher watcher) {
+		watcher.watch(this);
+		return (T)this;
+	}
 
 	public T watchAction() {
-		ActionWatcher.watch(this);
+		ActionWatcher.getInstance().watch(this);
 		return (T)this;
 	}
 	
-	public boolean hasConflict(Action<?> action) {
-		return false;
-	}
+//	public boolean hasConflict(Action<?> action) {
+//		return false;
+//	}
 	
 	public T addPreAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
@@ -160,7 +180,7 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	public T setName(String name) {
 		this.name = name;
-		if(logger != null) logger.setActionName(name);
+		logger.setName(name);
 		return (T)this;
 	}
 	
@@ -296,17 +316,16 @@ public class Action<T extends Action<T>> implements Poolable {
 	public void reset() {
 		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
 		
-		if(logger != null) logger.info("Reset");
+		logger.info("Reset");
 		
-		if(logger != null) logger.debug("Cleanup");
+		logger.debug("Cleanup");
 		for(int i = 0; i < cleanupListeners.size; i++) {
 			cleanupListeners.get(i).cleanup(this);
 		}
 		
 		clear(true);
 		
-		if(logger != null) logger.setLevel(ActionLogger.NONE);
-		if(logger != null) logger.clearActionName();
+		logger.reset();
 		pauseCondition = null;
 		resumeCondition = null;
 		cleanupListeners.clear();
@@ -329,14 +348,14 @@ public class Action<T extends Action<T>> implements Poolable {
 		}
 		
 		if(preActions.size > 0) {
-			if(!isRoot && rootAction == null) throw new ActionSystemRuntimeException("Root Action has to be added to a Action Manager.");
+			if(!isRoot && rootAction == null) throw new RuntimeException("Root Action has to be added to a Action Manager.");
 			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
 			for(int i = preActions.size - 1; i >= 0; i--) {
 				manager.addAction(preActions.pop());
 			}
 		}
 		
-		if(logger != null) logger.info("Start Action");	
+		logger.info("Start Action");	
 		
 		isRunning = true;
 		startLogic();
@@ -366,7 +385,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	protected final void restart(boolean invokedAction) {
-		if(logger != null) logger.info("Restart Action");	
+		logger.info("Restart Action");	
 		
 		boolean start = !invokedAction ? false : isRunning;
 		
@@ -420,7 +439,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = false;
 		endLogic();
 		
-		if(logger != null) logger.info("End Action");		
+		logger.info("End Action");		
 		
 		for(int i = 0; i < listeners.size; i++) {
 			listeners.get(i).actionEnd((T)this);
@@ -444,7 +463,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public final T kill() {
 		if(!isRunning && !forceKill) return (T)this;
 		
-		if(logger != null) logger.info("Kill Action");	
+		logger.info("Kill Action");	
 		
 		if(isRoot()) isDead = true;
 		isRunning = false;

@@ -45,6 +45,65 @@ subprojects{
     }
 }
 
+task incrementVersion(){
+	doLast{
+		File file = new File("VERSION.properties")
+		Properties prop = new Properties()
+		prop.load(new FileInputStream(file))
+
+		if (!project.hasProperty("increment") || !project.hasProperty("type")) throw new Exception("Project or version type is null")
+
+		String key = project.getProperty("increment").toLowerCase()
+		String value;
+		String type = project.getProperty("type").toLowerCase()
+
+		//Get project to increment
+		switch(key){
+			case "actionsystem":
+				value = getIncrementedVersion(prop, prop.actionsystem, type)
+				break;
+			default:
+				throw new Exception("No project found")
+		}
+
+		println "version updated to: " + value
+
+		prop.setProperty(key, value)
+		prop.store(new FileOutputStream(file), null)
+	}
+}
+
+String getIncrementedVersion(Properties prop, String value, String type){
+	int major;
+	int minor;
+	int patch;
+	int off;
+
+	major = Integer.parseInt(value.substring(0, value.indexOf('.')))
+	off = value.indexOf('.') + 1
+	minor = Integer.parseInt(value.substring(off, value.indexOf('.', off)))
+	off = value.lastIndexOf('.') + 1
+	patch = Integer.parseInt(value.substring(off))
+
+	//Get type to increment
+	switch(project.getProperty("type")){
+		case "major":
+			major++;
+			minor = 0;
+			patch = 0;
+			break
+		case "minor":
+			minor++;
+			patch = 0;
+			break;
+		case "patch":
+			patch++;
+			break;
+	}
+
+	return major + '.' + minor + '.' + patch
+}
+
 tasks.eclipse.doLast{
     delete ".project"
     delete ".classpath"

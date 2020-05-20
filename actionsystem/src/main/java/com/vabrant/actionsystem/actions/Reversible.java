@@ -15,5 +15,10 @@
  */
 package com.vabrant.actionsystem.actions;
 
-public interface Percentable {
+/**
+ * @author John Barton  
+ */
+public interface Reversible<T> {
+	public T setReverse(boolean reverse);
+	public boolean isReversed();
 }
