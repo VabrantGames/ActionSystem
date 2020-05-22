@@ -53,13 +53,13 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected boolean isPaused;
 	
 	private String name;
-	private Condition<T> pauseCondition;
-	private Condition<T> resumeCondition;
+	private Condition pauseCondition;
+	private Condition resumeCondition;
 	private ActionManager actionManager;
 	private Array<ActionListener<T>> listeners;
 	
 	/** Listeners that can't be removed by the user. */
-	private Array<CleanupListener> cleanupListeners;
+	private Array<CleanupListener<Action<?>>> cleanupListeners;
 	final Array<Action<?>> preActions;
 	final Array<Action<?>> postActions;
 	
@@ -218,27 +218,27 @@ public class Action<T extends Action<T>> implements Poolable {
 		return isPaused;
 	}
 	
-	public T setPauseCondition(Condition<T> pauseCondition) {
+	public T setPauseCondition(Condition pauseCondition) {
 		this.pauseCondition = pauseCondition;
 		return (T)this;
 	}
 	
-	public T setResumeCondition(Condition<T> resumeCondition) {
+	public T setResumeCondition(Condition resumeCondition) {
 		this.resumeCondition = resumeCondition;
 		return (T)this;
 	}
 	
-	protected boolean containsCleanupListener(CleanupListener<T> listener) {
+	protected boolean containsCleanupListener(CleanupListener<Action<?>> listener) {
 		return cleanupListeners.contains(listener, false);
 	}
 	
-	protected T addCleanupListener(CleanupListener<T> listener) {
+	protected T addCleanupListener(CleanupListener<Action<?>> listener) {
 		if(listener == null) throw new IllegalArgumentException("LibraryListener is null.");
 		cleanupListeners.add(listener);
 		return (T)this;
 	}
 	
-	protected T removeCleanupListener(CleanupListener<T> listener) {
+	protected T removeCleanupListener(CleanupListener<Action<?>> listener) {
 		cleanupListeners.removeValue(listener, false);
 		return (T)this;
 	}
