@@ -24,6 +24,13 @@ public class ActionReference<T extends Action<T>> {
 	private boolean throwException;
 	private T reference;
 	
+	public ActionReference() {}
+	
+	public ActionReference(T action) {
+		if(action == null) throw new IllegalArgumentException();
+		setAction(action);
+	}
+	
 	private CleanupListener<Action<?>> cleanupListener = new CleanupListener<Action<?>>() {
 		@Override
 		public void cleanup(Action<?> a) {
@@ -31,13 +38,8 @@ public class ActionReference<T extends Action<T>> {
 		}
 	};
 	
-	public void throwExceptions(boolean throwException) {
+	public void throwException(boolean throwException) {
 		this.throwException = throwException;
-	}
-	
-	private void throwNullPointerException(String message) {
-		if(!throwException) return;
-		throw new NullPointerException(message);
 	}
 
 	public void setAction(T action) {
@@ -46,7 +48,7 @@ public class ActionReference<T extends Action<T>> {
 			action.addCleanupListener(cleanupListener);
 		}
 		else {
-			throwNullPointerException("Action is null.");
+			throw new IllegalArgumentException("Action is null.");
 		}
 	}
 	
@@ -59,7 +61,7 @@ public class ActionReference<T extends Action<T>> {
 			reference.start();
 		}
 		else {
-			throwNullPointerException("Reference is null.");
+			if(throwException) throw new NullPointerException("Reference is null.");
 		}
 	}
 	
@@ -68,7 +70,7 @@ public class ActionReference<T extends Action<T>> {
 			reference.restart();
 		}
 		else {
-			throwNullPointerException("Reference is null.");
+			if(throwException) throw new NullPointerException("Reference is null.");
 		}
 	}
 	
@@ -77,7 +79,7 @@ public class ActionReference<T extends Action<T>> {
 			reference.end();
 		}
 		else {
-			throwNullPointerException("Reference is null.");
+			if(throwException) throw new NullPointerException("Reference is null.");
 		}
 	}
 	
@@ -86,7 +88,7 @@ public class ActionReference<T extends Action<T>> {
 			reference.kill();
 		}
 		else {
-			throwNullPointerException("Reference is null.");
+			if(throwException) throw new NullPointerException("Reference is null.");
 		}
 	}
 

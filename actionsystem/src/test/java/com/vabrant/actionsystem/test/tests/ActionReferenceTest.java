@@ -16,11 +16,13 @@
 package com.vabrant.actionsystem.test.tests;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionReference;
 import com.vabrant.actionsystem.actions.MoveAction;
 
@@ -53,5 +55,18 @@ public class ActionReferenceTest {
 		}
 		
 		assertNotNull(ref.getAction());
+	}
+	
+	@Test
+	public void cleanupTest() {
+		MoveAction move = MoveAction.obtain();
+		
+		ActionReference<MoveAction> ref = new ActionReference<MoveAction>(move);
+		ref.throwException(true);
+		
+		ActionPools.free(move);
+		
+		assertNull(ref.getAction());
+		
 	}
 }
