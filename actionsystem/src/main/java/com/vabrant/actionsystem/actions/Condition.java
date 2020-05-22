@@ -19,6 +19,6 @@ package com.vabrant.actionsystem.actions;
  * @author John Barton
  *
  */
-public interface Condition<T extends Action<T>> {
-	public boolean isTrue(T action);
+public interface Condition {
+	public <T extends Action<T>> boolean isTrue(T action);
 }
