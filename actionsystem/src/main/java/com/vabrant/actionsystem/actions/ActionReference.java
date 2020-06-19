@@ -16,20 +16,13 @@
 package com.vabrant.actionsystem.actions;
 
 /**
+ * Holds an action as reference
  * @author John Barton
  *
  */
 public class ActionReference<T extends Action<T>> {
 	
-	private boolean throwException;
 	private T reference;
-	
-	public ActionReference() {}
-	
-	public ActionReference(T action) {
-		if(action == null) throw new IllegalArgumentException();
-		setAction(action);
-	}
 	
 	private CleanupListener<Action<?>> cleanupListener = new CleanupListener<Action<?>>() {
 		@Override
@@ -38,18 +31,36 @@ public class ActionReference<T extends Action<T>> {
 		}
 	};
 	
-	public void throwException(boolean throwException) {
-		this.throwException = throwException;
+	public ActionReference() {}
+	
+	public ActionReference(T action) {
+		if(action == null) throw new IllegalArgumentException();
+		setAction(action);
 	}
 
-	public void setAction(T action) {
-		if(action != null) {
-			reference = action;
-			action.addCleanupListener(cleanupListener);
+	/**
+	 * Sets an action to be used as a reference. Returns the old action reference if set.
+	 * @param action
+	 * @return Old action
+	 */
+	public T setAction(T action) {
+		T oldAction = null;
+		
+		//Remove the old action before a new one is set
+		if(reference != null) {
+			if(action == reference) return null;
+			
+			reference.removeCleanupListener(cleanupListener);
+			oldAction = reference;
+			reference = null;
 		}
-		else {
-			throw new IllegalArgumentException("Action is null.");
-		}
+		
+		if(action == null) return oldAction;
+		
+		reference = action;
+		action.addCleanupListener(cleanupListener);
+		
+		return oldAction;
 	}
 	
 	public T getAction() {
@@ -57,40 +68,19 @@ public class ActionReference<T extends Action<T>> {
 	}
 
 	public void start() {
-		if(reference != null) {
-			reference.start();
-		}
-		else {
-			if(throwException) throw new NullPointerException("Reference is null.");
-		}
+		reference.start();
 	}
 	
 	public void restart() {
-		if(reference != null) {
-			reference.restart();
-		}
-		else {
-			if(throwException) throw new NullPointerException("Reference is null.");
-		}
+		reference.restart();
 	}
 	
 	public void end() {
-		if(reference != null) {
-			reference.end();
-		}
-		else {
-			if(throwException) throw new NullPointerException("Reference is null.");
-		}
+		reference.end();
 	}
 	
 	public void kill() {
-		if(reference != null) {
-			reference.kill();
-		}
-		else {
-			if(throwException) throw new NullPointerException("Reference is null.");
-		}
+		reference.kill();
 	}
-
 
 }
