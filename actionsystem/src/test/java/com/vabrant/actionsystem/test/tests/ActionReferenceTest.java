@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionReference;
@@ -62,7 +63,6 @@ public class ActionReferenceTest {
 		MoveAction move = MoveAction.obtain();
 		
 		ActionReference<MoveAction> ref = new ActionReference<MoveAction>(move);
-		ref.throwException(true);
 		
 		ActionPools.free(move);
 		

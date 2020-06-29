@@ -97,9 +97,9 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-//	public boolean hasConflict(Action<?> action) {
-//		return false;
-//	}
+	public boolean hasConflict(Action<?> action) {
+		return false;
+	}
 	
 	public T addPreAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
