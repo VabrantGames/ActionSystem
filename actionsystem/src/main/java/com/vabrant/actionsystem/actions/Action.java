@@ -97,9 +97,9 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
-//	public boolean hasConflict(Action<?> action) {
-//		return false;
-//	}
+	public boolean hasConflict(Action<?> action) {
+		return false;
+	}
 	
 	public T addPreAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null.");
@@ -132,10 +132,10 @@ public class Action<T extends Action<T>> implements Poolable {
 	/**
 	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
-//	public T unmanage() {
-//		isManaged = false;
-//		return (T)this;
-//	}
+	public T unmanage() {
+		isManaged = false;
+		return (T)this;
+	}
 	
 	public boolean isManaged() {
 		return isManaged;

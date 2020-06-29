@@ -1,7 +1,5 @@
 package com.vabrant.actionsystem.test.tests;
 
-import javax.swing.Renderer;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
