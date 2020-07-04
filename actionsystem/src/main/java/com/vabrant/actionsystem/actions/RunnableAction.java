@@ -31,7 +31,7 @@ public class RunnableAction extends Action<RunnableAction>{
 	
 	@Override
 	public boolean update(float delta) {
-		if(isDead() || !isRunning()) return false;
+		if(!isRunning()) return false;
 		if(isPaused()) return true;
 		runnable.run();
 		end();

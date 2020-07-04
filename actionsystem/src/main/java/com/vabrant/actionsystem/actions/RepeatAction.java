@@ -178,7 +178,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 
 	@Override
 	public boolean update(float delta) {
-		if(isDead() || !isRunning()) return false;
+		if(!isRunning()) return false;
 		if(isPaused) return true;
 		
 		if(!action.update(delta)) {

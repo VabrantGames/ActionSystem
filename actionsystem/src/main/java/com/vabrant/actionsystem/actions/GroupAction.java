@@ -220,7 +220,7 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	
 	@Override
 	public boolean update(float delta) {
-		if(isDead() || !isRunning()) return false;
+		if(!isRunning()) return false;
 		if(isPaused()) return true;
 		
 		if(actions.size == 0) {

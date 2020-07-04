@@ -16,6 +16,7 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /**
@@ -32,22 +33,27 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * @param c Class of the action.
 	 */
 	public static <T extends Action<T>> T obtain(Class<T> c) {
-		return ActionPools.obtain(c);
+		Pool<T> pool = ActionPools.get(c);
+		T action = ActionPools.obtain(pool);
+		action.pool = pool;
+		return action;
 	}
 
+	Pool<T> pool;
+	
 	/** Whether this action is the root action. */
 	boolean isRoot;
 	
-	/** A reference to the root action for non root action. Root actions will use themselves if requested. */
+	/** Whether this action is currently being used by an {@link ActionManager} */
+	boolean inUse;
+	
+	/** A reference to the root action.*/
 	Action<?> rootAction;
 	
 	/** Whether this action is managed by the {@link ActionManager} or by the user.*/
 	boolean isManaged = true;
 	
-	boolean canReset;
 	private boolean hasBeenPooled;
-	private boolean forceKill;
-	private boolean forceEnd;
 	protected boolean isDead;
 	protected boolean isRunning;
 	protected boolean isPaused;
@@ -145,8 +151,9 @@ public class Action<T extends Action<T>> implements Poolable {
 		this.actionManager = actionManager;
 	}
 
-	void setRoot() {
-		isRoot = true;
+	void setRoot(boolean root) {
+		isRoot = root;
+		inUse = root;
 	}
 	
 	public void setRootAction(Action<?> root) {
@@ -161,12 +168,17 @@ public class Action<T extends Action<T>> implements Poolable {
 		return rootAction;
 	}
 	
-	public boolean isDead() {
-		return isDead;
+	public Pool<T> getPool(){
+		return pool;
+	}
+
+	public boolean isRunning() {
+		if(rootAction != null && rootAction.isDead) return false;
+		return isRunning;
 	}
 	
-	public boolean isRunning() {
-		return isRunning;
+	public boolean inUse() {
+		return rootAction == null ? false : rootAction.inUse;
 	}
 
 	private void runPostActions() {
@@ -233,7 +245,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	protected T addCleanupListener(CleanupListener<Action<?>> listener) {
-		if(listener == null) throw new IllegalArgumentException("LibraryListener is null.");
+		if(listener == null) throw new IllegalArgumentException("CleanupListener is null.");
 		cleanupListeners.add(listener);
 		return (T)this;
 	}
@@ -263,29 +275,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		return false;
 	}
 
-	void forceKill() {
-		forceKill = true;
-		kill();
-	}
-	
-	void forceEnd() {
-		forceEnd = true;
-		end();
-	}
-	
-	public void permanentKill() {
-		isDead = true;
-		kill();
-	}
-	
-	public void permanentEnd() {
-		isDead = true;
-		end();
-	}
-
 	/**
-	 * Pools an unmanaged action. Any references to the action should be nulled to avoid multiple
-	 * objects from having access to it. 
+	 * Pools an unmanaged action. Any references to the action should be nulled.
 	 */
 	public void free() {
 		if(isManaged) return;
@@ -293,38 +284,44 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionPools.free(this);
 	}
 
+	/**
+	 * Clears an actions values but 
+	 */
 	public void clear() {
+		if(inUse()) throw new IllegalStateException("Action can't be cleared while in use.");
+		
 		isDead = false;
 		isPaused = false;
 		isRunning = false;
 		isRoot = false;
 		rootAction = null;
-		forceKill = false;
-		forceEnd = false;
-		canReset = false;
+	}
+
+	//Called when an an unmanaged action is being cleanup by the ActionPool
+	void unmanagedReset() {
+		rootAction = null;
+		isDead = false;
+		isPaused = false;
+		isRunning = false;
+		isRoot = false;
 	}
 	
-	public final void clear(boolean clearRoot) {
-		if(clearRoot) {
-			isRoot = false;
-			rootAction = null;
-		}
-		clear();
-	}
-	
+	/**
+	 * Resets an action to its default state.
+	 */
 	@Override
 	public void reset() {
-		if(!canReset && isManaged) throw new RuntimeException("Reset can't be called externally.");
-		
-		logger.info("Reset");
+		if(inUse()) throw new IllegalStateException("Action can't be reset while in use.");
 		
 		logger.debug("Cleanup");
+		
 		for(int i = 0; i < cleanupListeners.size; i++) {
 			cleanupListeners.get(i).cleanup(this);
 		}
 		
-		clear(true);
+		logger.info("Reset");
 		
+		clear();
 		logger.reset();
 		pauseCondition = null;
 		resumeCondition = null;
@@ -334,18 +331,19 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	/**
+	 * FOR ACTION CREATION <br><br> 
+	 * 
+	 * The logic that will be ran at the start of the action. 
+	 */
+	protected void startLogic() {}
+	
+	/**
 	 * Starts the action
 	 */
 	public final T start() {
 		if(isRunning) return (T)this;
-		if(isDead) {
-			if(isManaged) return (T)this;
-			
-			//Reset some values if an unmanaged action is dead
-			isDead = false;
-			forceKill = false;
-			forceEnd = false;
-		}
+		if(isManaged && hasBeenPooled) throw new IllegalStateException("Managed actions may not be reused without being returned to a pool. To reuse an action make it unmanaged.");
+		if(rootAction.isDead) throw new IllegalStateException("Action is dead.");
 		
 		if(preActions.size > 0) {
 			if(!isRoot && rootAction == null) throw new RuntimeException("Root Action has to be added to a Action Manager.");
@@ -366,13 +364,13 @@ public class Action<T extends Action<T>> implements Poolable {
 
 		return (T)this;
 	}
-
+	
 	/**
-	 * FOR ACTION CREATION <br><br> 
+	 * FOR ACTION CREATION <br><br>
 	 * 
-	 * The logic that will be ran at the start of the action. 
+	 * The logic that will be ran if an action is restarted.
 	 */
-	protected void startLogic() {}
+	protected void restartLogic() {}
 
 	/**
 	 * Restarts the action and its children. <br>
@@ -400,7 +398,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	/**
-	 *  Recursively restart all children and it's children of an action.
+	 *  Recursively restart all an actions children and their children..
 	 *  
 	 * @param action
 	 */
@@ -421,34 +419,6 @@ public class Action<T extends Action<T>> implements Poolable {
 			}
 		}
 	}
-		
-	/**
-	 * FOR ACTION CREATION <br><br>
-	 * 
-	 * The logic that will be ran if an action is restarted.
-	 */
-	protected void restartLogic() {}
-
-	/**
-	 * Ends the action. If the action is running it will be ended as if it were completed.
-	 */
-	public final T end() {
-		if(!isRunning && !forceEnd) return (T)this;
-		
-		if(isRoot()) isDead = true;
-		isRunning = false;
-		endLogic();
-		
-		logger.info("End Action");		
-		
-		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionEnd((T)this);
-		}
-		
-		runPostActions();
-		
-		return (T)this;
-	}
 	
 	/**
 	 * FOR ACTION CREATION <br><br>
@@ -456,27 +426,23 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * The logic that will be ran if the action is ended.
 	 */
 	protected void endLogic() {}
-	
+
 	/**
-	 * Ends the action at it's current position. If the action is running it will end uncompleted. 
+	 * Ends the action. If the action is running it will be ended as if it were completed.
 	 */
-	public final T kill() {
-		if(!isRunning && !forceKill) return (T)this;
-		
-		logger.info("Kill Action");	
+	public final T end() {
+		logger.info("End Action");		
 		
 		if(isRoot()) isDead = true;
 		isRunning = false;
-		
-		killLogic();
+		endLogic();
 		
 		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionKill((T)this);
+			listeners.get(i).actionEnd((T)this);
 		}
 		
 		runPostActions();
-		
-		return(T)this;
+		return (T)this;
 	}
 	
 	/**
@@ -485,5 +451,23 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * The logic that will be ran if an action is killed.
 	 */
 	protected void killLogic() {}
+	
+	/**
+	 * Ends the action at it's current position. If the action is running it will end uncompleted. 
+	 */
+	public final T kill() {
+		logger.info("Kill Action");	
+		
+		if(isRoot()) isDead = true;
+		isRunning = false;
+		killLogic();
+		
+		for(int i = 0; i < listeners.size; i++) {
+			listeners.get(i).actionKill((T)this);
+		}
+		
+		runPostActions();
+		return(T)this;
+	}
 
 }

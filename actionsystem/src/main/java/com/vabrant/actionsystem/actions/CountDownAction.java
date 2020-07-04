@@ -93,7 +93,7 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 	
 	@Override
 	public boolean update(float delta) {
-		if(isDead() || !isRunning()) return false;
+		if(!isRunning()) return false;
 		if(isPaused()) return true;
 		
 		timer += delta;

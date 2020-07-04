@@ -1,5 +1,5 @@
 /**
- *	Copyright 2020 See AUTHORS file.
+ *	Copyright 2019 John Barton
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -18,8 +18,15 @@ package com.vabrant.actionsystem.test.tests;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
@@ -30,11 +37,11 @@ import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
  */
 public class ActionManagerTest {
 
-	private static ActionManager manager;
+	@Rule
+	public TestName testName = new TestName();
 	
 	@BeforeClass
 	public static void init(){
-		manager = new ActionManager();
 		ActionLogger.useSysOut();
 	}
 	
@@ -44,9 +51,25 @@ public class ActionManagerTest {
     	System.out.println(pattern + ' ' + name + ' ' + pattern);
     }
 	
+	public boolean hasBeenPooled(Action<?> action) {
+		try {
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
+			m.setAccessible(true);
+			return (boolean)m.invoke(action);
+		}
+		catch(ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		
+		return false;
+	}
+	
 	@Test
 	public void basicTest() {
-		printTestHeader("Basic Test");
+		printTestHeader(testName.getMethodName());
+		
+		ActionManager manager = new ActionManager();
 		
 		TestAction action = TestAction.obtain()
 				.setName("BasicTest")
@@ -66,6 +89,30 @@ public class ActionManagerTest {
 
 		//Last update
 		manager.update(0);
+		
+		assertTrue(hasBeenPooled(action));
+	}
+	
+	@Test
+	public void freeAllTest() {
+		printTestHeader(testName.getMethodName());
+		
+		ActionManager manager = new ActionManager();
+		
+		final int amount = 10;
+		
+		//Add actions to manager
+		for(int i = 0; i < amount; i++) {
+			TestAction action = TestAction.obtain()
+					.setName(Integer.toString(i))
+					.setLogLevel(ActionLogger.INFO);
+			manager.addAction(action);
+		}
+		
+		//Mock cycle update
+		manager.update(0);
+
+		manager.freeAll(true);
 	}
 	
 }

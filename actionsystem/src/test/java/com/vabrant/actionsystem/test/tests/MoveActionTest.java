@@ -11,6 +11,7 @@ import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
+import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.TestObject;
@@ -125,12 +126,22 @@ public class MoveActionTest extends ActionSystemTestListener{
 		amountY = 50;
 		startY = testObject.getY();
 		endY = startY + amountY; 
+//		actionManager.addAction(
+//				MoveAction.moveYBy(testObject, amountY, 1f, Interpolation.exp5Out)
+//					.addListener(listener)
+//					.setName("MoveYBy")
+//					.reverseBackToStart(reverseBackToStart)
+//					.setReverse(reverse)
+//					.setLogLevel(ActionLogger.DEBUG)
+//				);
 		actionManager.addAction(
-				MoveAction.moveYBy(testObject, amountY, 1f, Interpolation.exp5Out)
-					.addListener(listener)
-					.setName("MoveYBy")
-					.reverseBackToStart(reverseBackToStart)
-					.setReverse(reverse)
+				GroupAction.sequence(
+						MoveAction.moveXBy(testObject, 50, 1f, Interpolation.exp5Out)
+							.setName("MoveXBy")
+							.setLogLevel(ActionLogger.DEBUG),
+						MoveAction.moveYBy(testObject, 50, 1f, Interpolation.exp5Out)
+							.setName("MoveYBy")
+							.setLogLevel(ActionLogger.DEBUG))
 				);
 	}
 	
