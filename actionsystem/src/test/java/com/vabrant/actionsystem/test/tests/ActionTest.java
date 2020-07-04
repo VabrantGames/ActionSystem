@@ -5,7 +5,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runners.MethodSorters;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
@@ -17,36 +20,45 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.CleanupListener;
-import com.vabrant.actionsystem.actions.ColorAction;
-import com.vabrant.actionsystem.actions.Condition;
-import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ActionTest {
 	
-	private static ActionManager manager;
-
+	@Rule
+	public TestName testName = new TestName();
+	
     @BeforeClass
     public static void init() {
-    	manager = new ActionManager();
         ActionLogger.useSysOut();
     }
 
-    public void makeRoot(Action<?> action) {
+    public void makeRoot(Action<?> action, boolean value) {
     	try {
 	    	//set this action as the root action
-	    	Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot");
+	    	Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", boolean.class);
 	    	m.setAccessible(true);
-	    	m.invoke(action, null);
+	    	m.invoke(action, value);
 	    	action.setRootAction(action);
     	}
     	catch(ReflectionException e) {
     		e.printStackTrace();
     		System.exit(0);
     	}
+    }
+    
+    public boolean hasBeenPooled(Action<?> action) {
+    	try {
+    		Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
+    		m.setAccessible(true);
+    		return (boolean)m.invoke(action);
+    	}
+    	catch(ReflectionException e) {
+    		e.printStackTrace();
+    		System.exit(0);
+    	}
+		
+    	throw new RuntimeException("I did something wrong");
     }
     
     public void printTestHeader(String name) {
@@ -57,12 +69,17 @@ public class ActionTest {
 
 	@Test
 	public void basicTest() {
-		printTestHeader("Basic Test");
+		printTestHeader(testName.getMethodName());
 		
-		TestAction action = TestAction.obtain();
-		makeRoot(action);
+		TestAction action = TestAction.obtain()
+				.setName("Action")
+				.setLogLevel(ActionLogger.DEBUG);
+				
+		makeRoot(action, true);
 		
-		//---------// Run 1 //----------//
+		assertTrue(action.isRoot());
+		assertTrue(action.inUse());
+		
 		action.start();
 		
 		assertTrue(action.isRunning());
@@ -72,12 +89,16 @@ public class ActionTest {
 		
 		assertFalse(action.isRunning());
 		
+		makeRoot(action, false);
+		
 		ActionPools.free(action);
+		
+		assertTrue(hasBeenPooled(action));
 	}
 
 	@Test
 	public void listenerTest() {
-		printTestHeader("Listener Test");
+		printTestHeader(testName.getMethodName());
 		
 		ActionListener<TestAction> listener = new ActionAdapter<TestAction>() {
 			@Override
@@ -100,28 +121,45 @@ public class ActionTest {
 			}
 		};
 		
-		TestAction action = TestAction.obtain();
-		makeRoot(action);
+		TestAction action = null;
 		
-		action.addListener(listener);
-		action.setLogLevel(ActionLogger.INFO);
+		//---------// End //----------//
+		action = TestAction.obtain()
+				.addListener(listener)
+				.setLogLevel(ActionLogger.INFO);
 		
-		//---------// Run //----------//
+		makeRoot(action, true);
 		action.start();
 		action.update(0);
 		action.end();
+		makeRoot(action, false);
+		
+		ActionPools.free(action);
 		
 		//---------// Kill //----------//
+		action = TestAction.obtain()
+				.addListener(listener)
+				.setLogLevel(ActionLogger.INFO);
+		
+		makeRoot(action, true);
 		action.start();
 		action.update(0);
-		action.end();
+		action.kill();
+		makeRoot(action, false);
+		
+		ActionPools.free(action);
 		
 		//---------// Restart //----------//
-		//This cycle is restarted
+		action = TestAction.obtain()
+				.addListener(listener)
+				.setLogLevel(ActionLogger.INFO);
+		
+		makeRoot(action, true);
 		action.start();
 		action.update(0);
 		action.restart();
 		action.end();
+		makeRoot(action, false);
 		
 		ActionPools.free(action);
 	}
@@ -132,49 +170,235 @@ public class ActionTest {
 		
 		TestAction action = TestAction.obtain()
 				.setName("BasicUnmanaged")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.DEBUG)
 				.unmanage();
-		makeRoot(action);
 		
+		//Normal cycle
+		makeRoot(action, true);
 		action.start();
-		
-		//An action that is managed by the ActionManager can not be used again is permanently ended or killed.
-		//Unmanaged actions however can be started again.
-		action.permanentEnd();
-		
-		action.start();
-		
-		assertTrue(action.isRunning());
-		
+		action.update(0);
 		action.end();
+		makeRoot(action, false);
 		
+		ActionPools.free(action);
+		
+		//Unmanaged actions should not be returned to the pool or reset
+		assertFalse(hasBeenPooled(action));
+		
+		//Free an unmanaged action. Resetting it and putting it in a pool.
 		action.free();
+		
+		assertTrue(hasBeenPooled(action));
 	}
 	
 	@Test
-	public void resetButNotPoolUnmanagedTest() {
-		printTestHeader("Reset But Not Pool UnManaged Test");
+	public void attemptToUseManagedPooledActionTest() {
+		printTestHeader(testName.getMethodName());
+
+		TestAction action = TestAction.obtain()
+				.setName("Action")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		makeRoot(action, true);
+		action.start();
+		action.update(0);
+		action.end();
+		makeRoot(action, false);
+		
+		ActionPools.free(action);
+
+		boolean exceptionThrown = false;
+		
+		try {
+			action.start();
+		}
+		catch(Exception e) {
+			exceptionThrown = true;
+			System.out.println("Attempt to start");
+			System.err.println(e.getMessage());
+		}
+		
+		assertTrue(exceptionThrown);
+	}
+	
+	@Test
+	public void poolRootActionWhileInUseTest() {
+		printTestHeader(testName.getMethodName());
 		
 		TestAction action = TestAction.obtain()
-				.setName("ResetButNotPool")
-				.setLogLevel(ActionLogger.INFO)
-				.unmanage();
-		makeRoot(action);
-		
-		action.start();
-		action.end();
+				.setName("Action")
+				.setLogLevel(ActionLogger.DEBUG);
 
-		//Since the action is unmanaged it should not be pooled but reset
-		//If an unmanaged action is nested inside another action and that action is pooled unmanaged actions
-		//are just reset. All values are not reset.
+		//Make action root and mock a normal cycle
+		makeRoot(action, true);
+		action.start();
+		action.update(0);
+		action.end();
+		
+		//An exception should be thrown if an attempt is made to pool an action that is in use
+		
+		boolean exceptionThrown = false;
+		
+		try {
+			ActionPools.free(action);
+		}
+		catch(Exception e) {
+			exceptionThrown = true;
+			System.err.println(e.getMessage());
+		}
+		
+		assertTrue(exceptionThrown);
+		
+		makeRoot(action, false);
+		
 		ActionPools.free(action);
-			
-		action.free();
+	}
+	
+	@Test
+	public void preActionTest() {
+		printTestHeader(testName.getMethodName());
+		
+		ActionManager manager = new ActionManager();
+		
+		TestAction mainAction = TestAction.obtain()
+				.setName("Main")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		TestAction preAction = TestAction.obtain()
+				.setName("Pre")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		mainAction.addPreAction(preAction);
+
+		//Set root and call start on the main action 
+		//When the main action is started the pre action should be started
+		//The pre action is removed from the main action and added to the manager as its own action
+		manager.addAction(mainAction);
+		
+		assertTrue(preAction.isRoot());
+		assertTrue(preAction.isRunning());
+
+		//Mock cycle
+		manager.update(0);
+		mainAction.end();
+		preAction.end();
+		
+		//Cleans up the ended actions
+		manager.update(0);
+		
+		assertTrue(hasBeenPooled(mainAction));
+		assertTrue(hasBeenPooled(preAction));
+	}
+	
+	@Test
+	public void preActionEndEarlyTest() {
+		printTestHeader(testName.getMethodName());
+		
+		TestAction mainAction = TestAction.obtain()
+				.setName("Main")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		TestAction preAction = TestAction.obtain()
+				.setName("Pre")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		mainAction.addPreAction(preAction);
+		
+		ActionPools.free(mainAction);
+		
+		assertTrue(hasBeenPooled(mainAction));
+		assertTrue(hasBeenPooled(preAction));
+	}
+	
+	@Test
+	public void unmanagedPreActionTest() {
+		printTestHeader(testName.getMethodName());
+		
+		ActionManager manager = new ActionManager();
+		
+		TestAction mainAction = TestAction.obtain()
+				.setName("Main")
+				.unmanage()
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		TestAction preAction = TestAction.obtain()
+				.setName("Pre")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		mainAction.addPreAction(preAction);
+		
+		manager.addAction(mainAction);
+		
+		assertTrue(mainAction.isRunning());
+		assertTrue(preAction.isRunning());
+		
+		//Mock cycle
+		manager.update(0);
+		mainAction.end();
+		preAction.end();
+		
+		manager.update(0);
+		
+		assertTrue(hasBeenPooled(preAction));
+	}
+	
+	@Test
+	public void postActionTest() {
+		printTestHeader(testName.getMethodName());
+
+		ActionManager manager = new ActionManager();
+		
+		TestAction mainAction = TestAction.obtain()
+				.setName("Main")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		TestAction postAction = TestAction.obtain()
+				.setName("Post")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		mainAction.addPostAction(postAction);
+		
+		manager.addAction(mainAction);
+		
+		//Mock cycle
+		//Post action starts when the main action is ended
+		manager.update(0);
+		mainAction.end();
+		
+		assertTrue(postAction.isRoot());
+		assertTrue(postAction.isRunning());
+		
+		postAction.end();
+		
+		//Cleans up the ended actions
+		manager.update(0);
+		
+		assertTrue(hasBeenPooled(mainAction));
+		assertTrue(hasBeenPooled(postAction));
+	}
+	
+	@Test
+	public void postActionEndEarlyTest() {
+		printTestHeader(testName.getMethodName());
+		
+		TestAction mainAction = TestAction.obtain()
+				.setName("Main")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		TestAction postAction = TestAction.obtain()
+				.setName("post")
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		mainAction.addPostAction(postAction);
+		ActionPools.free(mainAction);
+		
+		assertTrue(hasBeenPooled(mainAction));
+		assertTrue(hasBeenPooled(postAction));
 	}
 
 	@Test 
 	public void restartTest() {
-		printTestHeader("Restart Test");
+		printTestHeader(testName.getMethodName());
 		
 		ActionListener listener = new ActionAdapter() {
 			@Override
@@ -192,7 +416,7 @@ public class ActionTest {
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
 		
-		makeRoot(p1);
+		makeRoot(p1, true);
 		
 		//Child 1 of parent 1
 		TestAction p1C1 = TestAction.obtain()
@@ -233,6 +457,8 @@ public class ActionTest {
 				.addListener(listener);
 		
 		p2.add(p2C2);
+
+		makeRoot(p1, true);
 		
 		p1.start();
 		p1C1.start();
