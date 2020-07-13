@@ -168,10 +168,11 @@ public class ColorActionTest extends ActionSystemTestListener {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		ActionSystemTestConstantsAndUtils.centerTestObject(testObject, viewport);
+		ActionSystemTestConstantsAndUtils.centerTestObject(testObject, hudViewport);
 	}
 
-	private void reset() {
+	@Override
+	public void reset() {
 		testObject.setColor(Color.BLACK);
 	}
 	

@@ -52,7 +52,7 @@ public class ShakeActionTest extends ActionSystemTestListener {
 	private TestObject getTestObject() {
 		TestObject object = testObjectController.create();
 		object.setSize(100, 100);
-		testObjectController.center(object, viewport);
+		testObjectController.center(object, hudViewport);
 		return object;
 	}
 	

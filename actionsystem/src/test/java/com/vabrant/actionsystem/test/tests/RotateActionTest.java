@@ -62,8 +62,8 @@ public class RotateActionTest extends ActionSystemTestListener {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		x = (viewport.getWorldWidth() - size) / 2;
-		y = (viewport.getWorldHeight() - size) / 2;
+		x = (hudViewport.getWorldWidth() - size) / 2;
+		y = (hudViewport.getWorldHeight() - size) / 2;
 	}
 
 	@Override
