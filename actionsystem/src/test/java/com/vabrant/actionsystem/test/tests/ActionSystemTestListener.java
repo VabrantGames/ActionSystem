@@ -1,8 +1,11 @@
 package com.vabrant.actionsystem.test.tests;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -13,26 +16,36 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox.SelectBoxStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldFilter;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionManager;
+import com.vabrant.actionsystem.actions.ActionPools;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class ActionSystemTestListener extends ApplicationAdapter implements InputProcessor {
 	
+	private boolean isTestRunning;
+	private float testDelayTimer = 0;
+	private final float testDelayDuration = 0.5f;
 	public SpriteBatch batch;
 	public ShapeRenderer shapeRenderer;
 	public AssetManager assetManager;
@@ -43,7 +56,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	private Stage stage;
 	private Skin skin;
 	private ObjectMap<String, ActionTest> tests;
-	private TextButton currentTestTextButton;
+	private Action<?> actionToRun;
+	private String selectedTest;
 	
 	private ActionAdapter testOverListener = new ActionAdapter() {
 		@Override
@@ -58,7 +72,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		
 		tests = new ObjectMap<>();
 		
-		hudViewport = new FitViewport(600, 600);
+		hudViewport = new ScreenViewport();
 		batch = new SpriteBatch();
 		
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
@@ -79,71 +93,76 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		createTests();
 		
 		stage = new Stage(new ScreenViewport(), batch);
-		stage.setDebugAll(true);
+//		stage.setDebugAll(true);
 		skin = new Skin(Gdx.files.internal("orangepeelui/uiskin.json"));
-		
-		Table root = new Table();
-		stage.addActor(root);
-		root.setWidth(400);
-		root.setHeight(600);
-		
-		Table table = new Table();
-		table.pad(4).defaults().growX().space(4);
-		
-		ScrollPane scrollPane = new ScrollPane(table, skin);
-		scrollPane.setFadeScrollBars(false);
-		scrollPane.setSmoothScrolling(false);
-		stage.setScrollFocus(scrollPane);
-		
-		TextButton resetButton = new TextButton("reset", skin);
-		resetButton.addListener(new ClickListener() {
+
+		HorizontalGroup selectBoxGroup = new HorizontalGroup();
+		selectBoxGroup.setFillParent(true);
+		selectBoxGroup.center().top();
+		SelectBox<String> selectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
+		Iterator<String> i = tests.keys();
+		Array<String> items = new Array<>();
+		while(i.hasNext()) {
+			items.add(i.next());
+		}
+		selectBoxGroup.addActor(selectBox);
+		selectBox.setItems(items);
+		selectBox.addListener(new ChangeListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				reset();
-				resetCurrentTest();
-				actionManager.freeAll(false);
+			public void changed(ChangeEvent event, Actor actor) {
+				selectedTest = selectBox.getSelected();
 			}
 		});
-		table.add(resetButton).height(40);
-		table.row();
+		selectBox.setSelected("");
+		stage.addActor(selectBoxGroup);
 		
-		for(Entry<String, ActionTest> e : tests) {
-			final TextButton button = new TextButton(e.key, skin);
-			
-			button.addListener(new ClickListener() {
-				ActionTest test = e.value;
-				
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-//					if(currentTestTextButton != null) resetCurrentTest();
-					
-					currentTestTextButton = button;
-					currentTestTextButton.setColor(Color.RED);
-					
-					test.run().addListener(testOverListener);
+		Table statsRoot = new Table();
+		statsRoot.setFillParent(true);
+		statsRoot.pad(4).left().top();
+		createHud(statsRoot, skin);
+		stage.addActor(statsRoot);
+		stage.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				switch(keycode) {
+					case Keys.ESCAPE:
+						stage.setKeyboardFocus(null);
+						break;
+					case Keys.SPACE:
+						if(selectedTest == null) return false;
+						
+						if(isTestRunning) resetCurrentTest();
+						isTestRunning = true;
+						ActionTest test = tests.get(selectedTest);
+						actionToRun = test.run();
+						actionToRun.addListener(testOverListener);
+						break;
 				}
-			});
-			
-			table.add(button).height(40);
-			table.row();
-		}
-		
-		root.add(scrollPane).left().expand().fillX().top();
+				return super.keyDown(event, keycode);
+			}
+		});
 		
 		Gdx.input.setInputProcessor(stage);
 	}
-	
+
 	private void resetCurrentTest() {
-		if(currentTestTextButton == null) return;
-		currentTestTextButton.setColor(Color.WHITE);
-		currentTestTextButton = null;
+		if(isTestRunning) {
+			isTestRunning = false;
+			actionManager.freeAll(false);
+		}
+		
+		if(actionToRun != null) {
+			ActionPools.free(actionToRun);
+			actionToRun = null;
+		}
+		
+		testDelayTimer = 0;
 	}
 	
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 		hudViewport.update(width, height, true);
-		
-		hudViewport.setScreenX(400);
 	}
 
 	@Override
@@ -159,8 +178,12 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		tests.put(test.name, test);
 	}
 	
-	public void reset() {}
+	public void reset() {
+		resetCurrentTest();
+	}
+	
 	public void createTests() {}
+	public void createHud(Table root, Skin skin) {}
 	public void update(float delta) {}
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {}
 	public void drawWithShapeRenderer(ShapeRenderer renderer) {}
@@ -171,21 +194,30 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		float delta = Gdx.graphics.getDeltaTime();
+		
+		if(isTestRunning) {
+			if(actionToRun != null) {
+				if((testDelayTimer += delta) >= testDelayDuration) {
+					actionManager.addAction(actionToRun);
+					actionToRun = null;
+					testDelayTimer = 0;
+				}
+			}
+		}
+		
 		actionManager.update(delta);
 		stage.act(delta);
 		update(delta);
 
-		stage.getViewport().apply();
-		stage.draw();
-		
-		hudViewport.apply();
 		batch.setProjectionMatrix(hudViewport.getCamera().combined);
 		batch.enableBlending();
 		batch.begin();
 		draw(batch, shapeDrawer);
-		
 		shapeDrawer.rectangle(0, 0, hudViewport.getWorldWidth() - 1, hudViewport.getWorldHeight() - 1, Color.GREEN);
 		batch.end();
+		
+		stage.getViewport().apply();
+		stage.draw();
 		
 		shapeRenderer.setProjectionMatrix(hudViewport.getCamera().combined);
 		shapeRenderer.begin();
@@ -231,6 +263,86 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	@Override
 	public boolean scrolled(int amount) {
 		return false;
+	}
+	
+	public static class ChangeableWidget {
+		
+		Label label;
+		TextField textField;
+		
+		public ChangeableWidget(String labelTitle, Skin skin, Table table) {
+			label = new Label(labelTitle, skin);
+			textField = new TextField("", skin);
+			table.add(label).left();
+			table.add(textField).width(100).padRight(4);
+		}
+	}
+	
+	public static class ChangeableIntWidget extends ChangeableWidget {
+		
+		public ChangeableIntWidget(String labelTitle, Skin skin, Table table, int startValue) {
+			super(labelTitle, skin, table);
+			textField.setText(String.valueOf(startValue));
+			textField.setTextFieldFilter(new TextFieldFilter() {
+				@Override
+				public boolean acceptChar(TextField textField, char c) {
+					return Character.isDigit(c);
+				}
+			});
+		}
+		
+		public void setValue(int value) {
+			textField.setText(String.valueOf(value));
+		}
+		
+		public int getValue() {
+			if(textField.getText().isEmpty()) return 0;
+			return Integer.parseInt(textField.getText());
+		}
+	}
+	
+	public static class ChangeableFloatWidget extends ChangeableWidget {
+		
+		public ChangeableFloatWidget(String labelTitle, Skin skin, Table table, float startValue) {
+			super(labelTitle, skin, table);
+			textField.setText(String.valueOf(startValue));
+			textField.setTextFieldFilter(new TextFieldFilter() {
+				@Override
+				public boolean acceptChar(TextField textField, char c) {
+					if(!Character.isDigit(c)) {
+						if(c != '.' || textField.getText().contains(".")) return false;
+					}
+					return true;
+				}
+			});
+		}
+		
+		public void setValue(int value) {
+			textField.setText(String.valueOf(value));
+		}
+		
+		public float getValue() {
+			if(textField.getText().isEmpty()) return 0;
+			return Float.parseFloat(textField.getText());
+		}
+	}
+	
+	public static class InformationWidget {
+		
+		Label titleLabel;
+		Label valueLabel;
+		
+		public InformationWidget(String labelTitle, Skin skin, Table table) {
+			titleLabel = new Label(labelTitle, skin);
+			valueLabel = new Label("0", new LabelStyle(skin.get(LabelStyle.class)));
+			valueLabel.getStyle().fontColor = Color.BLACK;
+			table.add(titleLabel).left();
+			table.add(valueLabel).width(100);
+		}
+		
+		public void setValue(Number number) {
+			valueLabel.setText(String.valueOf(number.floatValue()));
+		}
 	}
 
 	public static abstract class ActionTest {

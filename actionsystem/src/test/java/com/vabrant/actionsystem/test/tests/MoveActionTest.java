@@ -1,17 +1,18 @@
 package com.vabrant.actionsystem.test.tests;
 
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.TestObject;
@@ -20,30 +21,91 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class MoveActionTest extends ActionSystemTestListener {
 	
-	boolean reverseBackToStart = false;
-	boolean reverse = false;
-	float startX;
-	float startY;
-	float endX;
-	float endY;
-	float amountX;
-	float amountY;
-	TestObject testObject;
-	ActionListener<MoveAction> listener;
+	private boolean reverseBackToStart = false;
+	private boolean reverse = false;
+	private TestObject testObject;
+	private ChangeableFloatWidget xStartWidget;
+	private ChangeableFloatWidget xEndWidget;
+	private ChangeableFloatWidget yStartWidget;
+	private ChangeableFloatWidget yEndWidget;
+	private ChangeableFloatWidget xAmountWidget;
+	private ChangeableFloatWidget yAmountWidget;
+	private ChangeableFloatWidget angleWidget;
+	private ChangeableFloatWidget durationWidget;
+	private InformationWidget testEndXWidget;
+	private InformationWidget testEndYWidget;
+	private InformationWidget currentXWidget;
+	private InformationWidget currentYWidget;
+	
+	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
+		public void actionEnd(MoveAction a) {
+			currentXWidget.setValue(testObject.getX());
+			currentYWidget.setValue(testObject.getY());
+		}
+	};
 	
 	public MoveActionTest() {
-		ActionLogger.useSysOut();
-		ActionPools.logger.setLevel(ActionLogger.DEBUG);
-		
 		testObject = new TestObject();
 		testObject.setSize(50, 50);
-		listener = getEndListener();
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		reset();
+		float x = (hudViewport.getWorldWidth() - testObject.width) / 2;
+		float y = (hudViewport.getWorldHeight() - testObject.height) / 2;
+		testObject.setX(x);
+		testObject.setY(y);
+		xStartWidget.textField.setText(String.valueOf(x));
+		yStartWidget.textField.setText(String.valueOf(y));
+	}
+
+	@Override
+	public void createHud(Table root, Skin skin) {
+		Label label = new Label("Set Values", new LabelStyle(skin.get(LabelStyle.class)));
+		label.getStyle().fontColor = Color.BLACK;
+		root.add(label).left();
+		root.row();
+		
+		xStartWidget = new ChangeableFloatWidget("xStart: ", skin, root, 0);
+		xEndWidget = new ChangeableFloatWidget("xEnd: ", skin, root, 0);
+		root.row();
+		
+		yStartWidget = new ChangeableFloatWidget("yStart: ", skin, root, 0);
+		yEndWidget = new ChangeableFloatWidget("yEnd: ", skin, root, 0);
+		root.row();
+		
+		xAmountWidget = new ChangeableFloatWidget("xAmount: ", skin, root, 50);
+		yAmountWidget = new ChangeableFloatWidget("yAmount: ", skin, root, 50);
+		root.row();
+		
+		durationWidget = new ChangeableFloatWidget("duration: ", skin, root, 1);
+		root.row();
+		
+		angleWidget = new ChangeableFloatWidget("angle: ", skin, root, 0);
+		root.row();
+
+		//Metrics
+		Label metricsLabel = new Label("Metrics", new LabelStyle(skin.get(LabelStyle.class)));
+		metricsLabel.getStyle().fontColor = Color.BLACK;
+		root.add(metricsLabel).left();
+		root.row();
+		
+		testEndXWidget = new InformationWidget("TestEndX: ", skin, root);
+		root.row();
+		
+		testEndYWidget = new InformationWidget("TestEndY: ", skin, root);
+		root.row();
+		
+		currentXWidget = new InformationWidget("CurrentX: ", skin, root);
+		currentYWidget = new InformationWidget("CurrentY: ", skin, root);
+	}
+	
+	private void setupTest(float endX, float endY) {
+		testObject.setX(xStartWidget.getValue());
+		testObject.setY(yStartWidget.getValue());
+		testEndXWidget.setValue(endX);
+		testEndYWidget.setValue(endY);
 	}
 	
 	@Override
@@ -51,35 +113,25 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("MoveXBy") {
 			@Override
 			public Action<?> run() {
-				reset();
-				startX = testObject.getX();
-				endX = 400;
-				MoveAction action = MoveAction.moveXTo(testObject, endX, 1f, Interpolation.exp5Out)
+				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue());
+				MoveAction action = MoveAction.moveXBy(testObject, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveXto")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
 		
-		//Is this test necessary?
 		addTest(new ActionTest("MoveYBy") {
 			@Override
 			public Action<?> run() {
-				reset();
-				amountY = 50;
-				startY = testObject.getY();
-				endY = startY + amountY; 
-				MoveAction action = MoveAction.moveYBy(testObject, amountY, 1f, Interpolation.exp5Out)
+				setupTest(testObject.getX(), yStartWidget.getValue() + yAmountWidget.getValue());
+				MoveAction action = MoveAction.moveYBy(testObject, yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 						.addListener(listener)
 						.setName("MoveYBy")
 						.reverseBackToStart(reverseBackToStart)
-						.setReverse(reverse)
-						.setLogLevel(ActionLogger.DEBUG);
-				
-				actionManager.addAction(action);
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -87,19 +139,12 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("MoveBy") {
 			@Override
 			public Action<?> run() {
-				reset();
-				amountX = 50;
-				amountY = 20;
-				startX = testObject.getX();
-				startY = testObject.getY();
-				endX = startX + amountX;
-				endY = startY + amountY;
-				MoveAction action = MoveAction.moveBy(testObject, amountX, amountY, 1f, Interpolation.exp5Out)
+				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue() + yAmountWidget.getValue());
+				MoveAction action = MoveAction.moveBy(testObject, xAmountWidget.getValue(), yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveBy")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
@@ -107,21 +152,15 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("MoveByAngle") {
 			@Override
 			public Action<?> run() {
-				reset();
-				float angle = 135;
-				float amount = 50;
-				amountX = amount * MathUtils.cosDeg(angle);
-				amountY = amount * MathUtils.sinDeg(angle);
-				startX = testObject.getX();
-				startY = testObject.getY();
-				endX = startX + amountX;
-				endY = startY + amountY;
-				MoveAction action = MoveAction.moveByAngleDeg(testObject, angle, amount, 1f, Interpolation.exp5Out)
+				final float angle = angleWidget.getValue();
+				final float endX = xStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.cosDeg(angle));
+				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angle));
+				setupTest(endX, endY);
+				MoveAction action = MoveAction.moveByAngleDeg(testObject, angle, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveByAngle")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
@@ -129,22 +168,15 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("MoveByAngleRad") {
 			@Override
 			public Action<?> run() {
-				reset();
-				float amount = 50;
-				float rad = 2.356194f;
-				float angle = MathUtils.radiansToDegrees * rad;
-				amountX = amount * MathUtils.cosDeg(angle);
-				amountY = amount * MathUtils.sinDeg(angle);
-				startX = testObject.getX();
-				startY = testObject.getY();
-				endX = startX + amountX;
-				endY = startY + amountY;
-				MoveAction action = MoveAction.moveByAngleRad(testObject, rad, amount, 1f, Interpolation.exp5Out)
+				final float angleDeg = angleWidget.getValue() * MathUtils.radiansToDegrees;
+				final float endX = xStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.cosDeg(angleDeg));
+				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angleDeg));
+				setupTest(endX, endY);
+				MoveAction action = MoveAction.moveByAngleRad(testObject, angleWidget.getValue(), xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveByAngleRadians")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
@@ -152,33 +184,25 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("MoveXTo") {
 			@Override
 			public Action<?> run() {
-				reset();
-				testObject.setX(0);
-				startX = testObject.getX();
-				endX = 500;
-				MoveAction action = MoveAction.moveXTo(testObject, endX, 1f, Interpolation.exp5Out)
+				setupTest(xEndWidget.getValue(), yStartWidget.getValue());
+				MoveAction action = MoveAction.moveXTo(testObject, xEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveXto")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
 		
 		addTest(new ActionTest("MoveYTo") {
 			@Override
-
 			public Action<?> run() {
-				reset();
-				startY = testObject.getY();
-				endY = 200;
-				MoveAction action = MoveAction.moveYTo(testObject, endY, 1f, Interpolation.exp5Out)
+				setupTest(xStartWidget.getValue(), yEndWidget.getValue());
+				MoveAction action = MoveAction.moveYTo(testObject, yEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
 							.addListener(listener)
 							.setName("MoveYTo")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
@@ -186,45 +210,14 @@ public class MoveActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("PingPong") {
 			@Override
 			public Action<?> run() {
-				reset();
+				setupTest(xStartWidget.getValue(), yStartWidget.getValue());
 				RepeatAction action = RepeatAction.repeat(
-						MoveAction.moveXBy(testObject, 100, 1f, Interpolation.linear), 6)
+						MoveAction.moveXBy(testObject, 50, durationWidget.getValue(), Interpolation.linear), 3)
 						.pingPong(true);
-				actionManager.addAction(action);
 				return action;
 			}
 		});
 		
-	}
-	
-	public void reset() {
-		float x = (hudViewport.getWorldWidth() - testObject.width) / 2;
-		float y = (hudViewport.getWorldHeight() - testObject.height) / 2;
-		
-		testObject.setX(x);
-		testObject.setY(y);
-		startX = 0;
-		startY = 0;
-		endX = 0;
-		endY = 0;
-		amountX = 0;
-		amountY = 0;
-	}
-
-	private ActionListener<MoveAction> getEndListener() {
-		return new ActionAdapter<MoveAction>() {
-			@Override
-			public void actionEnd(MoveAction a) {
-				System.out.println();
-				System.out.println(a.getName());
-				System.out.println("StartX: " + startX);
-				System.out.println("StartY: " + startY);
-				System.out.println("EndX: " + endX);
-				System.out.println("EndY: " + endY);
-				System.out.println("X: " + testObject.getX());
-				System.out.println("Y: " + testObject.getY());
-			}
-		};
 	}
 	
 	@Override

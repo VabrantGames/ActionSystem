@@ -231,6 +231,24 @@ public class ColorActionTest extends ActionSystemTestListener {
 		return super.keyDown(keycode);
 	}
 	
+	@Override
+	public void createTests() {
+		addTest(new ActionTest("ChangeColorTest") {
+			@Override
+			public Action<?> run() {
+				reset();
+				testObject.setColor(Color.RED);
+				endColor.set(Color.GREEN);
+				setTestValues(testObject.getColor(), endColor, true);
+				ColorAction action = ColorAction.changeColor(testObject, endColor, 1f, Interpolation.linear)
+						.setName("Change Color Test")
+						.addListener(rgbListener);
+				actionManager.addAction(action);
+				return action;
+			}
+		});
+	}
+	
 	public void changeColorTest() {
 		reset();
 

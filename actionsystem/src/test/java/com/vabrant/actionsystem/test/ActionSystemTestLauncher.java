@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem.test.testlaunchers.lwjgl2;
+package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
@@ -71,7 +71,7 @@ public class ActionSystemTestLauncher extends ApplicationAdapter {
 					}
 					
 					Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-					config.setWindowedMode(600 + SELECTION_WIDTH, 600);
+					config.setWindowedMode(1000, 800);
 					config.setTitle(name);
 					config.useVsync(false);
 					config.setResizable(false);
