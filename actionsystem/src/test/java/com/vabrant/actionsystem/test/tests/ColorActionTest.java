@@ -40,16 +40,7 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
  */
 public class ColorActionTest extends ActionSystemTestListener {
 	
-//	private boolean isRGB;
-	private float[] startValues = new float[3];
-	private float[] endValues = new float[3];
-	private float alphaStart;
-	private float alphaEnd;
-	private Color endColor;
 	private TestObject testObject;
-	
-	private ActionListener<ColorAction> rgbListener;
-	private ActionListener<ColorAction> hsbListener;
 	
 	//Start and end values
 	private LabelTextFieldFloatWidget redStartWidget;
@@ -117,11 +108,8 @@ public class ColorActionTest extends ActionSystemTestListener {
 	@Override
 	public void create() {
 		super.create();
-		endColor = new Color(0, 0, 0, 1);
 		testObject = new TestObject();
 		testObject.setSize(200);
-		rgbListener = createRGBListener();
-		hsbListener = createHSBListener();
 	}
 	
 	@Override
@@ -203,141 +191,11 @@ public class ColorActionTest extends ActionSystemTestListener {
 		currentAlphaWidget = new DoubleLabelWidget("CurrentAlpha: ", skin, root);
 	}
 	
-	private ActionListener<ColorAction> createRGBListener(){
-		return new ActionAdapter<ColorAction>() {
-			@Override
-			public void actionEnd(ColorAction a) {
-				ActionSystemTestConstantsAndUtils.printTestHeader(a.getName());
-				StringBuilder builder = new StringBuilder(100);
-				
-				//Start Values
-				builder.append("redStart: " + startValues[0]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("greenStart: " + startValues[1]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("blueStart: " + startValues[2]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alphaStart: " + alphaStart);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				
-				//End Values
-				builder.append("redEnd: " + endValues[0]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("greenEnd: " + endValues[1]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("blueEnd: " + endValues[2]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alphaEnd: " + alphaEnd);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				
-				//Current Values
-				Color c = testObject.getColor();
-				
-				builder.append("red: " + c.r);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("green: " + c.g);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("blue: " + c.b);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alpha: " + c.a);
-				
-				System.out.println(builder.toString());
-			}
-		};
-	}
-	
-	private ActionListener<ColorAction> createHSBListener(){
-		return new ActionAdapter<ColorAction>() {
-			@Override
-			public void actionEnd(ColorAction a) {
-				ActionSystemTestConstantsAndUtils.printTestHeader(a.getName());
-				StringBuilder builder = new StringBuilder(100);
-				
-				//Start Values
-				builder.append("hueStart: " + startValues[0]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("saturationStart: " + startValues[1]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("brightnessStart: " + startValues[2]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alphaStart: " + alphaStart);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				
-				//End Values
-				builder.append("hueEnd: " + endValues[0]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("saturationEnd: " + endValues[1]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("brightnessEnd: " + endValues[2]);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alphaEnd: " + alphaEnd);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				
-				
-				//Current Values
-				Color c = testObject.getColor();
-				float hue = ColorAction.getHue(c);
-				float saturation = ColorAction.getSaturation(c);
-				float brightness = ColorAction.getBrightness(c);
-				
-				builder.append("hue: " + hue);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("saturation: " + saturation);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("brightness: " + brightness);
-				builder.append(ActionSystemTestConstantsAndUtils.SEPARATOR);
-				builder.append("alpha: " + c.a);
-				
-				System.out.println(builder.toString());
-			}
-		};
-	}
-
-	private void setTestValues(Color startColor, Color endColor, boolean rgb) {
-		startValues[0] = rgb ? startColor.r : ColorAction.getHue(startColor);
-		startValues[1] = rgb ? startColor.g : ColorAction.getSaturation(startColor);
-		startValues[2] = rgb ? startColor.b : ColorAction.getBrightness(startColor);
-		endValues[0] = rgb ? endColor.r : ColorAction.getHue(endColor);
-		endValues[1] = rgb ? endColor.g : ColorAction.getSaturation(endColor);
-		endValues[2] = rgb ? endColor.b : ColorAction.getBrightness(endColor);
-		alphaStart = startColor.a;
-		alphaEnd = endColor.a;
-	}
-	
-	private void setupTest(boolean isRGB, float v1, float v2, float v3, float alpha) {
-//		this.isRGB = isRGB;
-		
-		testAlphaEndWidget.setValue(alpha);
-		
-		if(isRGB) {
-			testRedEndWidget.setValue(v1);
-			testGreenEndWidget.setValue(v2);
-			testBlueEndWidget.setValue(v2);
-			testHueEndWidget.setValue(-1);
-			testSaturationEndWidget.setValue(-1);
-			testBrightnessEndWidget.setValue(-1);
-		}
-		else {
-			testHueEndWidget.setValue(v1);
-			testSaturationEndWidget.setValue(v2);
-			testBrightnessEndWidget.setValue(v3);
-			testRedEndWidget.setValue(-1);
-			testGreenEndWidget.setValue(-1);
-			testBlueEndWidget.setValue(-1);
-		}
-	}
-	
 	@Override
 	public void createTests() {
 		addTest(new ActionTest("ChangeAlpha") {
 			@Override
 			public Action<?> run() {
-//				isRGB = true;
-				
 				//Set start color
 				testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(), alphaStartWidget.getValue());
 				
@@ -358,8 +216,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeColorRGBA") {
 			@Override
 			public Action<?> run() {
-//				isRGB = true;
-				
 				//Set start color
 				testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(), alphaStartWidget.getValue());
 				
@@ -381,8 +237,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeRed") {
 			@Override
 			public Action<?> run() {
-//				isRGB = true;
-				
 				//Set start color
 				testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(), alphaStartWidget.getValue());
 				
@@ -403,8 +257,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeBlue") {
 			@Override
 			public Action<?> run() {
-//				isRGB = true;
-				
 				//Set start color
 				testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(), alphaStartWidget.getValue());
 				
@@ -424,8 +276,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 
 		addTest(new ActionTest("ChangeGreen") {
 			public Action<?> run() {
-//				isRGB = true;
-				
 				//Set start color
 				testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(), alphaStartWidget.getValue());
 				
@@ -447,8 +297,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeColorHSBA") {
 			@Override
 			public Action<?> run() {
-//				isRGB = false;
-				
 				//Set start color
 				ColorAction.HSBToRGB(testObject.getColor(), hueStartWidget.getValue(), saturationStartWidget.getValue(), brightnessStartWidget.getValue());
 				testObject.getColor().a = alphaStartWidget.getValue();
@@ -470,8 +318,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeHue") {
 			@Override
 			public Action<?> run() {
-//				isRGB = false;
-				
 				//Set the start color
 				ColorAction.HSBToRGB(testObject.getColor(), hueStartWidget.getValue(), saturationStartWidget.getValue(), brightnessStartWidget.getValue());
 				testObject.getColor().a = alphaStartWidget.getValue();
@@ -494,8 +340,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeSaturation") {
 			@Override
 			public Action<?> run() {
-//				isRGB = false;
-				
 				//Set the start color
 				ColorAction.HSBToRGB(testObject.getColor(), hueStartWidget.getValue(), saturationStartWidget.getValue(), brightnessStartWidget.getValue());
 				testObject.getColor().a = alphaStartWidget.getValue();
@@ -517,8 +361,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 		addTest(new ActionTest("ChangeBrightness") {
 			@Override
 			public Action<?> run() {
-//				isRGB = false;
-				
 				//Set the start color
 				ColorAction.HSBToRGB(testObject.getColor(), hueStartWidget.getValue(), saturationStartWidget.getValue(), brightnessStartWidget.getValue());
 				testObject.getColor().a = alphaStartWidget.getValue();
@@ -537,70 +379,54 @@ public class ColorActionTest extends ActionSystemTestListener {
 			}
 		});
 		
-	}
-	
-	public void restartTest() {
-		reset();
-		
-		testObject.setColor(Color.RED);
-		
-		GroupAction sequence = GroupAction.sequence(
-//				ColorAction.changeRed(object, 1, 1f, Interpolation.linear),
-//				ColorAction.changeGreen(object, 1, 1f, Interpolation.linear),
-//				ColorAction.changeBlue(object, 1, 1f, Interpolation.linear))
-				ColorAction.changeBrightness(testObject, 0.5f, 1f, Interpolation.linear, true),
-				ColorAction.changeHue(testObject, 50, 1f, Interpolation.linear, true),
-				ColorAction.changeSaturation(testObject, 0.2f, 1f, Interpolation.linear, true))
-		.setName("Sequence")
-		.setLogLevel(ActionLogger.DEBUG);
-		
-		ActionListener restartListener = new ActionAdapter() {
-			boolean restart = true;
-			
+		//Specific Test
+		addTest(new ActionTest("RestartTest") {
 			@Override
-			public void actionEnd(Action a) {
-				if(restart) {
-					restart = false;
-					sequence.restart();
+			public Action<?> run() {
+				//Set start color
+				testObject.getColor().set(1f, 0f, 0f, 1f);
+				
+				//Create test actions
+				GroupAction group = GroupAction.obtain().sequence();
+				group.add(ColorAction.changeHue(testObject, 250, 1f, Interpolation.linear, true));
+				group.add(ColorAction.changeBrightness(testObject, 0.5f, 1f, Interpolation.linear, true));
+				group.add(ColorAction.changeHue(testObject, 0, 1f, Interpolation.linear, true));
+				
+				//Listener that will restart the group action
+				ActionListener restartListener = new ActionAdapter() {
+					boolean restart = true;
 					
-				}
+					@Override
+					public void actionEnd(Action a) {
+						if(restart) {
+							restart = false;
+							group.restart();
+						}
+					}
+				};
+
+				//When the second action is finished restart the entire group action will be restarted.
+				//All color actions that were ran should be returned to their initial state
+				((ColorAction)group.getActions().get(1)).addListener(restartListener);
+				
+				return group;
 			}
-		};
+		}); 
+		
+		addTest(new ActionTest("PingPongTest") {
+			@Override
+			public Action<?> run() {
+				//Set start color
+				testObject.getColor().set(1f, 0f, 0f, 1f);
 
-		((ColorAction)sequence.getActions().get(1)).addListener(restartListener);
-		
-		actionManager.addAction(sequence);
-	}
-	
-	private void conflitTest() {
-	}
-	
-	private void pingPongTest() {
-		reset();
-		
-//		testObject.getColor().set(0, 1, 0, 1);
-//		actionManager.addAction(
-//				RepeatAction.repeat(
-//						ColorAction.changeRed(testObject, 1, 1f, Interpolation.linear), 
-//						2)
-//				.pingPong(true));
-		
-//		testObject.getColor().set(1, 0, 0, 1);
-//		actionManager.addAction(
-//				RepeatAction.repeat(
-//						ColorAction.changeHue(testObject, 50, 1f, Interpolation.linear), 
-//						3)
-//				.pingPong(true));
-
-		testObject.getColor().set(1, 0, 0, 1);
-		actionManager.addAction(
-				RepeatAction.repeat(
-						ColorAction.changeColorRGBA(testObject, ColorAction.normalize(255), ColorAction.normalize(213), 0, 0.5f, 1f, Interpolation.linear),
+				return RepeatAction.repeat(
+						ColorAction.changeColorRGBA(testObject, ColorAction.normalize(255), ColorAction.normalize(213), 0, 0.5f, 1f, Interpolation.smooth),
 						3)
-				.pingPong(true));
-		
+						.pingPong(true);
+			}
+		});
 	}
-	
+
 	@Override
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
 		testObject.draw(shapeDrawer);
