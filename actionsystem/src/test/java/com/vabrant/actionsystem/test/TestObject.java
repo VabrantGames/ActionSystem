@@ -29,10 +29,22 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	public float width = 50;
 	public float height = 50;
 	private Color color = new Color(0,0,0,1);
+
+	public void setSize(float size) {
+		width = height = size;
+	}
 	
 	public void setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
+	}
+	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
 	}
 	
 	@Override

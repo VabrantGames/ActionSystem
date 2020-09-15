@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
@@ -58,6 +58,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	private ObjectMap<String, ActionTest> tests;
 	private Action<?> actionToRun;
 	private String selectedTest;
+	private Label isRunningLabel;
+	private Label fpsLabel;
 	
 	private ActionAdapter testOverListener = new ActionAdapter() {
 		@Override
@@ -96,16 +98,16 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 //		stage.setDebugAll(true);
 		skin = new Skin(Gdx.files.internal("orangepeelui/uiskin.json"));
 
-		HorizontalGroup selectBoxGroup = new HorizontalGroup();
-		selectBoxGroup.setFillParent(true);
-		selectBoxGroup.center().top();
+		Table selectBoxTable = new Table();
+		selectBoxTable.setFillParent(true);
+		selectBoxTable.center().top();
 		SelectBox<String> selectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
 		Iterator<String> i = tests.keys();
 		Array<String> items = new Array<>();
 		while(i.hasNext()) {
 			items.add(i.next());
 		}
-		selectBoxGroup.addActor(selectBox);
+		selectBoxTable.add(selectBox);
 		selectBox.setItems(items);
 		selectBox.addListener(new ChangeListener() {
 			@Override
@@ -113,8 +115,20 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 				selectedTest = selectBox.getSelected();
 			}
 		});
-		selectBox.setSelected("");
-		stage.addActor(selectBoxGroup);
+		selectBox.setSelectedIndex(0);
+		stage.addActor(selectBoxTable);
+		
+		Table defaultStatsTable = new Table();
+		defaultStatsTable.setFillParent(true);
+		defaultStatsTable.right().top();
+		
+		isRunningLabel = new Label("Not Running", new LabelStyle(skin.get(LabelStyle.class)));
+		isRunningLabel.getStyle().fontColor = Color.BLACK;
+		defaultStatsTable.add(isRunningLabel).width(100);
+		
+		fpsLabel = new Label("", skin);
+		
+		stage.addActor(defaultStatsTable);
 		
 		Table statsRoot = new Table();
 		statsRoot.setFillParent(true);
@@ -136,6 +150,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 						ActionTest test = tests.get(selectedTest);
 						actionToRun = test.run();
 						actionToRun.addListener(testOverListener);
+						isRunningLabel.setText("Running");
+						isRunningLabel.getStyle().fontColor = Color.RED;
 						break;
 				}
 				return super.keyDown(event, keycode);
@@ -156,6 +172,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 			actionToRun = null;
 		}
 		
+		isRunningLabel.setText("Not Running");
+		isRunningLabel.getStyle().fontColor = Color.BLACK;
 		testDelayTimer = 0;
 	}
 	
@@ -265,22 +283,22 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		return false;
 	}
 	
-	public static class ChangeableWidget {
+	public static class LabelTextFieldWidget {
 		
 		Label label;
 		TextField textField;
 		
-		public ChangeableWidget(String labelTitle, Skin skin, Table table) {
+		public LabelTextFieldWidget(String labelTitle, Skin skin, Table table) {
 			label = new Label(labelTitle, skin);
 			textField = new TextField("", skin);
 			table.add(label).left();
-			table.add(textField).width(100).padRight(4);
+			table.add(textField).width(100).padRight(0);
 		}
 	}
 	
-	public static class ChangeableIntWidget extends ChangeableWidget {
+	public static class LabelTextFieldIntWidget extends LabelTextFieldWidget {
 		
-		public ChangeableIntWidget(String labelTitle, Skin skin, Table table, int startValue) {
+		public LabelTextFieldIntWidget(String labelTitle, Skin skin, Table table, int startValue) {
 			super(labelTitle, skin, table);
 			textField.setText(String.valueOf(startValue));
 			textField.setTextFieldFilter(new TextFieldFilter() {
@@ -301,9 +319,9 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		}
 	}
 	
-	public static class ChangeableFloatWidget extends ChangeableWidget {
+	public static class LabelTextFieldFloatWidget extends LabelTextFieldWidget {
 		
-		public ChangeableFloatWidget(String labelTitle, Skin skin, Table table, float startValue) {
+		public LabelTextFieldFloatWidget(String labelTitle, Skin skin, Table table, float startValue) {
 			super(labelTitle, skin, table);
 			textField.setText(String.valueOf(startValue));
 			textField.setTextFieldFilter(new TextFieldFilter() {
@@ -327,14 +345,14 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		}
 	}
 	
-	public static class InformationWidget {
+	public static class DoubleLabelWidget {
 		
 		Label titleLabel;
 		Label valueLabel;
 		
-		public InformationWidget(String labelTitle, Skin skin, Table table) {
+		public DoubleLabelWidget(String labelTitle, Skin skin, Table table) {
 			titleLabel = new Label(labelTitle, skin);
-			valueLabel = new Label("0", new LabelStyle(skin.get(LabelStyle.class)));
+			valueLabel = new Label("0.0", new LabelStyle(skin.get(LabelStyle.class)));
 			valueLabel.getStyle().fontColor = Color.BLACK;
 			table.add(titleLabel).left();
 			table.add(valueLabel).width(100);
@@ -342,6 +360,23 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		
 		public void setValue(Number number) {
 			valueLabel.setText(String.valueOf(number.floatValue()));
+		}
+	}
+	
+	public static class LabelCheckBoxWidget {
+		
+		Label titleLabel;
+		CheckBox checkBox;
+			   
+		public LabelCheckBoxWidget(String title, Skin skin, Table table) {
+			titleLabel = new Label(title, skin);
+			checkBox = new CheckBox("", skin);
+			table.add(titleLabel).left();
+			table.add(checkBox).width(100);
+		}
+		
+		public boolean isChecked() {
+			return checkBox.isChecked();
 		}
 	}
 

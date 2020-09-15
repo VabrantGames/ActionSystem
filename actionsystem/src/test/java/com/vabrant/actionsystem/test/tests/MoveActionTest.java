@@ -8,11 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.ActionLogger;
-import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.TestObject;
@@ -24,18 +23,18 @@ public class MoveActionTest extends ActionSystemTestListener {
 	private boolean reverseBackToStart = false;
 	private boolean reverse = false;
 	private TestObject testObject;
-	private ChangeableFloatWidget xStartWidget;
-	private ChangeableFloatWidget xEndWidget;
-	private ChangeableFloatWidget yStartWidget;
-	private ChangeableFloatWidget yEndWidget;
-	private ChangeableFloatWidget xAmountWidget;
-	private ChangeableFloatWidget yAmountWidget;
-	private ChangeableFloatWidget angleWidget;
-	private ChangeableFloatWidget durationWidget;
-	private InformationWidget testEndXWidget;
-	private InformationWidget testEndYWidget;
-	private InformationWidget currentXWidget;
-	private InformationWidget currentYWidget;
+	private LabelTextFieldFloatWidget xStartWidget;
+	private LabelTextFieldFloatWidget xEndWidget;
+	private LabelTextFieldFloatWidget yStartWidget;
+	private LabelTextFieldFloatWidget yEndWidget;
+	private LabelTextFieldFloatWidget xAmountWidget;
+	private LabelTextFieldFloatWidget yAmountWidget;
+	private LabelTextFieldFloatWidget angleWidget;
+	private LabelTextFieldFloatWidget durationWidget;
+	private DoubleLabelWidget testEndXWidget;
+	private DoubleLabelWidget testEndYWidget;
+	private DoubleLabelWidget currentXWidget;
+	private DoubleLabelWidget currentYWidget;
 	
 	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
 		public void actionEnd(MoveAction a) {
@@ -67,22 +66,22 @@ public class MoveActionTest extends ActionSystemTestListener {
 		root.add(label).left();
 		root.row();
 		
-		xStartWidget = new ChangeableFloatWidget("xStart: ", skin, root, 0);
-		xEndWidget = new ChangeableFloatWidget("xEnd: ", skin, root, 0);
+		xStartWidget = new LabelTextFieldFloatWidget("xStart: ", skin, root, 0);
+		xEndWidget = new LabelTextFieldFloatWidget("xEnd: ", skin, root, 0);
 		root.row();
 		
-		yStartWidget = new ChangeableFloatWidget("yStart: ", skin, root, 0);
-		yEndWidget = new ChangeableFloatWidget("yEnd: ", skin, root, 0);
+		yStartWidget = new LabelTextFieldFloatWidget("yStart: ", skin, root, 0);
+		yEndWidget = new LabelTextFieldFloatWidget("yEnd: ", skin, root, 0);
 		root.row();
 		
-		xAmountWidget = new ChangeableFloatWidget("xAmount: ", skin, root, 50);
-		yAmountWidget = new ChangeableFloatWidget("yAmount: ", skin, root, 50);
+		xAmountWidget = new LabelTextFieldFloatWidget("xAmount: ", skin, root, 50);
+		yAmountWidget = new LabelTextFieldFloatWidget("yAmount: ", skin, root, 50);
 		root.row();
 		
-		durationWidget = new ChangeableFloatWidget("duration: ", skin, root, 1);
+		durationWidget = new LabelTextFieldFloatWidget("duration: ", skin, root, 1);
 		root.row();
 		
-		angleWidget = new ChangeableFloatWidget("angle: ", skin, root, 0);
+		angleWidget = new LabelTextFieldFloatWidget("angle: ", skin, root, 0);
 		root.row();
 
 		//Metrics
@@ -91,14 +90,14 @@ public class MoveActionTest extends ActionSystemTestListener {
 		root.add(metricsLabel).left();
 		root.row();
 		
-		testEndXWidget = new InformationWidget("TestEndX: ", skin, root);
+		testEndXWidget = new DoubleLabelWidget("TestEndX: ", skin, root);
 		root.row();
 		
-		testEndYWidget = new InformationWidget("TestEndY: ", skin, root);
+		testEndYWidget = new DoubleLabelWidget("TestEndY: ", skin, root);
 		root.row();
 		
-		currentXWidget = new InformationWidget("CurrentX: ", skin, root);
-		currentYWidget = new InformationWidget("CurrentY: ", skin, root);
+		currentXWidget = new DoubleLabelWidget("CurrentX: ", skin, root);
+		currentYWidget = new DoubleLabelWidget("CurrentY: ", skin, root);
 	}
 	
 	private void setupTest(float endX, float endY) {
