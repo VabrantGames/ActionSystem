@@ -215,30 +215,30 @@ public class RotateActionTest extends ActionSystemTestListener {
 	}
 	
 	public void capRadTest() {
-		reset();
-		testObject.useDeg(false);
-		RotateAction action = RotateAction.rotateBy(testObject, MathUtils.PI2 * 3, 5f, Interpolation.fade)
-				.capEndBetweenRevolutionRad()
-				.addListener(new ActionAdapter<RotateAction>() {
-					@Override
-					public void actionEnd(RotateAction a) {
-						System.out.println(testObject.getRotation());
-					}
-				});
-		actionManager.addAction(action);
+//		reset();
+//		testObject.useDeg(false);
+//		RotateAction action = RotateAction.rotateBy(testObject, MathUtils.PI2 * 3, 5f, Interpolation.fade)
+//				.capEndBetweenRevolutionRad()
+//				.addListener(new ActionAdapter<RotateAction>() {
+//					@Override
+//					public void actionEnd(RotateAction a) {
+//						System.out.println(testObject.getRotation());
+//					}
+//				});
+//		actionManager.addAction(action);
 	}
 	
 	public void capDegTest() {
-		reset();
-		RotateAction action = RotateAction.rotateBy(testObject, 360 * 3, 5f, Interpolation.fade)
-				.capEndBetweenRevolutionDeg()
-				.addListener(new ActionAdapter<RotateAction>() {
-					@Override
-					public void actionEnd(RotateAction a) {
-						System.out.println(testObject.getRotation());
-					}
-				});
-		actionManager.addAction(action);
+//		reset();
+//		RotateAction action = RotateAction.rotateBy(testObject, 360 * 3, 5f, Interpolation.fade)
+//				.capEndBetweenRevolutionDeg()
+//				.addListener(new ActionAdapter<RotateAction>() {
+//					@Override
+//					public void actionEnd(RotateAction a) {
+//						System.out.println(testObject.getRotation());
+//					}
+//				});
+//		actionManager.addAction(action);
 	}
 	
 	@Override
