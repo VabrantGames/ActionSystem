@@ -107,6 +107,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		while(i.hasNext()) {
 			items.add(i.next());
 		}
+		
 		selectBoxTable.add(selectBox);
 		selectBox.setItems(items);
 		selectBox.addListener(new ChangeListener() {
@@ -115,7 +116,9 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 				selectedTest = selectBox.getSelected();
 			}
 		});
-		selectBox.setSelectedIndex(0);
+		
+//		if(selectBox.getItems().size > 0) selectBox.setSelectedIndex(0);
+//		selectBox.setSelected(null);
 		stage.addActor(selectBoxTable);
 		
 		Table defaultStatsTable = new Table();
@@ -285,6 +288,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	
 	public static class LabelTextFieldWidget {
 		
+		private boolean allowNegativeValues;
 		Label label;
 		TextField textField;
 		
@@ -293,6 +297,14 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 			textField = new TextField("", skin);
 			table.add(label).left();
 			table.add(textField).width(100).padRight(0);
+		}
+		
+		public void setAllowNegativeValues(boolean allowNegativeValues) {
+			this.allowNegativeValues = allowNegativeValues;
+		}
+		
+		public boolean allowNegativeValues() {
+			return allowNegativeValues;
 		}
 	}
 	
@@ -328,7 +340,22 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 				@Override
 				public boolean acceptChar(TextField textField, char c) {
 					if(!Character.isDigit(c)) {
-						if(c != '.' || textField.getText().contains(".")) return false;
+						switch(c) {
+							case '.':
+								if(textField.getText().contains(".")) return false;
+								break;
+							case '-':
+								if(!allowNegativeValues()) return false;
+								if(textField.getText().length() > 1) {
+									if(textField.getCursorPosition() != 0) return false;
+									
+									char fc = textField.getText().charAt(0);
+									if(fc == '-') return false;
+								}
+								break;
+							default:
+								return false;
+						}
 					}
 					return true;
 				}

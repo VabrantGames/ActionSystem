@@ -128,6 +128,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 		valuesLabel.getStyle().fontColor = Color.BLACK;
 		root.add(valuesLabel).left();
 		root.row();
+		
 		redStartWidget = new LabelTextFieldFloatWidget("red: ", skin, root, 0);
 		redEndWidget = new LabelTextFieldFloatWidget("", skin, root, 0);
 		root.row();
@@ -379,7 +380,6 @@ public class ColorActionTest extends ActionSystemTestListener {
 			}
 		});
 		
-		//Specific Test
 		addTest(new ActionTest("RestartTest") {
 			@Override
 			public Action<?> run() {
@@ -387,17 +387,16 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testObject.getColor().set(1f, 0f, 0f, 1f);
 				
 				//Create test actions
-				GroupAction group = GroupAction.obtain().sequence();
-				group.add(ColorAction.changeHue(testObject, 250, 1f, Interpolation.linear, true));
-				group.add(ColorAction.changeBrightness(testObject, 0.5f, 1f, Interpolation.linear, true));
-				group.add(ColorAction.changeHue(testObject, 0, 1f, Interpolation.linear, true));
+				GroupAction group = GroupAction.sequence(
+						ColorAction.changeBrightness(testObject, 0.5f, 1f, Interpolation.linear, true),
+						ColorAction.changeHue(testObject, 250, 1f, Interpolation.linear, true));
 				
 				//Listener that will restart the group action
-				ActionListener restartListener = new ActionAdapter() {
+				ActionListener<ColorAction> restartListener = new ActionAdapter<ColorAction>() {
 					boolean restart = true;
 					
 					@Override
-					public void actionEnd(Action a) {
+					public void actionEnd(ColorAction a) {
 						if(restart) {
 							restart = false;
 							group.restart();
@@ -407,24 +406,11 @@ public class ColorActionTest extends ActionSystemTestListener {
 
 				//When the second action is finished restart the entire group action will be restarted.
 				//All color actions that were ran should be returned to their initial state
-				((ColorAction)group.getActions().get(1)).addListener(restartListener);
+				((ColorAction)group.getActions().first()).addListener(restartListener);
 				
 				return group;
 			}
 		}); 
-		
-		addTest(new ActionTest("PingPongTest") {
-			@Override
-			public Action<?> run() {
-				//Set start color
-				testObject.getColor().set(1f, 0f, 0f, 1f);
-
-				return RepeatAction.repeat(
-						ColorAction.changeColorRGBA(testObject, ColorAction.normalize(255), ColorAction.normalize(213), 0, 0.5f, 1f, Interpolation.smooth),
-						3)
-						.pingPong(true);
-			}
-		});
 	}
 
 	@Override

@@ -7,7 +7,9 @@ ext{
 }
 
 //group += ".actionsystem"
-version = "$actionSystemVersion"
+//version = "$actionSystemVersion"
+group = "com.github.vabrant.actionsystem"
+version = "local"
 
 dependencies{
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"

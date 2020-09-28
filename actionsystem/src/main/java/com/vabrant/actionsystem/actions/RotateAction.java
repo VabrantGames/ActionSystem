@@ -67,6 +67,11 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return this;
 	}
 	
+	/**
+	 * Every time this action restarts, it will start from the current position instead of its initial start position.
+	 * 
+	 * @return This action for chaining.
+	 */
 	public RotateAction startRotateByFromEnd() {
 		startRotateByFromEnd = true;
 		return this;
@@ -129,16 +134,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 			percentable.setRotation(percentable.getRotation() % MathUtils.PI2);
 		}
 	}
-	
-//	@Override
-//	public boolean hasConflict(Action<?> action) {
-//		if(action instanceof RotateAction) {
-//			RotateAction conflictAction = (RotateAction)action;
-//			if(conflictAction.type > -1) return true; 
-//		}
-//		return false;
-//	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();
@@ -146,10 +142,10 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		setup = true;
 		capDeg = false;
 		capRad = false;
+		startRotateByFromEnd = false;
+		byAmount = 0;
 		start = 0;
 		end = 0;
-		byAmount = 0;
-		startRotateByFromEnd = false;
 	}
 
 }
