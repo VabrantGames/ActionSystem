@@ -69,7 +69,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	public void parallelTest() {
 		TestObject ob1 = testObjectController.create();
-		testObjectController.center(ob1, viewport);
+		testObjectController.center(ob1, hudViewport);
 		
 		GroupAction parallel = GroupAction.parallel(
 				MoveAction.moveXBy(ob1, 50, 0.5f, Interpolation.exp5Out),
@@ -83,7 +83,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	public void parallelWithOffsetTest() {
 		TestObject testObject = testObjectController.create();
-		testObjectController.center(testObject, viewport);
+		testObjectController.center(testObject, hudViewport);
 		
 		GroupAction parallelWithOffset = GroupAction.parallel(
 				0.5f,
@@ -96,7 +96,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	public void sequenceTest() {
 		TestObject testObject = testObjectController.create();
-		testObjectController.center(testObject, viewport);
+		testObjectController.center(testObject, hudViewport);
 		
 		GroupAction sequence = GroupAction.sequence(
 				MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.exp5Out),
@@ -111,7 +111,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	public void restartTest() {
 		TestObject testObject = testObjectController.create();
-		testObjectController.center(testObject, viewport);
+		testObjectController.center(testObject, hudViewport);
 		
 		GroupAction sequence = GroupAction.sequence(
 				MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.exp5Out),
@@ -140,11 +140,11 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	public void nestedTest() {
 		TestObject ob1 = testObjectController.create();
-		testObjectController.center(ob1, viewport);
+		testObjectController.center(ob1, hudViewport);
 		ob1.setX(ob1.getX() + 25 + 10);
 		
 		TestObject ob2 = testObjectController.create();
-		testObjectController.center(ob2, viewport);
+		testObjectController.center(ob2, hudViewport);
 		ob2.setX(ob2.getX() - 25 - 10);
 		
 		GroupAction one = GroupAction.parallel(
@@ -166,8 +166,8 @@ public class GroupActionTest extends ActionSystemTestListener {
 		TestObject ob1 = testObjectController.create();
 		TestObject ob2 = testObjectController.create();
 		
-		testObjectController.center(ob1, viewport);
-		testObjectController.center(ob2, viewport);
+		testObjectController.center(ob1, hudViewport);
+		testObjectController.center(ob2, hudViewport);
 		
 		ob1.setX(ob1.getX() - ob1.width - 10);
 		ob2.setX(ob2.getX() + ob1.width + 10);
@@ -186,7 +186,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 	public void sequenceReverseTest() {
 		TestObject ob1 = testObjectController.create();
 				
-		testObjectController.center(ob1, viewport);
+		testObjectController.center(ob1, hudViewport);
 		
 		GroupAction sequence = GroupAction.sequence(
 				MoveAction.moveXBy(ob1, 100, 0.5f, Interpolation.linear),

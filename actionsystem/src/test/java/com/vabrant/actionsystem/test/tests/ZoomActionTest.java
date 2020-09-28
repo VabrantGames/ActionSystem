@@ -49,7 +49,7 @@ public class ZoomActionTest extends ActionSystemTestListener {
 	
 	public void reset() {
 		testObject.setZoom(1);
-		TestObjectController.getInstance().center(testObject, viewport);
+		TestObjectController.getInstance().center(testObject, hudViewport);
 	}
 
 	private ActionListener createListener() {

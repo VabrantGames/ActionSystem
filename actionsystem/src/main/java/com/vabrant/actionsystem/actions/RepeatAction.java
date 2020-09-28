@@ -64,10 +64,10 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	private boolean pingPong;
 	private boolean reverseState;
 	
-	/** How many times the action has been played */
+	// How many times the action has been played
 	private int count = 0;
 	
-	/** How many times to play the action. Includes the initial non repeat play. */
+	// How many times to play the action. Includes the initial non repeat play.
 	private int amount = 0;
 	private boolean isContinuous;
 	private Action<?> action;

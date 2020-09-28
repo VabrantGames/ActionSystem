@@ -15,20 +15,25 @@
  */
 package com.vabrant.actionsystem.test.tests;
 
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.Rotatable;
 import com.vabrant.actionsystem.actions.RotateAction;
+import com.vabrant.actionsystem.test.TestObject;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -38,69 +43,167 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
  */
 public class RotateActionTest extends ActionSystemTestListener {
 
-	private float x;
-	private float y;
-	private final int size = 100;
-	private ShapeRenderer renderer;
-	private TestClass testClass;
+//	private TestClass testClass;
+	
+	private TestObject testObject;
+
+	private LabelTextFieldFloatWidget rotationStartWidget;
+	private LabelTextFieldFloatWidget rotationEndWidget;
+	private LabelTextFieldFloatWidget amountWidget;
+	private LabelTextFieldFloatWidget durationWidget;
+	
+	private DoubleLabelWidget targetEndRotationWidget;
+	private DoubleLabelWidget currentRotationWidget;
+
+	private ActionListener<RotateAction> endListener = new ActionAdapter<RotateAction>() {
+		@Override
+		public void actionEnd(RotateAction a) {
+			currentRotationWidget.setValue(testObject.getRotation());
+		}
+	};
 	
 	@Override
 	public void create() {
 		super.create();
-		testClass = new TestClass(); 
-		renderer = new ShapeRenderer();
-		renderer.setAutoShapeType(true);
-		shapeDrawer.setDefaultSnap(false);
-		shapeDrawer.setPixelSize(2);
+		testObject = new TestObject();
+		testObject.setSize(200);
+		testObject.useDeg(false);
 	}
+	
+	@Override
+	public void createHud(Table root, Skin skin) {
+		LabelStyle blackTextStyle = new LabelStyle(skin.get(LabelStyle.class));
+		blackTextStyle.fontColor = Color.BLACK;
+		
+		Label valuesLabel = new Label("Values", blackTextStyle);
+		root.add(valuesLabel).left();
+		root.row();
+		
+		rotationStartWidget = new LabelTextFieldFloatWidget("rotation: ", skin, root, 0);
+		rotationStartWidget.setAllowNegativeValues(true);
+		rotationEndWidget = new LabelTextFieldFloatWidget("", skin, root, 0);
+		rotationEndWidget.setAllowNegativeValues(true);
+		root.row();
+		amountWidget = new LabelTextFieldFloatWidget("amount: ", skin, root, 1f);
+		amountWidget.setAllowNegativeValues(true);
+		root.row();
+		durationWidget = new LabelTextFieldFloatWidget("duration: ", skin, root, 1f);
+		root.row();
+		
+		Label metricsLabel = new Label("Metrics", blackTextStyle);
+		root.add(metricsLabel).left().padTop(10);
+		root.row();
+		targetEndRotationWidget = new DoubleLabelWidget("TargetEndRotation: ", skin, root);
+		root.row();
+		currentRotationWidget = new DoubleLabelWidget("CurrentRotation: ", skin, root);
+	}
+	
+	@Override
+	public void createTests() {
+		addTest(new ActionTest("RotateBy") {
+			@Override
+			public Action<?> run() {
+				//Set start rotation
+				testObject.setRotation(rotationStartWidget.getValue());
 
-	public void reset() {
-		testClass.useDeg(true);
-		testClass.setRotation(0);
+				float end = testObject.getRotation() + amountWidget.getValue();
+				
+				//Set test end value
+				targetEndRotationWidget.setValue(end);
+				
+				return RotateAction.rotateBy(testObject, amountWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
+						.addListener(endListener);
+			}
+		});
+		
+		addTest(new ActionTest("RotateTo") {
+			@Override
+			public Action<?> run() {
+				//Set start rotation
+				testObject.setRotation(rotationStartWidget.getValue());
+
+				//Set test end value
+				targetEndRotationWidget.setValue(rotationEndWidget.getValue());
+				
+				return RotateAction.rotateTo(testObject, rotationEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
+						.addListener(endListener);
+			}
+		});
+		
+		addTest(new ActionTest("SetRotation") {
+			@Override
+			public Action<?> run() {
+				//Set start rotation
+				testObject.setRotation(rotationStartWidget.getValue());
+
+				//Set test end value
+				targetEndRotationWidget.setValue(rotationEndWidget.getValue());
+				
+				return RotateAction.setRotation(testObject, rotationEndWidget.getValue());
+			}
+		});
+		
+		addTest(new ActionTest("RestartTest") {
+			@Override
+			public Action<?> run() {
+				//Set start rotation
+				testObject.setRotation(0);
+				
+				//Set test end value
+				targetEndRotationWidget.setValue(-1);
+				
+				GroupAction group = GroupAction.sequence(
+						RotateAction.rotateTo(testObject, 225, 1f, Interpolation.linear), 
+						RotateAction.rotateBy(testObject, 45, 1f, Interpolation.linear));
+				
+				ActionListener<RotateAction> restartListener = new ActionAdapter<RotateAction>() {
+					boolean restart = true;
+					
+					@Override
+					public void actionEnd(RotateAction a) {
+						if(restart) {
+							System.out.println(testObject.getRotation());
+							restart = false;
+							group.restart();
+						}
+					}
+				};
+				
+				((RotateAction)group.getActions().first()).addListener(restartListener);
+				
+				return group;
+			}
+		});
+		
+		addTest(new ActionTest("RotateByFromEnd") {
+			@Override
+			public Action<?> run() {
+				//Set start rotation
+				testObject.setRotation(0);
+				
+				//Set test end value
+				targetEndRotationWidget.setValue(-1);
+				
+				GroupAction group = GroupAction.sequence(
+						RotateAction.rotateBy(testObject, 45, 0.5f, Interpolation.bounceOut).startRotateByFromEnd(), 
+						DelayAction.delay(0.2f));
+				
+				return RepeatAction.repeat(group, 3);
+			}
+		});
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		x = (viewport.getWorldWidth() - size) / 2;
-		y = (viewport.getWorldHeight() - size) / 2;
+		float x = (width - testObject.getWidth()) / 2;
+		float y = (height - testObject.getHeight()) / 2;
+		testObject.setPosition(x, y);
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		switch(keycode) {
-			case Keys.NUMPAD_0:
-				rotateToTest();
-				break;
-			case Keys.NUMPAD_1:
-				rotateByTest();
-				break;
-			case Keys.NUMPAD_2:
-				rotateByFromEndTest();
-				break;
-			case Keys.NUMPAD_3:
-				capRadTest();
-				break;
-			case Keys.NUMPAD_4:
-				capDegTest();
-				break;
-		}
-		return super.keyDown(keycode);
-	}
-
-	public void rotateToTest() {
-		reset();
-		actionManager.addAction(RotateAction.rotateTo(testClass, 90, 1f, Interpolation.linear));
-	}
-	
-	public void rotateByTest() {
-		reset();
-		actionManager.addAction(RotateAction.rotateBy(testClass, -180, 1f, Interpolation.linear));
-	}
-	
 	public void rotateByFromEndTest() {
 		reset();
-		RotateAction action = RotateAction.rotateBy(testClass, 45, 1f, Interpolation.linear)
+		RotateAction action = RotateAction.rotateBy(testObject, 45, 1f, Interpolation.linear)
 				.startRotateByFromEnd()
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -113,13 +216,13 @@ public class RotateActionTest extends ActionSystemTestListener {
 	
 	public void capRadTest() {
 		reset();
-		testClass.useDeg(false);
-		RotateAction action = RotateAction.rotateBy(testClass, MathUtils.PI2 * 3, 5f, Interpolation.fade)
+		testObject.useDeg(false);
+		RotateAction action = RotateAction.rotateBy(testObject, MathUtils.PI2 * 3, 5f, Interpolation.fade)
 				.capEndBetweenRevolutionRad()
 				.addListener(new ActionAdapter<RotateAction>() {
 					@Override
 					public void actionEnd(RotateAction a) {
-						System.out.println(testClass.getRotation());
+						System.out.println(testObject.getRotation());
 					}
 				});
 		actionManager.addAction(action);
@@ -127,12 +230,12 @@ public class RotateActionTest extends ActionSystemTestListener {
 	
 	public void capDegTest() {
 		reset();
-		RotateAction action = RotateAction.rotateBy(testClass, 360 * 3, 5f, Interpolation.fade)
+		RotateAction action = RotateAction.rotateBy(testObject, 360 * 3, 5f, Interpolation.fade)
 				.capEndBetweenRevolutionDeg()
 				.addListener(new ActionAdapter<RotateAction>() {
 					@Override
 					public void actionEnd(RotateAction a) {
-						System.out.println(testClass.getRotation());
+						System.out.println(testObject.getRotation());
 					}
 				});
 		actionManager.addAction(action);
@@ -140,39 +243,7 @@ public class RotateActionTest extends ActionSystemTestListener {
 	
 	@Override
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
-		batch.end();
-		renderer.begin();
-		
-		renderer.set(ShapeType.Filled);
-		renderer.setColor(Color.BLACK);
-		renderer.rect(x, y, size / 2, size / 2, size, size, 1, 1, testClass.getRotationDeg());
-		
-		renderer.end();
-		batch.begin();
+		testObject.draw(shapeDrawer);
 	}
-	
-	private class TestClass implements Rotatable {
-		
-		private boolean useDeg;
-		private float rotation;
-		
-		public void useDeg(boolean useDeg) {
-			this.useDeg = useDeg;
-		}
 
-		@Override
-		public void setRotation(float rotation) {
-			this.rotation = rotation;
-		}
-
-		@Override
-		public float getRotation() {
-			return rotation;
-		}
-		
-		public float getRotationDeg() {
-			return useDeg ? rotation : rotation * MathUtils.radiansToDegrees;
-		}
-		
-	}
 }

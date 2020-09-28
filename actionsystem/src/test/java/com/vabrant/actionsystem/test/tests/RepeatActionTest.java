@@ -28,8 +28,8 @@ public class RepeatActionTest extends ActionSystemTestListener {
 	}
 	
 	public void reset() {
-		float x = (viewport.getWorldWidth() - testObject.width) / 2;
-		float y = (viewport.getWorldHeight() - testObject.height) / 2;
+		float x = (hudViewport.getWorldWidth() - testObject.width) / 2;
+		float y = (hudViewport.getWorldHeight() - testObject.height) / 2;
 		testObject.setX(x);
 		testObject.setY(y);
 	}

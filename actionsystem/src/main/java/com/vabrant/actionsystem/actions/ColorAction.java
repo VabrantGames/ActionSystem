@@ -432,8 +432,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		//from above but this time we are doing something with the blue channel. Since we are changing the blue
 		//channel elsewhere with another action or some other logic we don't wan't this action to touch anything 
 		//about the blue channel. Doing so can ruin what we were trying to do. So what we would do is solo this action.
-		//Soloing would force this action to only change only the red and green channels and leave the blue channel untouched. Doesn't matter if i restart, move to end,
-		//or anything else this action will never touch the blue channel.
+		//Soloing would force this action to only change the red and green channels and leave the blue channel untouched. Doesn't matter if i restart, move to end,
+		//or anything else. This action will never touch the blue channel.
 		
 		if(!soloChannel) {
 			Color c = percentable.getColor();

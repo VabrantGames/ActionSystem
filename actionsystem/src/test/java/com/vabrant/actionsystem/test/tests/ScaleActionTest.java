@@ -51,10 +51,11 @@ public class ScaleActionTest extends ActionSystemTestListener {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		TestObjectController.getInstance().center(testObject, viewport);
+		TestObjectController.getInstance().center(testObject, hudViewport);
 	}
 
-	private void reset() {
+	@Override
+	public void reset() {
 		testObject.setScaleX(1);
 		testObject.setScaleY(1);
 	}

@@ -63,10 +63,11 @@ public class ActionManager {
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
 			if(!actions.get(i).update(delta)) {
+				if(actions.size == 0) break;
 				remove.add(actions.removeIndex(i));
 			}
 		}
-		
+
 		for(int i = remove.size - 1; i >=0; i--) {
 			Action<?> action = remove.pop();
 			action.setRoot(false);
