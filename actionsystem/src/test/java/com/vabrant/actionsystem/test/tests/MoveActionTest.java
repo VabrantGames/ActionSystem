@@ -20,9 +20,10 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class MoveActionTest extends ActionSystemTestListener {
 	
+	private TestObject testObject;
+	
 	private boolean reverseBackToStart = false;
 	private boolean reverse = false;
-	private TestObject testObject;
 	private LabelTextFieldFloatWidget xStartWidget;
 	private LabelTextFieldFloatWidget xEndWidget;
 	private LabelTextFieldFloatWidget yStartWidget;
@@ -31,12 +32,13 @@ public class MoveActionTest extends ActionSystemTestListener {
 	private LabelTextFieldFloatWidget yAmountWidget;
 	private LabelTextFieldFloatWidget angleWidget;
 	private LabelTextFieldFloatWidget durationWidget;
+	
 	private DoubleLabelWidget testEndXWidget;
 	private DoubleLabelWidget testEndYWidget;
 	private DoubleLabelWidget currentXWidget;
 	private DoubleLabelWidget currentYWidget;
 	
-	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
+	private ActionListener<MoveAction> metricsListener = new ActionAdapter<MoveAction>() {
 		public void actionEnd(MoveAction a) {
 			currentXWidget.setValue(testObject.getX());
 			currentYWidget.setValue(testObject.getY());
@@ -55,16 +57,17 @@ public class MoveActionTest extends ActionSystemTestListener {
 		super.resize(width, height);
 		float x = (hudViewport.getWorldWidth() - testObject.width) / 2;
 		float y = (hudViewport.getWorldHeight() - testObject.height) / 2;
-		testObject.setX(x);
-		testObject.setY(y);
+		testObject.setPosition(x, y);
 		xStartWidget.textField.setText(String.valueOf(x));
 		yStartWidget.textField.setText(String.valueOf(y));
 	}
 
 	@Override
 	public void createHud(Table root, Skin skin) {
-		Label label = new Label("Set Values", new LabelStyle(skin.get(LabelStyle.class)));
-		label.getStyle().fontColor = Color.BLACK;
+		LabelStyle labelHeaderStyle = new LabelStyle(skin.get(LabelStyle.class));
+		labelHeaderStyle.fontColor = Color.BLACK;
+		
+		Label label = new Label("Set Values", labelHeaderStyle);
 		root.add(label).left();
 		root.row();
 		
@@ -87,8 +90,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 		root.row();
 
 		//Metrics
-		Label metricsLabel = new Label("Metrics", new LabelStyle(skin.get(LabelStyle.class)));
-		metricsLabel.getStyle().fontColor = Color.BLACK;
+		Label metricsLabel = new Label("Metrics", labelHeaderStyle);
 		root.add(metricsLabel).left();
 		root.row();
 		
@@ -117,12 +119,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue());
-				MoveAction action = MoveAction.moveXBy(testObject, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveXBy(testObject, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveXto")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -130,12 +131,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(testObject.getX(), yStartWidget.getValue() + yAmountWidget.getValue());
-				MoveAction action = MoveAction.moveYBy(testObject, yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-						.addListener(listener)
+				return MoveAction.moveYBy(testObject, yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+						.addListener(metricsListener)
 						.setName("MoveYBy")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -143,12 +143,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue() + yAmountWidget.getValue());
-				MoveAction action = MoveAction.moveBy(testObject, xAmountWidget.getValue(), yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveBy(testObject, xAmountWidget.getValue(), yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveBy")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -159,12 +158,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endX = xStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.cosDeg(angle));
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angle));
 				setupTest(endX, endY);
-				MoveAction action = MoveAction.moveByAngleDeg(testObject, angle, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveByAngleDeg(testObject, angle, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveByAngle")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -175,12 +173,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endX = xStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.cosDeg(angleDeg));
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angleDeg));
 				setupTest(endX, endY);
-				MoveAction action = MoveAction.moveByAngleRad(testObject, angleWidget.getValue(), xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveByAngleRad(testObject, angleWidget.getValue(), xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveByAngleRadians")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -188,12 +185,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(xEndWidget.getValue(), yStartWidget.getValue());
-				MoveAction action = MoveAction.moveXTo(testObject, xEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveXTo(testObject, xEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveXto")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -201,12 +197,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue(), yEndWidget.getValue());
-				MoveAction action = MoveAction.moveYTo(testObject, yEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
+				return MoveAction.moveYTo(testObject, yEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
+							.addListener(metricsListener)
 							.setName("MoveYTo")
 							.reverseBackToStart(reverseBackToStart)
 							.setReverse(reverse);
-				return action;
 			}
 		});
 		
@@ -214,10 +209,9 @@ public class MoveActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue(), yStartWidget.getValue());
-				RepeatAction action = RepeatAction.repeat(
+				return RepeatAction.repeat(
 						MoveAction.moveXBy(testObject, 50, durationWidget.getValue(), Interpolation.linear), 3)
 						.pingPong(true);
-				return action;
 			}
 		});
 		
