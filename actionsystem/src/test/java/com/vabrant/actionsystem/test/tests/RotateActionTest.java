@@ -17,9 +17,7 @@ package com.vabrant.actionsystem.test.tests;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -27,11 +25,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.actionsystem.actions.Rotatable;
 import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.TestObject;
 
@@ -39,11 +35,8 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
  * @author John Barton
- *
  */
 public class RotateActionTest extends ActionSystemTestListener {
-
-//	private TestClass testClass;
 	
 	private TestObject testObject;
 
@@ -201,46 +194,6 @@ public class RotateActionTest extends ActionSystemTestListener {
 		testObject.setPosition(x, y);
 	}
 
-	public void rotateByFromEndTest() {
-		reset();
-		RotateAction action = RotateAction.rotateBy(testObject, 45, 1f, Interpolation.linear)
-				.startRotateByFromEnd()
-				.setLogLevel(ActionLogger.DEBUG);
-		
-		GroupAction sequence = GroupAction.sequence(
-				action,
-				DelayAction.delay(0.1f));
-		
-		actionManager.addAction(RepeatAction.repeat(sequence, 2));
-	}
-	
-	public void capRadTest() {
-		reset();
-		testObject.useDeg(false);
-		RotateAction action = RotateAction.rotateBy(testObject, MathUtils.PI2 * 3, 5f, Interpolation.fade)
-				.capEndBetweenRevolutionRad()
-				.addListener(new ActionAdapter<RotateAction>() {
-					@Override
-					public void actionEnd(RotateAction a) {
-						System.out.println(testObject.getRotation());
-					}
-				});
-		actionManager.addAction(action);
-	}
-	
-	public void capDegTest() {
-		reset();
-		RotateAction action = RotateAction.rotateBy(testObject, 360 * 3, 5f, Interpolation.fade)
-				.capEndBetweenRevolutionDeg()
-				.addListener(new ActionAdapter<RotateAction>() {
-					@Override
-					public void actionEnd(RotateAction a) {
-						System.out.println(testObject.getRotation());
-					}
-				});
-		actionManager.addAction(action);
-	}
-	
 	@Override
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
 		testObject.draw(shapeDrawer);

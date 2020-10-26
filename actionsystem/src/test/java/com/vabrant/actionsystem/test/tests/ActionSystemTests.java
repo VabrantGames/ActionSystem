@@ -11,7 +11,8 @@ public class ActionSystemTests {
 	public static final List<Class<? extends ApplicationListener>> TEST_CLASSES = Arrays.<Class<? extends ApplicationListener>>asList(
 			MoveActionTest.class,
 			ColorActionTest.class,
-			RotateActionTest.class
+			RotateActionTest.class,
+			ScaleActionTest.class
 	);
 	
 	public static final ObjectMap<String, Class<? extends ApplicationListener>> TESTS;

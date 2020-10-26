@@ -43,7 +43,9 @@ public class MoveActionTest extends ActionSystemTestListener {
 		}
 	};
 	
-	public MoveActionTest() {
+	@Override
+	public void create() {
+		super.create();
 		testObject = new TestObject();
 		testObject.setSize(50, 50);
 	}
@@ -97,6 +99,8 @@ public class MoveActionTest extends ActionSystemTestListener {
 		root.row();
 		
 		currentXWidget = new DoubleLabelWidget("CurrentX: ", skin, root);
+		root.row();
+		
 		currentYWidget = new DoubleLabelWidget("CurrentY: ", skin, root);
 	}
 	
