@@ -65,6 +65,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	private Array<ActionListener<T>> listeners;
 	
 	/** Listeners that can't be removed by the user. */
+	/** Listeners managed by the action system. */
 	private Array<CleanupListener<Action<?>>> cleanupListeners;
 	final Array<Action<?>> preActions;
 	final Array<Action<?>> postActions;
@@ -103,6 +104,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 	
+	@Deprecated
 	public boolean hasConflict(Action<?> action) {
 		return false;
 	}
@@ -284,6 +286,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionPools.free(this);
 	}
 
+	//TODO Finish description 
 	/**
 	 * Clears an actions values but 
 	 */
@@ -386,7 +389,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		logger.info("Restart Action");	
 		
 		boolean start = !invokedAction ? false : isRunning;
-		
 		isRunning = false;
 		restartLogic();
 		
