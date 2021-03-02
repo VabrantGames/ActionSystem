@@ -68,7 +68,8 @@ public class ActionManager {
 			}
 		}
 
-		for(int i = remove.size - 1; i >=0; i--) {
+		//TODO do this in the above loop
+		for(int i = remove.size - 1; i >= 0; i--) {
 			Action<?> action = remove.pop();
 			action.setRoot(false);
 			ActionPools.free(action);
