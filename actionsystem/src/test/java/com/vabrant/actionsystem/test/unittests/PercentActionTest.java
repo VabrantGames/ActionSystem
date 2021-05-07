@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;

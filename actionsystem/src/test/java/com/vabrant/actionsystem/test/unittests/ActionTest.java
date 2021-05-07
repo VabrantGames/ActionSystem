@@ -1,15 +1,12 @@
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
-import org.junit.runners.MethodSorters;
 
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
@@ -20,6 +17,8 @@ import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.test.tests.TestActions;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
@@ -71,29 +70,22 @@ public class ActionTest {
 	public void basicTest() {
 		printTestHeader(testName.getMethodName());
 		
-		TestAction action = TestAction.obtain()
+		DelayAction action = DelayAction.obtain()
+				.setDuration(2)
 				.setName("Action")
 				.setLogLevel(ActionLogger.DEBUG);
-				
-		makeRoot(action, true);
 		
+		ActionManager manager = new ActionManager();
+		
+		manager.addAction(action);
+		
+		assertTrue(action.isRunning());
 		assertTrue(action.isRoot());
 		assertTrue(action.inUse());
 		
-		action.start();
-		
-		assertTrue(action.isRunning());
-		
-		action.update(0);
-		action.end();
+		manager.update(Float.MAX_VALUE);
 		
 		assertFalse(action.isRunning());
-		
-		makeRoot(action, false);
-		
-		ActionPools.free(action);
-		
-		assertTrue(hasBeenPooled(action));
 	}
 
 	@Test
@@ -253,57 +245,51 @@ public class ActionTest {
 		
 		ActionPools.free(action);
 	}
-	
+
 	@Test
 	public void preActionTest() {
 		printTestHeader(testName.getMethodName());
 		
-		ActionManager manager = new ActionManager();
-		
-		TestAction mainAction = TestAction.obtain()
+		DelayAction mainAction = DelayAction.obtain()
+				.setDuration(2)
 				.setName("Main")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction preAction = TestAction.obtain()
+		DelayAction preAction = DelayAction.obtain()
+				.setDuration(2)
 				.setName("Pre")
 				.setLogLevel(ActionLogger.DEBUG);
 		
+		ActionManager manager = new ActionManager();
+		
 		mainAction.addPreAction(preAction);
 
-		//Set root and call start on the main action 
-		//When the main action is started the pre action should be started
-		//The pre action is removed from the main action and added to the manager as its own action
+		//Should start the pre-action
 		manager.addAction(mainAction);
-		
-		assertTrue(preAction.isRoot());
-		assertTrue(preAction.isRunning());
 
-		//Mock cycle
-		manager.update(0);
-		mainAction.end();
-		preAction.end();
+		assertTrue(preAction.isRunning());
 		
-		//Cleans up the ended actions
-		manager.update(0);
+		manager.update(Float.MAX_VALUE);
 		
 		assertTrue(hasBeenPooled(mainAction));
 		assertTrue(hasBeenPooled(preAction));
 	}
 	
 	@Test
-	public void preActionEndEarlyTest() {
+	public void preActionPooledIfMainGetsPooledBeforeUse() {
 		printTestHeader(testName.getMethodName());
 		
-		TestAction mainAction = TestAction.obtain()
+		DelayAction mainAction = DelayAction.obtain()
+				.setDuration(2)
 				.setName("Main")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction preAction = TestAction.obtain()
+		DelayAction preAction = DelayAction.obtain()
+				.setDuration(2)
 				.setName("Pre")
 				.setLogLevel(ActionLogger.DEBUG);
 		
 		mainAction.addPreAction(preAction);
-		
 		ActionPools.free(mainAction);
 		
 		assertTrue(hasBeenPooled(mainAction));

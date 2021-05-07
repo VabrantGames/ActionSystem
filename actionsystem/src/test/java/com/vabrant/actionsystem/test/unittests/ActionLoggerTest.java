@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
