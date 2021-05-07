@@ -64,6 +64,7 @@ public class ActionManager {
 			
 			if(!action.update(delta)) {
 				if(actions.size == 0) break;
+				actions.removeIndex(i);
 				action.setRoot(false);
 //				Pool pool = action.pool;
 //				pool.free(action);
