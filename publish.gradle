@@ -1,5 +1,5 @@
 apply plugin: "java-library"
-apply plugin: "maven"
+apply plugin: "maven-publish"
 
 group = "com.github.vabrant.actionsystem"
 
@@ -18,7 +18,19 @@ artifacts{
 	archives javadocJar
 }
 
-install{
-	repositories{
-	}
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+          from components.java
+
+          artifact sourceJar {
+            classifier "sources"
+          }
+        }
+     }
 }
+
+//install{
+//	repositories{
+//	}
+//}

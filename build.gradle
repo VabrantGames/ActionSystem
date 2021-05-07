@@ -16,8 +16,8 @@ allprojects {
     apply plugin: "idea"
 
     repositories {
-        mavenCentral()
-        mavenLocal()
+	mavenLocal()
+        mavenCentral()  
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }

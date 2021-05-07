@@ -28,6 +28,8 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
+import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.actions.TimeAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
 /**
@@ -70,7 +72,8 @@ public class ActionManagerTest {
 		
 		ActionManager manager = new ActionManager();
 		
-		TestAction action = TestAction.obtain()
+		DelayAction action = DelayAction.obtain()
+				.setDuration(2)
 				.setName("BasicTest")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -79,15 +82,10 @@ public class ActionManagerTest {
 		//Starts the action
 		manager.addAction(action);
 		
-		assertTrue(action.isRunning());
-
-		//Called every frame
-		manager.update(0);
-		
-		action.end();
-
-		//Last update
-		manager.update(0);
+		//End the action by passing in a large amount of time
+		//The TimeAction should end when the timer is greater than the duration
+		//The ActionManager should pool this action when it has been ended
+		manager.update(Float.MAX_VALUE);
 		
 		assertTrue(hasBeenPooled(action));
 	}

@@ -26,7 +26,6 @@ import com.badlogic.gdx.utils.Array;
 public class ActionManager {
 	
 	private final Array<Action<?>> actions;
-	private final Array<Action<?>> remove;
 	private final ActionLogger logger = ActionLogger.getLogger(ActionManager.class);
 	
 	public ActionManager() {
@@ -35,7 +34,6 @@ public class ActionManager {
 	
 	public ActionManager(int initialSize) {
 		actions = new Array<>(initialSize);
-		remove = new Array<>(initialSize);
 	}
 	
 	public ActionLogger getLogger() {
@@ -62,45 +60,39 @@ public class ActionManager {
 	
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
-			if(!actions.get(i).update(delta)) {
+			Action<?> action = actions.get(i);
+			
+			if(!action.update(delta)) {
 				if(actions.size == 0) break;
-				remove.add(actions.removeIndex(i));
+				action.setRoot(false);
+//				Pool pool = action.pool;
+//				pool.free(action);
+				ActionPools.free(action);
 			}
-		}
-
-		//TODO do this in the above loop
-		for(int i = remove.size - 1; i >= 0; i--) {
-			Action<?> action = remove.pop();
-			action.setRoot(false);
-			ActionPools.free(action);
 		}
 	}
 	
 	public void endAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			action.end();
+			actions.get(i).end();
 		}
 	}
 	
 	public void killAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			action.kill();
+			actions.get(i).kill();
 		}
 	}
 	
 	public void pauseAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			action.pause();
+			actions.get(i).pause();
 		}
 	}
 	
 	public void resumeAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			action.resume();
+			actions.get(i).resume();
 		}
 	}
 	
