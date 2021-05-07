@@ -31,6 +31,10 @@ import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 import com.vabrant.actionsystem.test.TestObject;
+import com.vabrant.actionsystem.test.tests.ActionSystemTestListener.ActionTest;
+import com.vabrant.actionsystem.test.tests.ActionSystemTestListener.DoubleLabelWidget;
+import com.vabrant.actionsystem.test.tests.ActionSystemTestListener.LabelCheckBoxWidget;
+import com.vabrant.actionsystem.test.tests.ActionSystemTestListener.LabelTextFieldFloatWidget;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
 

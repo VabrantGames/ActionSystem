@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertTrue;
 
@@ -30,6 +30,7 @@ import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.TimeAction;
+import com.vabrant.actionsystem.test.tests.TestActions;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
 /**

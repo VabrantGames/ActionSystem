@@ -1,4 +1,4 @@
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +18,7 @@ import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.DelayAction;
+import com.vabrant.actionsystem.test.tests.TestActions;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
 
