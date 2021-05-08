@@ -71,13 +71,15 @@ public class ActionSystemTestLauncher extends ApplicationAdapter {
 					}
 					
 					Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-					config.setWindowedMode(1000, 800);
+					config.setWindowedMode(1280, 800);
 					config.setTitle(name);
 					config.useVsync(false);
 					config.setResizable(false);
 					
 					Lwjgl3Graphics mainGraphics = (Lwjgl3Graphics)Gdx.graphics;
 					config.setWindowPosition(mainGraphics.getWindow().getPositionX() + 50, mainGraphics.getWindow().getPositionY() + 50);
+//					config.setWindowPosition(mainGraphics.getWindow().getPositionX() - ((1280 - 600) / 2) + 100, mainGraphics.getWindow().getPositionY() + 100);
+//					config.setWindowPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 					((Lwjgl3Application)Gdx.app).newWindow(listener, config);
 				}

@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
@@ -42,8 +41,10 @@ public class MoveActionTest extends ActionSystemTestListener {
 			currentYWidget.setValue(testObject.getY());
 		}
 	};
-	
-	public MoveActionTest() {
+
+	@Override
+	public void create() {
+		super.create();
 		testObject = new TestObject();
 		testObject.setSize(50, 50);
 	}

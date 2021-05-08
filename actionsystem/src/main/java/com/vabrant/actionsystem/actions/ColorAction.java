@@ -43,7 +43,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	public static ColorAction changeColorRGBA(Colorable colorable, float[] rgba, float duration, Interpolation interpolation) {
-		if(rgba.length < 4 || rgba.length > 4) throw new IllegalArgumentException("RGBA array length has to be 4");
+		if(rgba.length < 4 || rgba.length > 4) throw new IllegalArgumentException("RGBA array length has to be 4.");
 		return changeColorRGBA(colorable, rgba[0], rgba[1], rgba[2], rgba[3], duration, interpolation);
 	}
 	
@@ -309,7 +309,6 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 
 	public ColorAction changeHue(float hue, boolean useHSBValues) {
 		//If the color model has already been set we can not change it from setting individual channels.
-
 		if(useHSBValues) {
 			if(colorModel == RGB) return this;
 			colorModel = HSB;
