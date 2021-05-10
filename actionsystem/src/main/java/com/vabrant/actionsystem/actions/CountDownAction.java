@@ -54,7 +54,7 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 		return this;
 	}
 	
-	public CountDownAction addCountDownListener(CountDownActionListener listener) {
+	public CountDownAction addCountDownActionListener(CountDownActionListener listener) {
 		if(listener == null) return this;
 		countDownListeners.add(listener);
 		return this;
