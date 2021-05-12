@@ -29,6 +29,10 @@ public class RunnableAction extends Action<RunnableAction>{
 		return this;
 	}
 	
+	public Runnable getRunnable() {
+		return runnable;
+	}
+	
 	@Override
 	public boolean update(float delta) {
 		if(!isRunning()) return false;
