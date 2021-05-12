@@ -8,34 +8,37 @@ import org.junit.Test;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.PercentAction;
 import com.vabrant.actionsystem.actions.Percentable;
 
 public class PercentActionTest {
 
+	
 	static final float end = 10;
 	static final int duration = 1;
-	private TestClass testClass = new TestClass();
+	private PercentTestClass testClass = new PercentTestClass();
 	
 	@BeforeClass
 	public static void init() throws ReflectionException{
 		ActionLogger.useSysOut();
 	}
 	
-	public TestAction getTestAction() {
-		TestAction action = TestAction.set(testClass, end, duration)
+	public PercentTestAction getTestAction() {
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
 				.setLogLevel(ActionLogger.DEBUG);
 
 		//Make root action (Usually done by the action manager)
 		try {
 			//set this action as the root action
-			Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", null);
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "setRoot", boolean.class);
 			m.setAccessible(true);
 			m.invoke(action, null);
 		}
@@ -56,94 +59,104 @@ public class PercentActionTest {
 	@Test
 	public void singleRunTest() {
 		printTestHeader("Single Run Test");
-
-		TestAction action = getTestAction();
 		
-		action.start();
-
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
+		ActionManager manager = new ActionManager();
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
+				.setLogLevel(ActionLogger.DEBUG);
 		
-		//the after this update the timer will be the same as the duration
-		//the action should end
-		action.update(0.25f);
+		manager.addAction(action);
 		
-		ActionPools.free(action);
+		manager.update(0.25f);
+		manager.update(0.25f);
+		assertEquals("Value is incorrect", end * 0.5f, testClass.getValue());
+		
+		manager.update(0.25f);
+		manager.update(0.25f);
 
 		assertEquals("Value is incorrect", end, testClass.getValue());
 	}
 
 	@Test
-	public void multirunTest(){
+	public void unmanagedMultiRunTest(){
 		printTestHeader("Multi Run Test");
 		
-		TestAction action = getTestAction();
-
-		//---------// Run 1 //----------//
-		action.start();
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-
-		//---------// Run 2 //----------//
-		action.start();
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
+		ActionManager manager = new ActionManager();
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
+				.unmanage()
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		//Starts action
+		manager.addAction(action);
+		
+		//Mock update
+		manager.update(0.5f);
+		manager.update(0.5f);
 		
 		assertEquals("Value is incorrect", end, testClass.getValue());
+		assertEquals("Action is running", false, action.isRunning());
 		
-		ActionPools.free(action);
+		manager.addAction(action);
+		
+		//Mock update
+		manager.update(0.5f);
+		manager.update(0.5f);
+
+		assertEquals("Value is incorrect", end, testClass.getValue());
+		assertEquals("Action is running", false, action.isRunning());
+	}
+	
+	//Ensure the percent is correctly changed when the time is changed
+	@Test
+	public void setTimeTest() {
+		printTestHeader("Set Time Test");
+		
+		ActionManager manager = new ActionManager();
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
+				.setLogLevel(ActionLogger.DEBUG);
+		
+		manager.addAction(action);
+		
+		action.setTime(0.5f);
+		assertEquals("Percent is incorrect", 0.5f, action.getPercent());
+		
+		action.setTime(0.75f);
+		assertEquals("Percent is incorrect", 0.75f, action.getPercent());
 	}
 
 	@Test
 	public void restartRunTest(){
 		printTestHeader("Restart Cycle Test");
 		
-		TestAction action = getTestAction();
+		ActionManager manager = new ActionManager();
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
+				.setLogLevel(ActionLogger.DEBUG);
 
-		action.start();
-
-		//action is updated half way
-		action.update(0.25f);
-		action.update(0.25f);
-
-		//(percent * of) / 100
-		final float expected = (50 * end) / 100;
-		assertEquals("Value is incorrect", expected, testClass.getValue());
-
+		manager.addAction(action);
+		manager.update(0.5f);
+		
 		action.restart();
 
 		assertEquals("Percent is incorrent", 0f, action.getPercent());
 		assertEquals("Value is incorrect", 0f, testClass.getValue());
 
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
-		action.update(0.25f);
+		manager.update(duration);
 		
-		assertFalse("Action is running", action.isRunning());
 		assertEquals("End value is incorrect", end, testClass.getValue());
-		
-		ActionPools.free(action);
 	}
 	
 	@Test
 	public void setPercentTest() {
 		printTestHeader("Set Percent Test");
 		
-		TestAction action = getTestAction();
+		ActionManager manager = new ActionManager();
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration);
 		
 		float expected = 0;
 		float percent = 0;
 		
-		action.start();
+		manager.addAction(action);
 		
-		//Just an update
-		action.update(0.25f);
+		manager.update(0.25f);
 		
 		//---------// Move to 20 Percent //----------//
 		percent = 0.2f;
@@ -163,12 +176,10 @@ public class PercentActionTest {
 		expected = percent * duration;
 		assertEquals("Time is not correct", expected, action.getCurrentTime());
 		
-		action.end();
-		
-		ActionPools.free(action);
+		manager.update(duration);
 	}
 
-	public static class TestClass implements TestPercentable {
+	public static class PercentTestClass implements TestPercentable {
 		private float value = 0;
 
 		@Override
@@ -194,13 +205,13 @@ public class PercentActionTest {
 	/*
 	 * The class does not depict an actual implementation of a class that extends PercentAction. It was created for testing purposes.
 	 */
-	private static class TestAction extends PercentAction<TestPercentable, TestAction> {
+	private static class PercentTestAction extends PercentAction<TestPercentable, PercentTestAction> {
 
-		public static TestAction obtain(){
-			return obtain(TestAction.class);
+		public static PercentTestAction obtain(){
+			return obtain(PercentTestAction.class);
 		}
 
-		public static TestAction set(TestPercentable percentable, float end, float duration){
+		public static PercentTestAction set(TestPercentable percentable, float end, float duration){
 			return obtain()
 					.moveTo(end)
 					.set(percentable, duration, Interpolation.linear);
@@ -210,13 +221,13 @@ public class PercentActionTest {
 		public float start;
 		public float end;
 
-		public TestAction moveTo(float end){
+		public PercentTestAction moveTo(float end){
 			this.end = end;
 			return this;
 		}
 		
 		@Override
-		public TestAction setup() {
+		public PercentTestAction setup() {
 			if(setup) return this;
 			setup = true;
 			start = percentable.getValue();
