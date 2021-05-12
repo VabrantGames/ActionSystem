@@ -13,7 +13,8 @@ public class ActionSystemTests {
 			ColorActionTest.class,
 			RotateActionTest.class,
 			ScaleActionTest.class,
-			RepeatActionTest.class
+			RepeatActionTest.class,
+			ShakeActionTest.class
 	);
 	
 	public static final ObjectMap<String, Class<? extends ApplicationListener>> TESTS;
