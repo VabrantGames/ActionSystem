@@ -352,7 +352,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 			});
 		}
 		
-		public void setValue(int value) {
+		public void setValue(float value) {
 			textField.setText(String.valueOf(value));
 		}
 		

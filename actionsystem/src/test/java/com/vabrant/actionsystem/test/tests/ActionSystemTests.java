@@ -14,7 +14,8 @@ public class ActionSystemTests {
 			RotateActionTest.class,
 			ScaleActionTest.class,
 			RepeatActionTest.class,
-			ShakeActionTest.class
+			ShakeActionTest.class,
+			SoundActionTest.class
 	);
 	
 	public static final ObjectMap<String, Class<? extends ApplicationListener>> TESTS;
