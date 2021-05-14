@@ -30,6 +30,8 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	private float shakeAngle;
 	public float width = 50;
 	public float height = 50;
+	public float originX;
+	private float originY;
 	private Color color = new Color(0,0,0,1);
 	
 	public void useDeg(boolean useDeg) {
@@ -76,6 +78,19 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	public void setPosition(float x, float y) {
 		setX(x);
 		setY(y);
+	}
+	
+	public void setOriginX(float originX) {
+		this.originX = originX;
+	}
+	
+	public void setOriginY(float originY) {
+		this.originY = originY;
+	}
+	
+	public void origin(float originX, float originY) {
+		setOriginX(originX);
+		setOriginY(originY);
 	}
 
 	@Override

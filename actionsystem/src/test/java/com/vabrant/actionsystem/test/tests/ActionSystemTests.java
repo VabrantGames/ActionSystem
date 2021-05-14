@@ -16,7 +16,8 @@ public class ActionSystemTests {
 			RepeatActionTest.class,
 			ShakeActionTest.class,
 			SoundActionTest.class,
-			MusicActionTest.class
+			MusicActionTest.class,
+			ZoomActionTest.class
 	);
 	
 	public static final ObjectMap<String, Class<? extends ApplicationListener>> TESTS;
