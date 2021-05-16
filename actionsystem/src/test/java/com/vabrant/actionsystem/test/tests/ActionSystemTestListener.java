@@ -61,10 +61,11 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	private Label isRunningLabel;
 	private Label fpsLabel;
 	
+	@SuppressWarnings("rawtypes")
 	private ActionAdapter testOverListener = new ActionAdapter() {
 		@Override
 		public void actionEnd(Action a) {
-			resetCurrentTest();
+			removeCurrentTest();
 		}
 	};
 	
@@ -72,23 +73,18 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	public void create() {	
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
-		tests = new ObjectMap<>();
-		
-		hudViewport = new ScreenViewport();
-		batch = new SpriteBatch();
-		
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
 		pixmap.setColor(Color.WHITE);
 		pixmap.drawPixel(0, 0);
 		
+		tests = new ObjectMap<>();
+		hudViewport = new ScreenViewport();
+		batch = new SpriteBatch();
 		pixelTexture = new Texture(pixmap);
-		
 		shapeDrawer = new ShapeDrawer(batch, new TextureRegion(pixelTexture));
 		shapeDrawer.setDefaultSnap(false);
-		
 		actionManager = new ActionManager();
 		assetManager = new AssetManager();
-		
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setAutoShapeType(true);
 		
@@ -100,38 +96,36 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 
 		Table selectBoxTable = new Table();
 		selectBoxTable.setFillParent(true);
-		selectBoxTable.center().top();
-		SelectBox<String> selectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
-		Iterator<String> i = tests.keys();
+		selectBoxTable.pad(4).center().top();
+		SelectBox<String> testSelectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
+		Iterator<String> testNames = tests.keys();
 		Array<String> items = new Array<>();
-		while(i.hasNext()) {
-			items.add(i.next());
+		
+		while(testNames.hasNext()) {
+			items.add(testNames.next());
 		}
 		
-		selectBoxTable.add(selectBox);
-		selectBox.setItems(items);
-		selectBox.addListener(new ChangeListener() {
+		selectBoxTable.add(testSelectBox);
+		testSelectBox.setItems(items);
+		testSelectBox.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				selectedTest = selectBox.getSelected();
+				selectedTest = testSelectBox.getSelected();
 			}
 		});
-		
-//		if(selectBox.getItems().size > 0) selectBox.setSelectedIndex(0);
-//		selectBox.setSelected(null);
 		stage.addActor(selectBoxTable);
 		
-		Table defaultStatsTable = new Table();
-		defaultStatsTable.setFillParent(true);
-		defaultStatsTable.right().top();
-		
+		Table isRunningAndFPSTable = new Table();
+		isRunningAndFPSTable.setFillParent(true);
+		isRunningAndFPSTable.pad(4).right().top();
 		isRunningLabel = new Label("Not Running", new LabelStyle(skin.get(LabelStyle.class)));
 		isRunningLabel.getStyle().fontColor = Color.BLACK;
-		defaultStatsTable.add(isRunningLabel).width(100);
+		isRunningAndFPSTable.add(isRunningLabel).width(100);
 		
-		fpsLabel = new Label("", skin);
-		
-		stage.addActor(defaultStatsTable);
+//		isRunningLabelTable.row();
+//		fpsLabel = new Label("Fps:", skin);
+//		isRunningLabelTable.add(fpsLabel).left();
+		stage.addActor(isRunningAndFPSTable);
 		
 		Table statsRoot = new Table();
 		statsRoot.setFillParent(true);
@@ -148,7 +142,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 					case Keys.SPACE:
 						if(selectedTest == null) return false;
 						
-						if(isTestRunning) resetCurrentTest();
+						if(isTestRunning) removeCurrentTest();
 						isTestRunning = true;
 						ActionTest test = tests.get(selectedTest);
 						actionToRun = test.run();
@@ -164,7 +158,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 		Gdx.input.setInputProcessor(stage);
 	}
 
-	private void resetCurrentTest() {
+	private void removeCurrentTest() {
 		if(isTestRunning) {
 			isTestRunning = false;
 			actionManager.freeAll(false);
@@ -198,11 +192,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	public void addTest(ActionTest test) {
 		tests.put(test.name, test);
 	}
-	
-	public void reset() {
-		resetCurrentTest();
-	}
-	
+
 	public void createTests() {}
 	public void createHud(Table root, Skin skin) {}
 	public void update(float delta) {}
@@ -288,7 +278,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	
 	public static class LabelTextFieldWidget {
 		
-		private boolean allowNegativeValues;
+		protected boolean allowNegativeValues;
 		Label label;
 		TextField textField;
 		
@@ -296,15 +286,15 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 			label = new Label(labelTitle, skin);
 			textField = new TextField("", skin);
 			table.add(label).left();
-			table.add(textField).width(100).padRight(0);
+			table.add(textField).left().width(100).padRight(10);
 		}
 		
-		public void setAllowNegativeValues(boolean allowNegativeValues) {
-			this.allowNegativeValues = allowNegativeValues;
-		}
+//		public void setAllowNegativeValues(boolean allowNegativeValues) {
+//			this.allowNegativeValues = allowNegativeValues;
+//		}
 		
-		public boolean allowNegativeValues() {
-			return allowNegativeValues;
+		public void allowNegativeValues() {
+			allowNegativeValues = true;
 		}
 	}
 	
@@ -345,7 +335,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 								if(textField.getText().contains(".")) return false;
 								break;
 							case '-':
-								if(!allowNegativeValues()) return false;
+								if(!allowNegativeValues) return false;
 								if(textField.getText().length() > 1) {
 									if(textField.getCursorPosition() != 0) return false;
 									
@@ -362,7 +352,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 			});
 		}
 		
-		public void setValue(int value) {
+		public void setValue(float value) {
 			textField.setText(String.valueOf(value));
 		}
 		

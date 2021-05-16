@@ -15,7 +15,9 @@
  */
 package com.vabrant.actionsystem.test.tests;
 
-import com.badlogic.gdx.Input.Keys;
+import org.junit.Test;
+
+import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.CountDownAction;
 import com.vabrant.actionsystem.actions.CountDownAction.CountDownActionListener;
 
@@ -23,37 +25,31 @@ import com.vabrant.actionsystem.actions.CountDownAction.CountDownActionListener;
  * @author John Barton
  *
  */
-public class CountDownActionTest extends ActionSystemTestListener {
-
-	CountDownAction action;
+public class CountDownActionTest {
 	
-	public CountDownActionTest() {
-		action = CountDownAction.obtain()
-				.unmanage()
-				.setDuration(5)
-				.addCountDownListener(new CountDownActionListener() {
-					@Override
-					public void currentCount(int count) {
-						System.out.println(count);
-					}
-				});
-	}
-	
-	@Override
-	public boolean keyDown(int keycode) {
-		switch(keycode) {
-			case Keys.NUMPAD_0:
-				countDownTest();
-				break;
-			case Keys.NUMPAD_1:
-				action.setDuration(7);
-				break;
+	@Test
+	public void basicTest() {
+		ActionManager manager = new ActionManager();
+		
+		CountDownAction action = CountDownAction.countDown(5);
+		action.addCountDownActionListener(new CountDownActionListener() {
+			@Override
+			public void currentCount(int count) {
+				System.out.println(count);
 			}
-		return super.keyDown(keycode);
-	}
-	
-	public void countDownTest() {
-		actionManager.addAction(action);
+		});
+		
+		manager.addAction(action);
+
+		long currentTime = System.currentTimeMillis();
+		long oldTime = currentTime;
+		
+		while(action.isRunning()) {
+			oldTime =  currentTime;
+			currentTime = System.currentTimeMillis();
+			float delta = (currentTime - oldTime) / 1000.0f;
+			manager.update(delta);
+		}
 	}
 
 }
