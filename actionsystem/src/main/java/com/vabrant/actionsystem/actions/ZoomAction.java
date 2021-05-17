@@ -77,6 +77,8 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction>{
 	
 	@Override
 	public ZoomAction setup() {
+		super.setup();
+		
 		if(setup) {
 			setup = false;
 			
