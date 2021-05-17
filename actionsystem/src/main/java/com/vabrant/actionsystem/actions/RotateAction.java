@@ -96,6 +96,8 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	
 	@Override
 	public RotateAction setup() {
+		super.setup();
+		
 		if(setup) {
 			setup = false;
 			

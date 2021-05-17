@@ -28,7 +28,7 @@ import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
-import com.vabrant.actionsystem.actions.ScaleAction;
+import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.TestObject;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -40,6 +40,7 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 public class GroupActionTest extends ActionSystemTestListener {
 	
 	private LabelTextFieldFloatWidget parallelOffsetWidget;
+	private LabelCheckBoxWidget singleTestObjectWidget;
 
 	private final float startY = 150;
 	private final int amountOfTestObjects = 5;
@@ -85,6 +86,8 @@ public class GroupActionTest extends ActionSystemTestListener {
 		root.row();
 		parallelOffsetWidget = new LabelTextFieldFloatWidget("parallelOffset: ", skin, root, 0);
 		root.row();
+		singleTestObjectWidget = new LabelCheckBoxWidget("singleTestObject: ", skin, root);
+		root.row();
 	}
 	
 	@Override
@@ -97,8 +100,16 @@ public class GroupActionTest extends ActionSystemTestListener {
 				GroupAction groupAction = GroupAction.obtain();
 				groupAction.parallel(parallelOffsetWidget.getValue());
 
-				for(int i = 0; i < testObjects.size; i++) {
-					groupAction.add(MoveAction.moveYBy(testObjects.get(i), 100, 2f, Interpolation.exp5Out));
+				if(!singleTestObjectWidget.isChecked()) {
+					for(int i = 0; i < testObjects.size; i++) {
+						groupAction.add(MoveAction.moveYBy(testObjects.get(i), 100, 2f, Interpolation.exp5Out));
+					}
+				}
+				else {
+					float y = testObjects.get(0).getY();
+					for(int i = 0; i < 5; i++) {
+						groupAction.add(MoveAction.moveYTo(testObjects.get(0), y + 50, 1f, Interpolation.exp5Out));
+					}
 				}
 				
 				return groupAction;
@@ -126,12 +137,22 @@ public class GroupActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				resetY();
 				
+				for(int i = 0; i < testObjects.size; i++) {
+					testObjects.get(i).setRotation(45);
+				}
+				
 				GroupAction groupAction = GroupAction.obtain();
 				groupAction.sequence();
 				
-				for(int i = 0; i < testObjects.size; i++) {
-//					groupAction.add(MoveAction.moveYBy(testObjects.get(i), 150f, 0.5f, Interpolation.exp5Out));
-					groupAction.add(ScaleAction.scaleYBy(testObjects.get(i), 1f, 0.5f, Interpolation.exp5Out));
+				if(!singleTestObjectWidget.isChecked()) {
+					for(int i = 0; i < testObjects.size; i++) {
+						groupAction.add(MoveAction.moveYBy(testObjects.get(i), 150f, 0.5f, Interpolation.exp5Out));
+					}
+				}
+				else {
+					for(int i = 0; i < 5; i++) {
+						groupAction.add(MoveAction.moveYBy(testObjects.get(0), 20, 0.5f, Interpolation.exp5Out));
+					}
 				}
 
 				
@@ -151,6 +172,7 @@ public class GroupActionTest extends ActionSystemTestListener {
 				return groupAction;
 			}
 		});
+
 	}
 
 //	@Override
@@ -315,8 +337,13 @@ public class GroupActionTest extends ActionSystemTestListener {
 	
 	@Override
 	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
-		for(int i = 0; i < testObjects.size; i++) {
-			testObjects.get(i).draw(shapeDrawer);
+		if(!singleTestObjectWidget.isChecked()) {
+			for(int i = 0; i < testObjects.size; i++) {
+				testObjects.get(i).draw(shapeDrawer);
+			}
+		}
+		else {
+			testObjects.get(0).draw(shapeDrawer);
 		}
 	}
 	

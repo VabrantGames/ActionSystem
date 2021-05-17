@@ -22,6 +22,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 
 	protected boolean reverse;
 	protected boolean reverseBackToStart;
+	protected boolean setup = true;
 	protected float percent;
 	protected Interpolation interpolation;
 	protected P percentable;
@@ -71,6 +72,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	 */
 	@Override
 	public A setTime(float time) {
+		if(setup) return (A)this;
 		super.setTime(time);
 		calculatePercent();
 		return (A)this;
@@ -101,6 +103,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	}
 	
 	public A moveToPercent() {
+		if(setup) return (A)this;
 		percent(percent);
 		return (A)this;
 	}
@@ -144,6 +147,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 		reverseBackToStart = false;
 		interpolation = null;
 		percent = 0;
+		setup = true;
 	}
 
 	@Override
@@ -162,7 +166,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	@Override
 	protected void restartLogic() {
 		super.restartLogic();
-		percent(percent);
+		if(!setup) percent(percent);
 	}
 
 	@Override
@@ -182,7 +186,11 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	 * Sets up the action for the current cycle. This method is called every time {@link #startLogic} is called.
 	 * If the action doesn't need to be setup per cycle a boolean can be used stop it from setting up.
 	 */
-	public abstract A setup();
+//	public abstract A setup();
+	public A setup() {
+		setup = false;
+		return (A)this;
+	}
 	
 	protected abstract void percent(float percent);
 }
