@@ -170,6 +170,8 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction>{
 	
 	@Override
 	public ScaleAction setup() {
+		super.setup();
+		
 		if(setupX) {
 			setupX = false;
 			

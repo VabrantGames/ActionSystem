@@ -393,6 +393,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	@Override
 	public ColorAction setup() {
+		super.setup();
+		
 		if(setupAction) {
 			setupAction = false;
 			
