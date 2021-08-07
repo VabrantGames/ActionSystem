@@ -1,11 +1,10 @@
-
 buildscript {
     repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-        jcenter()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+//        mavenLocal()
+//        mavenCentral()
+//        google()
+//        jcenter()
+//        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
     }
@@ -15,96 +14,27 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
+    group = "com.vabrant"
+
     repositories {
-	mavenLocal()
-        mavenCentral()  
+        mavenLocal()
+        mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
         jcenter()
     }
-    
-	if (JavaVersion.current().isJava8Compatible()) {
-	 	allprojects {
-			tasks.withType(Javadoc) {
-				options.addStringOption('Xdoclint:none', '-quiet')
-			}
-		}
-  	}
-}
 
-subprojects{
-    apply plugin: "java-library"
-    group = "$baseGroup"
-    sourceCompatibility = 1.8
-
-    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-    compileJava{
-        options.incremental = true
+    if (JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
     }
 }
 
-task incrementVersion(){
-	doLast{
-		File file = new File("VERSION.properties")
-		Properties prop = new Properties()
-		prop.load(new FileInputStream(file))
-
-		if (!project.hasProperty("increment") || !project.hasProperty("type")) throw new Exception("Project or version type is null")
-
-		String key = project.getProperty("increment").toLowerCase()
-		String value;
-		String type = project.getProperty("type").toLowerCase()
-
-		//Get project to increment
-		switch(key){
-			case "actionsystem":
-				value = getIncrementedVersion(prop, prop.actionsystem, type)
-				break;
-			default:
-				throw new Exception("No project found")
-		}
-
-		println "version updated to: " + value
-
-		prop.setProperty(key, value)
-		prop.store(new FileOutputStream(file), null)
-	}
-}
-
-String getIncrementedVersion(Properties prop, String value, String type){
-	int major;
-	int minor;
-	int patch;
-	int off;
-
-	major = Integer.parseInt(value.substring(0, value.indexOf('.')))
-	off = value.indexOf('.') + 1
-	minor = Integer.parseInt(value.substring(off, value.indexOf('.', off)))
-	off = value.lastIndexOf('.') + 1
-	patch = Integer.parseInt(value.substring(off))
-
-	//Get type to increment
-	switch(project.getProperty("type")){
-		case "major":
-			major++;
-			minor = 0;
-			patch = 0;
-			break
-		case "minor":
-			minor++;
-			patch = 0;
-			break;
-		case "patch":
-			patch++;
-			break;
-	}
-
-	return major + '.' + minor + '.' + patch
-}
-
-tasks.eclipse.doLast{
+tasks.eclipse.doLast {
     delete ".project"
     delete ".classpath"
     delate ".settings/"
