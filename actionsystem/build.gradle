@@ -2,6 +2,7 @@ apply plugin: "maven"
 apply plugin: "java-library"
 
 version = "$actionSystemVersion"
+group = "com.github.vabrant.actionsystem"
 
 sourceCompatibility = 1.8
 
@@ -34,6 +35,11 @@ artifacts {
     archives javadocJar
 }
 
+install{
+    repositories{
+    }
+}
+
 //publishing {
 //	publications {
 //		mavenJava(MavenPublication) {
@@ -46,25 +52,25 @@ artifacts {
 //	}
 //}
 
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            developers {
-                developer {
-                    id = "John"
-                    name = "John Barton"
-                    email = "john.developer.mail@gmail.com"
-                }
-            }
-
-            licenses {
-                license {
-                    name "The Apache Software License, Version 2.0"
-                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution "repo"
-                }
-            }
-        }
-    }
-}
+//install {
+//    repositories.mavenInstaller {
+//        pom.project {
+//            developers {
+//                developer {
+//                    id = "John"
+//                    name = "John Barton"
+//                    email = "john.developer.mail@gmail.com"
+//                }
+//            }
+//
+//            licenses {
+//                license {
+//                    name "The Apache Software License, Version 2.0"
+//                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+//                    distribution "repo"
+//                }
+//            }
+//        }
+//    }
+//}
 
