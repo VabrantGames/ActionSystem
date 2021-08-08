@@ -1,9 +1,7 @@
-apply plugin: "maven"
+apply plugin: "maven-publish"
 apply plugin: "java-library"
 
 version = "$actionSystemVersion"
-group = "com.github.vabrant.actionsystem"
-
 sourceCompatibility = 1.8
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
@@ -30,47 +28,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier = "javadoc"
 }
 
-artifacts {
-    archives sourceJar
-    archives javadocJar
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+
+            artifact sourceJar
+		}
+	}
 }
-
-install{
-    repositories{
-    }
-}
-
-//publishing {
-//	publications {
-//		mavenJava(MavenPublication) {
-//			from components.java
-//
-//			artifact sourceJar {
-//				classifier "sources"
-//			}
-//		}
-//	}
-//}
-
-//install {
-//    repositories.mavenInstaller {
-//        pom.project {
-//            developers {
-//                developer {
-//                    id = "John"
-//                    name = "John Barton"
-//                    email = "john.developer.mail@gmail.com"
-//                }
-//            }
-//
-//            licenses {
-//                license {
-//                    name "The Apache Software License, Version 2.0"
-//                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-//                    distribution "repo"
-//                }
-//            }
-//        }
-//    }
-//}
 
