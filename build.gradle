@@ -34,6 +34,10 @@ allprojects {
     }
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
 tasks.eclipse.doLast {
     delete ".project"
     delete ".classpath"
