@@ -5,6 +5,8 @@ apply plugin: "maven"
 version = "$actionSystemVersion"
 sourceCompatibility = 1.8
 
+group = "com.github.vabrant.actionsystem"
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 compileJava {
@@ -35,7 +37,7 @@ artifacts {
 }
 
 install{
-    repositories{
+    repositories.mavenInstaller{
     }
 }
 
