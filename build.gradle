@@ -3,7 +3,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
+//        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
@@ -17,12 +17,12 @@ allprojects {
     group = "com.github.vabrant"
 
     repositories {
+        maven { url "https://jitpack.io" }
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://jitpack.io" }
-        jcenter()
+//        jcenter()
     }
 
     if (JavaVersion.current().isJava8Compatible()) {
