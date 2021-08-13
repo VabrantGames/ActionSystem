@@ -1,5 +1,6 @@
-apply plugin: "maven-publish"
+//apply plugin: "maven-publish"
 apply plugin: "java-library"
+apply plugin: "maven"
 
 version = "$actionSystemVersion"
 sourceCompatibility = 1.8
@@ -33,13 +34,18 @@ artifacts {
     archives javadocJar
 }
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-
-            artifact sourceJar
-		}
-	}
+install{
+    repositories{
+    }
 }
+
+//publishing {
+//	publications {
+//		mavenJava(MavenPublication) {
+//			from components.java
+//
+//            artifact sourceJar
+//		}
+//	}
+//}
 
