@@ -55,7 +55,7 @@ public class TestActions {
 		
 		@Override
 		public boolean update(float delta) {
-			if(isDead() || !isRunning()) return false;
+			if(!isRunning()) return false;
 			return true;
 		}
 	}
@@ -92,7 +92,7 @@ public class TestActions {
 		
 		@Override
 		public boolean update(float delta) {
-			if(isDead() || !isRunning()) return false;
+			if(!isRunning()) return false;
 			return true;
 		}
 		
@@ -126,7 +126,7 @@ public class TestActions {
 		
 		@Override
 		public boolean update(float delta) {
-			if(isDead() || !isRunning()) return false;
+			if(!isRunning()) return false;
 			return true;
 		}
 		
@@ -152,7 +152,7 @@ public class TestActions {
 		@Override
 		public void reset() {
 			super.reset();
-			ActionPools.alternativeFree(action);
+//			ActionPools.alternativeFree(action);
 			action = null;
 		}
 	}

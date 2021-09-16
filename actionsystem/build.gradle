@@ -1,42 +1,43 @@
-apply from: "../publish.gradle"
+apply plugin: "java-library"
+apply plugin: "maven"
 
-eclipse.project.name = rootProject.name + '-Core'
-
-ext{
-    artifactId = "action-system"
-}
-
-//group += ".actionsystem"
 version = "$actionSystemVersion"
+sourceCompatibility = 1.8
 
-dependencies{
-	api "com.badlogicgames.gdx:gdx:$gdxVersion"
-	implementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
-	testImplementation "com.vabrant.testbase:test-base:0.0.1"
-	testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-	testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-	testImplementation "junit:junit:4.13"
+//group = "com.github.vabrant.actionsystem"
+group = 'com.github.VabrantGames'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+compileJava {
+    options.incremental = true
 }
 
-install{
-	repositories.mavenInstaller{
-		pom.project{
-			developers{
-				developer{
-					id = "John"
-					name = "John Barton"
-					email = "john.developer.mail@gmail.com"
-				}
-			}
-		
-			licenses{
-				license{
-					name "The Apache Software License, Version 2.0"
-					url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-					distribution "repo"	
-				}
-			}
-		}
-	}
+dependencies {
+    api "com.badlogicgames.gdx:gdx:$gdxVersion"
+    testImplementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    testImplementation "junit:junit:4.13"
 }
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    archiveClassifier = "sources"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from javadoc.destinationDir
+    archiveClassifier = "javadoc"
+}
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
+//install{
+//    repositories.mavenInstaller{
+//    }
+//}
 

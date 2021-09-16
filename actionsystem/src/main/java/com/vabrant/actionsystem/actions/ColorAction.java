@@ -43,7 +43,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 	
 	public static ColorAction changeColorRGBA(Colorable colorable, float[] rgba, float duration, Interpolation interpolation) {
-		if(rgba.length < 4 || rgba.length > 4) throw new IllegalArgumentException("RGBA array length has to be 4");
+		if(rgba.length < 4 || rgba.length > 4) throw new IllegalArgumentException("RGBA array length has to be 4.");
 		return changeColorRGBA(colorable, rgba[0], rgba[1], rgba[2], rgba[3], duration, interpolation);
 	}
 	
@@ -309,7 +309,6 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 
 	public ColorAction changeHue(float hue, boolean useHSBValues) {
 		//If the color model has already been set we can not change it from setting individual channels.
-
 		if(useHSBValues) {
 			if(colorModel == RGB) return this;
 			colorModel = HSB;
@@ -394,6 +393,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	
 	@Override
 	public ColorAction setup() {
+		super.setup();
+		
 		if(setupAction) {
 			setupAction = false;
 			
@@ -432,8 +433,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		//from above but this time we are doing something with the blue channel. Since we are changing the blue
 		//channel elsewhere with another action or some other logic we don't wan't this action to touch anything 
 		//about the blue channel. Doing so can ruin what we were trying to do. So what we would do is solo this action.
-		//Soloing would force this action to only change only the red and green channels and leave the blue channel untouched. Doesn't matter if i restart, move to end,
-		//or anything else this action will never touch the blue channel.
+		//Soloing would force this action to only change the red and green channels and leave the blue channel untouched. Doesn't matter if i restart, move to end,
+		//or anything else. This action will never touch the blue channel.
 		
 		if(!soloChannel) {
 			Color c = percentable.getColor();

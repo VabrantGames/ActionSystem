@@ -3,6 +3,7 @@ package com.vabrant.actionsystem.test;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.MathUtils;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.Colorable;
@@ -17,6 +18,7 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 public class TestObject extends ActionAdapter implements Movable, Colorable, Zoomable, Shakable, Rotatable, Scalable{
 	
 	public boolean isRunning;
+	private boolean useDeg;
 	private float scaleX = 1;
 	private float scaleY = 1;
 	private float rotation;
@@ -28,11 +30,29 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	private float shakeAngle;
 	public float width = 50;
 	public float height = 50;
+	public float originX;
+	private float originY;
 	private Color color = new Color(0,0,0,1);
+	
+	public void useDeg(boolean useDeg) {
+		this.useDeg = useDeg;
+	}
+
+	public void setSize(float size) {
+		width = height = size;
+	}
 	
 	public void setSize(float width, float height) {
 		this.width = width;
 		this.height = height;
+	}
+	
+	public float getWidth() {
+		return width;
+	}
+	
+	public float getHeight() {
+		return height;
 	}
 	
 	@Override
@@ -58,6 +78,19 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	public void setPosition(float x, float y) {
 		setX(x);
 		setY(y);
+	}
+	
+	public void setOriginX(float originX) {
+		this.originX = originX;
+	}
+	
+	public void setOriginY(float originY) {
+		this.originY = originY;
+	}
+	
+	public void origin(float originX, float originY) {
+		setOriginX(originX);
+		setOriginY(originY);
 	}
 
 	@Override
@@ -119,6 +152,10 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	public float getRotation() {
 		return rotation;
 	}
+	
+	private float getActualRotation() {
+		return useDeg ? rotation : rotation * MathUtils.degreesToRadians;
+	}
 
 	@Override
 	public void setScaleX(float scaleX) {
@@ -153,12 +190,12 @@ public class TestObject extends ActionAdapter implements Movable, Colorable, Zoo
 	public void draw(ShapeRenderer renderer) {
 		renderer.set(ShapeType.Filled);
 		renderer.setColor(color);
-		renderer.rect(x + shakeX, y + shakeY, width / 2, height / 2, width, height, scaleX * zoom, scaleY * zoom, shakeAngle + rotation);
+		renderer.rect(x + shakeX, y + shakeY, width / 2, height / 2, width, height, scaleX * zoom, scaleY * zoom, shakeAngle + getActualRotation());
 	}
 	
 	public void draw(ShapeDrawer shapeDrawer) {
 		shapeDrawer.setColor(color);
-		shapeDrawer.filledRectangle(x + shakeX, y + shakeY, width * scaleX * zoom, height * scaleY * zoom, shakeAngle + rotation);
+		shapeDrawer.filledRectangle(x + shakeX, y + shakeY, width * scaleX * zoom, height * scaleY * zoom, shakeAngle + getActualRotation());
 	}
 
 }

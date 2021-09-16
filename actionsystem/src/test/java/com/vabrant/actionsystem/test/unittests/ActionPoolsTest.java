@@ -13,7 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
-package com.vabrant.actionsystem.test.tests;
+package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertTrue;
 
@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.Pool;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
+import com.vabrant.actionsystem.test.tests.ActionSystemTestListener;
+import com.vabrant.actionsystem.test.tests.TestActions;
 import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.SingleParentTestAction;
 import com.vabrant.actionsystem.test.tests.TestActions.TestAction;

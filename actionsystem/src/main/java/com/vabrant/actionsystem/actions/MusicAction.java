@@ -28,8 +28,15 @@ public class MusicAction extends TimeAction<MusicAction> {
 				.setMusic(music, duration);
 	}
 	
-	public static MusicAction play(Music music, float duration, float pan) {
+	public static MusicAction play(Music music, float duration, float volume) {
 		return obtain()
+				.setVolume(volume)
+				.setMusic(music, duration);
+	}
+	
+	public static MusicAction play(Music music, float duration, float volume, float pan) {
+		return obtain()
+				.setVolume(volume)
 				.setPan(pan)
 				.setMusic(music, duration);
 	}

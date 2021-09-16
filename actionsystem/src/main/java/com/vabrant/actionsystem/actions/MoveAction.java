@@ -203,6 +203,8 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	
 	@Override
 	public MoveAction setup() {
+		super.setup();
+		
 		if(setupX) {
 			setupX = false;
 			

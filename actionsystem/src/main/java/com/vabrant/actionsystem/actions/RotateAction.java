@@ -48,8 +48,8 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	private int type = -1;
 	
 	private boolean setup = true;
+	private boolean cap;
 	private boolean capDeg;
-	private boolean capRad;
 	private boolean startRotateByFromEnd;
 	private float byAmount;
 	private float start;
@@ -67,30 +67,25 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return this;
 	}
 	
+	/**
+	 * Every time the action restarts, it will start from its current position instead of its initial start position.
+	 * 
+	 * @return This action for chaining.
+	 */
 	public RotateAction startRotateByFromEnd() {
 		startRotateByFromEnd = true;
 		return this;
 	}
 	
 	/**
-	 * Caps the end value between <i> 0 (inclusive)</i> - <i> 360 (exclusive) </i>.
+	 * Caps the end value between <i> 0 (inclusive)</i> - <i> 360 (exclusive) </i> for degrees
+	 * or <i> 0 (inclusive) </i> - <i> 2 * PI (exclusive) </i> for radians.
 	 * 
 	 * @return This action for chaining. 
 	 */
-	public RotateAction capEndBetweenRevolutionDeg() {
-		capDeg = true;
-		if(capRad) capRad = false;
-		return this;
-	}
-	
-	/**
-	 * Caps the end value between <i> 0 (inclusive) </i> - <i> 2 * PI (exclusive) </i>
-	 * 
-	 * @return
-	 */
-	public RotateAction capEndBetweenRevolutionRad(){
-		capRad = true;
-		if(capDeg) capDeg = false;
+	public RotateAction capEndBetweenRevolution(boolean useDeg) {
+		cap = true;
+		capDeg = useDeg ? true : false;
 		return this;
 	}
 	
@@ -101,6 +96,8 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	
 	@Override
 	public RotateAction setup() {
+		super.setup();
+		
 		if(setup) {
 			setup = false;
 			
@@ -122,34 +119,27 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		super.endLogic();
 		if(type == ROTATE_BY && startRotateByFromEnd) setup = true;
 		
-		if(capDeg) {
-			percentable.setRotation(percentable.getRotation() % 360f);
-		}
-		else if(capRad) {
-			percentable.setRotation(percentable.getRotation() % MathUtils.PI2);
+		if(cap) {
+			if(capDeg) {
+				percentable.setRotation(percentable.getRotation() % 360f);
+			}
+			else {
+				percentable.setRotation(percentable.getRotation() % MathUtils.PI2);
+			}
 		}
 	}
-	
-//	@Override
-//	public boolean hasConflict(Action<?> action) {
-//		if(action instanceof RotateAction) {
-//			RotateAction conflictAction = (RotateAction)action;
-//			if(conflictAction.type > -1) return true; 
-//		}
-//		return false;
-//	}
-	
+
 	@Override
 	public void clear() {
 		super.clear();
 		type = -1;
 		setup = true;
+		cap = false;
 		capDeg = false;
-		capRad = false;
+		startRotateByFromEnd = false;
+		byAmount = 0;
 		start = 0;
 		end = 0;
-		byAmount = 0;
-		startRotateByFromEnd = false;
 	}
 
 }

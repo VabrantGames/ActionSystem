@@ -5,13 +5,18 @@ import com.vabrant.actionsystem.actions.ColorAction;
 
 public class HSBToRGBTest {
 
+	public static void main(String[] args){
+		HSBToRGBTest h = new HSBToRGBTest();
+		h.runTest();
+	}
+
 	private final float h = 300;
 	private final float s = 0f;
 	private final float v = 0.5f;
 	private final int iterations = 10000;
 	private final PerformanceTimer timer = new PerformanceTimer(2);
 	private final Color testColor = new Color();
-	
+
 	public HSBToRGBTest() {
 	}
 

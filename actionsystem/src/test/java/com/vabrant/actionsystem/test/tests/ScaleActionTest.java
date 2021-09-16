@@ -15,12 +15,16 @@
  */
 package com.vabrant.actionsystem.test.tests;
 
-import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
 import com.vabrant.actionsystem.test.TestObject;
@@ -30,142 +34,202 @@ import com.vabrant.actionsystem.test.TestObject;
  *
  */
 public class ScaleActionTest extends ActionSystemTestListener {
-
-	private float startX;
-	private float startY;
-	private float endX;
-	private float endY;
-	private float amountX;
-	private float amountY;
+	
+	private LabelTextFieldFloatWidget xStartWidget;
+	private LabelTextFieldFloatWidget yStartWidget;
+	private LabelTextFieldFloatWidget xEndWidget;
+	private LabelTextFieldFloatWidget yEndWidget;
+	private LabelTextFieldFloatWidget xAmountWidget;
+	private LabelTextFieldFloatWidget yAmountWidget;
+	private LabelTextFieldFloatWidget durationWidget;
+	private LabelCheckBoxWidget reverseBackToStartWidget;
+	private LabelCheckBoxWidget reverseWidget;
+	private LabelCheckBoxWidget startXByFromEndWidget;
+	private LabelCheckBoxWidget startYByFromEndWidget;
+	
+	//Metrics
+	private DoubleLabelWidget testXEndWidget;
+	private DoubleLabelWidget testYEndWidget;
+	private DoubleLabelWidget currentXWidget;
+	private DoubleLabelWidget currentYWidget;
+	
 	private TestObject testObject;
-	private ActionListener<ScaleAction> listener;
+	
+	private ActionListener<ScaleAction> metricsListener = new ActionAdapter<ScaleAction>() {
+		public void actionEnd(ScaleAction a) {
+			currentXWidget.setValue(testObject.getScaleX());
+			currentYWidget.setValue(testObject.getScaleY());
+		}
+	};
 	
 	@Override
 	public void create() {
 		super.create();
 		testObject = new TestObject();
-		listener = createListener();
-		reset();
+		testObject.setSize(100);
 	}
 	
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
-		TestObjectController.getInstance().center(testObject, viewport);
-	}
-
-	private void reset() {
-		testObject.setScaleX(1);
-		testObject.setScaleY(1);
-	}
-
-	private ActionListener<ScaleAction> createListener(){
-		return new ActionAdapter<ScaleAction>() {
-			@Override
-			public void actionEnd(ScaleAction a) {
-				ActionSystemTestConstantsAndUtils.printTestHeader(a.getName());
-				System.out.println("StartX: " + startX);
-				System.out.println("StartY: " + startY);
-				System.out.println("EndX: " + endX);
-				System.out.println("EndY: " + endY);
-				System.out.println("X: " + testObject.getScaleX());
-				System.out.println("Y: " + testObject.getScaleY());
-			}
-		};
+		float x = (width - testObject.getWidth()) * 0.5f;
+		float y = (height - testObject.getHeight()) * 0.5f;
+		testObject.setPosition(x, y);
 	}
 	
 	@Override
-	public boolean keyDown(int keycode) {
-		switch(keycode) {
-			case Keys.NUMPAD_0:
-				scaleXByTest();
-				break;
-			case Keys.NUMPAD_1:
-				scaleYByTest();
-				break;
-			case Keys.NUMPAD_2:
-				scaleXToTest();
-				break;
-			case Keys.NUMPAD_3:
-				scaleYToTest();
-				break;
-			case Keys.NUMPAD_4:
-				pingPongTest();
-				break;
-		}
-		return super.keyDown(keycode);
+	public void createHud(Table root, Skin skin) {
+		LabelStyle headerStyle = new LabelStyle(skin.get(LabelStyle.class));
+		headerStyle.fontColor = Color.BLACK;
+		
+		Label valuesLabel = new Label("Values", headerStyle);
+		root.add(valuesLabel).left();
+		root.row();
+		xStartWidget = new LabelTextFieldFloatWidget("xStart: ", skin, root, 1);
+		xStartWidget.allowNegativeValues();
+		xEndWidget = new LabelTextFieldFloatWidget("xEnd: ", skin, root, 1);
+		xEndWidget.allowNegativeValues();
+		root.row();
+		yStartWidget = new LabelTextFieldFloatWidget("yStart: ", skin, root, 1);
+		yStartWidget.allowNegativeValues();
+		yEndWidget = new LabelTextFieldFloatWidget("yEnd: ", skin, root, 1);
+		yEndWidget.allowNegativeValues();
+		root.row();
+		xAmountWidget = new LabelTextFieldFloatWidget("xAmount: ", skin, root, 0);
+		xAmountWidget.allowNegativeValues();
+		yAmountWidget = new LabelTextFieldFloatWidget("yAmount: ", skin, root, 0);
+		yAmountWidget.allowNegativeValues();
+		root.row();
+		durationWidget = new LabelTextFieldFloatWidget("duration: ", skin, root, 1);
+		root.row();
+		reverseBackToStartWidget = new LabelCheckBoxWidget("reverseBackToStart: ", skin, root);
+		root.row();
+		reverseWidget = new LabelCheckBoxWidget("reverse: ", skin, root);
+		root.row();
+		startXByFromEndWidget = new LabelCheckBoxWidget("startXByFromEnd: ", skin, root);
+		root.row();
+		startYByFromEndWidget = new LabelCheckBoxWidget("startYByFromEnd: ", skin, root);
+		root.row();
+		
+		Label metricsLabel = new Label("Metrics", headerStyle);
+		root.add(metricsLabel).left().padTop(10);
+		root.row();
+		testXEndWidget = new DoubleLabelWidget("testXEnd: ", skin, root);
+		root.row();
+		testYEndWidget = new DoubleLabelWidget("testYEnd: ", skin, root);
+		root.row();
+		currentXWidget = new DoubleLabelWidget("currentX: ", skin, root);
+		root.row();
+		currentYWidget = new DoubleLabelWidget("currentY: ", skin, root);
+	}
+	
+	@Override
+	public void createTests() {
+		addTest(new ActionTest("ScaleXBy") {
+			@Override
+			public Action<?> run() {
+				if(!startXByFromEndWidget.isChecked()) testObject.setScaleX(xStartWidget.getValue());
+				if(!startYByFromEndWidget.isChecked()) testObject.setScaleY(yStartWidget.getValue());
+
+				testXEndWidget.setValue(testObject.getScaleX() + xAmountWidget.getValue());
+				testYEndWidget.setValue(testObject.getScaleY());
+
+				return ScaleAction.scaleXBy(testObject, xAmountWidget.getValue(), 
+						durationWidget.getValue(), Interpolation.linear)
+						.addListener(metricsListener)
+						.setName("ScaleXBy")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
+		
+		addTest(new ActionTest("ScaleYBy") {
+			@Override
+			public Action<?> run() {
+				if(!startXByFromEndWidget.isChecked()) testObject.setScaleX(xStartWidget.getValue());
+				if(!startYByFromEndWidget.isChecked()) testObject.setScaleY(yStartWidget.getValue());
+				
+				testXEndWidget.setValue(testObject.getScaleX());
+				testYEndWidget.setValue(testObject.getScaleY() + yAmountWidget.getValue());
+				
+				return ScaleAction.scaleYBy(testObject, yAmountWidget.getValue(), 
+						durationWidget.getValue(), Interpolation.linear)
+						.addListener(metricsListener)
+						.setName("ScaleYBy")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
+		
+		addTest(new ActionTest("ScaleXTo") {
+			@Override
+			public Action<?> run() {
+				testObject.setScale(xStartWidget.getValue(), yStartWidget.getValue());
+				
+				testXEndWidget.setValue(xEndWidget.getValue());
+				testYEndWidget.setValue(testObject.getScaleY());
+				
+				return ScaleAction.scaleXTo(testObject, xEndWidget.getValue(), 
+						durationWidget.getValue(), Interpolation.linear) 
+						.addListener(metricsListener)
+						.setName("ScaleXTo")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
+		
+		addTest(new ActionTest("ScaleYTo") {
+			@Override
+			public Action<?> run() {
+				testObject.setScale(xStartWidget.getValue(), yStartWidget.getValue());
+				
+				testXEndWidget.setValue(testObject.getScaleX());
+				testYEndWidget.setValue(yEndWidget.getValue());
+				
+				return ScaleAction.scaleYTo(testObject, yEndWidget.getValue(), 
+						durationWidget.getValue(), Interpolation.linear) 
+						.addListener(metricsListener)
+						.setName("ScaleYTo")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
+		
+		addTest(new ActionTest("ScaleBy") {
+			@Override
+			public Action<?> run() {
+				if(!startXByFromEndWidget.isChecked()) testObject.setScaleX(xStartWidget.getValue());
+				if(!startYByFromEndWidget.isChecked()) testObject.setScaleY(yStartWidget.getValue());
+				
+				testXEndWidget.setValue(testObject.getScaleX() + xAmountWidget.getValue());
+				testYEndWidget.setValue(testObject.getScaleY() + yAmountWidget.getValue());
+				
+				return ScaleAction.scaleBy(testObject, xAmountWidget.getValue(), 
+						yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.linear) 
+						.addListener(metricsListener)
+						.setName("ScaleBy")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
+		
+		addTest(new ActionTest("ScaleTo") {
+			@Override
+			public Action<?> run() {
+				testObject.setScale(xStartWidget.getValue(), yStartWidget.getValue());
+				
+				testXEndWidget.setValue(xEndWidget.getValue());
+				testYEndWidget.setValue(yEndWidget.getValue());
+				
+				return ScaleAction.scaleTo(testObject, xEndWidget.getValue(), yEndWidget.getValue(), 
+						durationWidget.getValue(), Interpolation.linear) 
+						.setName("ScaleTo")
+						.reverseBackToStart(reverseBackToStartWidget.isChecked())
+						.setReverse(reverseWidget.isChecked());
+			}
+		});
 	}
 
-	public void scaleXByTest() {
-		reset();
-		
-		amountX = 0.5f;
-		startX = testObject.getScaleX();
-		endX = startX + amountX;
-		startY = endY = testObject.getScaleY();
-		
-		actionManager.addAction(
-				ScaleAction.scaleXBy(testObject, amountX, 0.5f, Interpolation.linear)
-				.setName("ScaleXBy")
-				.addListener(listener));
-	}
-
-	public void scaleYByTest() {
-		reset();
-		
-		amountY = -0.5f;
-		startY = testObject.getScaleY();
-		endY = startY + amountY;
-		startX = endX = testObject.getScaleX();
-		
-		actionManager.addAction(
-				ScaleAction.scaleYBy(testObject, amountY, 0.5f, Interpolation.linear)
-				.setName("ScaleYBy")
-				.addListener(listener));
-	}
-	
-	public void scaleXToTest() {
-		reset();
-		
-		startX = testObject.getScaleX();
-		endX = 2;
-		endY = startY = testObject.getScaleY();
-		
-		actionManager.addAction(
-				ScaleAction.scaleXTo(testObject, endX, 0.5f, Interpolation.linear)
-				.setName("ScaleXTo")
-				.addListener(listener));
-	}
-	
-	public void scaleYToTest() {
-		reset();
-		
-		startY = testObject.getScaleY();
-		endY = 3;
-		endX = startX = testObject.getScaleY();
-		
-		actionManager.addAction(
-				ScaleAction.scaleYTo(testObject, endY, 0.5f, Interpolation.linear)
-				.setName("ScaleYTo")
-				.addListener(listener));
-	}
-	
-	public void pingPongTest() {
-		reset();
-		
-		actionManager.addAction(
-				RepeatAction.continuous(
-						ScaleAction.scaleXTo(testObject, 2, 0.25f, Interpolation.sineOut)) 
-				.pingPong(true));
-		
-//		actionManager.addAction(
-//				RepeatAction.repeat(
-//						ScaleAction.scaleYTo(testObject, 2, 1f, Interpolation.linear),
-//						4) 
-//				.pingPong(true));
-		
-	}
-	
 	@Override
 	public void drawWithShapeRenderer(ShapeRenderer renderer) {
 		testObject.draw(renderer);

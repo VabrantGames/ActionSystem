@@ -51,7 +51,7 @@ public class ActionManager {
 	public void addAction(Action<?> action) {
 		if(action == null) throw new IllegalArgumentException("Action is null");
 		action.setActionManager(this);
-		action.setRoot();
+		action.setRoot(true);
 		action.setRootAction(action);
 		actions.add(action);
 		action.start();
@@ -60,42 +60,45 @@ public class ActionManager {
 	
 	public void update(float delta) {
 		for(int i = actions.size - 1; i >= 0; i--) {
-			if(!actions.get(i).update(delta)) {
-				ActionPools.free(actions.removeIndex(i));
+			Action<?> action = actions.get(i);
+			
+			if(!action.update(delta)) {
+				if(actions.size == 0) break;
+				actions.removeIndex(i);
+				action.setRoot(false);
+//				Pool pool = action.pool;
+//				pool.free(action);
+				ActionPools.free(action);
 			}
 		}
 	}
 	
 	public void endAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			if(action == null) continue;
-			action.end();
+			actions.get(i).end();
 		}
 	}
 	
 	public void killAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			if(action == null) continue;
-			action.kill();
+			actions.get(i).kill();
 		}
 	}
 	
 	public void pauseAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			if(action == null) continue;
-			action.pause();
+			actions.get(i).pause();
 		}
 	}
 	
 	public void resumeAllActions() {
 		for(int i = 0, size = actions.size; i < size; i++) {
-			Action<?> action = actions.get(i);
-			if(action == null) continue;
-			action.resume();
+			actions.get(i).resume();
 		}
+	}
+	
+	public void freeAll() {
+		freeAll(true);
 	}
 
 	/**
@@ -106,12 +109,13 @@ public class ActionManager {
 		if(logger != null) logger.debug("Free All");
 		for(int i = actions.size - 1; i >= 0; i--) {
 			Action<?> action = actions.removeIndex(i);
+			action.setRoot(false);
 			
-			if(action.isManaged()) {
-				ActionPools.free(action);
+			if(!action.isManaged() && freeUnmanaged) {
+				action.free();
 			}
 			else {
-				if(freeUnmanaged) action.free();
+				ActionPools.free(action);
 			}
 		}
 	}
