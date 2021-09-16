@@ -1,8 +1,11 @@
-apply plugin: "maven-publish"
 apply plugin: "java-library"
+apply plugin: "maven"
 
 version = "$actionSystemVersion"
 sourceCompatibility = 1.8
+
+//group = "com.github.vabrant.actionsystem"
+group = 'com.github.VabrantGames'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -28,13 +31,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     archiveClassifier = "javadoc"
 }
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-
-            artifact sourceJar
-		}
-	}
+artifacts {
+    archives sourceJar
+    archives javadocJar
 }
+
+//install{
+//    repositories.mavenInstaller{
+//    }
+//}
 

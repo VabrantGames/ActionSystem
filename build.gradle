@@ -3,7 +3,7 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-        jcenter()
+//        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
@@ -14,15 +14,15 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    group = "com.vabrant"
+    group = "com.github.vabrant"
 
     repositories {
+        maven { url "https://jitpack.io" }
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://jitpack.io" }
-        jcenter()
+//        jcenter()
     }
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -32,6 +32,10 @@ allprojects {
             }
         }
     }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 tasks.eclipse.doLast {
