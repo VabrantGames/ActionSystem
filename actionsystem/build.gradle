@@ -9,6 +9,10 @@ group = 'com.github.VabrantGames'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+ext{
+    artifactId = "action-system"
+}
+
 compileJava {
     options.incremental = true
 }
@@ -37,7 +41,32 @@ artifacts {
 }
 
 //install{
-//    repositories.mavenInstaller{
+////    repositories.mavenInstaller{
+////    }
+//    repositories {
+//
 //    }
 //}
+
+install{
+    repositories.mavenInstaller{
+        pom.project{
+            developers{
+                developer{
+                    id = "John"
+                    name = "John Barton"
+                    email = "john.developer.mail@gmail.com"
+                }
+            }
+
+            licenses{
+                license{
+                    name "The Apache Software License, Version 2.0"
+                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    distribution "repo"
+                }
+            }
+        }
+    }
+}
 
