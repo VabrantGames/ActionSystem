@@ -1,21 +1,21 @@
-apply plugin: "java-library"
-apply plugin: "maven"
-
-version = "$actionSystemVersion"
-sourceCompatibility = 1.8
-
-//group = "com.github.vabrant.actionsystem"
-group = 'com.github.VabrantGames'
-
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-ext{
-    artifactId = "action-system"
-}
-
-compileJava {
-    options.incremental = true
-}
+//apply plugin: "java-library"
+//apply plugin: "maven"
+//
+//version = "$actionSystemVersion"
+//sourceCompatibility = 1.8
+//
+////group = "com.github.vabrant.actionsystem"
+//group = 'com.github.VabrantGames'
+//
+//[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+//
+//ext{
+//    artifactId = "action-system"
+//}
+//
+//compileJava {
+//    options.incremental = true
+//}
 
 dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -25,48 +25,48 @@ dependencies {
     testImplementation "junit:junit:4.13"
 }
 
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    archiveClassifier = "sources"
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    from javadoc.destinationDir
-    archiveClassifier = "javadoc"
-}
-
-artifacts {
-    archives sourceJar
-    archives javadocJar
-}
-
-//install{
-////    repositories.mavenInstaller{
-////    }
-//    repositories {
+//task sourceJar(type: Jar) {
+//    from sourceSets.main.allSource
+//    archiveClassifier = "sources"
+//}
 //
+//task javadocJar(type: Jar, dependsOn: javadoc) {
+//    from javadoc.destinationDir
+//    archiveClassifier = "javadoc"
+//}
+//
+//artifacts {
+//    archives sourceJar
+//    archives javadocJar
+//}
+//
+////install{
+//////    repositories.mavenInstaller{
+//////    }
+////    repositories {
+////
+////    }
+////}
+//
+//install{
+//    repositories.mavenInstaller{
+//        pom.project{
+//            developers{
+//                developer{
+//                    id = "John"
+//                    name = "John Barton"
+//                    email = "john.developer.mail@gmail.com"
+//                }
+//            }
+//
+//            licenses{
+//                license{
+//                    name "The Apache Software License, Version 2.0"
+//                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+//                    distribution "repo"
+//                }
+//            }
+//        }
 //    }
 //}
-
-install{
-    repositories.mavenInstaller{
-        pom.project{
-            developers{
-                developer{
-                    id = "John"
-                    name = "John Barton"
-                    email = "john.developer.mail@gmail.com"
-                }
-            }
-
-            licenses{
-                license{
-                    name "The Apache Software License, Version 2.0"
-                    url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    distribution "repo"
-                }
-            }
-        }
-    }
-}
 
