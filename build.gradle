@@ -3,7 +3,6 @@ buildscript {
         mavenLocal()
         mavenCentral()
         google()
-//        jcenter()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
     dependencies {
@@ -14,7 +13,8 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    group = "com.github.vabrant"
+    group = "com.github.VabrantGames"
+    version = "0.4.1"
 
     repositories {
         mavenLocal()
@@ -22,7 +22,6 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
         maven { url "https://jitpack.io" }
-//        jcenter()
     }
 
     if (JavaVersion.current().isJava8Compatible()) {
@@ -34,6 +33,35 @@ allprojects {
     }
 }
 
+subprojects {
+    apply plugin: "java-library"
+    apply plugin: "maven"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    compileJava {
+        options.incremental = true
+    }
+
+    task sourceJar(type: Jar){
+        from sourceSets.main.allSource
+        archiveClassifier = 'sources'
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc){
+        from javadoc.destinationDir
+        archiveClassifier = 'javadoc'
+    }
+
+    artifacts {
+        archives sourceJar
+        archives javadocJar
+    }
+}
+
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
@@ -41,5 +69,5 @@ configurations.all {
 tasks.eclipse.doLast {
     delete ".project"
     delete ".classpath"
-    delate ".settings/"
+    delete ".settings/"
 }
