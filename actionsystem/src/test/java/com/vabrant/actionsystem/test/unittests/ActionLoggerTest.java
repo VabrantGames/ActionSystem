@@ -19,6 +19,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.utils.ObjectSet;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,23 +68,48 @@ public class ActionLoggerTest {
 	}
 	
 	@Test
-	public void soloTest() {
+	public void singleSoloTest() {
 		TestUtils.printTestHeader(testName.getMethodName());
-		
-		ActionLogger soloLogger = ActionLogger.getLogger(ActionLoggerTest.class, "Solo", ActionLogger.DEBUG);
-		
+
+		class SomeLogger {
+		}
+
+		logger.setLevel(ActionLogger.DEBUG);
+		ActionLogger soloLogger = ActionLogger.getLogger(SomeLogger.class, "Solo", ActionLogger.DEBUG);
+
 		logger.info("Hello");
 		soloLogger.info("Hello");
-		
+
 		soloLogger.solo(true);
-		
+
 		logger.info("Should not be logged");
 		soloLogger.info("Solo me!!");
-		
+
 		soloLogger.solo(false);
-		
-		logger.info("Was i muted?");
-		
+
+		logger.info("Am I still muted?");
+	}
+
+	@Test
+	public void multiSoloTest() {
+		final int amount = 10;
+		TestUtils.printTestHeader(testName.getMethodName());
+		logger.setLevel(ActionLogger.DEBUG);
+
+		class SomeLogger {
+		}
+
+		ObjectSet<ActionLogger> loggers = new ObjectSet<>();
+		for (int i = 0; i < amount; i++) {
+			loggers.add(ActionLogger.getLogger(SomeLogger.class, Integer.toString(i), ActionLogger.DEBUG));
+		}
+
+		logger.info("Hello");
+
+		for (ActionLogger l : loggers) {
+			l.info("World");
+		}
+
 	}
 
 }
