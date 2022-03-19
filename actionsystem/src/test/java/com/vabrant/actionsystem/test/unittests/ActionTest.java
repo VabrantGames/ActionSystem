@@ -18,9 +18,8 @@ import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.DelayAction;
-import com.vabrant.actionsystem.test.tests.TestActions;
-import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
-import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 
 public class ActionTest {
 	
@@ -92,31 +91,31 @@ public class ActionTest {
 	public void listenerTest() {
 		printTestHeader(testName.getMethodName());
 		
-		ActionListener<TestAction> listener = new ActionAdapter<TestAction>() {
+		ActionListener<MockAction> listener = new ActionAdapter<MockAction>() {
 			@Override
-			public void actionStart(TestAction a) {
+			public void actionStart(MockAction a) {
 				a.getLogger().info("Listener Start");
 			}
 			
-			public void actionEnd(TestAction a) {
+			public void actionEnd(MockAction a) {
 				a.getLogger().info("Listener End");
 			}
 			
 			@Override
-			public void actionKill(TestAction a) {
+			public void actionKill(MockAction a) {
 				a.getLogger().info("Listener Kill");
 			}
 			
 			@Override
-			public void actionRestart(TestAction a) {
+			public void actionRestart(MockAction a) {
 				a.getLogger().info("Listener Restart");
 			}
 		};
 		
-		TestAction action = null;
+		MockAction action = null;
 		
 		//---------// End //----------//
-		action = TestAction.obtain()
+		action = MockAction.obtain()
 				.addListener(listener)
 				.setLogLevel(ActionLogger.INFO);
 		
@@ -129,7 +128,7 @@ public class ActionTest {
 		ActionPools.free(action);
 		
 		//---------// Kill //----------//
-		action = TestAction.obtain()
+		action = MockAction.obtain()
 				.addListener(listener)
 				.setLogLevel(ActionLogger.INFO);
 		
@@ -142,7 +141,7 @@ public class ActionTest {
 		ActionPools.free(action);
 		
 		//---------// Restart //----------//
-		action = TestAction.obtain()
+		action = MockAction.obtain()
 				.addListener(listener)
 				.setLogLevel(ActionLogger.INFO);
 		
@@ -160,7 +159,7 @@ public class ActionTest {
 	public void basicUnmanagedTest() {
 		printTestHeader("Basic Unmanaged Test");
 		
-		TestAction action = TestAction.obtain()
+		MockAction action = MockAction.obtain()
 				.setName("BasicUnmanaged")
 				.setLogLevel(ActionLogger.DEBUG)
 				.unmanage();
@@ -187,7 +186,7 @@ public class ActionTest {
 	public void attemptToUseManagedPooledActionTest() {
 		printTestHeader(testName.getMethodName());
 
-		TestAction action = TestAction.obtain()
+		MockAction action = MockAction.obtain()
 				.setName("Action")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -217,7 +216,7 @@ public class ActionTest {
 	public void poolRootActionWhileInUseTest() {
 		printTestHeader(testName.getMethodName());
 		
-		TestAction action = TestAction.obtain()
+		MockAction action = MockAction.obtain()
 				.setName("Action")
 				.setLogLevel(ActionLogger.DEBUG);
 
@@ -302,12 +301,12 @@ public class ActionTest {
 		
 		ActionManager manager = new ActionManager();
 		
-		TestAction mainAction = TestAction.obtain()
+		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
 				.unmanage()
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction preAction = TestAction.obtain()
+		MockAction preAction = MockAction.obtain()
 				.setName("Pre")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -334,11 +333,11 @@ public class ActionTest {
 
 		ActionManager manager = new ActionManager();
 		
-		TestAction mainAction = TestAction.obtain()
+		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction postAction = TestAction.obtain()
+		MockAction postAction = MockAction.obtain()
 				.setName("Post")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -367,11 +366,11 @@ public class ActionTest {
 	public void postActionEndEarlyTest() {
 		printTestHeader(testName.getMethodName());
 		
-		TestAction mainAction = TestAction.obtain()
+		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction postAction = TestAction.obtain()
+		MockAction postAction = MockAction.obtain()
 				.setName("post")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -397,7 +396,7 @@ public class ActionTest {
 		};
 		
 		//Parent 1
-		MultiParentTestAction p1 = MultiParentTestAction.obtain()
+		MockMultiParentAction p1 = MockMultiParentAction.obtain()
 				.setName("p1")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
@@ -405,7 +404,7 @@ public class ActionTest {
 		makeRoot(p1, true);
 		
 		//Child 1 of parent 1
-		TestAction p1C1 = TestAction.obtain()
+		MockAction p1C1 = MockAction.obtain()
 				.setName("P1C1")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
@@ -413,7 +412,7 @@ public class ActionTest {
 		p1.add(p1C1);
 		
 		//Child 2 of parent 1. Parent 2
-		MultiParentTestAction p2 = MultiParentTestAction.obtain()
+		MockMultiParentAction p2 = MockMultiParentAction.obtain()
 				.setName("P2")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
@@ -421,7 +420,7 @@ public class ActionTest {
 		p1.add(p2);
 		
 		//Child 3 of parent 1
-		TestAction p1C3 = TestAction.obtain()
+		MockAction p1C3 = MockAction.obtain()
 				.setName("P1C3")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
@@ -429,7 +428,7 @@ public class ActionTest {
 		p1.add(p1C3);
 		
 		//Child 1 of parent 2
-		TestAction p2C1 = TestAction.obtain()
+		MockAction p2C1 = MockAction.obtain()
 				.setName("p2C1")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);
@@ -437,7 +436,7 @@ public class ActionTest {
 		p2.add(p2C1);
 		
 		//Child 2 of parent 2
-		TestAction p2C2 = TestAction.obtain()
+		MockAction p2C2 = MockAction.obtain()
 				.setName("p2C2")
 				.setLogLevel(ActionLogger.INFO)
 				.addListener(listener);

@@ -30,7 +30,7 @@ public class ActionWatcher {
 	}
 
 	private final ActionLogger logger;
-	private final ObjectMap<String, Action<? extends Action<?>>> watchActions;
+	private final ObjectMap<String, Action<?>> watchActions;
 	private final CleanupListener listener;
 	
 	public ActionWatcher(int amount) {

@@ -15,29 +15,40 @@
  */
 package com.vabrant.actionsystem.test.unittests;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.vabrant.actionsystem.actions.ActionLogger;
-import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.TestUtils;
+import org.junit.rules.TestName;
 
 /**
  * @author John Barton
  *
  */
 public class ActionLoggerTest {
-	
+
+	@Rule
+	public TestName testName = new TestName();
+	private static Application application;
 	private static ActionLogger logger;
 	
 	@BeforeClass
 	public static void init() {
-		ActionLogger.useSysOut();
+		application = new HeadlessApplication(new ApplicationAdapter() {
+		});
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		logger = ActionLogger.getLogger(ActionLoggerTest.class, "MyLogger", ActionLogger.DEBUG);
 	}
 	
 	@Test 
 	public void basicTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Basic Test");
+		TestUtils.printTestHeader(testName.getMethodName());
 		logger.info("Info", "Hello");
 		logger.debug("Debug", "World");
 		logger.error("Error", "Goodbye");
@@ -45,19 +56,19 @@ public class ActionLoggerTest {
 	
 	@Test
 	public void resetTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Reset Test");
+		TestUtils.printTestHeader(testName.getMethodName());
 		logger.info("Before Reset");
 		logger.reset();
 		
 		logger.setLevel(ActionLogger.DEBUG);
 		logger.info("After Reset");
-		
-		init();
+
+		logger = ActionLogger.getLogger(ActionLoggerTest.class, "MyLogger", ActionLogger.DEBUG);
 	}
 	
 	@Test
 	public void soloTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Solo Test");
+		TestUtils.printTestHeader(testName.getMethodName());
 		
 		ActionLogger soloLogger = ActionLogger.getLogger(ActionLoggerTest.class, "Solo", ActionLogger.DEBUG);
 		

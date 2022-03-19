@@ -2,18 +2,18 @@ package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class ActionSystemTestConstantsAndUtils {
+public class TestUtils {
 
 	public static final int DEFAULT_WIDTH = 960;
 	public static final int DEFAULT_HEIGHT = 640;
 	
 	public static final String SEPARATOR = System.getProperty("line.separator");
 
-	private static final String pattern = "//----------//";
+//	private static final String pattern = "//----------//";
 	
 	public static void printTestHeader(String name) {
 		System.out.println();
-    	System.out.println(pattern + ' ' + name + ' ' + pattern);
+    	System.out.println("//----------" + ' ' + name + ' ' + "----------//");
 	}
 	
 	public static void centerTestObject(TestObject object, Viewport viewport) {

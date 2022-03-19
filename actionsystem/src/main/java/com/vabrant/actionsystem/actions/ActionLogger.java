@@ -121,9 +121,9 @@ public class ActionLogger {
 	
 	public void solo(boolean solo) {
 		if(RESTRICT_OUTPUT) return;
-		
+
 		this.solo = solo;
-		
+
 		if(solo) {
 			SOLO_LOGGERS.add(this);
 		}

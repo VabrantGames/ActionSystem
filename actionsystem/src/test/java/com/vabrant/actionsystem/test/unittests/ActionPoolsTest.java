@@ -25,10 +25,9 @@ import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.tests.ActionSystemTestListener;
-import com.vabrant.actionsystem.test.tests.TestActions;
-import com.vabrant.actionsystem.test.tests.TestActions.MultiParentTestAction;
-import com.vabrant.actionsystem.test.tests.TestActions.SingleParentTestAction;
-import com.vabrant.actionsystem.test.tests.TestActions.TestAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 
 /**
  * @author John Barton
@@ -52,7 +51,7 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	public void freeTest() {
 		printTestHeader("Free Test");
 		
-		TestAction action = TestAction.obtain()
+		MockAction action = MockAction.obtain()
 				.setName("Free")
 				.setLogLevel(ActionLogger.DEBUG);
 		
@@ -63,11 +62,11 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	public void freeSingeParentActionTest() {
 		printTestHeader("Free Single Parent Test");
 		
-		TestAction child = TestAction.obtain()
+		MockAction child = MockAction.obtain()
 				.setName("Child")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		SingleParentTestAction parent = SingleParentTestAction.obtain()
+		MockSingleParentAction parent = MockSingleParentAction.obtain()
 				.set(child)
 				.setName("Parent")
 				.setLogLevel(ActionLogger.DEBUG);
@@ -79,15 +78,15 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	public void freeMultiParentActionTest() {
 		printTestHeader("Free MultiParent Action Test");
 		
-		TestAction child1 = TestAction.obtain()
+		MockAction child1 = MockAction.obtain()
 				.setName("Child1")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction child2 = TestAction.obtain()
+		MockAction child2 = MockAction.obtain()
 				.setName("Child2")
 				.setLogLevel(ActionLogger.DEBUG);
 				
-		MultiParentTestAction parent = MultiParentTestAction.obtain()
+		MockMultiParentAction parent = MockMultiParentAction.obtain()
 				.add(child1)
 				.add(child2)
 				.setName("Parent")
@@ -100,29 +99,29 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	public void complexParentActionTest() {
 		printTestHeader("Complex Parent Action Test");
 		
-		TestAction child1_P1 = TestAction.obtain()
+		MockAction child1_P1 = MockAction.obtain()
 				.setName("Child1_P1")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction child2_P1 = TestAction.obtain()
+		MockAction child2_P1 = MockAction.obtain()
 				.setName("Child2_P1")
 				.setLogLevel(ActionLogger.DEBUG);
 				
-		MultiParentTestAction parent1 = MultiParentTestAction.obtain()
+		MockMultiParentAction parent1 = MockMultiParentAction.obtain()
 				.add(child1_P1)
 				.add(child2_P1)
 				.setName("Parent1")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction child1_P2 = TestAction.obtain()
+		MockAction child1_P2 = MockAction.obtain()
 				.setName("Child1_P2")
 				.setLogLevel(ActionLogger.DEBUG);
 		
-		TestAction child2_P2 = TestAction.obtain()
+		MockAction child2_P2 = MockAction.obtain()
 				.setName("Child2_P2")
 				.setLogLevel(ActionLogger.DEBUG);
 				
-		MultiParentTestAction parent2 = MultiParentTestAction.obtain()
+		MockMultiParentAction parent2 = MockMultiParentAction.obtain()
 				.add(child1_P2)
 				.add(child2_P2)
 				.add(parent1)
