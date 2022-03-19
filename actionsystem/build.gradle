@@ -21,6 +21,7 @@ dependencies {
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
     testImplementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
     testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
     testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     testImplementation "junit:junit:4.13"
 }

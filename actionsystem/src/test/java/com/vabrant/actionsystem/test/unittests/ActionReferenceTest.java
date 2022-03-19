@@ -18,6 +18,9 @@ package com.vabrant.actionsystem.test.unittests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,47 +29,41 @@ import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionReference;
 import com.vabrant.actionsystem.actions.MoveAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.*;
 
 /**
  * @author John Barton
  *
  */
 public class ActionReferenceTest {
+
+	private static Application application;
 	
 	@BeforeClass
 	public static void init() {
-		ActionLogger.useSysOut();
+		application = new HeadlessApplication(new ApplicationAdapter() {
+		});
 	}
 
 	@Test
 	public void basicTest() {
-		//Original move action
-		MoveAction move = MoveAction.obtain();
+		MockAction action = MockAction.obtain();
 		
-		//Reference to the move action. Likely a global var that different method can or whatever can access 
-		ActionReference<MoveAction> ref = new ActionReference<MoveAction>();
-		ref.setAction(move);
+		//Reference to the action. Likely a global var that different methods or whatever can access
+		ActionReference<MockAction> ref = new ActionReference<MockAction>();
+		ref.setAction(action);
 		
-		//Some method, sub, super class, etc that uses the reference
-		
-		if(ref != null) {
-			MoveAction m = ref.getAction();
-			m.moveBy(0, 0);
-			//etc...
-		}
-		
+		//MockAction m = ref.getAction();
+		//m.doSomething();
+
 		assertNotNull(ref.getAction());
 	}
 	
 	@Test
 	public void cleanupTest() {
-		MoveAction move = MoveAction.obtain();
-		
-		ActionReference<MoveAction> ref = new ActionReference<MoveAction>(move);
-		
-		ActionPools.free(move);
-		
+		MockAction action = MockAction.obtain();
+		ActionReference<MockAction> ref = new ActionReference<MockAction>(action);
+		ActionPools.free(action);
 		assertNull(ref.getAction());
-		
 	}
 }
