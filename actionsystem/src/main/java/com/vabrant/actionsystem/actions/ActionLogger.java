@@ -97,7 +97,7 @@ public class ActionLogger {
 	}
 	
 	public void info(String message, String body) {
-		if(RESTRICT_OUTPUT || level <= INFO) return;
+		if(RESTRICT_OUTPUT || level < INFO) return;
 		print(message, body, INFO);
 	}
 	
@@ -106,7 +106,7 @@ public class ActionLogger {
 	}
 	
 	public void debug(String message, String body) {
-		if(RESTRICT_OUTPUT || level <= DEBUG) return;
+		if(RESTRICT_OUTPUT || level < DEBUG) return;
 		print(message, body, DEBUG);
 	}
 	
@@ -115,15 +115,15 @@ public class ActionLogger {
 	}
 	
 	public void error(String message, String body) {
-		if(RESTRICT_OUTPUT || level <= ERROR) return;
+		if(RESTRICT_OUTPUT || level < ERROR) return;
 		print(message, body, ERROR);
 	}
 	
 	public void solo(boolean solo) {
 		if(RESTRICT_OUTPUT) return;
-		
+
 		this.solo = solo;
-		
+
 		if(solo) {
 			SOLO_LOGGERS.add(this);
 		}
