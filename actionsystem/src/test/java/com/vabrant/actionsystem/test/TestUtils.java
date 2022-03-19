@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.test;
 
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class ActionSystemTestConstantsAndUtils {
+public class TestUtils {
 
 	public static final int DEFAULT_WIDTH = 960;
 	public static final int DEFAULT_HEIGHT = 640;

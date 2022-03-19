@@ -26,7 +26,7 @@ import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.Movable;
 import com.vabrant.actionsystem.actions.MoveAction;
-import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.TestUtils;
 
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -53,7 +53,7 @@ public class RestartTest extends ActionSystemTestListener {
 	
 	public void reset() {
 		int x = radius;
-		float y = (ActionSystemTestConstantsAndUtils.DEFAULT_HEIGHT - (radius * 2)) / 2;
+		float y = (TestUtils.DEFAULT_HEIGHT - (radius * 2)) / 2;
 		for(int i = 0; i < circles.length; i++) {
 			Circle c = circles[i];
 			c.draw = true;
@@ -76,7 +76,7 @@ public class RestartTest extends ActionSystemTestListener {
 	}
 	
 	public void singleObjectsTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Single Objects Test");
+		TestUtils.printTestHeader("Single Objects Test");
 		reset();
 		
 		circles[1].draw = false;
@@ -109,7 +109,7 @@ public class RestartTest extends ActionSystemTestListener {
 	}
 	
 	public void multipleObjectsTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Multiple Objects Test");
+		TestUtils.printTestHeader("Multiple Objects Test");
 		
 		reset();
 		

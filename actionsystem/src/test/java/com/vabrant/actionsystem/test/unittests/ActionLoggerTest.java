@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.vabrant.actionsystem.actions.ActionLogger;
-import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.TestUtils;
 
 /**
  * @author John Barton
@@ -37,7 +37,7 @@ public class ActionLoggerTest {
 	
 	@Test 
 	public void basicTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Basic Test");
+		TestUtils.printTestHeader("Basic Test");
 		logger.info("Info", "Hello");
 		logger.debug("Debug", "World");
 		logger.error("Error", "Goodbye");
@@ -45,7 +45,7 @@ public class ActionLoggerTest {
 	
 	@Test
 	public void resetTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Reset Test");
+		TestUtils.printTestHeader("Reset Test");
 		logger.info("Before Reset");
 		logger.reset();
 		
@@ -57,7 +57,7 @@ public class ActionLoggerTest {
 	
 	@Test
 	public void soloTest() {
-		ActionSystemTestConstantsAndUtils.printTestHeader("Solo Test");
+		TestUtils.printTestHeader("Solo Test");
 		
 		ActionLogger soloLogger = ActionLogger.getLogger(ActionLoggerTest.class, "Solo", ActionLogger.DEBUG);
 		

@@ -21,9 +21,8 @@ import static org.junit.Assert.assertTrue;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.vabrant.actionsystem.actions.*;
-import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,7 +65,7 @@ public class ActionManagerTest {
 
     @Test
     public void basicTest() {
-        ActionSystemTestConstantsAndUtils.printTestHeader(testName.getMethodName());
+        TestUtils.printTestHeader(testName.getMethodName());
 
         ActionManager manager = new ActionManager();
 
@@ -114,7 +113,7 @@ public class ActionManagerTest {
 
     @Test
     public void freeAllTest() {
-        ActionSystemTestConstantsAndUtils.printTestHeader(testName.getMethodName());
+        TestUtils.printTestHeader(testName.getMethodName());
 
         final int amount = 10;
 

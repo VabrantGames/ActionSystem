@@ -8,7 +8,7 @@ import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionWatcher;
-import com.vabrant.actionsystem.test.ActionSystemTestConstantsAndUtils;
+import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
 import org.junit.BeforeClass;
@@ -39,7 +39,7 @@ public class ActionWatcherTest {
 
     @Test
     public void basicTest() {
-        ActionSystemTestConstantsAndUtils.printTestHeader(testName.getMethodName());
+        TestUtils.printTestHeader(testName.getMethodName());
 
         final String tag = "child";
 
@@ -75,7 +75,7 @@ public class ActionWatcherTest {
      */
     @Test
     public void explicitRemoveTest() {
-        ActionSystemTestConstantsAndUtils.printTestHeader(testName.getMethodName());
+        TestUtils.printTestHeader(testName.getMethodName());
 
         final String tag = "action";
         MockAction action = MockAction.obtain()
@@ -98,7 +98,7 @@ public class ActionWatcherTest {
 
     @Test
     public void compareTest() {
-        ActionSystemTestConstantsAndUtils.printTestHeader(testName.getMethodName());
+        TestUtils.printTestHeader(testName.getMethodName());
 
         actionManager.getLogger().setLevel(ActionLogger.DEBUG);
 
