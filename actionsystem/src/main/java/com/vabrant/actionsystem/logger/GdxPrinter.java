@@ -9,30 +9,15 @@ public class GdxPrinter implements LoggerPrinter {
 
     @Override
     public void print(ActionLogger logger, String message, String body, ActionLogger.LogLevel level) {
-
-        builder.clear();
-
-        if (logger.getActionName() != null) {
-            builder.append(logger.getActionName());
-            builder.append(' ');
-        }
-
-        builder.append(message);
-
-        if (body != null) {
-            builder.append(" : ");
-            builder.append(body);
-        }
-
         switch (level) {
             case ERROR:
-                Gdx.app.error(logger.getClassName(), builder.toString());
+                Gdx.app.error(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
             case INFO:
-                Gdx.app.log(logger.getClassName(), builder.toString());
+                Gdx.app.log(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
             case DEBUG:
-                Gdx.app.debug(logger.getClassName(), builder.toString());
+                Gdx.app.debug(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
         }
     }

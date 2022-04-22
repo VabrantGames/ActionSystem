@@ -84,11 +84,11 @@ public class RestartTest extends ActionSystemTestListener {
 		
 		GroupAction sequence = GroupAction.sequence(
 				MoveAction.moveXBy(circles[0], 100, 0.5f, Interpolation.linear)
-				.setName("Right").setLogLevel(ActionLogger.DEBUG),
+				.setName("Right").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				MoveAction.moveYBy(circles[0], 100, 0.5f, Interpolation.linear)
-				.setName("Up").setLogLevel(ActionLogger.DEBUG),
+				.setName("Up").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				MoveAction.moveXBy(circles[0], -100, 0.5f, Interpolation.linear)
-				.setName("Left").setLogLevel(ActionLogger.DEBUG),
+				.setName("Left").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
 		
 		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
@@ -115,11 +115,11 @@ public class RestartTest extends ActionSystemTestListener {
 		
 		GroupAction sequence = GroupAction.sequence(
 				MoveAction.moveXBy(circles[2], 200, 0.5f, Interpolation.linear)
-				.setName("Three").setLogLevel(ActionLogger.DEBUG),
+				.setName("Three").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				MoveAction.moveXBy(circles[1], 200, 0.5f, Interpolation.linear)
-				.setName("Two").setLogLevel(ActionLogger.DEBUG), 
+				.setName("Two").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				MoveAction.moveXBy(circles[0], 200, 0.5f, Interpolation.linear)
-				.setName("One").setLogLevel(ActionLogger.DEBUG),
+				.setName("One").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
 		
 		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {

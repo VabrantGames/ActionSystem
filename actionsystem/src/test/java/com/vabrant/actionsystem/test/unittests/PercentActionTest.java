@@ -36,7 +36,7 @@ public class PercentActionTest {
 	
 	public PercentTestAction getTestAction() {
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 
 		//Make root action (Usually done by the action manager)
 		try {
@@ -65,7 +65,7 @@ public class PercentActionTest {
 		
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		manager.addAction(action);
 		
@@ -86,7 +86,7 @@ public class PercentActionTest {
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
 				.unmanage()
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		//Starts action
 		manager.addAction(action);
@@ -115,7 +115,7 @@ public class PercentActionTest {
 		
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		manager.addAction(action);
 		
@@ -132,7 +132,7 @@ public class PercentActionTest {
 		
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 
 		manager.addAction(action);
 		manager.update(0.5f);

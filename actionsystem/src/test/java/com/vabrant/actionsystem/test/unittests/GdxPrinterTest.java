@@ -23,7 +23,7 @@ public class GdxPrinterTest {
 
     @Test
     public void printTest() {
-        ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class, "Printer", ActionLogger.INFO);
+        ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class, "Printer", ActionLogger.LogLevel.INFO);
         LoggerPrinter printer = new GdxPrinter();
 
         printer.print(logger, "Hello", null, ActionLogger.LogLevel.INFO);

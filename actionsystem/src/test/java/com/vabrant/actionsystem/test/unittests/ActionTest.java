@@ -77,7 +77,7 @@ public class ActionTest {
 		DelayAction action = DelayAction.obtain()
 				.setDuration(2)
 				.setName("Action")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionManager manager = new ActionManager();
 		
@@ -122,7 +122,7 @@ public class ActionTest {
 		//---------// End //----------//
 		action = MockAction.obtain()
 				.addListener(listener)
-				.setLogLevel(ActionLogger.INFO);
+				.setLogLevel(ActionLogger.LogLevel.INFO);
 		
 		makeRoot(action, true);
 		action.start();
@@ -135,7 +135,7 @@ public class ActionTest {
 		//---------// Kill //----------//
 		action = MockAction.obtain()
 				.addListener(listener)
-				.setLogLevel(ActionLogger.INFO);
+				.setLogLevel(ActionLogger.LogLevel.INFO);
 		
 		makeRoot(action, true);
 		action.start();
@@ -148,7 +148,7 @@ public class ActionTest {
 		//---------// Restart //----------//
 		action = MockAction.obtain()
 				.addListener(listener)
-				.setLogLevel(ActionLogger.INFO);
+				.setLogLevel(ActionLogger.LogLevel.INFO);
 		
 		makeRoot(action, true);
 		action.start();
@@ -166,7 +166,7 @@ public class ActionTest {
 		
 		MockAction action = MockAction.obtain()
 				.setName("BasicUnmanaged")
-				.setLogLevel(ActionLogger.DEBUG)
+				.setLogLevel(ActionLogger.LogLevel.DEBUG)
 				.unmanage();
 		
 		//Normal cycle
@@ -193,7 +193,7 @@ public class ActionTest {
 
 		MockAction action = MockAction.obtain()
 				.setName("Action")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		makeRoot(action, true);
 		action.start();
@@ -223,7 +223,7 @@ public class ActionTest {
 		
 		MockAction action = MockAction.obtain()
 				.setName("Action")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 
 		//Make action root and mock a normal cycle
 		makeRoot(action, true);
@@ -257,12 +257,12 @@ public class ActionTest {
 		DelayAction mainAction = DelayAction.obtain()
 				.setDuration(2)
 				.setName("Main")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		DelayAction preAction = DelayAction.obtain()
 				.setDuration(2)
 				.setName("Pre")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionManager manager = new ActionManager();
 		
@@ -286,12 +286,12 @@ public class ActionTest {
 		DelayAction mainAction = DelayAction.obtain()
 				.setDuration(2)
 				.setName("Main")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		DelayAction preAction = DelayAction.obtain()
 				.setDuration(2)
 				.setName("Pre")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		mainAction.addPreAction(preAction);
 		ActionPools.free(mainAction);
@@ -309,11 +309,11 @@ public class ActionTest {
 		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
 				.unmanage()
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction preAction = MockAction.obtain()
 				.setName("Pre")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		mainAction.addPreAction(preAction);
 		
@@ -340,11 +340,11 @@ public class ActionTest {
 		
 		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction postAction = MockAction.obtain()
 				.setName("Post")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		mainAction.addPostAction(postAction);
 		
@@ -373,11 +373,11 @@ public class ActionTest {
 		
 		MockAction mainAction = MockAction.obtain()
 				.setName("Main")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction postAction = MockAction.obtain()
 				.setName("post")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		mainAction.addPostAction(postAction);
 		ActionPools.free(mainAction);
@@ -403,7 +403,7 @@ public class ActionTest {
 		//Parent 1
 		MockMultiParentAction p1 = MockMultiParentAction.obtain()
 				.setName("p1")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		makeRoot(p1, true);
@@ -411,7 +411,7 @@ public class ActionTest {
 		//Child 1 of parent 1
 		MockAction p1C1 = MockAction.obtain()
 				.setName("P1C1")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		p1.add(p1C1);
@@ -419,7 +419,7 @@ public class ActionTest {
 		//Child 2 of parent 1. Parent 2
 		MockMultiParentAction p2 = MockMultiParentAction.obtain()
 				.setName("P2")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		p1.add(p2);
@@ -427,7 +427,7 @@ public class ActionTest {
 		//Child 3 of parent 1
 		MockAction p1C3 = MockAction.obtain()
 				.setName("P1C3")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		p1.add(p1C3);
@@ -435,7 +435,7 @@ public class ActionTest {
 		//Child 1 of parent 2
 		MockAction p2C1 = MockAction.obtain()
 				.setName("p2C1")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		p2.add(p2C1);
@@ -443,7 +443,7 @@ public class ActionTest {
 		//Child 2 of parent 2
 		MockAction p2C2 = MockAction.obtain()
 				.setName("p2C2")
-				.setLogLevel(ActionLogger.INFO)
+				.setLogLevel(ActionLogger.LogLevel.INFO)
 				.addListener(listener);
 		
 		p2.add(p2C2);

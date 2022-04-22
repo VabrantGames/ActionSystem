@@ -44,7 +44,7 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	public static void init() {
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
-		ActionPools.logger.setLevel(ActionLogger.DEBUG);
+		ActionPools.logger.setLevel(ActionLogger.LogLevel.DEBUG);
 	}
 
 	public void printTestHeader(String name) {
@@ -59,7 +59,7 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		
 		MockAction action = MockAction.obtain()
 				.setName("Free")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionPools.free(action);
 	}
@@ -70,12 +70,12 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		
 		MockAction child = MockAction.obtain()
 				.setName("Child")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockSingleParentAction parent = MockSingleParentAction.obtain()
 				.set(child)
 				.setName("Parent")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionPools.free(parent);
 	}
@@ -86,17 +86,17 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		
 		MockAction child1 = MockAction.obtain()
 				.setName("Child1")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction child2 = MockAction.obtain()
 				.setName("Child2")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 				
 		MockMultiParentAction parent = MockMultiParentAction.obtain()
 				.add(child1)
 				.add(child2)
 				.setName("Parent")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionPools.free(parent);
 	}
@@ -107,32 +107,32 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		
 		MockAction child1_P1 = MockAction.obtain()
 				.setName("Child1_P1")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction child2_P1 = MockAction.obtain()
 				.setName("Child2_P1")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 				
 		MockMultiParentAction parent1 = MockMultiParentAction.obtain()
 				.add(child1_P1)
 				.add(child2_P1)
 				.setName("Parent1")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction child1_P2 = MockAction.obtain()
 				.setName("Child1_P2")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		MockAction child2_P2 = MockAction.obtain()
 				.setName("Child2_P2")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 				
 		MockMultiParentAction parent2 = MockMultiParentAction.obtain()
 				.add(child1_P2)
 				.add(child2_P2)
 				.add(parent1)
 				.setName("Parent2")
-				.setLogLevel(ActionLogger.DEBUG);
+				.setLogLevel(ActionLogger.LogLevel.DEBUG);
 		
 		ActionPools.free(parent2);
 	}

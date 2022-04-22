@@ -81,7 +81,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.LogLevel.NONE);
 	}
 	
-	public T setLogLevel(int level) {
+	public T setLogLevel(ActionLogger.LogLevel level) {
 		logger.setLevel(level);
 		return (T)this;
 	}

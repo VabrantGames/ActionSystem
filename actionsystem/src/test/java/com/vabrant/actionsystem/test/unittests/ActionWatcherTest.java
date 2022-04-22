@@ -33,7 +33,7 @@ public class ActionWatcherTest {
         });
         actionManager = new ActionManager();
         watcher = new ActionWatcher(10);
-        watcher.getLogger().setLevel(ActionLogger.DEBUG);
+        watcher.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
     }
 
@@ -48,7 +48,7 @@ public class ActionWatcherTest {
 //		parent.setLogLevel(ActionLogger.DEBUG);
         MockAction child = MockAction.obtain()
                 .setName(tag)
-                .setLogLevel(ActionLogger.DEBUG)
+                .setLogLevel(ActionLogger.LogLevel.DEBUG)
                 .watchAction(watcher);
         child.setCustomUpdateCode(new Runnable() {
             @Override
@@ -80,7 +80,7 @@ public class ActionWatcherTest {
         final String tag = "action";
         MockAction action = MockAction.obtain()
                 .setName(tag)
-                .setLogLevel(ActionLogger.DEBUG)
+                .setLogLevel(ActionLogger.LogLevel.DEBUG)
                 .watchAction(watcher);
         action.setCustomUpdateCode(new Runnable() {
             @Override
@@ -100,7 +100,7 @@ public class ActionWatcherTest {
     public void compareTest() {
         TestUtils.printTestHeader(testName.getMethodName());
 
-        actionManager.getLogger().setLevel(ActionLogger.DEBUG);
+        actionManager.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
 
         final int amount = 10;
         for (int i = 0; i < amount; i++) {

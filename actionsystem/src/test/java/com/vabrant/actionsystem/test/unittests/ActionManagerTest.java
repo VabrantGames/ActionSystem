@@ -20,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -120,13 +122,13 @@ public class ActionManagerTest {
 
         Action[] actions = new Action[amount];
         ActionManager manager = new ActionManager(amount);
-        manager.getLogger().setLevel(ActionLogger.INFO);
+        manager.getLogger().setLevel(ActionLogger.LogLevel.INFO);
 
         //Add actions to manager
         for (int i = 0; i < amount; i++) {
             MockAction action = MockAction.obtain()
                     .setName(Integer.toString(i))
-                    .setLogLevel(ActionLogger.DEBUG);
+                    .setLogLevel(ActionLogger.LogLevel.DEBUG);
             manager.addAction(action);
             actions[i] = action;
         }
