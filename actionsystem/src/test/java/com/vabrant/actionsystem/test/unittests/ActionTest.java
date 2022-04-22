@@ -3,6 +3,9 @@ package com.vabrant.actionsystem.test.unittests;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,7 +17,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.DelayAction;
@@ -25,10 +28,12 @@ public class ActionTest {
 	
 	@Rule
 	public TestName testName = new TestName();
+	private static Application application;
 	
     @BeforeClass
     public static void init() {
-        ActionLogger.useSysOut();
+		application = new HeadlessApplication(new ApplicationAdapter() {
+		});
     }
 
     public void makeRoot(Action<?> action, boolean value) {

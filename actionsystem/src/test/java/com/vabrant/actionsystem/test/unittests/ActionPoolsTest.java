@@ -17,11 +17,14 @@ package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertTrue;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.badlogic.gdx.utils.Pool;
-import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.tests.ActionSystemTestListener;
@@ -34,10 +37,13 @@ import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
  *
  */
 public class ActionPoolsTest extends ActionSystemTestListener {
+
+	private static Application application;
 	
 	@BeforeClass
 	public static void init() {
-		ActionLogger.useSysOut();
+		application = new HeadlessApplication(new ApplicationAdapter() {
+		});
 		ActionPools.logger.setLevel(ActionLogger.DEBUG);
 	}
 

@@ -16,6 +16,7 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
+import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
  * Manages actions.

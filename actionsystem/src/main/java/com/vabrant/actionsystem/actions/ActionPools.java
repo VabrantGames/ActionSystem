@@ -21,11 +21,12 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.vabrant.actionsystem.logger.ActionLogger;
 
 public class ActionPools {
 	
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
-	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.NONE);
+	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.LogLevel.NONE);
 
 	/**
 	 * Where you want the pool to be filled to.

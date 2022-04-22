@@ -24,11 +24,8 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionReference;
-import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.*;
 
 /**

@@ -3,19 +3,20 @@ package com.vabrant.actionsystem.test.unittests;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
-import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.PercentAction;
 import com.vabrant.actionsystem.actions.Percentable;
 
@@ -25,10 +26,12 @@ public class PercentActionTest {
 	static final float end = 10;
 	static final int duration = 1;
 	private PercentTestClass testClass = new PercentTestClass();
+	private static Application application;
 	
 	@BeforeClass
 	public static void init() throws ReflectionException{
-		ActionLogger.useSysOut();
+		application = new HeadlessApplication(new ApplicationAdapter() {
+		});
 	}
 	
 	public PercentTestAction getTestAction() {
@@ -136,7 +139,7 @@ public class PercentActionTest {
 		
 		action.restart();
 
-		assertEquals("Percent is incorrent", 0f, action.getPercent());
+		assertEquals("Percent is incorrect", 0f, action.getPercent());
 		assertEquals("Value is incorrect", 0f, testClass.getValue());
 
 		manager.update(duration);

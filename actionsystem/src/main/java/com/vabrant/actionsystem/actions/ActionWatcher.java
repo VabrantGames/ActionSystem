@@ -16,6 +16,7 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
+import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
  * Keeps track of actions that may be nested inside other actions or to provide global access to actions.
@@ -35,7 +36,7 @@ public class ActionWatcher {
 	
 	public ActionWatcher(int amount) {
 		watchActions = new ObjectMap<>(amount);
-		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.NONE);
+		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.LogLevel.NONE);
 		listener = createActionListener();
 	}
 	

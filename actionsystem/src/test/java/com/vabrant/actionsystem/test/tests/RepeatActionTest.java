@@ -7,11 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionListener;
-import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
@@ -85,7 +84,7 @@ public class RepeatActionTest extends ActionSystemTestListener {
 				RepeatAction repeat = RepeatAction.repeat(
 						MoveAction.moveXBy(testObject, 50, 0.5f, Interpolation.linear)
 							.setName("Move")
-							.setLogLevel(ActionLogger.DEBUG), 
+							.setLogLevel(ActionLogger.DEBUG),
 						2)
 						.setName("Repeat")
 						.setLogLevel(ActionLogger.DEBUG);

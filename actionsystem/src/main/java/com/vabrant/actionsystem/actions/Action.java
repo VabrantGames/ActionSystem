@@ -18,6 +18,7 @@ package com.vabrant.actionsystem.actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
  * The base class for all actions.
@@ -77,14 +78,14 @@ public class Action<T extends Action<T>> implements Poolable {
 		cleanupListeners = new Array<>(3);
 		preActions = new Array<>(2);
 		postActions = new Array<>(2);
-		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.NONE);
+		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.LogLevel.NONE);
 	}
 	
 	public T setLogLevel(int level) {
 		logger.setLevel(level);
 		return (T)this;
 	}
-	
+
 	public T soloLogger(boolean solo) {
 		logger.solo(solo);
 		return (T)this;

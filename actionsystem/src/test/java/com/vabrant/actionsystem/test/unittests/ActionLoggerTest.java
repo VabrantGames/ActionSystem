@@ -19,12 +19,14 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.OrderedSet;
+import com.vabrant.actionsystem.logger.LoggerPrinter;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
-import com.vabrant.actionsystem.actions.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
 import org.junit.rules.TestName;
 
@@ -37,79 +39,131 @@ public class ActionLoggerTest {
 	@Rule
 	public TestName testName = new TestName();
 	private static Application application;
-	private static ActionLogger logger;
-	
+
 	@BeforeClass
 	public static void init() {
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		logger = ActionLogger.getLogger(ActionLoggerTest.class, "MyLogger", ActionLogger.DEBUG);
 	}
-	
-	@Test 
+
+	@Test
 	public void basicTest() {
 		TestUtils.printTestHeader(testName.getMethodName());
-		logger.info("Info", "Hello");
-		logger.debug("Debug", "World");
-		logger.error("Error", "Goodbye");
-	}
-	
-	@Test
-	public void resetTest() {
-		TestUtils.printTestHeader(testName.getMethodName());
-		logger.info("Before Reset");
-		logger.reset();
-		
-		logger.setLevel(ActionLogger.DEBUG);
-		logger.info("After Reset");
 
-		logger = ActionLogger.getLogger(ActionLoggerTest.class, "MyLogger", ActionLogger.DEBUG);
-	}
-	
-	@Test
-	public void singleSoloTest() {
-		TestUtils.printTestHeader(testName.getMethodName());
-
-		class SomeLogger {
-		}
-
-		logger.setLevel(ActionLogger.DEBUG);
-		ActionLogger soloLogger = ActionLogger.getLogger(SomeLogger.class, "Solo", ActionLogger.DEBUG);
+		ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class, testName.getMethodName(), ActionLogger.LogLevel.DEBUG);
 
 		logger.info("Hello");
-		soloLogger.info("Hello");
-
-		soloLogger.solo(true);
-
-		logger.info("Should not be logged");
-		soloLogger.info("Solo me!!");
-
-		soloLogger.solo(false);
-
-		logger.info("Am I still muted?");
+		logger.info("Hello", "Info");
+		logger.debug("Hello", "Debug");
+		logger.error("Hello", "Error");
 	}
 
 	@Test
-	public void multiSoloTest() {
-		final int amount = 10;
+	public void soloTest() {
 		TestUtils.printTestHeader(testName.getMethodName());
-		logger.setLevel(ActionLogger.DEBUG);
 
-		class SomeLogger {
-		}
+		ActionLogger logger1 = ActionLogger.getLogger(ActionLoggerTest.class, "logger1", ActionLogger.LogLevel.DEBUG);
+		ActionLogger logger2 = ActionLogger.getLogger(ActionLoggerTest.class, "logger2", ActionLogger.LogLevel.DEBUG);
 
-		ObjectSet<ActionLogger> loggers = new ObjectSet<>();
-		for (int i = 0; i < amount; i++) {
-			loggers.add(ActionLogger.getLogger(SomeLogger.class, Integer.toString(i), ActionLogger.DEBUG));
-		}
+		LoggerPrinter errorPrinter = new LoggerPrinter() {
+			@Override
+			public void print(ActionLogger logger, String message, String body, ActionLogger.LogLevel level) {
+				throw new RuntimeException("This logger should not print");
+			}
+		};
 
-		logger.info("Hello");
+		logger1.info("Hello", "logger1");
+		logger2.info("Hello", "logger2");
 
-		for (ActionLogger l : loggers) {
-			l.info("World");
-		}
+		logger1.solo(true);
+		logger2.setPrinter(errorPrinter);
+		logger2.info("Hello", "World");
 
+		logger2.setPrinter(null);
+
+		logger2.solo(true);
+		logger1.setPrinter(errorPrinter);
+		logger1.info("Hello", "World");
 	}
+
+//	@Test
+////	@Ignore
+//	public void resetTest() {
+//		TestUtils.printTestHeader(testName.getMethodName());
+//
+//		ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class, testName.getMethodName(), ActionLogger.LogLevel.DEBUG);
+//		logger.info("Before Reset");
+//		logger.reset();
+//
+//		logger.setLevel(ActionLogger.DEBUG);
+//		logger.info("After Reset");
+//
+//		logger = ActionLogger.getLogger(ActionLoggerTest.class, "MyLogger", ActionLogger.DEBUG);
+//	}
+	
+//	@Test
+//	@Ignore
+//	public void singleSoloTest() {
+//		TestUtils.printTestHeader(testName.getMethodName());
+//
+//		class SomeLogger {
+//		}
+//
+//		ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class, testName.getMethodName(), ActionLogger.DEBUG);
+//		logger.setLevel(ActionLogger.DEBUG);
+//
+//		ActionLogger soloLogger = ActionLogger.getLogger(SomeLogger.class, "Solo", ActionLogger.DEBUG);
+//
+//		logger.info("Hello");
+//		soloLogger.info("Hello");
+//
+//		soloLogger.solo(true);
+//
+//		logger.info("Should not be logged");
+//		soloLogger.info("Solo me!!");
+//
+//		soloLogger.solo(false);
+//
+//		logger.info("Am I still muted?");
+//	}
+//
+//	@Test
+//	@Ignore
+//	public void multiSoloTest() {
+//		TestUtils.printTestHeader(testName.getMethodName());
+//
+//		ActionLogger logger = ActionLogger.getLogger(ActionLogger.class, testName.getMethodName(), ActionLogger.DEBUG);
+//		logger.setLevel(ActionLogger.DEBUG);
+//
+//		class SomeLogger {
+//		}
+//
+//		logger.info("Hello");
+//
+//		//Create loggers to solo
+//		final int amount = 10;
+//		OrderedSet<ActionLogger> loggers = new OrderedSet<>(amount);
+//		for (int i = 0; i < amount; i++) {
+//			loggers.add(ActionLogger.getLogger(SomeLogger.class, Integer.toString(i), ActionLogger.DEBUG));
+//		}
+//
+//		//Set the loggers
+//		ActionLogger.setSoloLoggers(loggers);
+//
+//		//Test
+//		for (ActionLogger l : loggers) {
+//			logger.info("Should not be logged");
+//			l.info("World");
+//		}
+//
+//		ActionLogger.resetSoloLoggers();
+//
+//		for (ActionLogger l : loggers) {
+//			logger.info("Hello");
+//			l.info("World");
+//		}
+//
+//	}
 
 }
