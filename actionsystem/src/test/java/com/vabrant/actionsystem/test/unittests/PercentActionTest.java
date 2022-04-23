@@ -22,7 +22,6 @@ import com.vabrant.actionsystem.actions.Percentable;
 
 public class PercentActionTest {
 
-	
 	static final float end = 10;
 	static final int duration = 1;
 	private PercentTestClass testClass = new PercentTestClass();
@@ -114,10 +113,11 @@ public class PercentActionTest {
 		printTestHeader("Set Time Test");
 		
 		ActionManager manager = new ActionManager();
-		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
+		PercentTestAction action = PercentTestAction.set(testClass, 10, 1)
 				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
+
 		manager.addAction(action);
+		manager.update(0);
 		
 		action.setTime(0.5f);
 		assertEquals("Percent is incorrect", 0.5f, action.getPercent());
@@ -220,7 +220,6 @@ public class PercentActionTest {
 					.set(percentable, duration, Interpolation.linear);
 		}
 
-		private boolean setup;
 		public float start;
 		public float end;
 
@@ -231,8 +230,7 @@ public class PercentActionTest {
 		
 		@Override
 		public PercentTestAction setup() {
-			if(setup) return this;
-			setup = true;
+			super.setup();
 			start = percentable.getValue();
 			return this;
 		}
@@ -247,7 +245,6 @@ public class PercentActionTest {
 			super.reset();
 			start = 0;
 			end = 0;
-			setup = false;
 		}
 	}
 
