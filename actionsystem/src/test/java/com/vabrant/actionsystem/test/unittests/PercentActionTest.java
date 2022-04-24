@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.vabrant.actionsystem.test.TestUtils;
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,11 +21,28 @@ import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.PercentAction;
 import com.vabrant.actionsystem.actions.Percentable;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
 public class PercentActionTest {
 
-	static final float end = 10;
-	static final int duration = 1;
+	@Parameterized.Parameter(0)
+	public float end;
+
+	@Parameterized.Parameter(1)
+	public int duration;
+
+	@Parameterized.Parameters()
+	public static Collection<Object[]> data() {
+		Object[][] data = new Object[][]{
+				{10,1}, {5, 2}};
+		return Arrays.asList(data);
+	}
+
 	private PercentTestClass testClass = new PercentTestClass();
 	private static Application application;
 	
@@ -31,6 +50,11 @@ public class PercentActionTest {
 	public static void init() throws ReflectionException{
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
+	}
+
+	@After
+	public void reset() {
+		testClass.reset();
 	}
 	
 	public PercentTestAction getTestAction() {
@@ -60,27 +84,30 @@ public class PercentActionTest {
 
 	@Test
 	public void singleRunTest() {
-		printTestHeader("Single Run Test");
-		
+		TestUtils.printTestHeader("Single Run Test");
+
+		System.out.println(end);
+		System.out.println(duration);
+
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
 				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
+
 		manager.addAction(action);
+
+		manager.update(0.25f);
+		manager.update(0.25f);
+
+		assertEquals("Value is incorrect", end * action.getPercent(), testClass.getValue());
 		
-		manager.update(0.25f);
-		manager.update(0.25f);
-		assertEquals("Value is incorrect", end * 0.5f, testClass.getValue());
-		
-		manager.update(0.25f);
-		manager.update(0.25f);
+		manager.update(duration);
 
 		assertEquals("Value is incorrect", end, testClass.getValue());
 	}
 
 	@Test
 	public void unmanagedMultiRunTest(){
-		printTestHeader("Multi Run Test");
+		TestUtils.printTestHeader("Multi Run Test");
 		
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration)
@@ -90,27 +117,27 @@ public class PercentActionTest {
 		//Starts action
 		manager.addAction(action);
 		
-		//Mock update
-		manager.update(0.5f);
-		manager.update(0.5f);
-		
+		//Mock update to end
+		manager.update(duration);
+
 		assertEquals("Value is incorrect", end, testClass.getValue());
 		assertEquals("Action is running", false, action.isRunning());
 		
 		manager.addAction(action);
 		
 		//Mock update
-		manager.update(0.5f);
-		manager.update(0.5f);
+		manager.update(duration);
 
 		assertEquals("Value is incorrect", end, testClass.getValue());
 		assertEquals("Action is running", false, action.isRunning());
 	}
-	
-	//Ensure the percent is correctly changed when the time is changed
+
+	/**
+	 * Ensure the percent is correctly changed when the time is changed
+	 */
 	@Test
 	public void setTimeTest() {
-		printTestHeader("Set Time Test");
+		TestUtils.printTestHeader("Set Time Test");
 		
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, 10, 1)
@@ -121,11 +148,11 @@ public class PercentActionTest {
 		
 		action.setTime(0.5f);
 		assertEquals("Percent is incorrect", 0.5f, action.getPercent());
-		
-		action.setTime(0.75f);
-		assertEquals("Percent is incorrect", 0.75f, action.getPercent());
 	}
 
+	/**
+	 * Ensure the action is correctly reset when restarted
+	 */
 	@Test
 	public void restartRunTest(){
 		printTestHeader("Restart Cycle Test");
@@ -146,7 +173,10 @@ public class PercentActionTest {
 		
 		assertEquals("End value is incorrect", end, testClass.getValue());
 	}
-	
+
+	/**
+	 * Ensure the time is correct when the percent changes
+	 */
 	@Test
 	public void setPercentTest() {
 		printTestHeader("Set Percent Test");
@@ -182,7 +212,15 @@ public class PercentActionTest {
 		manager.update(duration);
 	}
 
+	//----------// Test classes and interfaces //----------//
+
+	private interface TestPercentable extends Percentable {
+		float getValue();
+		void setValue(float value);
+	}
+
 	public static class PercentTestClass implements TestPercentable {
+
 		private float value = 0;
 
 		@Override
@@ -198,11 +236,6 @@ public class PercentActionTest {
 		public void reset(){
 			value = 0;
 		}
-	}
-	
-	private interface TestPercentable extends Percentable {
-		float getValue();
-		void setValue(float value);
 	}
 
 	/*
