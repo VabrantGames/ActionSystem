@@ -44,6 +44,10 @@ public class ActionEvent extends Event {
         return null;
     }
 
+    public Action getAction() {
+        return action;
+    }
+
     @Override
     public void reset() {
         super.reset();

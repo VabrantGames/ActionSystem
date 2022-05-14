@@ -18,6 +18,10 @@ package com.vabrant.actionsystem.actions;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.Pools;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.EventListener;
+import com.vabrant.actionsystem.events.EventManager;
 import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
@@ -63,7 +67,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	private Condition pauseCondition;
 	private Condition resumeCondition;
 	private ActionManager actionManager;
-	private Array<ActionListener<T>> listeners;
+	protected EventManager eventManager;
 	
 	/** Listeners that can't be removed by the user. */
 	/** Listeners managed by the action system. */
@@ -74,7 +78,6 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected final ActionLogger logger;
 	
 	public Action() {
-		listeners = new Array<>(2);
 		cleanupListeners = new Array<>(3);
 		preActions = new Array<>(2);
 		postActions = new Array<>(2);
@@ -212,7 +215,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	/**
 	 * FOR ACTION CREATION <br><br>
 	 * 
-	 * The logic that will be ran every time pause is called.
+	 * The logic that will run every time pause is called.
 	 */
 	protected void pauseLogic() {}
 	
@@ -225,7 +228,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	/**
 	 * FOR ACTION CREATION <br><br>
 	 * 
-	 * The logic that will be ran every time resume is called.
+	 * The logic that will run every time resume is called.
 	 */
 	protected void resumeLogic() {}
 	
@@ -257,20 +260,44 @@ public class Action<T extends Action<T>> implements Poolable {
 		cleanupListeners.removeValue(listener, false);
 		return (T)this;
 	}
-	
+
+	//TODO Use own pool
+	public T subscribeToEvent(String eventType, EventListener<?> listener) {
+		if (eventManager == null) eventManager = Pools.obtain(EventManager.class);
+		eventManager.subscribe(eventType, listener);
+		return (T) this;
+	}
+
+	public T unsubscribeFromEvent(String eventType, EventListener<?> listener) {
+		if (eventManager == null) return (T) this;
+		eventManager.unsubscribe(eventType, listener);
+		return (T) this;
+	}
+
+//	public T clearListeneers() {
+//		if (eventManager == null) return (T) this;
+//		eventManager.reset();
+//		return (T) this;
+//	}
+
+	@Deprecated
 	public T addListener(ActionListener<T> listener) {
 		if(listener == null) throw new IllegalArgumentException("Listener is null.");
-		listeners.add(listener);
+//		listeners.add(listener);
 		return (T)this;
 	}
-	
+
+	@Deprecated
 	public T removeListener(ActionListener<T> listener) {
-		listeners.removeValue(listener, false);
+//		listeners.removeValue(listener, false);
 		return (T)this;
 	}
-	
+
+	@Deprecated
 	public T clearListeners() {
-		listeners.clear();
+		if (eventManager != null) {
+			eventManager.reset();
+		}
 		return (T)this;
 	}
 	
@@ -330,17 +357,22 @@ public class Action<T extends Action<T>> implements Poolable {
 		pauseCondition = null;
 		resumeCondition = null;
 		cleanupListeners.clear();
-		listeners.clear();
 		name = null;
+
+		if (eventManager != null) {
+			Pools.free(eventManager);
+			eventManager = null;
+		}
 	}
 	
 	/**
 	 * FOR ACTION CREATION <br><br> 
 	 * 
-	 * The logic that will be ran at the start of the action. 
+	 * The logic that will run at the start of the action.
 	 */
 	protected void startLogic() {}
-	
+
+	//TODO Use own pool
 	/**
 	 * Starts the action
 	 */
@@ -361,9 +393,12 @@ public class Action<T extends Action<T>> implements Poolable {
 		
 		isRunning = true;
 		startLogic();
-		
-		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionStart((T)this);
+
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.START_EVENT)) {
+			ActionEvent event = Pools.obtain(ActionEvent.class);
+			event.setAsStart();
+			event.setAction(this);
+			eventManager.fire(event);
 		}
 
 		return (T)this;
@@ -372,7 +407,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	/**
 	 * FOR ACTION CREATION <br><br>
 	 * 
-	 * The logic that will be ran if an action is restarted.
+	 * The logic that will run if an action is restarted.
 	 */
 	protected void restartLogic() {}
 
@@ -389,19 +424,22 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected final void restart(boolean invokedAction) {
 		logger.info("Restart Action");	
 		
-		boolean start = !invokedAction ? false : isRunning;
+		boolean start = invokedAction;
 		isRunning = false;
 		restartLogic();
-		
-		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionRestart((T)this);
+
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.RESTART_EVENT)) {
+			ActionEvent event = Pools.obtain(ActionEvent.class);
+			event.setAsRestart();
+			event.setAction(this);
+			eventManager.fire(event);
 		}
 		
-		if(start) start();
+		if (start) start();
 	}
 	
 	/**
-	 *  Recursively restart all an actions children and their children..
+	 *  Recursively restart all an actions children and their children.
 	 *  
 	 * @param action
 	 */
@@ -426,7 +464,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	/**
 	 * FOR ACTION CREATION <br><br>
 	 * 
-	 * The logic that will be ran if the action is ended.
+	 * The logic that will run if the action is ended.
 	 */
 	protected void endLogic() {}
 
@@ -439,13 +477,16 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(isRoot()) isDead = true;
 		isRunning = false;
 		endLogic();
-		
-		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionEnd((T)this);
+
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.END_EVENT)) {
+			ActionEvent event = Pools.obtain(ActionEvent.class);
+			event.setAsEnd();
+			event.setAction(this);
+			eventManager.fire(event);
 		}
 		
 		runPostActions();
-		return (T)this;
+		return (T) this;
 	}
 	
 	/**
@@ -456,7 +497,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected void killLogic() {}
 	
 	/**
-	 * Ends the action at it's current position. If the action is running it will end uncompleted. 
+	 * Ends the action at its current position. If the action is running it will end uncompleted.
 	 */
 	public final T kill() {
 		logger.info("Kill Action");	
@@ -464,13 +505,16 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(isRoot()) isDead = true;
 		isRunning = false;
 		killLogic();
-		
-		for(int i = 0; i < listeners.size; i++) {
-			listeners.get(i).actionKill((T)this);
+
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.KILL_EVENT)) {
+			ActionEvent event = Pools.obtain(ActionEvent.class);
+			event.setAsKill();
+			event.setAction(this);
+			eventManager.fire(event);
 		}
-		
+
 		runPostActions();
-		return(T)this;
+		return (T) this;
 	}
 
 }

@@ -163,6 +163,8 @@ public class ActionLogger {
 	}
 
 	void print0(String message, String body, LogLevel level) {
+		if (RESTRICT_OUTPUT || !logLevel.canPrint(level)) return;
+
 		if (SOLO_STRATEGY.isActive()) {
 			SOLO_STRATEGY.print(this, message, body, level);
 		}

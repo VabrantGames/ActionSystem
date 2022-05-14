@@ -6,7 +6,12 @@ import static org.junit.Assert.assertTrue;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.vabrant.actionsystem.actions.*;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.Event;
+import com.vabrant.actionsystem.events.EventListener;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -14,13 +19,8 @@ import org.junit.rules.TestName;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
-import com.vabrant.actionsystem.actions.ActionManager;
-import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 
@@ -95,68 +95,62 @@ public class ActionTest {
 	@Test
 	public void listenerTest() {
 		printTestHeader(testName.getMethodName());
-		
-		ActionListener<MockAction> listener = new ActionAdapter<MockAction>() {
+
+		//----------// Normal start to end cycle //----------//
+		MockAction action = MockAction.obtain();
+
+		action.subscribeToEvent(ActionEvent.START_EVENT, new ActionListener() {
 			@Override
-			public void actionStart(MockAction a) {
-				a.getLogger().info("Listener Start");
+			public void onEvent(ActionEvent e) {
+				System.out.println("Hello start event");
 			}
-			
-			public void actionEnd(MockAction a) {
-				a.getLogger().info("Listener End");
-			}
-			
+		});
+
+		action.subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
 			@Override
-			public void actionKill(MockAction a) {
-				a.getLogger().info("Listener Kill");
+			public void onEvent(ActionEvent e) {
+				System.out.println("Hello end event");
 			}
-			
-			@Override
-			public void actionRestart(MockAction a) {
-				a.getLogger().info("Listener Restart");
-			}
-		};
-		
-		MockAction action = null;
-		
-		//---------// End //----------//
-		action = MockAction.obtain()
-				.addListener(listener)
-				.setLogLevel(ActionLogger.LogLevel.INFO);
-		
+		});
+
 		makeRoot(action, true);
 		action.start();
-		action.update(0);
 		action.end();
 		makeRoot(action, false);
-		
 		ActionPools.free(action);
-		
-		//---------// Kill //----------//
-		action = MockAction.obtain()
-				.addListener(listener)
-				.setLogLevel(ActionLogger.LogLevel.INFO);
-		
+
+		//---------// Kill cycle //----------//
+		action = MockAction.obtain();
+
+		action.subscribeToEvent(ActionEvent.KILL_EVENT, new ActionListener() {
+			@Override
+			public void onEvent(ActionEvent e) {
+				System.out.println("Hello kill event");
+			}
+		});
+
 		makeRoot(action, true);
 		action.start();
-		action.update(0);
 		action.kill();
 		makeRoot(action, false);
-		
 		ActionPools.free(action);
-		
+
 		//---------// Restart //----------//
-		action = MockAction.obtain()
-				.addListener(listener)
-				.setLogLevel(ActionLogger.LogLevel.INFO);
-		
+		action = MockAction.obtain();
+
+		action.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+			@Override
+			public void onEvent(ActionEvent e) {
+				System.out.println("Hello restart event");
+			}
+		});
+
 		makeRoot(action, true);
 		action.start();
-		action.update(0);
 		action.restart();
 		action.end();
 		makeRoot(action, false);
-		
+
 		ActionPools.free(action);
 	}
 	
@@ -386,78 +380,69 @@ public class ActionTest {
 		assertTrue(hasBeenPooled(postAction));
 	}
 
-	@Test 
+	@Test
 	public void restartTest() {
 		printTestHeader(testName.getMethodName());
-		
-		ActionListener listener = new ActionAdapter() {
+
+		ActionListener listener = new ActionListener() {
 			@Override
-			public void actionRestart(Action a) {
-				ActionLogger logger = a.getLogger();
-				logger.info("Name: " + a.getName());
-				logger.info("IsRunning: " + a.isRunning());
-				System.out.println();
+			public void onEvent(ActionEvent e) {
+				assertFalse(e.getAction().isRunning());
 			}
 		};
-		
+
 		//Parent 1
 		MockMultiParentAction p1 = MockMultiParentAction.obtain()
 				.setName("p1")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
-		makeRoot(p1, true);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
+
 		//Child 1 of parent 1
 		MockAction p1C1 = MockAction.obtain()
 				.setName("P1C1")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
 		p1.add(p1C1);
-		
+
 		//Child 2 of parent 1. Parent 2
 		MockMultiParentAction p2 = MockMultiParentAction.obtain()
 				.setName("P2")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
 		p1.add(p2);
-		
+
 		//Child 3 of parent 1
 		MockAction p1C3 = MockAction.obtain()
 				.setName("P1C3")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
 		p1.add(p1C3);
-		
+
 		//Child 1 of parent 2
 		MockAction p2C1 = MockAction.obtain()
 				.setName("p2C1")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
 		p2.add(p2C1);
-		
+
 		//Child 2 of parent 2
 		MockAction p2C2 = MockAction.obtain()
 				.setName("p2C2")
 				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.addListener(listener);
-		
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
 		p2.add(p2C2);
 
 		makeRoot(p1, true);
-		
+
 		p1.start();
 		p1C1.start();
 		p2.start();
 		p1C3.start();
 		p2C1.start();
 		p2C2.start();
-		
 		p1.restart();
+
+		assertTrue(p1.isRunning());
 	}
 
 }

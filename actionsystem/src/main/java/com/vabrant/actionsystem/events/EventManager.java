@@ -19,6 +19,10 @@ public class EventManager implements Pool.Poolable {
         return events;
     }
 
+    public boolean hasEvent(String eventType) {
+        return events.containsKey(eventType);
+    }
+
     public void subscribe(String eventType, EventListener listener) {
         if (eventType == null) throw new IllegalArgumentException("Event type is null");
         if (listener == null) throw new IllegalArgumentException("Listener is null");
