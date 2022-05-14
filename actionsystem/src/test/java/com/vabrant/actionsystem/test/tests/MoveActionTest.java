@@ -10,7 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.test.TestObject;
@@ -35,8 +36,16 @@ public class MoveActionTest extends ActionSystemTestListener {
 	private DoubleLabelWidget currentXWidget;
 	private DoubleLabelWidget currentYWidget;
 	
-	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
-		public void actionEnd(MoveAction a) {
+//	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
+//		public void actionEnd(MoveAction a) {
+//			currentXWidget.setValue(testObject.getX());
+//			currentYWidget.setValue(testObject.getY());
+//		}
+//	};
+
+	private ActionListener listener = new ActionListener() {
+		@Override
+		public void onEvent(ActionEvent e) {
 			currentXWidget.setValue(testObject.getX());
 			currentYWidget.setValue(testObject.getY());
 		}
@@ -115,10 +124,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue());
 				MoveAction action = MoveAction.moveXBy(testObject, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveXto")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveXto")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -128,7 +138,8 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(testObject.getX(), yStartWidget.getValue() + yAmountWidget.getValue());
 				MoveAction action = MoveAction.moveYBy(testObject, yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-						.addListener(listener)
+//						.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
 						.setName("MoveYBy")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -141,10 +152,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue() + yAmountWidget.getValue());
 				MoveAction action = MoveAction.moveBy(testObject, xAmountWidget.getValue(), yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveBy")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveBy")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -157,10 +169,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angle));
 				setupTest(endX, endY);
 				MoveAction action = MoveAction.moveByAngleDeg(testObject, angle, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveByAngle")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveByAngle")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -173,10 +186,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angleDeg));
 				setupTest(endX, endY);
 				MoveAction action = MoveAction.moveByAngleRad(testObject, angleWidget.getValue(), xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveByAngleRadians")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveByAngleRadians")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -186,10 +200,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xEndWidget.getValue(), yStartWidget.getValue());
 				MoveAction action = MoveAction.moveXTo(testObject, xEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveXto")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveXto")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});
@@ -199,10 +214,11 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue(), yEndWidget.getValue());
 				MoveAction action = MoveAction.moveYTo(testObject, yEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-							.addListener(listener)
-							.setName("MoveYTo")
-							.reverseBackToStart(reverseBackToStart)
-							.setReverse(reverse);
+//							.addListener(listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.setName("MoveYTo")
+						.reverseBackToStart(reverseBackToStart)
+						.setReverse(reverse);
 				return action;
 			}
 		});

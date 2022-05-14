@@ -20,7 +20,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
@@ -91,20 +92,32 @@ public class RestartTest extends ActionSystemTestListener {
 				.setName("Left").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
 		
-		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
+//		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
+//			boolean restart = true;
+//
+//			@Override
+//			public void actionEnd(MoveAction a) {
+//				if(!restart) return;
+//				restart = false;
+//				System.out.println("Restart Group Action");
+//				sequence.restart();
+//			}
+//		};
+//		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
+
+		ActionListener restartListener = new ActionListener() {
 			boolean restart = true;
-			
+
 			@Override
-			public void actionEnd(MoveAction a) {
-				if(!restart) return;
+			public void onEvent(ActionEvent e) {
+				if (!restart) return;
 				restart = false;
-				System.out.println("Restart Group Action");
+				System.out.println("Restart GroupAction");
 				sequence.restart();
 			}
 		};
-		
-		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
-		
+		((MoveAction)sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+
 		actionManager.addAction(sequence);
 	}
 	
@@ -122,20 +135,32 @@ public class RestartTest extends ActionSystemTestListener {
 				.setName("One").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
 		
-		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
+//		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
+//			boolean restart = true;
+//
+//			@Override
+//			public void actionEnd(MoveAction a) {
+//				if(!restart) return;
+//				restart = false;
+//				System.out.println("Restart Group Action");
+//				sequence.restart();
+//			}
+//		};
+//		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
+
+		ActionListener restartListener = new ActionListener() {
 			boolean restart = true;
-			
+
 			@Override
-			public void actionEnd(MoveAction a) {
-				if(!restart) return;
+			public void onEvent(ActionEvent e) {
+				if (!restart) return;
 				restart = false;
-				System.out.println("Restart Group Action");
+				System.out.println("Restart GroupAction");
 				sequence.restart();
 			}
 		};
-		
-		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
-		
+		((MoveAction)sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+
 		actionManager.addAction(sequence);
 	}
 	

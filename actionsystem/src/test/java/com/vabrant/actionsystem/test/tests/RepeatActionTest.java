@@ -9,7 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.MoveAction;
@@ -89,19 +90,32 @@ public class RepeatActionTest extends ActionSystemTestListener {
 						.setName("Repeat")
 						.setLogLevel(ActionLogger.LogLevel.DEBUG);
 
-				ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
+//				ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
+//					boolean restart = true;
+//
+//					@Override
+//					public void actionEnd(MoveAction a) {
+//						if(restart && repeat.getCount() == 1) {
+//							restart = !restart;
+//							repeat.restart();
+//						}
+//					}
+//				};
+//				((MoveAction)repeat.getAction()).addListener(listener);
+
+				ActionListener listener = new ActionListener() {
 					boolean restart = true;
 
 					@Override
-					public void actionEnd(MoveAction a) {
-						if(restart && repeat.getCount() == 1) {
+					public void onEvent(ActionEvent e) {
+						if (restart && repeat.getCount() == 1) {
 							restart = !restart;
 							repeat.restart();
 						}
 					}
 				};
+				((MoveAction)repeat.getAction()).subscribeToEvent(ActionEvent.END_EVENT, listener);
 
-				((MoveAction)repeat.getAction()).addListener(listener);
 				return repeat;
 			}
 		});

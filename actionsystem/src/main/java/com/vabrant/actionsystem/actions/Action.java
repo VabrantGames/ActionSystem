@@ -68,7 +68,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	private Condition resumeCondition;
 	private ActionManager actionManager;
 	protected EventManager eventManager;
-	
+
 	/** Listeners that can't be removed by the user. */
 	/** Listeners managed by the action system. */
 	private Array<CleanupListener<Action<?>>> cleanupListeners;
@@ -274,24 +274,18 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T) this;
 	}
 
-//	public T clearListeneers() {
-//		if (eventManager == null) return (T) this;
-//		eventManager.reset();
-//		return (T) this;
+//	@Deprecated
+//	public T addListener(ActionListener<T> listener) {
+//		if(listener == null) throw new IllegalArgumentException("Listener is null.");
+////		listeners.add(listener);
+//		return (T)this;
 //	}
-
-	@Deprecated
-	public T addListener(ActionListener<T> listener) {
-		if(listener == null) throw new IllegalArgumentException("Listener is null.");
-//		listeners.add(listener);
-		return (T)this;
-	}
-
-	@Deprecated
-	public T removeListener(ActionListener<T> listener) {
-//		listeners.removeValue(listener, false);
-		return (T)this;
-	}
+//
+//	@Deprecated
+//	public T removeListener(ActionListener<T> listener) {
+////		listeners.removeValue(listener, false);
+//		return (T)this;
+//	}
 
 	@Deprecated
 	public T clearListeners() {

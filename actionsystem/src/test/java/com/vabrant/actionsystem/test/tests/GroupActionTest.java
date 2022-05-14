@@ -25,7 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.actions.RotateAction;
@@ -157,19 +158,33 @@ public class GroupActionTest extends ActionSystemTestListener {
 				}
 
 				
-				ActionListener restartListener = new ActionAdapter() {
+//				ActionListener restartListener = new ActionAdapter() {
+//					boolean restart = true;
+//
+//					@Override
+//					public void actionEnd(Action a) {
+//						if(restart) {
+//							restart = false;
+//							groupAction.restart();
+//						}
+//					}
+//				};
+//
+//				groupAction.getActions().get(1).addListener(restartListener);
+
+				ActionListener listener = new ActionListener() {
 					boolean restart = true;
-					
+
 					@Override
-					public void actionEnd(Action a) {
-						if(restart) {
+					public void onEvent(ActionEvent e) {
+						if (restart) {
 							restart = false;
 							groupAction.restart();
 						}
 					}
 				};
-		
-				groupAction.getActions().get(1).addListener(restartListener);
+				groupAction.getActions().get(1).subscribeToEvent(ActionEvent.END_EVENT, listener);
+
 				return groupAction;
 			}
 		});

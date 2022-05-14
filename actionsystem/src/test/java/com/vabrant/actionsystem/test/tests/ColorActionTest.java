@@ -24,7 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.actions.ActionListener;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.test.TestObject;
@@ -77,12 +78,12 @@ public class ColorActionTest extends ActionSystemTestListener {
 	private LabelCheckBoxWidget useHSBCheckbox;
 	private LabelCheckBoxWidget soloCheckbox;
 	
-	private ActionListener<ColorAction> listener = new ActionAdapter<ColorAction>() {
-		public void actionEnd(ColorAction a) {
+	private ActionListener listener = new ActionListener() {
+		public void onEvent(ActionEvent a) {
 			Color c = testObject.getColor();
-			
+
 			currentAlphaWidget.setValue(c.a);
-			
+
 			if(!useHSBCheckbox.isChecked()) {
 				currentRedWidget.setValue(c.r);
 				currentGreenWidget.setValue(c.g);
@@ -101,7 +102,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 			}
 		}
 	};
-	
+
 	@Override
 	public void create() {
 		super.create();
@@ -207,7 +208,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBrightnessEndWidget.setValue(-1);
 				
 				return ColorAction.changeAlpha(testObject, alphaEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 
@@ -228,7 +229,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBrightnessEndWidget.setValue(-1);
 				
 				return ColorAction.changeColorRGBA(testObject, redEndWidget.getValue(), greenEndWidget.getValue(), blueEndWidget.getValue(), alphaEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -248,7 +249,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBrightnessEndWidget.setValue(-1);
 				
 				return ColorAction.changeRed(testObject, redEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -268,7 +269,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBrightnessEndWidget.setValue(-1);
 				
 				return ColorAction.changeBlue(testObject, blueEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 
@@ -288,7 +289,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBrightnessEndWidget.setValue(-1);
 				
 				return ColorAction.changeGreen(testObject, greenEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -309,7 +310,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBlueEndWidget.setValue(-1);
 				
 				return ColorAction.changeColorHSBA(testObject, hueEndWidget.getValue(), saturationEndWidget.getValue(), brightnessEndWidget.getValue(), alphaEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear, useHSBCheckbox.isChecked())
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -331,7 +332,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBlueEndWidget.setValue(-1);
 				
 				return ColorAction.changeHue(testObject, hueEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear, useHSBCheckbox.isChecked())
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -352,7 +353,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBlueEndWidget.setValue(-1);
 				
 				return ColorAction.changeSaturation(testObject, saturationEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear, useHSBCheckbox.isChecked())
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -373,7 +374,7 @@ public class ColorActionTest extends ActionSystemTestListener {
 				testBlueEndWidget.setValue(-1);
 				
 				return ColorAction.changeBrightness(testObject, brightnessEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear, useHSBCheckbox.isChecked())
-						.addListener(listener);
+						.subscribeToEvent(ActionEvent.END_EVENT, listener);
 			}
 		});
 		
@@ -389,12 +390,24 @@ public class ColorActionTest extends ActionSystemTestListener {
 						ColorAction.changeHue(testObject, 250, 1f, Interpolation.linear, true));
 				
 				//Listener that will restart the group action
-				ActionListener<ColorAction> restartListener = new ActionAdapter<ColorAction>() {
+//				ActionListener<ColorAction> restartListener = new ActionAdapter<ColorAction>() {
+//					boolean restart = true;
+//
+//					@Override
+//					public void actionEnd(ColorAction a) {
+//						if(restart) {
+//							restart = false;
+//							group.restart();
+//						}
+//					}
+//				};
+
+				ActionListener restartListener = new ActionListener() {
 					boolean restart = true;
-					
+
 					@Override
-					public void actionEnd(ColorAction a) {
-						if(restart) {
+					public void onEvent(ActionEvent e) {
+						if (restart) {
 							restart = false;
 							group.restart();
 						}
@@ -403,8 +416,9 @@ public class ColorActionTest extends ActionSystemTestListener {
 
 				//When the second action is finished restart the entire group action will be restarted.
 				//All color actions that were ran should be returned to their initial state
-				((ColorAction)group.getActions().first()).addListener(restartListener);
-				
+//				((ColorAction)group.getActions().first()).addListener(restartListener);
+				((ColorAction)group.getActions().first()).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+
 				return group;
 			}
 		}); 

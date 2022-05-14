@@ -39,6 +39,8 @@ import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class ActionSystemTestListener extends ApplicationAdapter implements InputProcessor {
@@ -62,9 +64,16 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	private Label fpsLabel;
 	
 	@SuppressWarnings("rawtypes")
-	private ActionAdapter testOverListener = new ActionAdapter() {
+//	private ActionAdapter testOverListener = new ActionAdapter() {
+//		@Override
+//		public void actionEnd(Action a) {
+//			removeCurrentTest();
+//		}
+//	};
+
+	private ActionListener testOverListener = new ActionListener() {
 		@Override
-		public void actionEnd(Action a) {
+		public void onEvent(ActionEvent e) {
 			removeCurrentTest();
 		}
 	};
@@ -146,7 +155,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 						isTestRunning = true;
 						ActionTest test = tests.get(selectedTest);
 						actionToRun = test.run();
-						actionToRun.addListener(testOverListener);
+						actionToRun.subscribeToEvent(ActionEvent.END_EVENT, testOverListener);
+//						actionToRun.addListener(testOverListener);
 						isRunningLabel.setText("Running");
 						isRunningLabel.getStyle().fontColor = Color.RED;
 						break;
