@@ -23,10 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
-import com.vabrant.actionsystem.actions.ZoomAction;
 import com.vabrant.actionsystem.test.TestObject;
 
 /**
@@ -46,12 +45,6 @@ public class ZoomActionTest extends ActionSystemTestListener {
 	private DoubleLabelWidget currentZoomWidget;
 	
 	private TestObject testObject;
-	
-//	private ActionListener<ZoomAction> metricsListener = new ActionAdapter<ZoomAction>() {
-//		public void actionEnd(ZoomAction a) {
-//			currentZoomWidget.setValue(testObject.getZoom());
-//		}
-//	};
 
 	private ActionListener metricsListener = new ActionListener() {
 		@Override
@@ -115,7 +108,6 @@ public class ZoomActionTest extends ActionSystemTestListener {
 				
 				return ZoomAction.zoomTo(testObject, endWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear)
-//						.addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
 						.setReverse(reverseWidget.isChecked());
@@ -131,7 +123,6 @@ public class ZoomActionTest extends ActionSystemTestListener {
 				
 				return ZoomAction.zoomBy(testObject, amountWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear)
-//						.addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
 						.setReverse(reverseWidget.isChecked());

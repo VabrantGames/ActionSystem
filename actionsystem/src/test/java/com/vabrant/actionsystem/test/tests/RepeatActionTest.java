@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
@@ -89,19 +88,6 @@ public class RepeatActionTest extends ActionSystemTestListener {
 						2)
 						.setName("Repeat")
 						.setLogLevel(ActionLogger.LogLevel.DEBUG);
-
-//				ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
-//					boolean restart = true;
-//
-//					@Override
-//					public void actionEnd(MoveAction a) {
-//						if(restart && repeat.getCount() == 1) {
-//							restart = !restart;
-//							repeat.restart();
-//						}
-//					}
-//				};
-//				((MoveAction)repeat.getAction()).addListener(listener);
 
 				ActionListener listener = new ActionListener() {
 					boolean restart = true;

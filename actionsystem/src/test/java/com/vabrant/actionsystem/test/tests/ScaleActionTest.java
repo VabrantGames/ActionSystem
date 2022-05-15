@@ -23,10 +23,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
-import com.vabrant.actionsystem.actions.ScaleAction;
 import com.vabrant.actionsystem.test.TestObject;
 
 /**
@@ -54,13 +53,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 	private DoubleLabelWidget currentYWidget;
 	
 	private TestObject testObject;
-	
-//	private ActionListener<ScaleAction> metricsListener = new ActionAdapter<ScaleAction>() {
-//		public void actionEnd(ScaleAction a) {
-//			currentXWidget.setValue(testObject.getScaleX());
-//			currentYWidget.setValue(testObject.getScaleY());
-//		}
-//	};
 
 	private ActionListener metricsListener = new ActionListener() {
 		@Override
@@ -145,7 +137,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				return ScaleAction.scaleXBy(testObject, xAmountWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
-//						.addListener(metricsListener)
 						.setName("ScaleXBy")
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
 						.setReverse(reverseWidget.isChecked());
@@ -163,7 +154,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				
 				return ScaleAction.scaleYBy(testObject, yAmountWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear)
-//						.?addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.setName("ScaleYBy")
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
@@ -181,7 +171,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				
 				return ScaleAction.scaleXTo(testObject, xEndWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear) 
-//						.addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.setName("ScaleXTo")
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
@@ -199,7 +188,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				
 				return ScaleAction.scaleYTo(testObject, yEndWidget.getValue(), 
 						durationWidget.getValue(), Interpolation.linear) 
-//						.addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.setName("ScaleYTo")
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())
@@ -218,7 +206,6 @@ public class ScaleActionTest extends ActionSystemTestListener {
 				
 				return ScaleAction.scaleBy(testObject, xAmountWidget.getValue(), 
 						yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.linear) 
-//						.addListener(metricsListener)
 						.subscribeToEvent(ActionEvent.END_EVENT, metricsListener)
 						.setName("ScaleBy")
 						.reverseBackToStart(reverseBackToStartWidget.isChecked())

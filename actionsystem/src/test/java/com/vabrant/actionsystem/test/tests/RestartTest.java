@@ -19,16 +19,14 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
-import com.vabrant.actionsystem.actions.ActionAdapter;
-import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.ActionListener;
-import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.DelayAction;
 import com.vabrant.actionsystem.actions.GroupAction;
 import com.vabrant.actionsystem.actions.Movable;
 import com.vabrant.actionsystem.actions.MoveAction;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
-
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
@@ -55,7 +53,7 @@ public class RestartTest extends ActionSystemTestListener {
 	public void reset() {
 		int x = radius;
 		float y = (TestUtils.DEFAULT_HEIGHT - (radius * 2)) / 2;
-		for(int i = 0; i < circles.length; i++) {
+		for (int i = 0; i < circles.length; i++) {
 			Circle c = circles[i];
 			c.draw = true;
 			c.setX(x);
@@ -91,19 +89,6 @@ public class RestartTest extends ActionSystemTestListener {
 				MoveAction.moveXBy(circles[0], -100, 0.5f, Interpolation.linear)
 				.setName("Left").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
-		
-//		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
-//			boolean restart = true;
-//
-//			@Override
-//			public void actionEnd(MoveAction a) {
-//				if(!restart) return;
-//				restart = false;
-//				System.out.println("Restart Group Action");
-//				sequence.restart();
-//			}
-//		};
-//		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
 
 		ActionListener restartListener = new ActionListener() {
 			boolean restart = true;
@@ -134,19 +119,6 @@ public class RestartTest extends ActionSystemTestListener {
 				MoveAction.moveXBy(circles[0], 200, 0.5f, Interpolation.linear)
 				.setName("One").setLogLevel(ActionLogger.LogLevel.DEBUG),
 				DelayAction.delay(0.1f));
-		
-//		ActionListener<MoveAction> restartListener = new ActionAdapter<MoveAction>() {
-//			boolean restart = true;
-//
-//			@Override
-//			public void actionEnd(MoveAction a) {
-//				if(!restart) return;
-//				restart = false;
-//				System.out.println("Restart Group Action");
-//				sequence.restart();
-//			}
-//		};
-//		((MoveAction)sequence.getActions().get(2)).addListener(restartListener);
 
 		ActionListener restartListener = new ActionListener() {
 			boolean restart = true;

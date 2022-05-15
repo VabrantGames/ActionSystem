@@ -24,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.actions.GroupAction;
@@ -156,21 +155,6 @@ public class GroupActionTest extends ActionSystemTestListener {
 						groupAction.add(MoveAction.moveYBy(testObjects.get(0), 20, 0.5f, Interpolation.exp5Out));
 					}
 				}
-
-				
-//				ActionListener restartListener = new ActionAdapter() {
-//					boolean restart = true;
-//
-//					@Override
-//					public void actionEnd(Action a) {
-//						if(restart) {
-//							restart = false;
-//							groupAction.restart();
-//						}
-//					}
-//				};
-//
-//				groupAction.getActions().get(1).addListener(restartListener);
 
 				ActionListener listener = new ActionListener() {
 					boolean restart = true;

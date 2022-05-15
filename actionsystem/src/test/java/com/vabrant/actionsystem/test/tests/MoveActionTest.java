@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.actions.MoveAction;
@@ -35,15 +34,8 @@ public class MoveActionTest extends ActionSystemTestListener {
 	private DoubleLabelWidget testEndYWidget;
 	private DoubleLabelWidget currentXWidget;
 	private DoubleLabelWidget currentYWidget;
-	
-//	private ActionListener<MoveAction> listener = new ActionAdapter<MoveAction>() {
-//		public void actionEnd(MoveAction a) {
-//			currentXWidget.setValue(testObject.getX());
-//			currentYWidget.setValue(testObject.getY());
-//		}
-//	};
 
-	private ActionListener listener = new ActionListener() {
+	private ActionListener endListener = new ActionListener() {
 		@Override
 		public void onEvent(ActionEvent e) {
 			currentXWidget.setValue(testObject.getX());
@@ -124,8 +116,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue());
 				MoveAction action = MoveAction.moveXBy(testObject, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveXto")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -138,8 +129,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(testObject.getX(), yStartWidget.getValue() + yAmountWidget.getValue());
 				MoveAction action = MoveAction.moveYBy(testObject, yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//						.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveYBy")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -152,8 +142,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue() + xAmountWidget.getValue(), yStartWidget.getValue() + yAmountWidget.getValue());
 				MoveAction action = MoveAction.moveBy(testObject, xAmountWidget.getValue(), yAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveBy")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -169,8 +158,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angle));
 				setupTest(endX, endY);
 				MoveAction action = MoveAction.moveByAngleDeg(testObject, angle, xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveByAngle")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -186,8 +174,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 				final float endY = yStartWidget.getValue() + (xAmountWidget.getValue() * MathUtils.sinDeg(angleDeg));
 				setupTest(endX, endY);
 				MoveAction action = MoveAction.moveByAngleRad(testObject, angleWidget.getValue(), xAmountWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveByAngleRadians")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -200,8 +187,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xEndWidget.getValue(), yStartWidget.getValue());
 				MoveAction action = MoveAction.moveXTo(testObject, xEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveXto")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);
@@ -214,8 +200,7 @@ public class MoveActionTest extends ActionSystemTestListener {
 			public Action<?> run() {
 				setupTest(xStartWidget.getValue(), yEndWidget.getValue());
 				MoveAction action = MoveAction.moveYTo(testObject, yEndWidget.getValue(), durationWidget.getValue(), Interpolation.exp5Out)
-//							.addListener(listener)
-						.subscribeToEvent(ActionEvent.END_EVENT, listener)
+						.subscribeToEvent(ActionEvent.END_EVENT, endListener)
 						.setName("MoveYTo")
 						.reverseBackToStart(reverseBackToStart)
 						.setReverse(reverse);

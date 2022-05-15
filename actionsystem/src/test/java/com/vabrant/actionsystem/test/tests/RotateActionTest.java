@@ -22,16 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
+import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
-import com.vabrant.actionsystem.actions.DelayAction;
-import com.vabrant.actionsystem.actions.GroupAction;
-import com.vabrant.actionsystem.actions.RepeatAction;
-import com.vabrant.actionsystem.actions.RotateAction;
 import com.vabrant.actionsystem.test.TestObject;
-
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /**
@@ -49,13 +43,6 @@ public class RotateActionTest extends ActionSystemTestListener {
 	
 	private DoubleLabelWidget targetEndRotationWidget;
 	private DoubleLabelWidget currentRotationWidget;
-
-//	private ActionListener<RotateAction> endListener = new ActionAdapter<RotateAction>() {
-//		@Override
-//		public void actionEnd(RotateAction a) {
-//			currentRotationWidget.setValue(testObject.getRotation());
-//		}
-//	};
 
 	private ActionListener endListener = new ActionListener() {
 		@Override
@@ -115,7 +102,6 @@ public class RotateActionTest extends ActionSystemTestListener {
 				
 				return RotateAction.rotateBy(testObject, amountWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
 						.subscribeToEvent(ActionEvent.END_EVENT, endListener);
-//						.addListener(endListener);
 			}
 		});
 		
@@ -129,7 +115,6 @@ public class RotateActionTest extends ActionSystemTestListener {
 				targetEndRotationWidget.setValue(rotationEndWidget.getValue());
 				
 				return RotateAction.rotateTo(testObject, rotationEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
-//						.addListener(endListener);
 						.subscribeToEvent(ActionEvent.END_EVENT, endListener);
 			}
 		});
@@ -159,20 +144,6 @@ public class RotateActionTest extends ActionSystemTestListener {
 				GroupAction group = GroupAction.sequence(
 						RotateAction.rotateTo(testObject, 225, 1f, Interpolation.linear), 
 						RotateAction.rotateBy(testObject, 45, 1f, Interpolation.linear));
-				
-//				ActionListener<RotateAction> restartListener = new ActionAdapter<RotateAction>() {
-//					boolean restart = true;
-//
-//					@Override
-//					public void actionEnd(RotateAction a) {
-//						if(restart) {
-//							System.out.println(testObject.getRotation());
-//							restart = false;
-//							group.restart();
-//						}
-//					}
-//				};
-//				((RotateAction)group.getActions().first()).addListener(restartListener);
 
 				ActionListener restartListener = new ActionListener() {
 					boolean restart = true;

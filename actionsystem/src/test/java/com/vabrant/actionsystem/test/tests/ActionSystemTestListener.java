@@ -35,7 +35,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ActionAdapter;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
 
@@ -62,14 +61,6 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	private String selectedTest;
 	private Label isRunningLabel;
 	private Label fpsLabel;
-	
-	@SuppressWarnings("rawtypes")
-//	private ActionAdapter testOverListener = new ActionAdapter() {
-//		@Override
-//		public void actionEnd(Action a) {
-//			removeCurrentTest();
-//		}
-//	};
 
 	private ActionListener testOverListener = new ActionListener() {
 		@Override
@@ -79,7 +70,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	};
 	
 	@Override
-	public void create() {	
+	public void create() {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		
 		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
@@ -156,7 +147,6 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 						ActionTest test = tests.get(selectedTest);
 						actionToRun = test.run();
 						actionToRun.subscribeToEvent(ActionEvent.END_EVENT, testOverListener);
-//						actionToRun.addListener(testOverListener);
 						isRunningLabel.setText("Running");
 						isRunningLabel.getStyle().fontColor = Color.RED;
 						break;
