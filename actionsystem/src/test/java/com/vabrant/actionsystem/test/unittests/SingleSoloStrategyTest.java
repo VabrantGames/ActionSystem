@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.LoggerPrinter;
 import com.vabrant.actionsystem.logger.SingleSoloStrategy;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,18 +28,22 @@ public class SingleSoloStrategyTest {
 
     @Test
     public void basicTest() {
-        ActionLogger logger = ActionLogger.getLogger(SingleSoloStrategyTest.class, "Logger", ActionLogger.LogLevel.DEBUG);
-        SingleSoloStrategy strat = new SingleSoloStrategy();
+        ActionLogger logger1 = ActionLogger.getLogger(SingleSoloStrategyTest.class, "Logger1", ActionLogger.LogLevel.DEBUG);
+        ActionLogger logger2 = ActionLogger.getLogger(SingleSoloStrategyTest.class, "Logger2", ActionLogger.LogLevel.DEBUG);
 
-        strat.solo(logger, true);
+        logger2.setPrinter(new LoggerPrinter() {
+            @Override
+            public void print(ActionLogger logger, String message, String body, ActionLogger.LogLevel level) {
+                throw new RuntimeException("Should not print");
+            }
+        });
 
-        assertTrue(strat.isActive());
+        logger1.solo(true);
 
-        strat.print(logger,"Hello", "Strategy", ActionLogger.LogLevel.INFO);
+        //Attempt to print when logger logger1 is solo'd;
+        logger2.info("Hello");
 
-        strat.solo(logger, false);
-
-        assertFalse(strat.isActive());
+        logger1.info("Hello", "World");
     }
 
     @Test

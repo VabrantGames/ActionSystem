@@ -62,6 +62,34 @@ public class ActionLoggerTest {
 	}
 
 	@Test
+	public void levelTest() {
+		TestUtils.printTestHeader(testName.getMethodName());
+
+		ActionLogger logger = ActionLogger.getLogger(ActionLoggerTest.class);
+
+		logger.setLevel(ActionLogger.LogLevel.NONE);
+		logger.info("Hello");
+		logger.debug("Hello");
+		logger.error("Hello");
+
+		logger.setLevel(ActionLogger.LogLevel.ERROR);
+		logger.print("Level", "Error");
+		logger.info("Don't print info");
+		logger.debug("Don't print debug");
+
+		logger.setLevel(ActionLogger.LogLevel.INFO);
+		logger.print("Level", "Info");
+		logger.debug("Don't print debug");
+
+		logger.setLevel(ActionLogger.LogLevel.DEBUG);
+		logger.print("Level", "Debug");
+		logger.info("Print info");
+		logger.error("Print error");
+		logger.debug("Print debug");
+
+	}
+
+	@Test
 	public void soloTest() {
 		TestUtils.printTestHeader(testName.getMethodName());
 
@@ -79,9 +107,9 @@ public class ActionLoggerTest {
 		logger2.info("Hello", "logger2");
 
 		logger1.solo(true);
+
 		logger2.setPrinter(errorPrinter);
 		logger2.info("Hello", "World");
-
 		logger2.setPrinter(null);
 
 		logger2.solo(true);

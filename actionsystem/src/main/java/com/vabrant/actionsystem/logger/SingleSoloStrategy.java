@@ -22,9 +22,7 @@ public class SingleSoloStrategy implements SoloStrategy {
     }
 
     @Override
-    public void print(ActionLogger logger, String message, String body, ActionLogger.LogLevel level) {
-        if (!this.logger.equals(logger)) return;
-
-        logger.print(message, body, level);
+    public boolean canPrint(ActionLogger logger) {
+        return (this.logger != null && this.logger.equals(logger));
     }
 }
