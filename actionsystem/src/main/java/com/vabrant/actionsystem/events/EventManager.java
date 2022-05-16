@@ -23,6 +23,31 @@ public class EventManager implements Pool.Poolable {
         return events.containsKey(eventType);
     }
 
+    public boolean hasListener(String eventType, EventListener listener) {
+        if (eventType == null) throw new IllegalArgumentException("Event type is null");
+        if (listener == null) throw new IllegalArgumentException("Listener is null");
+
+        EventEntry entry = events.get(eventType);
+
+        if (entry == null) return false;
+
+        return entry.hasListener(listener);
+    }
+
+    public void clearListeners(String eventType) {
+        if (eventType == null) throw new IllegalArgumentException("Event type is null");
+
+        EventEntry entry = events.remove(eventType);
+
+        if (entry != null) {
+            Pools.free(entry);
+        }
+    }
+
+    public void clearAllListeners() {
+
+    }
+
     public void subscribe(String eventType, EventListener listener) {
         if (eventType == null) throw new IllegalArgumentException("Event type is null");
         if (listener == null) throw new IllegalArgumentException("Listener is null");
@@ -66,4 +91,5 @@ public class EventManager implements Pool.Poolable {
             Pools.free(e.value);
         }
     }
+
 }

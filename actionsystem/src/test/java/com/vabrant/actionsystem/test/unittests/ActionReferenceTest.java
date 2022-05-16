@@ -15,18 +15,19 @@
  */
 package com.vabrant.actionsystem.test.unittests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.vabrant.actionsystem.actions.Action;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.vabrant.actionsystem.actions.ActionPools;
 import com.vabrant.actionsystem.actions.ActionReference;
 import com.vabrant.actionsystem.test.unittests.MockActions.*;
+
+import static org.junit.Assert.*;
 
 /**
  * @author John Barton
@@ -40,23 +41,43 @@ public class ActionReferenceTest {
 	public static void init() {
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
 	@Test
 	public void basicTest() {
+		//Action to reference
 		MockAction action = MockAction.obtain();
 		
 		//Reference to the action. Likely a global var that different methods or whatever can access
 		ActionReference<MockAction> ref = new ActionReference<MockAction>();
 		ref.setAction(action);
-		
-		//MockAction m = ref.getAction();
-		//m.doSomething();
 
 		assertNotNull(ref.getAction());
+
+		action.reset();
+
+		assertNull(ref.getAction());
+	}
+
+	@Test
+	public void  changeActionTest() {
+		MockAction action1 = MockAction.obtain();
+		MockAction action2 = MockAction.obtain();
+		ActionReference<MockAction> ref = new ActionReference<MockAction>();
+
+		ref.setAction(action1);
+		Action oldAction = ref.setAction(action2);
+
+		assertEquals(ref.getAction(), action2);
+		assertEquals(oldAction, action1);
+
+		ref.setAction(null);
+
+		assertNull(ref.getAction());
 	}
 	
-	@Test
+//	@Test
 	public void cleanupTest() {
 		MockAction action = MockAction.obtain();
 		ActionReference<MockAction> ref = new ActionReference<MockAction>(action);

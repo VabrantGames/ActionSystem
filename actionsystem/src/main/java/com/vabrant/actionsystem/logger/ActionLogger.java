@@ -156,6 +156,10 @@ public class ActionLogger {
         SOLO_STRATEGY.solo(this, solo);
     }
 
+    public void print(String message) {
+        print(message, null);
+    }
+
     public void print(String message, String body) {
         if (RESTRICT_OUTPUT) return;
         printer.print(this, message, body, LogLevel.DEBUG);

@@ -46,9 +46,6 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	Pool<T> pool;
 	
-	/** Whether this action is the root action. */
-	boolean isRoot;
-	
 	/** Whether this action is currently being used by an {@link ActionManager} */
 	boolean inUse;
 	
@@ -69,29 +66,20 @@ public class Action<T extends Action<T>> implements Poolable {
 	private ActionManager actionManager;
 	protected EventManager eventManager;
 
-	/** Listeners that can't be removed by the user. */
-	/** Listeners managed by the action system. */
-	private Array<CleanupListener<Action<?>>> cleanupListeners;
-	final Array<Action<?>> preActions;
-	final Array<Action<?>> postActions;
-	
 	protected final ActionLogger logger;
-	
+
 	public Action() {
-		cleanupListeners = new Array<>(3);
-		preActions = new Array<>(2);
-		postActions = new Array<>(2);
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.LogLevel.NONE);
 	}
 	
 	public T setLogLevel(ActionLogger.LogLevel level) {
 		logger.setLevel(level);
-		return (T)this;
+		return (T) this;
 	}
 
 	public T soloLogger(boolean solo) {
 		logger.solo(solo);
-		return (T)this;
+		return (T) this;
 	}
 	
 	public ActionLogger getLogger() {
@@ -112,27 +100,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public boolean hasConflict(Action<?> action) {
 		return false;
 	}
-	
-	public T addPreAction(Action<?> action) {
-		if(action == null) throw new IllegalArgumentException("Action is null.");
-		preActions.add(action);
-		return (T)this;
-	}
-	
-	public Array<Action<?>> getPreActions(){
-		return preActions;
-	}
-	
-	public T addPostAction(Action<?> action) {
-		if(action == null) throw new IllegalArgumentException("Action is null.");
-		postActions.add(action);
-		return (T)this;
-	}
-	
-	public Array<Action<?>> getPostActions(){
-		return postActions;
-	}
-	
+
 	void setPooled(boolean pooled) {
 		hasBeenPooled = pooled;
 	}
@@ -157,8 +125,11 @@ public class Action<T extends Action<T>> implements Poolable {
 		this.actionManager = actionManager;
 	}
 
+	/**
+	 * Base of an Action hierarchy
+	 * @param root
+	 */
 	void setRoot(boolean root) {
-		isRoot = root;
 		inUse = root;
 	}
 	
@@ -167,7 +138,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	public boolean isRoot() {
-		return isRoot;
+		return this.equals(rootAction);
 	}
 	
 	public Action<?> getRootAction() {
@@ -184,16 +155,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	public boolean inUse() {
-		return rootAction == null ? false : rootAction.inUse;
-	}
-
-	private void runPostActions() {
-		if(postActions.size > 0) {
-			ActionManager manager = getRootAction().actionManager;
-			for(int i = postActions.size - 1; i >= 0; i--) {
-				manager.addAction(postActions.pop());
-			}
-		}
+		return rootAction != null && rootAction.inUse;
 	}
 
 	public T setName(String name) {
@@ -245,21 +207,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		this.resumeCondition = resumeCondition;
 		return (T)this;
 	}
-	
-	protected boolean containsCleanupListener(CleanupListener<Action<?>> listener) {
-		return cleanupListeners.contains(listener, false);
-	}
-	
-	protected T addCleanupListener(CleanupListener<Action<?>> listener) {
-		if(listener == null) throw new IllegalArgumentException("CleanupListener is null.");
-		cleanupListeners.add(listener);
-		return (T)this;
-	}
-	
-	protected T removeCleanupListener(CleanupListener<Action<?>> listener) {
-		cleanupListeners.removeValue(listener, false);
-		return (T)this;
-	}
 
 	//TODO Use own pool
 	public T subscribeToEvent(String eventType, EventListener<?> listener) {
@@ -274,25 +221,12 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T) this;
 	}
 
-//	@Deprecated
-//	public T addListener(ActionListener<T> listener) {
-//		if(listener == null) throw new IllegalArgumentException("Listener is null.");
-////		listeners.add(listener);
-//		return (T)this;
-//	}
-//
-//	@Deprecated
-//	public T removeListener(ActionListener<T> listener) {
-////		listeners.removeValue(listener, false);
-//		return (T)this;
-//	}
+	public T clearListeners(String eventType) {
+		return (T) this;
+	}
 
-	@Deprecated
-	public T clearListeners() {
-		if (eventManager != null) {
-			eventManager.reset();
-		}
-		return (T)this;
+	public T clearAllListeners() {
+		return (T) this;
 	}
 	
 	public boolean update(float delta) {
@@ -318,7 +252,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		isDead = false;
 		isPaused = false;
 		isRunning = false;
-		isRoot = false;
 		rootAction = null;
 	}
 
@@ -328,7 +261,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		isDead = false;
 		isPaused = false;
 		isRunning = false;
-		isRoot = false;
 	}
 	
 	/**
@@ -339,9 +271,12 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(inUse()) throw new IllegalStateException("Action can't be reset while in use.");
 		
 		logger.debug("Cleanup");
-		
-		for(int i = 0; i < cleanupListeners.size; i++) {
-			cleanupListeners.get(i).cleanup(this);
+
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.CLEANUP_EVENT)) {
+			ActionEvent event = Pools.obtain(ActionEvent.class);
+			event.setAsCleanup();
+			event.setAction(this);
+			eventManager.fire(event);
 		}
 		
 		logger.info("Reset");
@@ -350,7 +285,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		logger.reset();
 		pauseCondition = null;
 		resumeCondition = null;
-		cleanupListeners.clear();
 		name = null;
 
 		if (eventManager != null) {
@@ -371,18 +305,10 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Starts the action
 	 */
 	public final T start() {
-		if(isRunning) return (T)this;
+		if(isRunning) return (T) this;
 		if(isManaged && hasBeenPooled) throw new IllegalStateException("Managed actions may not be reused without being returned to a pool. To reuse an action make it unmanaged.");
 		if(rootAction.isDead) throw new IllegalStateException("Action is dead.");
-		
-		if(preActions.size > 0) {
-			if(!isRoot && rootAction == null) throw new RuntimeException("Root Action has to be added to a Action Manager.");
-			ActionManager manager = !isRoot ? rootAction.actionManager : actionManager;
-			for(int i = preActions.size - 1; i >= 0; i--) {
-				manager.addAction(preActions.pop());
-			}
-		}
-		
+
 		logger.info("Start Action");	
 		
 		isRunning = true;
@@ -395,7 +321,7 @@ public class Action<T extends Action<T>> implements Poolable {
 			eventManager.fire(event);
 		}
 
-		return (T)this;
+		return (T) this;
 	}
 	
 	/**
@@ -466,6 +392,8 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Ends the action. If the action is running it will be ended as if it were completed.
 	 */
 	public final T end() {
+		if (!isRunning()) return (T) this;
+
 		logger.info("End Action");		
 		
 		if(isRoot()) isDead = true;
@@ -479,7 +407,6 @@ public class Action<T extends Action<T>> implements Poolable {
 			eventManager.fire(event);
 		}
 		
-		runPostActions();
 		return (T) this;
 	}
 	
@@ -494,6 +421,8 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Ends the action at its current position. If the action is running it will end uncompleted.
 	 */
 	public final T kill() {
+		if (!isRunning()) return (T) this;
+
 		logger.info("Kill Action");	
 		
 		if(isRoot()) isDead = true;
@@ -507,7 +436,6 @@ public class Action<T extends Action<T>> implements Poolable {
 			eventManager.fire(event);
 		}
 
-		runPostActions();
 		return (T) this;
 	}
 

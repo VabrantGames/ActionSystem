@@ -39,6 +39,10 @@ public class MockActions {
 			this.runnable = runnable;
 			return this;
 		}
+
+		public void fullStartMock() {
+
+		}
 		
 //		@Override
 //		protected void startLogic() {

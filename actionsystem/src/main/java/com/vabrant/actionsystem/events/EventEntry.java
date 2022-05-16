@@ -20,6 +20,10 @@ public class EventEntry implements Pool.Poolable {
         listeners.removeValue(listener, false);
     }
 
+    public boolean hasListener(EventListener listener) {
+        return listeners.contains(listener, false);
+    }
+
     public Array<EventListener> getListeners() {
         return listeners;
     }

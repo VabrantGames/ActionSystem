@@ -182,26 +182,10 @@ public class ActionPools {
 	 * Frees an action. 
 	 */
 	private static <T extends Action<?>> void freeAction(T action) {
-		if(action.hasBeenPooled()) return;
+		if (action.hasBeenPooled()) return;
 		
-		//Free any unused PreActions
-		Array<Action<?>> actions = action.getPreActions();
-		if(actions.size > 0) {
-			for(int i = actions.size - 1; i >= 0; i--) {
-				free(actions.pop());
-			}
-		}
-		
-		//Free any unused PostActions
-		actions = action.getPostActions();
-		if(actions.size > 0) {
-			for(int i = actions.size - 1; i >= 0; i--) {
-				free(actions.pop());
-			}
-		}
-		
-		if(action.isManaged()) {
-			Pool<T> pool = (Pool<T>)action.getPool();
+		if (action.isManaged()) {
+			Pool<T> pool = (Pool<T>) action.getPool();
 			if(pool == null) {
 				pool = ActionPools.get(action.getClass());
 			}
@@ -213,7 +197,7 @@ public class ActionPools {
 			action.unmanagedReset();
 		}
 
-		if(logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
+		if (logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 
 }

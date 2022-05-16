@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
@@ -34,6 +35,7 @@ public class ActionTest {
     public static void init() {
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
     }
 
     public void makeRoot(Action<?> action, boolean value) {
@@ -74,10 +76,16 @@ public class ActionTest {
 	public void basicTest() {
 		printTestHeader(testName.getMethodName());
 		
-		DelayAction action = DelayAction.obtain()
-				.setDuration(2)
+		MockAction action = MockAction.obtain()
 				.setName("Action")
 				.setLogLevel(ActionLogger.LogLevel.DEBUG);
+
+		action.setCustomUpdateCode(new Runnable() {
+			@Override
+			public void run() {
+				action.end();
+			}
+		});
 		
 		ActionManager manager = new ActionManager();
 		
@@ -87,8 +95,8 @@ public class ActionTest {
 		assertTrue(action.isRoot());
 		assertTrue(action.inUse());
 		
-		manager.update(Float.MAX_VALUE);
-		
+		manager.update(0);
+
 		assertFalse(action.isRunning());
 	}
 
@@ -245,142 +253,6 @@ public class ActionTest {
 	}
 
 	@Test
-	public void preActionTest() {
-		printTestHeader(testName.getMethodName());
-		
-		DelayAction mainAction = DelayAction.obtain()
-				.setDuration(2)
-				.setName("Main")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		DelayAction preAction = DelayAction.obtain()
-				.setDuration(2)
-				.setName("Pre")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		ActionManager manager = new ActionManager();
-		
-		mainAction.addPreAction(preAction);
-
-		//Should start the pre-action
-		manager.addAction(mainAction);
-
-		assertTrue(preAction.isRunning());
-		
-		manager.update(Float.MAX_VALUE);
-		
-		assertTrue(hasBeenPooled(mainAction));
-		assertTrue(hasBeenPooled(preAction));
-	}
-	
-	@Test
-	public void preActionPooledIfMainGetsPooledBeforeUse() {
-		printTestHeader(testName.getMethodName());
-		
-		DelayAction mainAction = DelayAction.obtain()
-				.setDuration(2)
-				.setName("Main")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		DelayAction preAction = DelayAction.obtain()
-				.setDuration(2)
-				.setName("Pre")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		mainAction.addPreAction(preAction);
-		ActionPools.free(mainAction);
-		
-		assertTrue(hasBeenPooled(mainAction));
-		assertTrue(hasBeenPooled(preAction));
-	}
-	
-	@Test
-	public void unmanagedPreActionTest() {
-		printTestHeader(testName.getMethodName());
-		
-		ActionManager manager = new ActionManager();
-		
-		MockAction mainAction = MockAction.obtain()
-				.setName("Main")
-				.unmanage()
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction preAction = MockAction.obtain()
-				.setName("Pre")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		mainAction.addPreAction(preAction);
-		
-		manager.addAction(mainAction);
-		
-		assertTrue(mainAction.isRunning());
-		assertTrue(preAction.isRunning());
-		
-		//Mock cycle
-		manager.update(0);
-		mainAction.end();
-		preAction.end();
-		
-		manager.update(0);
-		
-		assertTrue(hasBeenPooled(preAction));
-	}
-	
-	@Test
-	public void postActionTest() {
-		printTestHeader(testName.getMethodName());
-
-		ActionManager manager = new ActionManager();
-		
-		MockAction mainAction = MockAction.obtain()
-				.setName("Main")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction postAction = MockAction.obtain()
-				.setName("Post")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		mainAction.addPostAction(postAction);
-		
-		manager.addAction(mainAction);
-		
-		//Mock cycle
-		//Post action starts when the main action is ended
-		manager.update(0);
-		mainAction.end();
-		
-		assertTrue(postAction.isRoot());
-		assertTrue(postAction.isRunning());
-		
-		postAction.end();
-		
-		//Cleans up the ended actions
-		manager.update(0);
-		
-		assertTrue(hasBeenPooled(mainAction));
-		assertTrue(hasBeenPooled(postAction));
-	}
-	
-	@Test
-	public void postActionEndEarlyTest() {
-		printTestHeader(testName.getMethodName());
-		
-		MockAction mainAction = MockAction.obtain()
-				.setName("Main")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction postAction = MockAction.obtain()
-				.setName("post")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		mainAction.addPostAction(postAction);
-		ActionPools.free(mainAction);
-		
-		assertTrue(hasBeenPooled(mainAction));
-		assertTrue(hasBeenPooled(postAction));
-	}
-
-	@Test
 	public void restartTest() {
 		printTestHeader(testName.getMethodName());
 
@@ -443,6 +315,29 @@ public class ActionTest {
 		p1.restart();
 
 		assertTrue(p1.isRunning());
+	}
+
+	@Test
+	public void cleanupEventTest() {
+		ActionListener listener = new ActionListener() {
+			@Override
+			public void onEvent(ActionEvent e) {
+				e.getAction().getLogger().print("Hello cleanup event");
+			}
+		};
+
+		MockAction action = MockAction.obtain();
+		action.setName(testName.getMethodName());
+		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, listener);
+
+		//Mock cycle
+		makeRoot(action, true);
+		action.setRootAction(action);
+		action.start();
+		action.end();
+		makeRoot(action, false);
+
+		action.reset();
 	}
 
 }

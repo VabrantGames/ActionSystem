@@ -15,18 +15,21 @@
  */
 package com.vabrant.actionsystem.actions;
 
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
+
 /**
- * Holds an action as reference
+ * Holds a reference to an action
  * @author John Barton
  *
  */
 public class ActionReference<T extends Action<T>> {
 	
 	private T reference;
-	
-	private CleanupListener<Action<?>> cleanupListener = new CleanupListener<Action<?>>() {
+
+	private ActionListener cleanupListener = new ActionListener() {
 		@Override
-		public void cleanup(Action<?> a) {
+		public void onEvent(ActionEvent e) {
 			reference = null;
 		}
 	};
@@ -47,10 +50,10 @@ public class ActionReference<T extends Action<T>> {
 		T oldAction = null;
 		
 		//Remove the old action before a new one is set
-		if(reference != null) {
+		if (reference != null) {
 			if(action == reference) return null;
-			
-			reference.removeCleanupListener(cleanupListener);
+
+			reference.unsubscribeFromEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
 			oldAction = reference;
 			reference = null;
 		}
@@ -58,8 +61,8 @@ public class ActionReference<T extends Action<T>> {
 		if(action == null) return oldAction;
 		
 		reference = action;
-		action.addCleanupListener(cleanupListener);
-		
+		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
+
 		return oldAction;
 	}
 	

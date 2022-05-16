@@ -16,6 +16,8 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
@@ -32,23 +34,19 @@ public class ActionWatcher {
 
 	private final ActionLogger logger;
 	private final ObjectMap<String, Action<?>> watchActions;
-	private final CleanupListener listener;
-	
+
+	private ActionListener cleanupListener = new ActionListener() {
+		@Override
+		public void onEvent(ActionEvent e) {
+			remove(e.getAction().getName());
+		}
+	};
+
 	public ActionWatcher(int amount) {
 		watchActions = new ObjectMap<>(amount);
 		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.LogLevel.NONE);
-		listener = createActionListener();
 	}
-	
-	private CleanupListener createActionListener() {
-		return new CleanupListener() {
-			@Override
-			public void cleanup(Action a) {
-				remove(a.getName());
-			}
-		};
-	}
-	
+
 	public Action<?> get(String key){
 		return watchActions.get(key);
 	}
@@ -64,7 +62,7 @@ public class ActionWatcher {
 			return;
 		}
 		
-		action.addCleanupListener(listener);
+		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
 		watchActions.put(key, action);
 		logger.info("Watching", key);
 	}
@@ -86,7 +84,7 @@ public class ActionWatcher {
 			return false;
 		}
 		
-		action.removeCleanupListener(listener);
+		action.unsubscribeFromEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
 		
 		logger.info("Stopped Watching", name);
 		return true;
