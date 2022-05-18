@@ -6,10 +6,19 @@ import com.vabrant.actionsystem.actions.Action;
 
 public class EventEntry implements Pool.Poolable {
 
+    private boolean isLocked;
     private Array<EventListener> listeners;
 
     public EventEntry() {
         listeners = new Array<>();
+    }
+
+    void lock() {
+        isLocked = true;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
     }
 
     public void addListener(EventListener listener) {
@@ -36,6 +45,7 @@ public class EventEntry implements Pool.Poolable {
 
     @Override
     public void reset() {
+        isLocked = false;
         listeners.clear();
     }
 }

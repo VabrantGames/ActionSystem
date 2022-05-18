@@ -3,18 +3,14 @@ package com.vabrant.actionsystem.test.unittests;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pools;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ColorAction;
-import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.events.*;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class EventManagerTest {
 
@@ -28,64 +24,44 @@ public class EventManagerTest {
 
     @Test
     public void basicTest() {
+        final boolean[] wereEventsCalled = {false, false, false};
+
         TestAction action = new TestAction()
                 .subscribeToEvent(ActionEvent.START_EVENT, new ActionListener() {
                     @Override
                     public void onEvent(ActionEvent e) {
-                        System.out.println("Action has started");
+                        wereEventsCalled[0] = true;
                     }
                 })
                 .subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
                     @Override
                     public void onEvent(ActionEvent e) {
-                        System.out.println("Action has ended");
+                        wereEventsCalled[1] = true;
                     }
                 })
                 .subscribeToEvent(CountEvent.COUNT_EVENT, new CountListener() {
                     @Override
                     public void onEvent(CountEvent e) {
-                        System.out.println(e.getCount());
+                        wereEventsCalled[2] = true;
                     }
-
                 });
-
-        TestActionAdapter ad = new TestActionAdapter();
-        ad.setEndListener(new ActionListener() {
-            @Override
-            public void onEvent(ActionEvent e) {
-
-            }
-        });
-        ad.setStartListener(new ActionListener() {
-            @Override
-            public void onEvent(ActionEvent e) {
-
-            }
-        });
-
-        action.subscribeToEvent("", ad);
-        action.subscribeToEvent("", ad);
 
         action.fakeStart();
         action.fakeEnd();
         action.incrementCount();
-        action.incrementCount();
-        action.incrementCount();
+
+        assertArrayEquals(new boolean[]{true, true, true}, wereEventsCalled);
     }
 
     @Test
     public void resetTest() {
         EventManager manager = new EventManager();
 
-        EventListener listener = new EventListener() {
-            @Override
-            public void onEvent(Event e) {
-            }
-        };
+        EventListener<?> listener = new EmptyEventListener();
 
         manager.subscribe("one", listener);
         manager.subscribe("two", listener);
-        manager.subscribe("three", listener);
+        manager.subscribe("#three", listener);
 
         ObjectMap<String, EventEntry> events = manager.getEvents();
 
@@ -96,10 +72,81 @@ public class EventManagerTest {
         assertEquals(0, events.size);
     }
 
-    private interface CountListener extends EventListener<CountEvent> {
+    @Test
+    public void hasEventTest() {
+        final String testEvent = "test";
+        EventManager manager = new EventManager();
+
+        manager.subscribe(testEvent, new EmptyEventListener());
+
+        assertTrue(manager.hasEvent(testEvent));
     }
 
-    private class TestActionAdapter implements EventListener<ActionEvent> {
+    @Test
+    public void hasListenerTest() {
+        final String testEvent = "test";
+        EventManager manager = new EventManager();
+        EventListener<?> listener = new EmptyEventListener();
+
+        manager.subscribe(testEvent, listener);
+
+        assertTrue(manager.hasListener(testEvent, listener));
+    }
+
+    @Test
+    public void unsubscribeTest() {
+        final String event = "event";
+        EventManager manager = new EventManager();
+        EventListener<?> listener = new EmptyEventListener();
+
+        manager.subscribe(event, listener);
+        manager.unsubscribe(event, listener);
+
+        assertFalse(manager.hasListener(event, listener));
+    }
+
+    @Test
+    public void clearListenersTest() {
+        final String event = "event";
+        final String lockedEvent = "#event";
+        EventManager manager = new EventManager();
+
+        manager.subscribe(event, new EmptyEventListener());
+        manager.subscribe(event, new EmptyEventListener());
+        manager.subscribe(lockedEvent, new EmptyEventListener());
+
+        //Non locked events should be cleared
+        manager.clearListeners(event);
+        assertFalse(manager.hasEvent(event));
+
+        //Locked events should not be cleared
+        assertTrue(manager.hasEvent(lockedEvent));
+    }
+
+   @Test
+   @Ignore
+   public void TemplateListenerTest () {
+        TestAction action = new TestAction();
+
+       ActionListenerTemplate listener = new ActionListenerTemplate();
+       listener.setEndListener(new ActionListener() {
+           @Override
+           public void onEvent(ActionEvent e) {
+                System.out.println("Hello start event");
+           }
+       });
+       listener.setStartListener(new ActionListener() {
+           @Override
+           public void onEvent(ActionEvent e) {
+                System.out.println("Hello end event");
+           }
+       });
+
+       action.subscribeToEvent(ActionEvent.START_EVENT, listener);
+       action.subscribeToEvent(ActionEvent.END_EVENT, listener);
+    }
+
+    private class ActionListenerTemplate implements EventListener<ActionEvent> {
 
         private ActionListener startListener;
         private ActionListener endListener;
@@ -116,14 +163,54 @@ public class EventManagerTest {
             }
         }
 
-        public TestActionAdapter setStartListener(ActionListener listener) {
+        ActionListenerTemplate setStartListener(ActionListener listener) {
             startListener = listener;
             return this;
         }
 
-        public TestActionAdapter setEndListener(ActionListener listener) {
+        ActionListenerTemplate setEndListener(ActionListener listener) {
             endListener = listener;
             return this;
+        }
+    }
+
+    private interface ActionListener extends EventListener<ActionEvent> {
+
+    }
+
+    private static class ActionEvent extends Event {
+
+        private static final String START_EVENT = "start";
+        private static final String END_EVENT = "end";
+
+        public ActionEvent() {
+            super(null);
+        }
+
+        public void setAsStart() {
+            type = START_EVENT;
+        }
+
+        public void setAsEnd() {
+            type = END_EVENT;
+        }
+
+    }
+
+    private interface CountListener extends EventListener<CountEvent> {
+    }
+
+    private static class CountEvent extends Event {
+
+        int count;
+        public static final String COUNT_EVENT = "count_event";
+
+        public CountEvent() {
+            super(COUNT_EVENT);
+        }
+
+        public int getCount() {
+            return count;
         }
     }
 
@@ -133,30 +220,14 @@ public class EventManagerTest {
         private EventManager eventManager = new EventManager();
 
         public void fakeStart() {
-            ActionEvent event = new ActionEvent();
+           ActionEvent event = new ActionEvent();
             event.setAsStart();
-            event.setAction(this);
             eventManager.fire(event);
         }
 
         public void fakeEnd() {
             ActionEvent event = new ActionEvent();
             event.setAsEnd();
-            event.setAction(this);
-            eventManager.fire(event);
-        }
-
-        public void fakeKill() {
-            ActionEvent event = new ActionEvent()
-                    .setAsKill()
-                    .setAction(this);
-            eventManager.fire(event);
-        }
-
-        public void fakeRestart() {
-            ActionEvent event = new ActionEvent()
-                    .setAsRestart()
-                    .setAction(this);
             eventManager.fire(event);
         }
 
@@ -175,22 +246,12 @@ public class EventManagerTest {
             eventManager.unsubscribe(eventType, listener);
             return this;
         }
-
     }
 
-    private static class CountEvent extends Event {
-
-        int count;
-        public static final String COUNT_EVENT = "count_event";
-
-        public CountEvent() {
-            super(COUNT_EVENT);
+    private static class EmptyEventListener implements EventListener {
+        @Override
+        public void onEvent(Event e) {
         }
-
-        public int getCount() {
-            return count;
-        }
-    }
-
+    };
 
 }
