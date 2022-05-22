@@ -33,10 +33,10 @@ public class ActionPools {
 	 * @param type
 	 * @param amount
 	 */
-	public static <T extends Action<T>> void fill(Class<T> type, int amount) {
+	public static <T> void fill(Class<T> type, int amount) {
 		if(amount == 0) throw new IllegalArgumentException("Fill amount can't be 0.");
 		
-		Pool<T> pool = get(type, false);
+		Pool<T> pool = get(type);
 		
 		if(pool == null) throw new IllegalArgumentException("Pool of type " + type.getSimpleName() + " doesn't exist.");
 
@@ -70,77 +70,82 @@ public class ActionPools {
 		return pools.containsKey(type);
 	}
 
-	public static <T extends Action<T>> Pool<T> create(Class<T> type, int initialCapacity, int max, boolean fill) {
-		if(exists(type)) return get(type); 
-		
+	public static <T> Pool<T> create(Class<T> type) {
+		return create(type, false);
+	}
+
+	public static <T> Pool<T> create(Class<T> type, boolean fill) {
+		return create(type, 10, Integer.MAX_VALUE, fill);
+	}
+
+	public static <T> Pool<T> create(Class<T> type, int initialCapacity, int max, boolean fill) {
+		if (exists(type)) return get(type);
+
 		Pool<T> pool = new ReflectionPool<T>(type, initialCapacity, max);
 		pools.put(type, pool);
-		if(fill) fill(type, initialCapacity);
+
+		if (fill) fill(type, initialCapacity);
 		return pool;
 	}
 	
-	public static <T extends Action<T>> Pool<T> get(Class<T> type){
-		return get(type, true);
-	}
-	
-	private static <T extends Action<T>> Pool<T> get(Class<T> type, boolean create){
-		Pool<T> pool = null;
-		
-		if(create) {
-			if(exists(type)) return pool = (Pool<T>)pools.get(type);
-			return pool = create(type, 10, Integer.MAX_VALUE, false);
+	public static <T> Pool<T> get(Class<T> type){
+		Pool pool = pools.get(type);
+		if (pool == null) {
+			pool = create(type, 10, Integer.MAX_VALUE, false);
 		}
-		else {
-			return pool = (Pool<T>)pools.get(type);
-		}
-	}
-	
-	public static <T extends Action<T>> T obtain(Class<T> type) {
-//		T action = get(type).obtain();
-//		action.setPooled(false);
-//		return action;
-		return obtain(get(type));
-	}
-	
-	static <T extends Action<T>> T obtain(Pool<T> pool) {
-		T action = pool.obtain();
-		action.setPooled(false);
-		return action;
+		return pool;
 	}
 
-	public static void free(Action<?> action) {
-		if(action == null) throw new IllegalArgumentException("Action is null.");
-		if(action.inUse()) throw new IllegalArgumentException("Action is in use. Can't be freed.");
-		
-		freeChildActions(action);
-		freeAction(action);
+	public static <T> T obtain(Class<T> type) {
+		return get(type).obtain();
 	}
-	
-	//TODO: What is this? Remove?
-//	public static void alternativeFree(Action<?> action) {
-//		if(action == null) throw new IllegalArgumentException("Action is null");
-//		freeAction(action);
-//	}
-	
-	public static void freeAll(Array<Action<?>> actions) {
-		if(actions == null) throw new IllegalArgumentException("Array is null");
-		if(actions.size == 0) return;
-		
-		for(int i = actions.size - 1; i >= 0; i--) {
-			Action<?> child = actions.pop();
-			freeChildActions(child);
-			freeAction(child);
+
+	public static void free(Object object) {
+		if (object == null) throw new IllegalArgumentException("Object is null.");
+
+		if (object instanceof Action) {
+			Action<?> action = (Action<?>) object;
+
+			if (action.inUse()) throw new IllegalArgumentException("Action can not be freed while in use.");
+			if (action.hasBeenPooled()) return;
+
+			if (action.isManaged()) {
+				Pool pool = action.getPool();
+
+				if(pool == null) {
+					pool = ActionPools.get(action.getClass());
+				}
+
+				pool.free(action);
+				action.setPooled(true);
+
+				logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
+			}
+			else {
+				action.unmanagedReset();
+			}
+		}
+		else {
+			Pool pool = pools.get(object.getClass());
+			if (pool != null){
+				pool.free(object);
+			}
 		}
 	}
-	
+
+	public static <T> void freeAll(Array<T> objects) {
+		if (objects == null) throw new IllegalArgumentException("Array is null");
+
+		for (int i = 0, s = objects.size; i < s; i++) {
+			free(objects.get(i));
+		}
+	}
+
 	public static void freeAll(Action<?>[] actions) {
 		if(actions == null) throw new IllegalArgumentException("Array is null");
-		if(actions.length == 0) return;
-		
-		for(int i = actions.length - 1; i >= 0; i--) {
-			Action<?> child = actions[i];
-			freeChildActions(child);
-			freeAction(child);
+
+		for(int i = 0; i < actions.length; i++) {
+			free(actions[i]);
 		}
 	}
 	
@@ -183,9 +188,10 @@ public class ActionPools {
 	 */
 	private static <T extends Action<?>> void freeAction(T action) {
 		if (action.hasBeenPooled()) return;
-		
+
 		if (action.isManaged()) {
-			Pool<T> pool = (Pool<T>) action.getPool();
+			Pool pool = action.getPool();
+
 			if(pool == null) {
 				pool = ActionPools.get(action.getClass());
 			}
@@ -197,7 +203,7 @@ public class ActionPools {
 			action.unmanagedReset();
 		}
 
-		if (logger != null) logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
+		logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 	}
 
 }

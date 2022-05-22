@@ -43,27 +43,7 @@ public class MockActions {
 		public void fullStartMock() {
 
 		}
-		
-//		@Override
-//		protected void startLogic() {
-//			logger.debug("Run Start Logic");
-//		}
-//
-//		@Override
-//		protected void restartLogic() {
-//			logger.debug("Run Restart Logic");
-//		}
-//
-//		@Override
-//		protected void endLogic() {
-//			logger.debug("Run End Logic");
-//		}
-//
-//		@Override
-//		protected void killLogic() {
-//			logger.debug("Run Kill Logic");
-//		}
-		
+
 		@Override
 		public boolean update(float delta) {
 			if(!isRunning()) return false;

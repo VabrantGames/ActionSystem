@@ -15,22 +15,28 @@
  */
 package com.vabrant.actionsystem.test.unittests;
 
-import static org.junit.Assert.assertTrue;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pools;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.vabrant.actionsystem.actions.*;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.badlogic.gdx.utils.Pool;
 import com.vabrant.actionsystem.logger.ActionLogger;
-import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.MoveAction;
 import com.vabrant.actionsystem.test.tests.ActionSystemTestListener;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
+
+import static org.junit.Assert.*;
 
 /**
  * @author John Barton
@@ -45,6 +51,21 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		application = new HeadlessApplication(new ApplicationAdapter() {
 		});
 		ActionPools.logger.setLevel(ActionLogger.LogLevel.DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	}
+
+	public boolean hasBeenPooled(Action<?> action) {
+		try {
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
+			m.setAccessible(true);
+			return (boolean) m.invoke(action);
+		}
+		catch(ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		throw new RuntimeException("I did something wrong");
 	}
 
 	public void printTestHeader(String name) {
@@ -52,46 +73,53 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		String pattern = "//----------//";
 		System.out.println(pattern + ' ' + name + ' ' + pattern);
     }
-	
+
 	@Test
+	public void createPoolTest() {
+		Pool<MockAction> pool = ActionPools.create(MockAction.class, 4, 10, false);
+		assertNotNull(pool);
+		assertTrue(ActionPools.exists(MockAction.class));
+	}
+
+	@Test
+	public void getPoolTest() {
+		Pool<?> pool = ActionPools.get(MockAction.class);
+		assertNotNull(pool);
+		assertNotNull(ActionPools.get(MockAction.class));
+	}
+
+	@Test
+	@Ignore
 	public void freeTest() {
-		printTestHeader("Free Test");
-		
-		MockAction action = MockAction.obtain()
-				.setName("Free")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
+		//Free Action
+		MockAction action = MockAction.obtain();
 		ActionPools.free(action);
+		assertTrue(hasBeenPooled(action));
+
+		//Free non action
+		ActionPools.create(TestClass.class);
+		TestClass testClass = new TestClass();
+		ActionPools.free(testClass);
+		assertTrue(testClass.pooled);
 	}
-	
-//	@Test 
-	public void freeSingeParentActionTest() {
-		printTestHeader("Free Single Parent Test");
-		
-		MockAction child = MockAction.obtain()
-				.setName("Child")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockSingleParentAction parent = MockSingleParentAction.obtain()
-				.set(child)
-				.setName("Parent")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		ActionPools.free(parent);
-	}
-	
+
 	@Test
+	@Ignore
+	public void freeSingeParentActionTest() {
+		MockAction child = MockAction.obtain();
+		MockSingleParentAction parent = MockSingleParentAction.obtain()
+						.set(child);
+		ActionPools.free(parent);
+
+		assertTrue(hasBeenPooled(child));
+		assertTrue(hasBeenPooled(parent));
+	}
+
+	@Test
+	@Ignore
 	public void freeMultiParentActionTest() {
-		printTestHeader("Free MultiParent Action Test");
-		
-		MockAction child1 = MockAction.obtain()
-				.setName("Child1")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction child2 = MockAction.obtain()
-				.setName("Child2")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-				
+		MockAction child1 = MockAction.obtain();
+		MockAction child2 = MockAction.obtain();
 		MockMultiParentAction parent = MockMultiParentAction.obtain()
 				.add(child1)
 				.add(child2)
@@ -101,7 +129,8 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		ActionPools.free(parent);
 	}
 	
-//	@Test
+	@Test
+	@Ignore
 	public void complexParentActionTest() {
 		printTestHeader("Complex Parent Action Test");
 		
@@ -136,13 +165,16 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 		
 		ActionPools.free(parent2);
 	}
-	
-	@Test
-	public void createPoolTest() {
-		printTestHeader("Create Pool Test");
-		Pool<MoveAction> pool = ActionPools.create(MoveAction.class, 4, 10, true);
-		
-		assertTrue("Fill amount is incorrect", pool.getFree() == 4);
+
+	private static class TestClass implements Pool.Poolable {
+		boolean pooled;
+
+		@Override
+		public void reset() {
+			pooled = true;
+		}
 	}
+	
+
 
 }

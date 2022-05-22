@@ -39,7 +39,8 @@ public class Action<T extends Action<T>> implements Poolable {
 	 */
 	public static <T extends Action<T>> T obtain(Class<T> c) {
 		Pool<T> pool = ActionPools.get(c);
-		T action = ActionPools.obtain(pool);
+		T action = pool.obtain();
+		action.setPooled(false);
 		action.pool = pool;
 		return action;
 	}
@@ -255,7 +256,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		rootAction = null;
 	}
 
-	//Called when an an unmanaged action is being cleanup by the ActionPool
+	//Called when an unmanaged action is being cleanup by the ActionPool
 	void unmanagedReset() {
 		rootAction = null;
 		isDead = false;
