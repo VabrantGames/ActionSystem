@@ -38,32 +38,23 @@ public class ActionPools {
 		
 		Pool<T> pool = get(type);
 		
-		if(pool == null) throw new IllegalArgumentException("Pool of type " + type.getSimpleName() + " doesn't exist.");
-
-		//Can't add if the pool if already full
 		if(pool.getFree() == pool.max) {
-			if(logger != null) logger.info(type.getSimpleName() + " pool is full.");
+			logger.info(type.getSimpleName() + " pool is full.");
 			return;
 		}
 		
-		//Calculate how many actions to add
 		int amountToAdd = (pool.getFree() + amount) < pool.max ? amount : pool.max - pool.getFree();
 		
-		if(logger != null) logger.debug("AmountToAdd", Integer.toString(amountToAdd));
+		logger.debug("AmountToAdd", Integer.toString(amountToAdd));
 
 		for(int i = 0; i < amountToAdd; i++) {
 			try {
-				T t = ClassReflection.newInstance(type);
-//				((Action)t).canReset = true;
-				pool.free(t);
+				pool.free(ClassReflection.newInstance(type));
 			} 
 			catch(ReflectionException e) {
 				e.printStackTrace();
 			}
 		}
-	}
-	
-	private static<T extends Action<?>> void drain(Class<T> type, int amount) {
 	}
 
 	public static <T> boolean exists(Class<T> type) {
@@ -90,6 +81,7 @@ public class ActionPools {
 	
 	public static <T> Pool<T> get(Class<T> type){
 		Pool pool = pools.get(type);
+
 		if (pool == null) {
 			pool = create(type, 10, Integer.MAX_VALUE, false);
 		}
@@ -141,14 +133,15 @@ public class ActionPools {
 		}
 	}
 
-	public static void freeAll(Action<?>[] actions) {
+	public static void freeAll(Object[] actions) {
 		if(actions == null) throw new IllegalArgumentException("Array is null");
 
 		for(int i = 0; i < actions.length; i++) {
 			free(actions[i]);
 		}
 	}
-	
+
+	@Deprecated
 	private static void freeChildActions(Action<?> action) {
 		if(action instanceof SingleParentAction) {
 			freeSingleParentAction(action);
@@ -162,6 +155,7 @@ public class ActionPools {
 	 * Frees a child action of a {@link SingleParentAction}. Also frees any children it may have.
 	 * @param action Parent action.
 	 */
+	@Deprecated
 	private static void freeSingleParentAction(Action<?> action) {
 		Action<?> child = ((SingleParentAction)action).getAction();
 		if(child == null) return;
@@ -173,6 +167,7 @@ public class ActionPools {
 	 * Frees multiple child actions of a {@link MultiParentAction}. Also frees any children it may have.
 	 * @param action
 	 */
+	@Deprecated
 	private static void freeMultiParentAction(Action<?> action) {
 		Array<Action<?>> children = ((MultiParentAction)action).getActions();
 		for(int i = children.size - 1; i >= 0; i--) {
@@ -186,6 +181,7 @@ public class ActionPools {
 	/**
 	 * Frees an action. 
 	 */
+	@Deprecated
 	private static <T extends Action<?>> void freeAction(T action) {
 		if (action.hasBeenPooled()) return;
 

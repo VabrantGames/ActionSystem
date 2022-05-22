@@ -104,6 +104,38 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	}
 
 	@Test
+	public void freeAllTest() {
+		Array<MockAction> actions = new Array<>(3);
+		for (int i = 0; i < 3; i++) {
+			actions.add(MockAction.obtain());
+		}
+
+		ActionPools.freeAll(actions);
+		for (int i = actions.size - 1; i >=0; i--) {
+			Action a = actions.removeIndex(i);
+			assertTrue(hasBeenPooled(a));
+		}
+
+		for (int i = 0; i < 3; i++) {
+			actions.add(MockAction.obtain());
+		}
+
+		ActionPools.freeAll(actions.items);
+		for (int i = actions.size - 1; i >= 0; i--) {
+			Action a = actions.removeIndex(i);
+			assertTrue(hasBeenPooled(a));
+		}
+	}
+
+	@Test
+	public void fillTest() {
+		final int fillAmount = 10;
+		int expected = ActionPools.get(MockAction.class).getFree() + fillAmount;
+		ActionPools.fill(MockAction.class, 10);
+		assertEquals(expected, ActionPools.get(MockAction.class).getFree());
+	}
+
+	@Test
 	@Ignore
 	public void freeSingeParentActionTest() {
 		MockAction child = MockAction.obtain();
