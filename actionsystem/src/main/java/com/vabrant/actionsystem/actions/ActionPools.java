@@ -126,10 +126,19 @@ public class ActionPools {
 	}
 
 	public static <T> void freeAll(Array<T> objects) {
+		freeAll(objects, false);
+	}
+
+	public static <T> void freeAll(Array<T> objects, boolean remove) {
 		if (objects == null) throw new IllegalArgumentException("Array is null");
 
-		for (int i = 0, s = objects.size; i < s; i++) {
-			free(objects.get(i));
+		for (int i = objects.size - 1; i >= 0; i--) {
+			if (remove) {
+				free(objects.removeIndex(i));
+			}
+			else {
+				free(objects.get(i));
+			}
 		}
 	}
 
