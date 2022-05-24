@@ -25,6 +25,9 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
+import com.vabrant.actionsystem.events.ActionEvent;
+import com.vabrant.actionsystem.events.Event;
+import com.vabrant.actionsystem.events.EventListener;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -136,66 +139,45 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 	}
 
 	@Test
-	@Ignore
-	public void freeSingeParentActionTest() {
-		MockAction child = MockAction.obtain();
-		MockSingleParentAction parent = MockSingleParentAction.obtain()
-						.set(child);
-		ActionPools.free(parent);
+	public void childFreeTest() {
+		final boolean[] result = new boolean[6];
 
-		assertTrue(hasBeenPooled(child));
-		assertTrue(hasBeenPooled(parent));
-	}
+		class PooledListener implements EventListener {
 
-	@Test
-	@Ignore
-	public void freeMultiParentActionTest() {
-		MockAction child1 = MockAction.obtain();
-		MockAction child2 = MockAction.obtain();
-		MockMultiParentAction parent = MockMultiParentAction.obtain()
-				.add(child1)
-				.add(child2)
-				.setName("Parent")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		ActionPools.free(parent);
-	}
-	
-	@Test
-	@Ignore
-	public void complexParentActionTest() {
-		printTestHeader("Complex Parent Action Test");
-		
-		MockAction child1_P1 = MockAction.obtain()
-				.setName("Child1_P1")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction child2_P1 = MockAction.obtain()
-				.setName("Child2_P1")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-				
-		MockMultiParentAction parent1 = MockMultiParentAction.obtain()
-				.add(child1_P1)
-				.add(child2_P1)
-				.setName("Parent1")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction child1_P2 = MockAction.obtain()
-				.setName("Child1_P2")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		MockAction child2_P2 = MockAction.obtain()
-				.setName("Child2_P2")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-				
-		MockMultiParentAction parent2 = MockMultiParentAction.obtain()
-				.add(child1_P2)
-				.add(child2_P2)
-				.add(parent1)
-				.setName("Parent2")
-				.setLogLevel(ActionLogger.LogLevel.DEBUG);
-		
-		ActionPools.free(parent2);
+			private int idx;
+
+			PooledListener(int idx) {
+				this.idx = idx;
+			}
+
+			@Override
+			public void onEvent(Event e) {
+				result[idx] = true;
+			}
+		}
+
+
+		int idx = 0;
+		MockMultiParentAction root = MockMultiParentAction.obtain();
+		root.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++));
+
+		MockSingleParentAction child1 = MockSingleParentAction.obtain();
+		child1.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++));
+		child1.set(MockAction.obtain()
+				.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++)));
+		root.add(child1);
+
+		MockMultiParentAction child2 = MockMultiParentAction.obtain();
+		child2.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++));
+		child2.add(MockAction.obtain()
+				.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++)));
+		child2.add(MockAction.obtain()
+				.subscribeToEvent(ActionEvent.CLEANUP_EVENT, new PooledListener(idx++)));
+		root.add(child2);
+
+		ActionPools.free(root);
+
+		assertArrayEquals(new boolean[]{true, true, true, true, true, true}, result);
 	}
 
 	private static class TestClass implements Pool.Poolable {
@@ -206,7 +188,5 @@ public class ActionPoolsTest extends ActionSystemTestListener {
 			pooled = true;
 		}
 	}
-	
-
 
 }

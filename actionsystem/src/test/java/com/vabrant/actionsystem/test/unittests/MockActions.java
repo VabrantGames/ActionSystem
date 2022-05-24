@@ -40,10 +40,6 @@ public class MockActions {
 			return this;
 		}
 
-		public void fullStartMock() {
-
-		}
-
 		@Override
 		public boolean update(float delta) {
 			if(!isRunning()) return false;
@@ -109,6 +105,9 @@ public class MockActions {
 		@Override
 		public void reset() {
 			super.reset();
+			if (action != null) {
+				ActionPools.free(action);
+			}
 			action = null;
 		}
 
@@ -165,53 +164,13 @@ public class MockActions {
 			if(!isRunning()) return false;
 			return true;
 		}
-		
+
+		@Override
+		public void reset() {
+			super.reset();
+			ActionPools.freeAll(actions);
+			actions.clear();
+		}
 	}
-	
-//	public static class AlternativeSingleParentAction extends Action<AlternativeSingleParentAction> {
-//
-//		public static AlternativeSingleParentAction obtain(){
-//			return obtain(AlternativeSingleParentAction.class);
-//		}
-//
-//		private Action<?> action;
-//
-//		public AlternativeSingleParentAction set(Action<?> action) {
-//			this.action = action;
-//			return this;
-//		}
-//
-//		public Action<?> getAction(){
-//			return action;
-//		}
-//
-//		@Override
-//		public void reset() {
-//			super.reset();
-////			ActionPools.alternativeFree(action);
-//			action = null;
-//		}
-//	}
-//
-//	public static class AlternativeMultiParentAction extends Action<AlternativeMultiParentAction> {
-//
-//		private Array<Action<?>> actions = new Array<>();
-//
-//		public AlternativeMultiParentAction add(Action<?> action) {
-//			actions.add(action);
-//			return this;
-//		}
-//
-//		public Array<Action<?>> getActions(){
-//			return actions;
-//		}
-//
-//		@Override
-//		public void reset() {
-//			super.reset();
-//			ActionPools.freeAll(actions);
-//			actions.clear();
-//		}
-//	}
 
 }
