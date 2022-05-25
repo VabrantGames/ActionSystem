@@ -272,9 +272,9 @@ public class Action<T extends Action<T>> implements Poolable {
 		
 		logger.debug("Cleanup");
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.CLEANUP_EVENT)) {
+		if (eventManager != null && eventManager.hasEvent(ActionEvent.RESET_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsCleanup();
+			event.setAsReset();
 			event.setAction(this);
 			eventManager.fire(event);
 		}

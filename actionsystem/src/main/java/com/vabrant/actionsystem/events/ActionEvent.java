@@ -8,7 +8,7 @@ public class ActionEvent extends Event {
     public static final String END_EVENT = "EndEvent";
     public static final String KILL_EVENT = "KillEvent";
     public static final String RESTART_EVENT = "RestartEvent";
-    public static final String CLEANUP_EVENT = "#CleanupEvent";
+    public static final String RESET_EVENT = "#ResetEvent";
 
     private Action action;
 
@@ -36,8 +36,8 @@ public class ActionEvent extends Event {
         return this;
     }
 
-    public ActionEvent setAsCleanup() {
-        setEventType(CLEANUP_EVENT);
+    public ActionEvent setAsReset() {
+        setEventType(RESET_EVENT);
         return this;
     }
 

@@ -9,10 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.Event;
-import com.vabrant.actionsystem.events.EventListener;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -328,7 +325,7 @@ public class ActionTest {
 
 		MockAction action = MockAction.obtain();
 		action.setName(testName.getMethodName());
-		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, listener);
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, listener);
 
 		//Mock cycle
 		makeRoot(action, true);

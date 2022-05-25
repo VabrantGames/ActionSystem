@@ -53,7 +53,7 @@ public class ActionReference<T extends Action<T>> {
 		if (reference != null) {
 			if(action == reference) return null;
 
-			reference.unsubscribeFromEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
+			reference.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
 			oldAction = reference;
 			reference = null;
 		}
@@ -61,7 +61,7 @@ public class ActionReference<T extends Action<T>> {
 		if(action == null) return oldAction;
 		
 		reference = action;
-		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
 
 		return oldAction;
 	}

@@ -62,7 +62,7 @@ public class ActionWatcher {
 			return;
 		}
 		
-		action.subscribeToEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
 		watchActions.put(key, action);
 		logger.info("Watching", key);
 	}
@@ -84,7 +84,7 @@ public class ActionWatcher {
 			return false;
 		}
 		
-		action.unsubscribeFromEvent(ActionEvent.CLEANUP_EVENT, cleanupListener);
+		action.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
 		
 		logger.info("Stopped Watching", name);
 		return true;
