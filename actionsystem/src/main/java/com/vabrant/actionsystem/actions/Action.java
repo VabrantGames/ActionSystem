@@ -167,6 +167,18 @@ public class Action<T extends Action<T>> implements Poolable {
 	public String getName() {
 		return name;
 	}
+
+	public boolean hasEventManager() {
+		return eventManager != null;
+	}
+
+	/**
+	 * Returns the {@link EventManager};
+	 * @return Returns the EventManager is present otherwise null.
+	 */
+	public EventManager getEventManager() {
+		return eventManager;
+	}
 	
 	public final void pause() {
 		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue((T)this)) return;
@@ -215,16 +227,23 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	public T unsubscribeFromEvent(String eventType, EventListener<?> listener) {
-		if (eventManager == null) return (T) this;
-		eventManager.unsubscribe(eventType, listener);
+		if (eventManager != null) {
+			eventManager.unsubscribe(eventType, listener);
+		}
 		return (T) this;
 	}
 
 	public T clearListeners(String eventType) {
+		if (eventManager != null) {
+			eventManager.clearListeners(eventType);
+		}
 		return (T) this;
 	}
 
 	public T clearAllListeners() {
+		if (eventManager != null) {
+			eventManager.clearAllListeners();
+		}
 		return (T) this;
 	}
 	
