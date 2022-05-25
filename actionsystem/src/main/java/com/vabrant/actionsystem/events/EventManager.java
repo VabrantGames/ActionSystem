@@ -2,11 +2,11 @@ package com.vabrant.actionsystem.events;
 
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
+import com.vabrant.actionsystem.actions.ActionPools;
 
 /**
  * A simple reusable event system. Some events are vital to ensure things function properly and therefore can be
- * locked. Locked events will only be removed when explicitly removed with {@link #removeListener} or when {@link #reset} is called.
+ * locked. Locked events will only be removed when explicitly removed with {@link #2removeListener} or when {@link #reset} is called.
  */
 public class EventManager implements Pool.Poolable {
 
@@ -45,7 +45,7 @@ public class EventManager implements Pool.Poolable {
         EventEntry entry = events.remove(eventType);
 
         if (entry != null && !entry.isLocked()) {
-            Pools.free(entry);
+            ActionPools.free(entry);
         }
     }
 
@@ -63,7 +63,7 @@ public class EventManager implements Pool.Poolable {
             ObjectMap.Entry<String, EventEntry> e = it.next();
             if (!clearLockedEvents && e.value.isLocked()) continue;
             it.remove();
-            Pools.free(e.value);
+            ActionPools.free(e.value);
         }
     }
 
@@ -74,7 +74,7 @@ public class EventManager implements Pool.Poolable {
         EventEntry entry = events.get(eventType);
 
         if (entry == null) {
-            entry = Pools.obtain(EventEntry.class);
+            entry = ActionPools.obtain(EventEntry.class);
             events.put(eventType, entry);
 
             if (eventType.charAt(0) == '#') {
