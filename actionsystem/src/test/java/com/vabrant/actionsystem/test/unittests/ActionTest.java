@@ -1,8 +1,5 @@
 package com.vabrant.actionsystem.test.unittests;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +7,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -21,6 +19,8 @@ import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
+
+import static org.junit.Assert.*;
 
 public class ActionTest {
 	
@@ -98,65 +98,99 @@ public class ActionTest {
 	}
 
 	@Test
-	public void listenerTest() {
-		printTestHeader(testName.getMethodName());
-
-		//----------// Normal start to end cycle //----------//
+	public void startEventTest() {
+		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
 		action.subscribeToEvent(ActionEvent.START_EVENT, new ActionListener() {
 			@Override
 			public void onEvent(ActionEvent e) {
-				System.out.println("Hello start event");
-			}
-		});
-
-		action.subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
-			@Override
-			public void onEvent(ActionEvent e) {
-				System.out.println("Hello end event");
+				result[0] = true;
 			}
 		});
 
 		makeRoot(action, true);
 		action.start();
-		action.end();
-		makeRoot(action, false);
-		ActionPools.free(action);
 
-		//---------// Kill cycle //----------//
-		action = MockAction.obtain();
+		assertArrayEquals(new boolean[]{true}, result);
+	}
+
+	@Test
+	public void endEventTest() {
+		final boolean[] result = {false};
+		MockAction action = MockAction.obtain();
+
+		action.subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
+			@Override
+			public void onEvent(ActionEvent e) {
+				result[0] = true;
+			}
+		}) ;
+
+		makeRoot(action, true);
+		action.start();
+		action.end();
+
+		assertArrayEquals(new boolean[]{true}, result);
+	}
+
+	@Test
+	public void killEventTest() {
+		final boolean[] result = {false};
+		MockAction action = MockAction.obtain();
 
 		action.subscribeToEvent(ActionEvent.KILL_EVENT, new ActionListener() {
 			@Override
 			public void onEvent(ActionEvent e) {
-				System.out.println("Hello kill event");
+				result[0] = true;
 			}
 		});
 
 		makeRoot(action, true);
 		action.start();
 		action.kill();
-		makeRoot(action, false);
-		ActionPools.free(action);
 
-		//---------// Restart //----------//
-		action = MockAction.obtain();
+		assertArrayEquals(new boolean[]{true}, result);
+	}
+
+	@Test
+	public void restartEventTest() {
+		final boolean[] result = {false};
+		MockAction action = MockAction.obtain();
 
 		action.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
 			@Override
 			public void onEvent(ActionEvent e) {
-				System.out.println("Hello restart event");
+				result[0] = true;
 			}
 		});
 
 		makeRoot(action, true);
 		action.start();
 		action.restart();
+
+		assertArrayEquals(new boolean[]{true}, result);
+	}
+
+	@Test
+	public void resetEventTest() {
+		final boolean[] result = {false};
+		MockAction action = MockAction.obtain();
+
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, new ActionListener() {
+			@Override
+			public void onEvent(ActionEvent e) {
+				result[0] = true;
+			}
+		});
+
+		makeRoot(action, true);
+		action.start();
 		action.end();
 		makeRoot(action, false);
+		action.reset();
 
-		ActionPools.free(action);
+		assertArrayEquals(result, result);
 	}
 	
 	@Test
