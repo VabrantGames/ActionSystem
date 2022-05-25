@@ -114,7 +114,7 @@ public class ActionPools {
 				logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 			}
 			else {
-				action.unmanagedReset();
+				action.stateReset();
 			}
 		}
 		else {
@@ -205,7 +205,7 @@ public class ActionPools {
 			action.setPooled(true);
 		}
 		else {
-			action.unmanagedReset();
+			action.stateReset();
 		}
 
 		logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());

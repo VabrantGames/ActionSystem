@@ -208,7 +208,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 
-	//TODO Use own pool
 	public T subscribeToEvent(String eventType, EventListener<?> listener) {
 		if (eventManager == null) eventManager = ActionPools.obtain(EventManager.class);
 		eventManager.subscribe(eventType, listener);
@@ -242,21 +241,17 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionPools.free(this);
 	}
 
-	//TODO Finish description 
 	/**
-	 * Clears an actions values but 
+	 * <b>For use with unmanaged actions</b><br>
+	 * Clears all of this action's values except the name, events, logger and conditions.
 	 */
 	public void clear() {
-		if(inUse()) throw new IllegalStateException("Action can't be cleared while in use.");
-		
-		isDead = false;
-		isPaused = false;
-		isRunning = false;
-		rootAction = null;
 	}
 
-	//Called when an unmanaged action is being cleanup by the ActionPool
-	void unmanagedReset() {
+	/* Called when this action is unmanaged and is being cleanup by the ActionPool. The action is not reset but its state
+		is reset, so it can be used again.
+	 */
+	void stateReset() {
 		rootAction = null;
 		isDead = false;
 		isPaused = false;
@@ -264,13 +259,14 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 	
 	/**
-	 * Resets an action to its default state.
+	 * <b>Only unmanaged actions should call this method explicitly</b><br>
+	 * Resets this action to its initial state as if it were just obtain from {@link ActionPools}.
 	 */
 	@Override
 	public void reset() {
-		if(inUse()) throw new IllegalStateException("Action can't be reset while in use.");
+		if (inUse()) throw new IllegalStateException("Action can't be reset while in use.");
 		
-		logger.debug("Cleanup");
+		logger.info("Reset");
 
 		if (eventManager != null && eventManager.hasEvent(ActionEvent.RESET_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
@@ -278,10 +274,9 @@ public class Action<T extends Action<T>> implements Poolable {
 			event.setAction(this);
 			eventManager.fire(event);
 		}
-		
-		logger.info("Reset");
-		
+
 		clear();
+		stateReset();
 		logger.reset();
 		pauseCondition = null;
 		resumeCondition = null;
@@ -300,7 +295,6 @@ public class Action<T extends Action<T>> implements Poolable {
 	 */
 	protected void startLogic() {}
 
-	//TODO Use own pool
 	/**
 	 * Starts the action
 	 */
