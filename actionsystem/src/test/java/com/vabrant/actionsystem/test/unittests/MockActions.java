@@ -87,7 +87,7 @@ public class MockActions {
 		@Override
 		protected void restartLogic() {
 			super.restartLogic();
-			if (action != null) action.restart();
+			if (action != null) action.restart0();
 		}
 
 		@Override
@@ -148,6 +148,14 @@ public class MockActions {
 		@Override
 		public Array<Action<?>> getActions() {
 			return actions;
+		}
+
+		@Override
+		protected void restartLogic() {
+			for (int i = 0; i < actions.size; i++) {
+//				actions.get(i).restart(false);
+				actions.get(i).restart0();
+			}
 		}
 
 		@Override

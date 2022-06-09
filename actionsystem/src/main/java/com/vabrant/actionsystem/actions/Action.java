@@ -345,19 +345,23 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected void restartLogic() {}
 
 	/**
-	 * Restarts the action and its children. <br>
+	 * Restarts the action.
+ 	 * @return
 	 */
 	public final T restart() {
 		if(!getRootAction().isRunning()) return (T)this;
-		restartChildren(this);
-		restart(true);
-		return (T)this;
+		restart0();
+		start();
+		return (T) this;
 	}
-	
-	protected final void restart(boolean invokedAction) {
-		logger.info("Restart Action");	
-		
-		boolean start = invokedAction;
+
+	/**
+	 * <b>Should only be called by child actions of an action.</b><br>This method will restart the action without
+	 * starting it again.
+	 */
+	public final void restart0() {
+		logger.info("Restart Action");
+
 		isRunning = false;
 		restartLogic();
 
@@ -367,33 +371,8 @@ public class Action<T extends Action<T>> implements Poolable {
 			event.setAction(this);
 			eventManager.fire(event);
 		}
-		
-		if (start) start();
 	}
-	
-	/**
-	 *  Recursively restart all an actions children and their children.
-	 *  
-	 * @param action
-	 */
-	protected void restartChildren(Action<?> action) {
-		if(action instanceof SingleParentAction) {
-			Action<?> child = ((SingleParentAction)action).getAction();
-			if(child == null) return;
-			restartChildren(child);
-			child.restart(false);
-		}
-		else if(action instanceof MultiParentAction) {
-			Array<Action<?>> children = ((MultiParentAction)action).getActions();
-			for(int i = 0, size = children.size; i < size; i++) {
-				Action<?> child = children.get(i);
-				if(child == null) continue;
-				restartChildren(child);
-				child.restart(false);
-			}
-		}
-	}
-	
+
 	/**
 	 * FOR ACTION CREATION <br><br>
 	 * 

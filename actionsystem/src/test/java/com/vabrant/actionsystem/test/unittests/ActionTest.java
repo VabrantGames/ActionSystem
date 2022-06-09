@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
 import org.junit.BeforeClass;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
+import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 
 import static org.junit.Assert.*;
@@ -285,67 +287,52 @@ public class ActionTest {
 
 	@Test
 	public void restartTest() {
-		printTestHeader(testName.getMethodName());
+		MockAction action = MockAction.obtain()
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+					@Override
+					public void onEvent(ActionEvent e) {
+						assertFalse(e.getAction().isRunning());
+					}
+				});
 
-		ActionListener listener = new ActionListener() {
-			@Override
-			public void onEvent(ActionEvent e) {
-				assertFalse(e.getAction().isRunning());
-			}
-		};
+		MockSingleParentAction singleParentAction = MockSingleParentAction.obtain()
+				.set(MockAction.obtain());
+				singleParentAction.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+					@Override
+					public void onEvent(ActionEvent e) {
+						assertFalse(((MockSingleParentAction)e.getAction()).getAction().isRunning());
+					}
+				});
 
-		//Parent 1
-		MockMultiParentAction p1 = MockMultiParentAction.obtain()
-				.setName("p1")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
+		MockMultiParentAction multiParentAction = MockMultiParentAction.obtain()
+				.add(MockAction.obtain())
+				.add(MockAction.obtain())
+				.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+					@Override
+					public void onEvent(ActionEvent e) {
+						Array<Action<?>> actions = ((MockMultiParentAction) e.getAction()).getActions();
 
-		//Child 1 of parent 1
-		MockAction p1C1 = MockAction.obtain()
-				.setName("P1C1")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
-		p1.add(p1C1);
+						for (Action a : actions) {
+							assertFalse(a.isRunning());
+						}
+					}
+				});
 
-		//Child 2 of parent 1. Parent 2
-		MockMultiParentAction p2 = MockMultiParentAction.obtain()
-				.setName("P2")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
-		p1.add(p2);
+		makeRoot(action, true);
+		makeRoot(singleParentAction, true);
+		makeRoot(multiParentAction, true);
 
-		//Child 3 of parent 1
-		MockAction p1C3 = MockAction.obtain()
-				.setName("P1C3")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
-		p1.add(p1C3);
+		action.start();
+		singleParentAction.start();
+		multiParentAction.start();
 
-		//Child 1 of parent 2
-		MockAction p2C1 = MockAction.obtain()
-				.setName("p2C1")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
-		p2.add(p2C1);
+		action.restart();
+		singleParentAction.restart();
+		multiParentAction.restart();
 
-		//Child 2 of parent 2
-		MockAction p2C2 = MockAction.obtain()
-				.setName("p2C2")
-				.setLogLevel(ActionLogger.LogLevel.INFO)
-				.subscribeToEvent(ActionEvent.RESTART_EVENT, listener);
-		p2.add(p2C2);
-
-		makeRoot(p1, true);
-
-		p1.start();
-		p1C1.start();
-		p2.start();
-		p1C3.start();
-		p2C1.start();
-		p2C2.start();
-		p1.restart();
-
-		assertTrue(p1.isRunning());
+		assertTrue(action.isRunning());
+		assertTrue(singleParentAction.isRunning());
+		assertTrue(multiParentAction.isRunning());
 	}
 
 	@Test
