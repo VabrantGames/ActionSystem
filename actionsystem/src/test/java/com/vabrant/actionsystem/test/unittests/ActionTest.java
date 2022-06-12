@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.ActionEvent;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -196,11 +195,9 @@ public class ActionTest {
 	}
 	
 	@Test
-	public void basicUnmanagedTest() {
-		printTestHeader("Basic Unmanaged Test");
-		
+	public void unmanagedTest() {
 		MockAction action = MockAction.obtain()
-				.setName("BasicUnmanaged")
+				.setName("unmanaged")
 				.setLogLevel(ActionLogger.LogLevel.DEBUG)
 				.unmanage();
 		
@@ -217,7 +214,7 @@ public class ActionTest {
 		assertFalse(hasBeenPooled(action));
 		
 		//Free an unmanaged action. Resetting it and putting it in a pool.
-		action.free();
+		action.manage();
 		
 		assertTrue(hasBeenPooled(action));
 	}

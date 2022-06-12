@@ -15,7 +15,6 @@
  */
 package com.vabrant.actionsystem.actions;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.vabrant.actionsystem.events.ActionEvent;
@@ -113,8 +112,18 @@ public class Action<T extends Action<T>> implements Poolable {
 	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
 	public T unmanage() {
+		if (isRunning) return (T) this;
 		isManaged = false;
-		return (T)this;
+		return (T) this;
+	}
+
+	/**
+	 * Pools an unmanaged action. Any references to the action should be nulled.
+	 */
+	public void manage() {
+		if (isRunning || isManaged) return;
+		isManaged = true;
+		ActionPools.free(this);
 	}
 	
 	public boolean isManaged() {
@@ -249,15 +258,6 @@ public class Action<T extends Action<T>> implements Poolable {
 	
 	public boolean update(float delta) {
 		return false;
-	}
-
-	/**
-	 * Pools an unmanaged action. Any references to the action should be nulled.
-	 */
-	public void free() {
-		if(isManaged) return;
-		isManaged = true;
-		ActionPools.free(this);
 	}
 
 	/**

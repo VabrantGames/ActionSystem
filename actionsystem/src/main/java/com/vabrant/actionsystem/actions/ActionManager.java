@@ -113,7 +113,7 @@ public class ActionManager {
 			action.setRoot(false);
 			
 			if(!action.isManaged() && freeUnmanaged) {
-				action.free();
+				action.manage();
 			}
 			else {
 				ActionPools.free(action);
