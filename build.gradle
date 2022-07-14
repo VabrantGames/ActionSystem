@@ -14,7 +14,6 @@ allprojects {
     apply plugin: "idea"
 
     group = "com.github.VabrantGames"
-    version = "0.4.0"
 
     repositories {
         mavenLocal()

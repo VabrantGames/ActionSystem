@@ -1,1 +1,0 @@
-./gradlew -Pincrement=$1 -Ptype=$2 incrementVersion
