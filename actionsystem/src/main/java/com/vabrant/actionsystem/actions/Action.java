@@ -24,13 +24,13 @@ import com.vabrant.actionsystem.logger.ActionLogger;
 
 /**
  * The base class for all actions.
- * 
+ *
  * @author John Barton
  */
 //@SuppressWarnings("all")
 @SuppressWarnings("unchecked")
 public class Action<T extends Action<T>> implements Poolable {
-	
+
 	/**
 	 * Returns the specified action.
 	 * @param c Class of the action.
@@ -44,21 +44,21 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	Pool<T> pool;
-	
+
 	/** Whether this action is currently being used by an {@link ActionManager} */
 	boolean inUse;
-	
+
 	/** A reference to the root action.*/
 	Action<?> rootAction;
-	
+
 	/** Whether this action is managed by the {@link ActionManager} or by the user.*/
 	boolean isManaged = true;
-	
+
 	private boolean hasBeenPooled;
 	protected boolean isDead;
 	protected boolean isRunning;
 	protected boolean isPaused;
-	
+
 	private String name;
 	private Condition pauseCondition;
 	private Condition resumeCondition;
@@ -69,8 +69,9 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	public Action() {
 		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.LogLevel.NONE);
+		eventManager = new EventManager();
 	}
-	
+
 	public T setLogLevel(ActionLogger.LogLevel level) {
 		logger.setLevel(level);
 		return (T) this;
@@ -80,11 +81,11 @@ public class Action<T extends Action<T>> implements Poolable {
 		logger.solo(solo);
 		return (T) this;
 	}
-	
+
 	public ActionLogger getLogger() {
 		return logger;
 	}
-	
+
 	public T watchAction(ActionWatcher watcher) {
 		watcher.watch(this);
 		return (T)this;
@@ -94,7 +95,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		ActionWatcher.getInstance().watch(this);
 		return (T)this;
 	}
-	
+
 	@Deprecated
 	public boolean hasConflict(Action<?> action) {
 		return false;
@@ -103,11 +104,11 @@ public class Action<T extends Action<T>> implements Poolable {
 	void setPooled(boolean pooled) {
 		hasBeenPooled = pooled;
 	}
-	
+
 	boolean hasBeenPooled() {
 		return hasBeenPooled;
 	}
-	
+
 	/**
 	 * Makes this Action managed by the user. Useful when an action needs to be permanent. Will not be pooled when finished.
 	 */
@@ -125,7 +126,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		isManaged = true;
 		ActionPools.free(this);
 	}
-	
+
 	public boolean isManaged() {
 		return isManaged;
 	}
@@ -141,7 +142,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	void setRoot(boolean root) {
 		inUse = root;
 	}
-	
+
 	public void setRootAction(Action<?> root) {
 		rootAction = root;
 	}
@@ -149,11 +150,11 @@ public class Action<T extends Action<T>> implements Poolable {
 	public boolean isRoot() {
 		return this.equals(rootAction);
 	}
-	
+
 	public Action<?> getRootAction() {
 		return rootAction;
 	}
-	
+
 	public Pool<T> getPool(){
 		return pool;
 	}
@@ -162,7 +163,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(rootAction != null && rootAction.isDead) return false;
 		return isRunning;
 	}
-	
+
 	public boolean inUse() {
 		return rootAction != null && rootAction.inUse;
 	}
@@ -172,13 +173,9 @@ public class Action<T extends Action<T>> implements Poolable {
 		logger.setName(name);
 		return (T)this;
 	}
-	
+
 	public String getName() {
 		return name;
-	}
-
-	public boolean hasEventManager() {
-		return eventManager != null;
 	}
 
 	/**
@@ -188,74 +185,67 @@ public class Action<T extends Action<T>> implements Poolable {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-	
+
 	public final void pause() {
 		if(!isRunning || isPaused || pauseCondition != null && !pauseCondition.isTrue((T)this)) return;
 		isPaused = true;
 		pauseLogic();
 	}
-	
+
 	/**
 	 * FOR ACTION CREATION <br><br>
-	 * 
+	 *
 	 * The logic that will run every time pause is called.
 	 */
 	protected void pauseLogic() {}
-	
+
 	public final void resume() {
 		if(!isRunning || !isPaused || resumeCondition != null && !resumeCondition.isTrue((T)this)) return;
 		isPaused = false;
 		resumeLogic();
 	}
-	
+
 	/**
 	 * FOR ACTION CREATION <br><br>
-	 * 
+	 *
 	 * The logic that will run every time resume is called.
 	 */
 	protected void resumeLogic() {}
-	
+
 	public boolean isPaused() {
 		return isPaused;
 	}
-	
+
 	public T setPauseCondition(Condition pauseCondition) {
 		this.pauseCondition = pauseCondition;
 		return (T)this;
 	}
-	
+
 	public T setResumeCondition(Condition resumeCondition) {
 		this.resumeCondition = resumeCondition;
 		return (T)this;
 	}
 
 	public T subscribeToEvent(String eventType, EventListener<?> listener) {
-		if (eventManager == null) eventManager = ActionPools.obtain(EventManager.class);
 		eventManager.subscribe(eventType, listener);
 		return (T) this;
 	}
 
 	public T unsubscribeFromEvent(String eventType, EventListener<?> listener) {
-		if (eventManager != null) {
-			eventManager.unsubscribe(eventType, listener);
-		}
+        eventManager.unsubscribe(eventType, listener);
 		return (T) this;
 	}
 
 	public T clearListeners(String eventType) {
-		if (eventManager != null) {
-			eventManager.clearListeners(eventType);
-		}
+        eventManager.clearListeners(eventType);
 		return (T) this;
 	}
 
 	public T clearAllListeners() {
-		if (eventManager != null) {
-			eventManager.clearAllListeners();
-		}
+        eventManager.clearAllListeners();
 		return (T) this;
 	}
-	
+
 	public boolean update(float delta) {
 		return false;
 	}
@@ -276,7 +266,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		isPaused = false;
 		isRunning = false;
 	}
-	
+
 	/**
 	 * <b>Only unmanaged actions should call this method explicitly</b><br>
 	 * Resets this action to its initial state as if it were just obtain from {@link ActionPools}.
@@ -284,10 +274,10 @@ public class Action<T extends Action<T>> implements Poolable {
 	@Override
 	public void reset() {
 		if (inUse()) throw new IllegalStateException("Action can't be reset while in use.");
-		
+
 		logger.info("Reset");
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.RESET_EVENT)) {
+		if (eventManager.hasEvent(ActionEvent.RESET_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
 			event.setAsReset();
 			event.setAction(this);
@@ -301,15 +291,12 @@ public class Action<T extends Action<T>> implements Poolable {
 		resumeCondition = null;
 		name = null;
 
-		if (eventManager != null) {
-			ActionPools.free(eventManager);
-			eventManager = null;
-		}
+		ActionPools.free(eventManager);
 	}
-	
+
 	/**
-	 * FOR ACTION CREATION <br><br> 
-	 * 
+	 * FOR ACTION CREATION <br><br>
+	 *
 	 * The logic that will run at the start of the action.
 	 */
 	protected void startLogic() {}
@@ -322,8 +309,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		if(isManaged && hasBeenPooled) throw new IllegalStateException("Managed actions may not be reused without being returned to a pool. To reuse an action make it unmanaged.");
 		if(rootAction.isDead) throw new IllegalStateException("Action is dead.");
 
-		logger.info("Start Action");	
-		
+		logger.info("Start Action");
+
 		isRunning = true;
 		startLogic();
 
@@ -336,10 +323,10 @@ public class Action<T extends Action<T>> implements Poolable {
 
 		return (T) this;
 	}
-	
+
 	/**
 	 * FOR ACTION CREATION <br><br>
-	 * 
+	 *
 	 * The logic that will run if an action is restarted.
 	 */
 	protected void restartLogic() {}
@@ -365,7 +352,7 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = false;
 		restartLogic();
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.RESTART_EVENT)) {
+		if (eventManager.hasEvent(ActionEvent.RESTART_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
 			event.setAsRestart();
 			event.setAction(this);
@@ -375,7 +362,7 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	/**
 	 * FOR ACTION CREATION <br><br>
-	 * 
+	 *
 	 * The logic that will run if the action is ended.
 	 */
 	protected void endLogic() {}
@@ -386,42 +373,42 @@ public class Action<T extends Action<T>> implements Poolable {
 	public final T end() {
 		if (!isRunning()) return (T) this;
 
-		logger.info("End Action");		
-		
+		logger.info("End Action");
+
 		if(isRoot()) isDead = true;
 		isRunning = false;
 		endLogic();
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.END_EVENT)) {
+		if (eventManager.hasEvent(ActionEvent.END_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
 			event.setAsEnd();
 			event.setAction(this);
 			eventManager.fire(event);
 		}
-		
+
 		return (T) this;
 	}
-	
+
 	/**
 	 * FOR ACTION CREATION <br><br>
-	 * 
+	 *
 	 * The logic that will be ran if an action is killed.
 	 */
 	protected void killLogic() {}
-	
+
 	/**
 	 * Ends the action at its current position. If the action is running it will end uncompleted.
 	 */
 	public final T kill() {
 		if (!isRunning()) return (T) this;
 
-		logger.info("Kill Action");	
-		
+		logger.info("Kill Action");
+
 		if(isRoot()) isDead = true;
 		isRunning = false;
 		killLogic();
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.KILL_EVENT)) {
+		if (eventManager.hasEvent(ActionEvent.KILL_EVENT)) {
 			ActionEvent event = ActionPools.obtain(ActionEvent.class);
 			event.setAsKill();
 			event.setAction(this);
