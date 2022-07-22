@@ -18,7 +18,8 @@ public class ActionSystemTests {
 			SoundActionTest.class,
 			MusicActionTest.class,
 			ZoomActionTest.class,
-			GroupActionTest.class
+			GroupActionTest.class,
+			RGBColorActionTest.class
 	);
 	
 	public static final ObjectMap<String, Class<? extends ApplicationListener>> TESTS;

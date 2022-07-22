@@ -59,10 +59,11 @@ public class RepeatActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				testObject.setColor(Color.BLACK);
-				return RepeatAction.repeat(
-						ColorAction.changeColor(testObject, Color.RED, 1f, Interpolation.linear),
-						repeatAmountWidget.getValue())
-						.setName("RepeatTest");
+//				return RepeatAction.repeat(
+//						ColorAction.changeColor(testObject, Color.RED, 1f, Interpolation.linear),
+//						repeatAmountWidget.getValue())
+//						.setName("RepeatTest");
+				return null;
 			}
 		});
 		
@@ -70,10 +71,11 @@ public class RepeatActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				testObject.setColor(Color.BLACK);
-				return RepeatAction.continuous(
-						ColorAction.changeColor(testObject, Color.RED, 1.2f, Interpolation.smooth2)
-							.reverseBackToStart(true))
-						.setName("RepeatTest");
+//				return RepeatAction.continuous(
+//						ColorAction.changeColor(testObject, Color.RED, 1.2f, Interpolation.smooth2)
+//							.reverseBackToStart(true))
+//						.setName("RepeatTest");
+				return null;
 			}
 		});
 		
@@ -121,11 +123,12 @@ public class RepeatActionTest extends ActionSystemTestListener {
 			@Override
 			public Action<?> run() {
 				testObject.setColor(Color.BLACK);
-				return RepeatAction.repeat(
-						RepeatAction.repeat(
-								ColorAction.changeColor(
-										testObject, Color.RED, 1f, Interpolation.linear)
-								.reverseBackToStart(false)));
+//				return RepeatAction.repeat(
+//						RepeatAction.repeat(
+//								ColorAction.changeColor(
+//										testObject, Color.RED, 1f, Interpolation.linear)
+//								.reverseBackToStart(false)));
+				return null;
 			}
 		});
 	}

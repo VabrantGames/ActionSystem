@@ -113,6 +113,7 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 				selectedTest = testSelectBox.getSelected();
 			}
 		});
+		selectedTest = testSelectBox.getSelected();
 		stage.addActor(selectBoxTable);
 		
 		Table isRunningAndFPSTable = new Table();
