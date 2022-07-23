@@ -2,6 +2,7 @@ package com.vabrant.actionsystem.test.performancetests;
 
 import com.badlogic.gdx.graphics.Color;
 import com.vabrant.actionsystem.actions.ColorAction;
+import com.vabrant.actionsystem.actions.HSBColorAction;
 
 public class HSBToRGBTest {
 
@@ -38,7 +39,7 @@ public class HSBToRGBTest {
 	private void testTwo() {
 		timer.start();
 		for(int i = 0; i < iterations; i++) {
-			ColorAction.HSBToRGB(testColor, h, s, v);
+			HSBColorAction.HSBToRGB(testColor, h, s, v);
 		}
 		timer.end();
 	}
