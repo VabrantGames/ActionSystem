@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Array;
  * Action that holds multiple actions.
  * @author John Barton
  */
+@Deprecated
 public interface MultiParentAction {
 	public Array<Action<?>> getActions();
 }
