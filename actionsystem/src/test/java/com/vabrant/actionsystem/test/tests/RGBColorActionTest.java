@@ -290,10 +290,14 @@ public class RGBColorActionTest extends ActionSystemTestListener {
     }
 
     private void clearTargetValues() {
-        currentRedWidget.setValue(-1);
-        currentGreenWidget.setValue(-1);
-        currentBlueWidget.setValue(-1);
-        currentAlphaWidget.setValue(-1);
+//        currentRedWidget.setValue(-1);
+//        currentGreenWidget.setValue(-1);
+//        currentBlueWidget.setValue(-1);
+//        currentAlphaWidget.setValue(-1);
+        targetRedWidget.setValue(-1);
+        targetGreenWidget.setValue(-1);
+        targetBlueWidget.setValue(-1);
+        targetAlphaWidget.setValue(-1);
     }
 
     @Override

@@ -135,7 +135,6 @@ public class RGBColorAction extends ColorAction<RGBColorAction> {
         super.percent(percent);
 
         Color color = percentable.getColor();
-
         if (ColorAction.isBitOn(options, 1)) color.r = MathUtils.lerp(startColor.r, endColor.r, percent);
         if (ColorAction.isBitOn(options, 2)) color.g = MathUtils.lerp(startColor.g, endColor.g, percent);
         if (ColorAction.isBitOn(options, 3)) color.b = MathUtils.lerp(startColor.b, endColor.b, percent);
@@ -147,7 +146,6 @@ public class RGBColorAction extends ColorAction<RGBColorAction> {
 
         if (!ColorAction.isBitOn(options, 0)) {
             Color  c = percentable.getColor();
-
             c.a = alphaChannel == 0 ? startColor.a : (!reverse ? startColor.a : endColor.a);
             c.r = !ColorAction.isBitOn(options, 1) ? startColor.r : (!reverse ? startColor.r : endColor.r);
             c.g = !ColorAction.isBitOn(options, 2) ? startColor.g : (!reverse ? startColor.g : endColor.g);
@@ -159,7 +157,5 @@ public class RGBColorAction extends ColorAction<RGBColorAction> {
     public void reset() {
         super.reset();
         options = 0;
-        alphaChannel = 0;
-        setupAction = true;
     }
 }

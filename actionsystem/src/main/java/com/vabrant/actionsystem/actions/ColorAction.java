@@ -391,6 +391,7 @@ public abstract class ColorAction<T extends ColorAction<T>> extends PercentActio
 //		Color color = percentable.getColor();
 
 		if(alphaChannel == ON) percentable.getColor().a = MathUtils.lerp(startColor.a, endColor.a, percent);
+//		if (alphaChannel == 1) endColor.a = MathUtils.lerp(startColor.a, endColor.a)
 
 //		switch(colorModel) {
 //			case RGB:
@@ -496,7 +497,7 @@ public abstract class ColorAction<T extends ColorAction<T>> extends PercentActio
 //		channel1 = -1;
 //		channel2 = -1;
 //		channel3 = -1;
-		alphaChannel = -1;
+		alphaChannel = 0;
 //		constructEndColor = false;
 		setupAction = true;
 		startColor.set(Color.WHITE);
@@ -564,35 +565,35 @@ public abstract class ColorAction<T extends ColorAction<T>> extends PercentActio
 		return value / 255f;
 	}
 	
-	public static float getHue(Color color) {
-		float min = Math.min(Math.min(color.r, color.g), color.b);
-		float max = Math.max(Math.max(color.r, color.g), color.b);
-		float difference = max - min;
-
-		if(difference == 0) {
-			return 0f;
-		}
-		else if(max == color.r) {
-			float h = 60f * (((color.g - color.b) / difference) % 6);
-			return h < 0 ? h + 360f : h;
-		}
-		else if(max == color.g) {
-			return 60f * (((color.b - color.r) / difference) + 2f);
-		}
-		else  {
-			return 60f * (((color.r - color.g) / difference) + 4f);
-		}
-	}
-	
-	public static float getSaturation(Color color) {
-		float min = Math.min(Math.min(color.r, color.g), color.b);
-		float max = Math.max(Math.max(color.r, color.g), color.b);
-		float difference = max - min;
-		return max == 0 ? 0 : difference / max;
-	}
-
-	public static float getBrightness(Color color) {
-		return Math.max(Math.max(color.r, color.g), color.b);
-	}
+//	public static float getHue(Color color) {
+//		float min = Math.min(Math.min(color.r, color.g), color.b);
+//		float max = Math.max(Math.max(color.r, color.g), color.b);
+//		float difference = max - min;
+//
+//		if(difference == 0) {
+//			return 0f;
+//		}
+//		else if(max == color.r) {
+//			float h = 60f * (((color.g - color.b) / difference) % 6);
+//			return h < 0 ? h + 360f : h;
+//		}
+//		else if(max == color.g) {
+//			return 60f * (((color.b - color.r) / difference) + 2f);
+//		}
+//		else  {
+//			return 60f * (((color.r - color.g) / difference) + 4f);
+//		}
+//	}
+//
+//	public static float getSaturation(Color color) {
+//		float min = Math.min(Math.min(color.r, color.g), color.b);
+//		float max = Math.max(Math.max(color.r, color.g), color.b);
+//		float difference = max - min;
+//		return max == 0 ? 0 : difference / max;
+//	}
+//
+//	public static float getBrightness(Color color) {
+//		return Math.max(Math.max(color.r, color.g), color.b);
+//	}
 
 }
