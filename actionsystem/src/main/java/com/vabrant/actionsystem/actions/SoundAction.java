@@ -18,6 +18,7 @@ package com.vabrant.actionsystem.actions;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 
+@Deprecated
 public class SoundAction extends TimeAction<SoundAction> {
 
 	public static SoundAction obtain() {

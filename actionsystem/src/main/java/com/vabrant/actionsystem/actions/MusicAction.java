@@ -17,6 +17,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.audio.Music;
 
+@Deprecated
 public class MusicAction extends TimeAction<MusicAction> {
 	
 	public static MusicAction obtain() {
