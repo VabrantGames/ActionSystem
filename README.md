@@ -89,6 +89,8 @@ Actions can easily be created from static helpers located in the action you are 
 
 ## Actions
 - [ColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/ColorAction.java)
+- [RGBColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/RGBColorAction.java)
+- [HSBColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/HSBColorAction.java)
 - [CountDownAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/CountDownAction.java)
 - [DelayAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/DelayAction.java)
 - [GroupAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/GroupAction.java)
