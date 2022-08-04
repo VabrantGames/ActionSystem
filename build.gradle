@@ -34,7 +34,7 @@ allprojects {
 
 subprojects {
     apply plugin: "java-library"
-    apply plugin: "maven"
+    apply plugin: "maven-publish"
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -45,35 +45,22 @@ subprojects {
         options.incremental = true
     }
 
-//    java {
-//        withSourcesJar()
-//        withJavadocJar()
-//    }
+    afterEvaluate {
+        java {
+            withSourcesJar()
+            withJavadocJar()
+        }
 
-//    publishing {
-//        publications {
-//            maven(MavenPublication) {
-//                groupId project.group
-//                artifactId project.name
-//                version project.version
-//                from components.java
-//            }
-//        }
-//    }
-
-    task sourceJar(type: Jar){
-        from sourceSets.main.allSource
-        archiveClassifier = 'sources'
-    }
-
-    task javadocJar(type: Jar, dependsOn: javadoc){
-        from javadoc.destinationDir
-        archiveClassifier = 'javadoc'
-    }
-
-    artifacts {
-        archives sourceJar
-        archives javadocJar
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    groupId project.group
+                    artifactId project.name
+                    version project.version
+                    from components.java
+                }
+            }
+        }
     }
 }
 

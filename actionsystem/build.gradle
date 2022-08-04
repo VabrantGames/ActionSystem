@@ -1,5 +1,7 @@
 version = "$actionSystemVersion"
 
+println "main project"
+
 dependencies {
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.github.tommyettinger:make_some_noise:0.4"
