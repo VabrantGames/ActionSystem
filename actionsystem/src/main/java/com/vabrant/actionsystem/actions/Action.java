@@ -287,11 +287,10 @@ public class Action<T extends Action<T>> implements Poolable {
 		clear();
 		stateReset();
 		logger.reset();
+		eventManager.reset();
 		pauseCondition = null;
 		resumeCondition = null;
 		name = null;
-
-		ActionPools.free(eventManager);
 	}
 
 	/**
