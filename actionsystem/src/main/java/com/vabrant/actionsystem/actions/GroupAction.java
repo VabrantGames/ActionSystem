@@ -257,5 +257,13 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		index = 0;
 		timer = 0;
 	}
-	
+
+	@Override
+	public void reset() {
+		super.reset();
+
+		for (int i = actions.size - 1; i >= 0; i--) {
+			ActionPools.free(actions.removeIndex(i));
+		}
+	}
 }
