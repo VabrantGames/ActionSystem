@@ -156,7 +156,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 				reversible.setReverse(originalReverseState);
 			}
 			
-			reverseState = !isContinuous ? originalReverseState : !originalReverseState;
+			reverseState = isContinuous != originalReverseState;
 		}
 	}
 	
@@ -205,13 +205,15 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 		isContinuous = false;
 		originalReverseStateSet = false;
 		originalReverseState = false;
-		pingPong = false;
 	}
 
 	@Override
 	public void reset() {
 		super.reset();
-		action = null;
+		if (action != null) {
+			ActionPools.free(action);
+			action = null;
+		}
 		reversible = null;
 	}
 	
