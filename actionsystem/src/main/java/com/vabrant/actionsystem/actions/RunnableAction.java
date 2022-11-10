@@ -34,12 +34,9 @@ public class RunnableAction extends Action<RunnableAction>{
 	}
 	
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused()) return true;
+	public void updateLogic(float delta) {
 		runnable.run();
 		end();
-		return isRunning();
 	}
 	
 	@Override

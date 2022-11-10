@@ -219,13 +219,10 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 	}
 	
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused()) return true;
-		
+	public void updateLogic(float delta) {
 		if(actions.size == 0) {
 			end();
-			return isRunning();
+			return;
 		}
 		
 		if(parallel) {
@@ -234,7 +231,6 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		else {
 			updateSequence(delta);
 		}
-		return isRunning();
 	}
 	
 //	@Override

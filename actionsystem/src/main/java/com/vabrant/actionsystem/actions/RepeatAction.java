@@ -177,10 +177,7 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 	}
 
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused) return true;
-		
+	public void updateLogic(float delta) {
 		if(!action.update(delta)) {
 			if(isContinuous || count < amount) {
 				if(!isContinuous) count++;
@@ -192,7 +189,6 @@ public class RepeatAction extends Action<RepeatAction> implements SingleParentAc
 				end();
 			}
 		}
-		return isRunning();
 	}
 	
 	@Override

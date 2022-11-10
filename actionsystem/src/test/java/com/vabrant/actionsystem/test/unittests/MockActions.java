@@ -41,10 +41,9 @@ public class MockActions {
 		}
 
 		@Override
-		public boolean update(float delta) {
-			if(!isRunning()) return false;
+		public void updateLogic(float delta) {
+//			if(!isRunning()) return false;
 			if (runnable != null) runnable.run();
-			return isRunning();
 		}
 
 		@Override
@@ -112,14 +111,13 @@ public class MockActions {
 		}
 
 		@Override
-		public boolean update(float delta) {
-			if(!isRunning()) return false;
+		public void updateLogic(float delta) {
+//			if(!isRunning()) return false;
 			if (action != null) {
 				if (!action.update(delta)) {
 					end();
 				}
 			}
-			return isRunning();
 		}
 
 	}
@@ -168,9 +166,7 @@ public class MockActions {
 		}
 
 		@Override
-		public boolean update(float delta) {
-			if(!isRunning()) return false;
-			return true;
+		public void updateLogic(float delta) {
 		}
 
 		@Override

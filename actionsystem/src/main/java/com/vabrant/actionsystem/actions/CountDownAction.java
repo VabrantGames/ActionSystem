@@ -92,12 +92,9 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 	}
 	
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused()) return true;
-		
+	public void updateLogic(float delta) {
 		timer += delta;
-		
+
 		if((duration - timer) < nextCount) {
 			if(--nextCount < 0) {
 				end();
@@ -106,7 +103,6 @@ public class CountDownAction extends TimeAction<CountDownAction> {
 				fireCount(nextCount + 1);
 			}
 		}
-		return isRunning();
 	}
 
 }

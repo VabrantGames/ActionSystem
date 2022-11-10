@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ShakeAction;
 import com.vabrant.actionsystem.actions.ShakeAction.ShakeLogic;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestObject;
 
 /**
@@ -149,7 +150,8 @@ public class ShakeActionTest extends ActionSystemTestListener {
 								new ShakeAction.GDQShakeLogic.GDQShakeLogicData(), xAmountWidget.getValue(),
 								yAmountWidget.getValue(), angleAmountWidget.getValue(), durationWidget.getValue(),
 								null)
-						.setUsePercent(usePercentWidget.isChecked());
+						.setUsePercent(usePercentWidget.isChecked())
+						.setLogLevel(ActionLogger.LogLevel.DEBUG);
 			}
 		});
 

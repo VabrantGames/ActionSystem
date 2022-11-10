@@ -170,16 +170,11 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	}
 
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused()) return true;
-		
+	public void updateLogic(float delta) {
 		timer += delta;
-		
 		calculatePercent();
 		percent(percent);
 		if(timer >= duration) end();
-		return isRunning();
 	}
 
 	/**

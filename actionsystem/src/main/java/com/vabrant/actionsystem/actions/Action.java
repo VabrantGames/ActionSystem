@@ -246,10 +246,6 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T) this;
 	}
 
-	public boolean update(float delta) {
-		return false;
-	}
-
 	/**
 	 * <b>For use with unmanaged actions</b><br>
 	 * Clears all of this action's values except the name, events, logger and conditions.
@@ -291,6 +287,20 @@ public class Action<T extends Action<T>> implements Poolable {
 		pauseCondition = null;
 		resumeCondition = null;
 		name = null;
+	}
+
+	protected void updateLogic(float delta) {}
+
+	/**
+	 * Updates the action
+	 * @param delta
+	 * @return
+	 */
+	public final boolean update(float delta) {
+		if (!isRunning()) return false;
+		if (isPaused()) return true;
+		updateLogic(delta);
+		return isRunning();
 	}
 
 	/**

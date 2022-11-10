@@ -65,15 +65,11 @@ public class TimeAction<T extends Action<T>> extends Action<T> {
 	}
 
 	@Override
-	public boolean update(float delta) {
-		if(!isRunning()) return false;
-		if(isPaused()) return true;
-		
-		if((timer += delta) >= duration) {
+	public void updateLogic(float delta) {
+		timer += delta;
+		if(timer >= duration) {
 			end();
 		}
-		
-		return isRunning();
 	}
 	
 	@Override
