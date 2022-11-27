@@ -273,10 +273,8 @@ public class ActionSystemTestListener extends ApplicationAdapter implements Inpu
 	}
 
 	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-	
+	public boolean scrolled(float amountX, float amountY) { return false; }
+
 	public static class LabelTextFieldWidget {
 		
 		protected boolean allowNegativeValues;
