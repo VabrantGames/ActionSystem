@@ -1,0 +1,28 @@
+apply plugin: 'java-library'
+apply plugin: 'application'
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+compileJava {
+    options.incremental = true
+}
+
+import org.gradle.internal.os.OperatingSystem
+sourceCompatibility = 1.8
+
+mainClassName = "com.vabrant.actionsystem.platformtests.lwjgl3.Lwjgl3TestStarter"
+
+dependencies {
+    implementation project(":platformtests:tests")
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+}
+
+run {
+    workingDir = project.file('../assets')
+    ignoreExitValue = true
+
+    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+        jvmArgs += "-XstartOnFirstThread"
+    }
+}

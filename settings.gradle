@@ -1,3 +1,8 @@
-include "actionsystem"
 rootProject.name = "VabrantActionSystem"
+
+include "actionsystem"
+include ":platformtests:tests"
+include ":platformtests:lwjgl3"
+include ":platformtests:android"
+include ":platformtests:ios"
 

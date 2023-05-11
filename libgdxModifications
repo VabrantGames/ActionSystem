@@ -1,0 +1,22 @@
+Copyright 2011 libgdx
+
+[authors] https://github.com/libgdx/libgdx/blob/master/AUTHORS
+[contributors] https://github.com/libgdx/libgdx/blob/master/CONTRIBUTORS
+
+#===== AbstractTestWrapper =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/AbstractTestWrapper.java
+
+#===== FragmentTestStarter =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/src/com/badlogic/gdx/tests/android/FragmentTestStarter.java
+
+#===== GdxTestActivity =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-android/src/com/badlogic/gdx/tests/android/GdxTestActivity.java
+
+#===== IOSRobovmTests =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-iosrobovm/src/com/badlogic/gdx/tests/IOSRobovmTests.java
+
+#===== IOSTestWrapper =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-iosrobovm/src/com/badlogic/gdx/tests/IosTestWrapper.java
+
+#===== Lwjgl3TestStarter =====#
+[original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests-lwjgl3/src/com/badlogic/gdx/tests/lwjgl3/Lwjgl3TestStarter.java
