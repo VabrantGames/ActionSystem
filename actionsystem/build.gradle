@@ -8,6 +8,14 @@ version = libs.versions.actionSystemVersion.get()
 
 sourceCompatibility = 1.8
 
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
 dependencies {
     api libs.gdx
     implementation libs.makeSomeNoise
