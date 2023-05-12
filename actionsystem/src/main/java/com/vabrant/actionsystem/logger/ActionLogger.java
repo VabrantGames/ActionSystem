@@ -15,11 +15,7 @@
  */
 package com.vabrant.actionsystem.logger;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.StringBuilder;
-
-import java.util.Formatter;
 
 public class ActionLogger {
 
@@ -71,7 +67,9 @@ public class ActionLogger {
         StringBuilder builder = null;
 
         if (b == null) {
-            int length = (actionName != null ? actionName.length() : 0) + (body != null ? body.length() : 0) + message.length();
+            int length = (actionName != null ? actionName.length() : 0)
+                    + (body != null ? body.length() : 0)
+                    + message.length();
             builder = new StringBuilder(length);
         } else {
             builder = b;
@@ -102,8 +100,7 @@ public class ActionLogger {
     private String className;
     private LoggerPrinter printer;
 
-    private ActionLogger() {
-    }
+    private ActionLogger() {}
 
     private ActionLogger(Class<?> c, String name, LogLevel level) {
         className = c.getSimpleName();
@@ -173,7 +170,6 @@ public class ActionLogger {
         }
 
         printer.print(this, message, body, level);
-
     }
 
     public void info(String message) {
@@ -199,5 +195,4 @@ public class ActionLogger {
     public void error(String message, String body) {
         print0(message, body, LogLevel.ERROR);
     }
-
 }

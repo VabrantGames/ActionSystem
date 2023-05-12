@@ -19,60 +19,59 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 
-/**
- * RGB color action.
- */
+/** RGB color action. */
 public class RGBColorAction extends ColorAction<RGBColorAction> {
 
     public static RGBColorAction obtain() {
         return obtain(RGBColorAction.class);
     }
 
-    public static RGBColorAction changeColor(Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeColor(endColor)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeColor(
+            Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
+        return obtain().changeColor(endColor).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeColor(Colorable colorable, float red, float green, float blue, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeColor(red, green, blue)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeColor(
+            Colorable colorable, float red, float green, float blue, float duration, Interpolation interpolation) {
+        return obtain().changeColor(red, green, blue).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeColor(Colorable colorable, float red, float green, float blue, float alpha, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeColor(red, green, blue, alpha)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeColor(
+            Colorable colorable,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            float duration,
+            Interpolation interpolation) {
+        return obtain().changeColor(red, green, blue, alpha).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeRed(Colorable colorable, float red, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeRed(red)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeRed(
+            Colorable colorable, float red, float duration, Interpolation interpolation) {
+        return obtain().changeRed(red).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeGreen(Colorable colorable, float green, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeGreen(green)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeGreen(
+            Colorable colorable, float green, float duration, Interpolation interpolation) {
+        return obtain().changeGreen(green).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeBlue(Colorable colorable, float blue, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeBlue(blue)
-                .set(colorable, duration, interpolation);
+    public static RGBColorAction changeBlue(
+            Colorable colorable, float blue, float duration, Interpolation interpolation) {
+        return obtain().changeBlue(blue).set(colorable, duration, interpolation);
     }
 
-    public static RGBColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
+    public static RGBColorAction changeAlpha(
+            Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
         return ColorAction.changeAlpha(obtain(), colorable, endAlpha, duration, interpolation);
     }
 
-    //Bits
-    //soloChannel = 0
-    //redChannel = 1
-    //greenChannel = 2
-    //blueChannel = 3
+    // Bits
+    // soloChannel = 0
+    // redChannel = 1
+    // greenChannel = 2
+    // blueChannel = 3
     private int options;
 
     public RGBColorAction changeColor(Color endColor) {
@@ -113,12 +112,10 @@ public class RGBColorAction extends ColorAction<RGBColorAction> {
         return this;
     }
 
-    /**
-     * Only change values that were told to change. If {@link #changeRed} is selected then only the red channel will be
-     * affected. The other channels will not be affected, even if the action is restarted.
+    /** Only change values that were told to change. If {@link #changeRed} is selected then only the red channel will be affected.
+     * The other channels will not be affected, even if the action is restarted.
      * @param solo
-     * @return
-     */
+     * @return */
     public RGBColorAction soloChannels(boolean solo) {
         options = ColorAction.setBit(options, 0, solo ? 1 : 0);
         return this;
@@ -145,7 +142,7 @@ public class RGBColorAction extends ColorAction<RGBColorAction> {
         super.startLogic();
 
         if (!ColorAction.isBitOn(options, 0)) {
-            Color  c = percentable.getColor();
+            Color c = percentable.getColor();
             c.a = alphaChannel == 0 ? startColor.a : (!reverse ? startColor.a : endColor.a);
             c.r = !ColorAction.isBitOn(options, 1) ? startColor.r : (!reverse ? startColor.r : endColor.r);
             c.g = !ColorAction.isBitOn(options, 2) ? startColor.g : (!reverse ? startColor.g : endColor.g);

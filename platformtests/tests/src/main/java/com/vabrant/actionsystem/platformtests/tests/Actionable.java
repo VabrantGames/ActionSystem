@@ -20,12 +20,12 @@ public class Actionable implements Movable, Scalable, Colorable, Rotatable, Shak
     private Color color;
     private TextureRegion region;
 
-//    public Actionable(Texture tex) {
-//       this(new TextureRegion(tex)) ;
-//    }
+    //    public Actionable(Texture tex) {
+    //       this(new TextureRegion(tex)) ;
+    //    }
 
     public Actionable(Texture tex) {
-//        this.region = region;
+        //        this.region = region;
         region = new TextureRegion(tex);
         color = new Color(0xFFFFFFFF);
     }
@@ -36,7 +36,18 @@ public class Actionable implements Movable, Scalable, Colorable, Rotatable, Shak
 
     public void draw(Batch batch) {
         batch.setColor(color);
-        batch.draw(region, moveX + shakeX, moveY + shakeY, 50, 50, 100, 100, scaleX * zoom, scaleY * zoom, rotation + shakeAngle, false);
+        batch.draw(
+                region,
+                moveX + shakeX,
+                moveY + shakeY,
+                50,
+                50,
+                100,
+                100,
+                scaleX * zoom,
+                scaleY * zoom,
+                rotation + shakeAngle,
+                false);
         batch.setColor(Color.WHITE);
     }
 

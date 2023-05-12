@@ -1,20 +1,15 @@
 package com.vabrant.actionsystem.platformtests.tests;
 
 import com.badlogic.gdx.utils.ObjectMap;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class PlatformTests {
 
     public static final List<Class<? extends PlatformTest>> tests = Arrays.asList(
-            RotateTest.class,
-            MoveTest.class,
-            ScaleTest.class,
-            ColorTest.class,
-            ZoomTest.class
-//            ShakeTest.class
-    );
+            RotateTest.class, MoveTest.class, ScaleTest.class, ColorTest.class, ZoomTest.class
+            //            ShakeTest.class
+            );
 
     public static final ObjectMap<String, Class> mappedTests;
 

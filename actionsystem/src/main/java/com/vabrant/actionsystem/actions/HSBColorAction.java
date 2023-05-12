@@ -10,45 +10,52 @@ public class HSBColorAction extends ColorAction<HSBColorAction> {
         return obtain(HSBColorAction.class);
     }
 
-    public static HSBColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeColor(hue, saturation, brightness)
-                .set(colorable, duration, interpolation);
+    public static HSBColorAction changeColor(
+            Colorable colorable,
+            float hue,
+            float saturation,
+            float brightness,
+            float duration,
+            Interpolation interpolation) {
+        return obtain().changeColor(hue, saturation, brightness).set(colorable, duration, interpolation);
     }
 
-    public static HSBColorAction changeColor(Colorable colorable, float hue, float saturation, float brightness, float alpha, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeColor(hue, saturation, brightness, alpha)
-                .set(colorable, duration, interpolation);
+    public static HSBColorAction changeColor(
+            Colorable colorable,
+            float hue,
+            float saturation,
+            float brightness,
+            float alpha,
+            float duration,
+            Interpolation interpolation) {
+        return obtain().changeColor(hue, saturation, brightness, alpha).set(colorable, duration, interpolation);
     }
 
-    public static HSBColorAction changeHue(Colorable colorable, float hue, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeHue(hue)
-                .set(colorable, duration, interpolation);
+    public static HSBColorAction changeHue(
+            Colorable colorable, float hue, float duration, Interpolation interpolation) {
+        return obtain().changeHue(hue).set(colorable, duration, interpolation);
     }
 
-    public static HSBColorAction changeSaturation(Colorable colorable, float saturation, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeSaturation(saturation)
-                .set(colorable, duration, interpolation);
+    public static HSBColorAction changeSaturation(
+            Colorable colorable, float saturation, float duration, Interpolation interpolation) {
+        return obtain().changeSaturation(saturation).set(colorable, duration, interpolation);
     }
 
-    public static HSBColorAction changeBrightness(Colorable colorable, float brightness, float duration, Interpolation interpolation) {
-        return obtain()
-                .changeBrightness(brightness)
-                .set(colorable, duration, interpolation);
+    public static HSBColorAction changeBrightness(
+            Colorable colorable, float brightness, float duration, Interpolation interpolation) {
+        return obtain().changeBrightness(brightness).set(colorable, duration, interpolation);
     }
 
-    public static HSBColorAction changeAlpha(Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
+    public static HSBColorAction changeAlpha(
+            Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
         return ColorAction.changeAlpha(obtain(), colorable, endAlpha, duration, interpolation);
     }
 
-    //Bits
-    //soloChannel = 0;
-    //hueChannel = 1
-    //saturationChannel = 2
-    //brightnessChannel = 3
+    // Bits
+    // soloChannel = 0;
+    // hueChannel = 1
+    // saturationChannel = 2
+    // brightnessChannel = 3
     private float[] startHSB;
     private float[] endHSB;
     private int options;
@@ -85,7 +92,7 @@ public class HSBColorAction extends ColorAction<HSBColorAction> {
     }
 
     public HSBColorAction changeBrightness(float brightness) {
-        setChannels(0, 0 , 1);
+        setChannels(0, 0, 1);
         endHSB[2] = brightness;
         return this;
     }
@@ -158,7 +165,7 @@ public class HSBColorAction extends ColorAction<HSBColorAction> {
         saturation = MathUtils.clamp(saturation, 0f, 1f);
         brightness = MathUtils.clamp(brightness, 0f, 1f);
 
-        if(saturation == 0) {
+        if (saturation == 0) {
             color.r = color.g = color.b = brightness;
             return color;
         }
@@ -168,7 +175,7 @@ public class HSBColorAction extends ColorAction<HSBColorAction> {
         float x = c * (1f - Math.abs(h % 2f - 1f));
         float m = brightness - c;
 
-        switch((int)h) {
+        switch ((int) h) {
             case 0:
                 color.r = c + m;
                 color.g = x + m;
@@ -204,34 +211,30 @@ public class HSBColorAction extends ColorAction<HSBColorAction> {
     }
 
     public static float getHue(Color color) {
-		float min = Math.min(Math.min(color.r, color.g), color.b);
-		float max = Math.max(Math.max(color.r, color.g), color.b);
-		float difference = max - min;
+        float min = Math.min(Math.min(color.r, color.g), color.b);
+        float max = Math.max(Math.max(color.r, color.g), color.b);
+        float difference = max - min;
 
-		if(difference == 0) {
-			return 0f;
-		}
-		else if(max == color.r) {
-			float h = 60f * (((color.g - color.b) / difference) % 6);
-			return h < 0 ? h + 360f : h;
-		}
-		else if(max == color.g) {
-			return 60f * (((color.b - color.r) / difference) + 2f);
-		}
-		else  {
-			return 60f * (((color.r - color.g) / difference) + 4f);
-		}
-	}
+        if (difference == 0) {
+            return 0f;
+        } else if (max == color.r) {
+            float h = 60f * (((color.g - color.b) / difference) % 6);
+            return h < 0 ? h + 360f : h;
+        } else if (max == color.g) {
+            return 60f * (((color.b - color.r) / difference) + 2f);
+        } else {
+            return 60f * (((color.r - color.g) / difference) + 4f);
+        }
+    }
 
-	public static float getSaturation(Color color) {
-		float min = Math.min(Math.min(color.r, color.g), color.b);
-		float max = Math.max(Math.max(color.r, color.g), color.b);
-		float difference = max - min;
-		return max == 0 ? 0 : difference / max;
-	}
+    public static float getSaturation(Color color) {
+        float min = Math.min(Math.min(color.r, color.g), color.b);
+        float max = Math.max(Math.max(color.r, color.g), color.b);
+        float difference = max - min;
+        return max == 0 ? 0 : difference / max;
+    }
 
-	public static float getBrightness(Color color) {
-		return Math.max(Math.max(color.r, color.g), color.b);
-	}
-
+    public static float getBrightness(Color color) {
+        return Math.max(Math.max(color.r, color.g), color.b);
+    }
 }

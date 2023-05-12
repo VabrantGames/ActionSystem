@@ -19,61 +19,56 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vabrant.actionsystem.test.TestObject;
-
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class TestObjectController {
-	
-	private static final TestObjectController instance = new TestObjectController();
-	
-	public static TestObjectController getInstance() {
-		return instance;
-	}
-	
-	Array<TestObject> testObjects = new Array<>(5);
-	
-	private TestObjectController() {}
-	
-	public TestObject create() {
-		TestObject o = new TestObject();
-		o.setSize(50, 50);
-		o.isRunning = true;
-		testObjects.add(o);
-		return o;
-	}
-	
-	public void center(TestObject object, Viewport viewport) {
-		float x = (viewport.getWorldWidth() - object.width) / 2;
-		float y = (viewport.getWorldHeight() - object.height) / 2;
-		object.setPosition(x, y);
-	}
-	
-	public void draw(ShapeRenderer shapeRenderer) {
-		for(int i = testObjects.size - 1; i >= 0; i--) {
-			TestObject o = testObjects.get(i);
-			
-			o.draw(shapeRenderer);
-			
-			if(!testObjects.get(i).isRunning) {
-				testObjects.pop();
-			}
-		}
-	}
 
-	public void draw(ShapeDrawer shapeDrawer) {
-		for(int i = testObjects.size - 1; i >= 0; i--) {
-			TestObject o = testObjects.get(i);
-			
-			o.draw(shapeDrawer);
-			
-			if(!testObjects.get(i).isRunning) {
-				testObjects.pop();
-			}
-		}
-	}
+    private static final TestObjectController instance = new TestObjectController();
 
+    public static TestObjectController getInstance() {
+        return instance;
+    }
+
+    Array<TestObject> testObjects = new Array<>(5);
+
+    private TestObjectController() {}
+
+    public TestObject create() {
+        TestObject o = new TestObject();
+        o.setSize(50, 50);
+        o.isRunning = true;
+        testObjects.add(o);
+        return o;
+    }
+
+    public void center(TestObject object, Viewport viewport) {
+        float x = (viewport.getWorldWidth() - object.width) / 2;
+        float y = (viewport.getWorldHeight() - object.height) / 2;
+        object.setPosition(x, y);
+    }
+
+    public void draw(ShapeRenderer shapeRenderer) {
+        for (int i = testObjects.size - 1; i >= 0; i--) {
+            TestObject o = testObjects.get(i);
+
+            o.draw(shapeRenderer);
+
+            if (!testObjects.get(i).isRunning) {
+                testObjects.pop();
+            }
+        }
+    }
+
+    public void draw(ShapeDrawer shapeDrawer) {
+        for (int i = testObjects.size - 1; i >= 0; i--) {
+            TestObject o = testObjects.get(i);
+
+            o.draw(shapeDrawer);
+
+            if (!testObjects.get(i).isRunning) {
+                testObjects.pop();
+            }
+        }
+    }
 }

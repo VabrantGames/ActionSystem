@@ -11,13 +11,19 @@ public class GdxPrinter implements LoggerPrinter {
     public void print(ActionLogger logger, String message, String body, ActionLogger.LogLevel level) {
         switch (level) {
             case ERROR:
-                Gdx.app.error(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
+                Gdx.app.error(
+                        logger.getClassName(),
+                        ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
             case INFO:
-                Gdx.app.log(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
+                Gdx.app.log(
+                        logger.getClassName(),
+                        ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
             case DEBUG:
-                Gdx.app.debug(logger.getClassName(), ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
+                Gdx.app.debug(
+                        logger.getClassName(),
+                        ActionLogger.formatOutput(builder, logger.getActionName(), message, body));
                 break;
         }
     }

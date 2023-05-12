@@ -18,7 +18,6 @@ package com.vabrant.actionsystem.test.tests;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -29,142 +28,163 @@ import com.vabrant.actionsystem.actions.ShakeAction.ShakeLogic;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestObject;
 
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class ShakeActionTest extends ActionSystemTestListener {
 
-	private LabelTextFieldFloatWidget xAmountWidget;
-	private LabelTextFieldFloatWidget yAmountWidget;
-	private LabelTextFieldFloatWidget angleAmountWidget;
-	private LabelTextFieldFloatWidget durationWidget;
-	private LabelCheckBoxWidget useLogic2Widget;
-	private LabelCheckBoxWidget usePercentWidget;
-	private LabelCheckBoxWidget reverseBackToStartWidget;
-	
-	private TestObject testObject;
+    private LabelTextFieldFloatWidget xAmountWidget;
+    private LabelTextFieldFloatWidget yAmountWidget;
+    private LabelTextFieldFloatWidget angleAmountWidget;
+    private LabelTextFieldFloatWidget durationWidget;
+    private LabelCheckBoxWidget useLogic2Widget;
+    private LabelCheckBoxWidget usePercentWidget;
+    private LabelCheckBoxWidget reverseBackToStartWidget;
 
-	@Override
-	public void create() {
-		super.create();
-		testObject = new TestObject();
-		testObject.setSize(200);
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-		super.resize(width, height);
-		float x = (width - testObject.getWidth()) * 0.5f;
-		float y = (height - testObject.getHeight()) * 0.5f;
-		testObject.setPosition(x, y);
-	}
-	
-	@Override
-	public void createHud(Table root, Skin skin) {
-		LabelStyle headerStyle = new LabelStyle(skin.get(LabelStyle.class));
-		headerStyle.fontColor = Color.BLACK;
-		
-		Label valuesLabel = new Label("Values", headerStyle);
-		root.add(valuesLabel).left();
-		root.row();
-		xAmountWidget = new LabelTextFieldFloatWidget("xAmount: ", skin, root, 5);
-		root.row();
-		yAmountWidget = new LabelTextFieldFloatWidget("yAmount: ", skin, root, 5);
-		root.row();
-		angleAmountWidget = new LabelTextFieldFloatWidget("angleAmount: ", skin, root, 5);
-		root.row();
-		durationWidget = new LabelTextFieldFloatWidget("duration: ", skin, root, 1);
-		root.row();
-		usePercentWidget = new LabelCheckBoxWidget("usePercent: ", skin, root);
-		root.row();
-		useLogic2Widget = new LabelCheckBoxWidget("useCosSinLogic: ", skin, root);
-		root.row();
-		reverseBackToStartWidget = new LabelCheckBoxWidget("reverseBackToStart: ", skin, root);
-	}
-	
-	private ShakeLogic getShakeLogic() {
-		return useLogic2Widget.isChecked() ? ShakeAction.COS_SIN_SHAKE_LOGIC :ShakeAction.RANDOM_SHAKE_LOGIC;
-	}
-	
-	@Override
-	public void createTests() {
-		addTest(new ActionTest("ShakeX") {
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shakeX(testObject, getShakeLogic(), new ShakeAction.DefaultShakeLogicData(), xAmountWidget.getValue(),
-						durationWidget.getValue(), Interpolation.linear)
-						.setUsePercent(usePercentWidget.isChecked())
-						.reverseBackToStart(reverseBackToStartWidget.isChecked());
-			}
-		});
-		
-		addTest(new ActionTest("ShakeY") {
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shakeY(testObject, getShakeLogic(), new ShakeAction.DefaultShakeLogicData(), yAmountWidget.getValue(),
-						durationWidget.getValue(), Interpolation.linear)
-						.setUsePercent(usePercentWidget.isChecked())
-						.reverseBackToStart(reverseBackToStartWidget.isChecked());
-			}
-		});
-		
-		addTest(new ActionTest("ShakeAngle") {
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shakeAngle(testObject, getShakeLogic(), new ShakeAction.DefaultShakeLogicData(),
-						angleAmountWidget.getValue(), durationWidget.getValue(), 
-						Interpolation.linear)
-						.setUsePercent(usePercentWidget.isChecked())
-						.reverseBackToStart(reverseBackToStartWidget.isChecked());
-			}
-		});
-		
-		addTest(new ActionTest("Shake") {
+    private TestObject testObject;
 
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shake(testObject, getShakeLogic(), new ShakeAction.DefaultShakeLogicData(), xAmountWidget.getValue(),
-						yAmountWidget.getValue(), angleAmountWidget.getValue(),
-						durationWidget.getValue(), Interpolation.linear)
-						.setUsePercent(usePercentWidget.isChecked())
-						.reverseBackToStart(reverseBackToStartWidget.isChecked());
-			}
-		});
-		
-		addTest(new ActionTest("UsePercent(Fixed)") {
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shake(testObject, ShakeAction.COS_SIN_SHAKE_LOGIC,
-								new ShakeAction.DefaultShakeLogicData(), 4f, 3f,
-								4f, 2.5f, Interpolation.smooth2)
-						.setUsePercent(true)
-						.reverseBackToStart(true);
-			}
-		});
+    @Override
+    public void create() {
+        super.create();
+        testObject = new TestObject();
+        testObject.setSize(200);
+    }
 
-		addTest(new ActionTest("GDQShake") {
-			@Override
-			public Action<?> run() {
-				return ShakeAction.shake(testObject, new ShakeAction.GDQShakeLogic(0.5f),
-								new ShakeAction.GDQShakeLogic.GDQShakeLogicData(), xAmountWidget.getValue(),
-								yAmountWidget.getValue(), angleAmountWidget.getValue(), durationWidget.getValue(),
-								null)
-						.setUsePercent(usePercentWidget.isChecked())
-						.setLogLevel(ActionLogger.LogLevel.DEBUG);
-			}
-		});
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        float x = (width - testObject.getWidth()) * 0.5f;
+        float y = (height - testObject.getHeight()) * 0.5f;
+        testObject.setPosition(x, y);
+    }
 
-	}
+    @Override
+    public void createHud(Table root, Skin skin) {
+        LabelStyle headerStyle = new LabelStyle(skin.get(LabelStyle.class));
+        headerStyle.fontColor = Color.BLACK;
 
-	@Override
-	public void drawWithShapeRenderer(ShapeRenderer renderer) {
-		testObject.draw(renderer);
-	}
+        Label valuesLabel = new Label("Values", headerStyle);
+        root.add(valuesLabel).left();
+        root.row();
+        xAmountWidget = new LabelTextFieldFloatWidget("xAmount: ", skin, root, 5);
+        root.row();
+        yAmountWidget = new LabelTextFieldFloatWidget("yAmount: ", skin, root, 5);
+        root.row();
+        angleAmountWidget = new LabelTextFieldFloatWidget("angleAmount: ", skin, root, 5);
+        root.row();
+        durationWidget = new LabelTextFieldFloatWidget("duration: ", skin, root, 1);
+        root.row();
+        usePercentWidget = new LabelCheckBoxWidget("usePercent: ", skin, root);
+        root.row();
+        useLogic2Widget = new LabelCheckBoxWidget("useCosSinLogic: ", skin, root);
+        root.row();
+        reverseBackToStartWidget = new LabelCheckBoxWidget("reverseBackToStart: ", skin, root);
+    }
 
+    private ShakeLogic getShakeLogic() {
+        return useLogic2Widget.isChecked() ? ShakeAction.COS_SIN_SHAKE_LOGIC : ShakeAction.RANDOM_SHAKE_LOGIC;
+    }
 
+    @Override
+    public void createTests() {
+        addTest(new ActionTest("ShakeX") {
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shakeX(
+                                testObject,
+                                getShakeLogic(),
+                                new ShakeAction.DefaultShakeLogicData(),
+                                xAmountWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
+                        .setUsePercent(usePercentWidget.isChecked())
+                        .reverseBackToStart(reverseBackToStartWidget.isChecked());
+            }
+        });
 
+        addTest(new ActionTest("ShakeY") {
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shakeY(
+                                testObject,
+                                getShakeLogic(),
+                                new ShakeAction.DefaultShakeLogicData(),
+                                yAmountWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
+                        .setUsePercent(usePercentWidget.isChecked())
+                        .reverseBackToStart(reverseBackToStartWidget.isChecked());
+            }
+        });
 
+        addTest(new ActionTest("ShakeAngle") {
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shakeAngle(
+                                testObject,
+                                getShakeLogic(),
+                                new ShakeAction.DefaultShakeLogicData(),
+                                angleAmountWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
+                        .setUsePercent(usePercentWidget.isChecked())
+                        .reverseBackToStart(reverseBackToStartWidget.isChecked());
+            }
+        });
 
+        addTest(new ActionTest("Shake") {
+
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shake(
+                                testObject,
+                                getShakeLogic(),
+                                new ShakeAction.DefaultShakeLogicData(),
+                                xAmountWidget.getValue(),
+                                yAmountWidget.getValue(),
+                                angleAmountWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
+                        .setUsePercent(usePercentWidget.isChecked())
+                        .reverseBackToStart(reverseBackToStartWidget.isChecked());
+            }
+        });
+
+        addTest(new ActionTest("UsePercent(Fixed)") {
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shake(
+                                testObject,
+                                ShakeAction.COS_SIN_SHAKE_LOGIC,
+                                new ShakeAction.DefaultShakeLogicData(),
+                                4f,
+                                3f,
+                                4f,
+                                2.5f,
+                                Interpolation.smooth2)
+                        .setUsePercent(true)
+                        .reverseBackToStart(true);
+            }
+        });
+
+        addTest(new ActionTest("GDQShake") {
+            @Override
+            public Action<?> run() {
+                return ShakeAction.shake(
+                                testObject,
+                                new ShakeAction.GDQShakeLogic(0.5f),
+                                new ShakeAction.GDQShakeLogic.GDQShakeLogicData(),
+                                xAmountWidget.getValue(),
+                                yAmountWidget.getValue(),
+                                angleAmountWidget.getValue(),
+                                durationWidget.getValue(),
+                                null)
+                        .setUsePercent(usePercentWidget.isChecked())
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG);
+            }
+        });
+    }
+
+    @Override
+    public void drawWithShapeRenderer(ShapeRenderer renderer) {
+        testObject.draw(renderer);
+    }
 }
-

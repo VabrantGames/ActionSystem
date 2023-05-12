@@ -12,9 +12,8 @@ public class MoveTest extends DefaultPlatformTest {
     public void create() {
         super.create();
 
-        MoveAction ma = MoveAction.moveYBy(actionable, 50, 1f, Interpolation.exp5Out)
-                .reverseBackToStart(true);
+        MoveAction ma =
+                MoveAction.moveYBy(actionable, 50, 1f, Interpolation.exp5Out).reverseBackToStart(true);
         addAction(RepeatAction.continuous(GroupAction.sequence(DelayAction.delay(0.5f), ma)));
-
     }
 }

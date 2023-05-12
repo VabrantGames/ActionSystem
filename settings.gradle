@@ -1,8 +1,20 @@
 rootProject.name = "VabrantActionSystem"
 
 include "actionsystem"
-include ":platformtests:tests"
-include ":platformtests:lwjgl3"
-include ":platformtests:android"
-include ":platformtests:ios"
+includeProject("platformtests", new File(rootDir, "platformtests/tests"));
+includeProject("platformtests-lwjgl3", new File(rootDir, "platformtests/lwjgl3"));
+includeProject("platformtests-android", new File(rootDir, "platformtests/android"));
+includeProject("platformtests-ios", new File(rootDir, "platformtests/ios"));
 
+void includeProject(String name, File path) {
+    include name
+    project(":${name}").projectDir = path
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("libs.versions.toml"))
+        }
+    }
+}

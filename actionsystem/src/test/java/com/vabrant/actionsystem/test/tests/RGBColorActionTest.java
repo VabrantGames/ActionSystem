@@ -1,5 +1,7 @@
 package com.vabrant.actionsystem.test.tests;
 
+import static org.junit.Assert.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -8,15 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.RGBColorAction;
 import com.vabrant.actionsystem.actions.RepeatAction;
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.test.TestObject;
 import space.earlygrey.shapedrawer.ShapeDrawer;
-
-import static org.junit.Assert.*;
 
 public class RGBColorActionTest extends ActionSystemTestListener {
 
@@ -167,8 +166,13 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                 setTestObjectColor();
                 setTargetValues(redEndWidget.getValue(), greenEndWidget.getValue(), blueEndWidget.getValue(), 1);
 
-                return RGBColorAction.changeColor(testObject, redEndWidget.getValue(), greenEndWidget.getValue(),
-                                blueEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
+                return RGBColorAction.changeColor(
+                                testObject,
+                                redEndWidget.getValue(),
+                                greenEndWidget.getValue(),
+                                blueEndWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -179,11 +183,19 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValues(redEndWidget.getValue(), greenEndWidget.getValue(), blueEndWidget.getValue(),
+                setTargetValues(
+                        redEndWidget.getValue(),
+                        greenEndWidget.getValue(),
+                        blueEndWidget.getValue(),
                         alphaEndWidget.getValue());
 
-                return RGBColorAction.changeColor(testObject, redEndWidget.getValue(), greenEndWidget.getValue(),
-                                blueEndWidget.getValue(), alphaEndWidget.getValue(), durationWidget.getValue(),
+                return RGBColorAction.changeColor(
+                                testObject,
+                                redEndWidget.getValue(),
+                                greenEndWidget.getValue(),
+                                blueEndWidget.getValue(),
+                                alphaEndWidget.getValue(),
+                                durationWidget.getValue(),
                                 Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
@@ -195,11 +207,14 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValues(redEndWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(),
+                setTargetValues(
+                        redEndWidget.getValue(),
+                        greenStartWidget.getValue(),
+                        blueStartWidget.getValue(),
                         alphaStartWidget.getValue());
 
-                return RGBColorAction.changeRed(testObject, redEndWidget.getValue(), durationWidget.getValue(),
-                                Interpolation.linear)
+                return RGBColorAction.changeRed(
+                                testObject, redEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -210,11 +225,14 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValues(redStartWidget.getValue(), greenEndWidget.getValue(), blueStartWidget.getValue(),
+                setTargetValues(
+                        redStartWidget.getValue(),
+                        greenEndWidget.getValue(),
+                        blueStartWidget.getValue(),
                         alphaStartWidget.getValue());
 
-                return RGBColorAction.changeGreen(testObject, greenEndWidget.getValue(), durationWidget.getValue(),
-                                Interpolation.linear)
+                return RGBColorAction.changeGreen(
+                                testObject, greenEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -225,11 +243,14 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValues(redStartWidget.getValue(), greenStartWidget.getValue(), blueEndWidget.getValue(),
+                setTargetValues(
+                        redStartWidget.getValue(),
+                        greenStartWidget.getValue(),
+                        blueEndWidget.getValue(),
                         alphaStartWidget.getValue());
 
-                return RGBColorAction.changeBlue(testObject, blueEndWidget.getValue(), durationWidget.getValue(),
-                                Interpolation.linear)
+                return RGBColorAction.changeBlue(
+                                testObject, blueEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -239,15 +260,23 @@ public class RGBColorActionTest extends ActionSystemTestListener {
             public Action<?> run() {
                 clearCurrentValues();
                 clearTargetValues();
-                setTestObjectColor(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(),
+                setTestObjectColor(
+                        redStartWidget.getValue(),
+                        greenStartWidget.getValue(),
+                        blueStartWidget.getValue(),
                         alphaStartWidget.getValue());
 
-//                return RepeatAction.repeat(
-//                        RGBColorAction.changeColor(testObject, redEndWidget.getValue(), greenEndWidget.getValue(),
-//                                blueEndWidget.getValue(), alphaEndWidget.getValue(), durationWidget.getValue(),
-//                                Interpolation.linear), 2);
+                // return RepeatAction.repeat(
+                // RGBColorAction.changeColor(testObject, redEndWidget.getValue(),
+                // greenEndWidget.getValue(),
+                // blueEndWidget.getValue(), alphaEndWidget.getValue(),
+                // durationWidget.getValue(),
+                // Interpolation.linear), 2);
                 return RepeatAction.repeat(
-                        RGBColorAction.changeRed(testObject, redEndWidget.getValue(), durationWidget.getValue(),
+                        RGBColorAction.changeRed(
+                                        testObject,
+                                        redEndWidget.getValue(),
+                                        durationWidget.getValue(),
                                         Interpolation.linear)
                                 .soloChannels(true)
                                 .subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
@@ -260,15 +289,18 @@ public class RGBColorActionTest extends ActionSystemTestListener {
                                     }
                                 }),
                         2);
-
-
             }
         });
     }
 
     private void setTestObjectColor() {
-        testObject.getColor().set(redStartWidget.getValue(), greenStartWidget.getValue(), blueStartWidget.getValue(),
-                alphaStartWidget.getValue());
+        testObject
+                .getColor()
+                .set(
+                        redStartWidget.getValue(),
+                        greenStartWidget.getValue(),
+                        blueStartWidget.getValue(),
+                        alphaStartWidget.getValue());
     }
 
     private void setTestObjectColor(float red, float green, float blue, float alpha) {

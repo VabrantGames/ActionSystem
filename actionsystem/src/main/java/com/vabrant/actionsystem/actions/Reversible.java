@@ -15,10 +15,9 @@
  */
 package com.vabrant.actionsystem.actions;
 
-/**
- * @author John Barton  
- */
+/** @author John Barton */
 public interface Reversible<T> {
-	public T setReverse(boolean reverse);
-	public boolean isReversed();
+    public T setReverse(boolean reverse);
+
+    public boolean isReversed();
 }

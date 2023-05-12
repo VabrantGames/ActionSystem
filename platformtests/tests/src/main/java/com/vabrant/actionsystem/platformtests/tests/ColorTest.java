@@ -9,8 +9,8 @@ public class ColorTest extends DefaultPlatformTest {
     public void create() {
         super.create();
 
-        RGBColorAction ca = RGBColorAction.changeColor(actionable, Color.CYAN, 1, null)
-                .reverseBackToStart(true);
+        RGBColorAction ca =
+                RGBColorAction.changeColor(actionable, Color.CYAN, 1, null).reverseBackToStart(true);
         addAction(RepeatAction.continuous(GroupAction.sequence(DelayAction.delay(0.5f), ca)));
     }
 }

@@ -1,3 +1,6 @@
+import java.awt.Desktop
+import org.gradle.internal.os.OperatingSystem
+
 buildscript {
     repositories {
         mavenLocal()
@@ -7,24 +10,45 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
+
+    dependencies {
+    }
+}
+
+plugins {
+    alias(libs.plugins.gradleVersionUpdate)
+    alias(libs.plugins.versionCatalogUpdate)
+    alias(libs.plugins.spotless)
+}
+
+versionCatalogUpdate {
+    catalogFile = file("libs.versions.toml")
+
+    keep {
+        keepUnusedVersions = true
+        keepUnusedLibraries = true
+        keepUnusedPlugins = true
+    }
 }
 
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
+}
 
+subprojects {
     group = "com.vabrantgames.actionsystem"
 
     buildscript {
-		repositories {
-			google()
-			mavenLocal()
-			mavenCentral()
-			gradlePluginPortal()
-			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-		}
-	}
+        repositories {
+            google()
+            mavenLocal()
+            mavenCentral()
+            gradlePluginPortal()
+            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+            maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        }
+    }
 
     repositories {
         mavenLocal()
@@ -34,48 +58,90 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 
-    if (JavaVersion.current().isJava8Compatible()) {
-        allprojects {
-            tasks.withType(Javadoc) {
-                options.addStringOption('Xdoclint:none', '-quiet')
+    apply plugin: 'com.diffplug.spotless'
+
+    afterEvaluate {
+        spotless {
+            enforceCheck = false
+
+            java {
+                removeUnusedImports()
+                palantirJavaFormat()
             }
         }
     }
 }
 
-//subprojects {
-//    apply plugin: "java-library"
-//    apply plugin: "maven-publish"
-//
-//    version = '1.0'
-//
-//    sourceCompatibility = 1.8
-//    targetCompatibility = 1.8
-//
-//    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-//
-//    compileJava {
-//        options.incremental = true
-//    }
-//
-//    afterEvaluate {
-//        java {
-//            withSourcesJar()
-//            withJavadocJar()
-//        }
-//
-//        publishing {
-//            publications {
-//                maven(MavenPublication) {
-//                    groupId project.group
-//                    artifactId project.name
-//                    version project.version
-//                    from components.java
-//                }
-//            }
-//        }
-//    }
-//}
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+configure(project(":actionsystem")) {
+    apply plugin: 'maven-publish'
+
+    afterEvaluate {
+        java {
+            withSourcesJar()
+            withJavadocJar()
+        }
+
+        publishing {
+            publications {
+                mavenJava(MavenPublication) {
+                    from components.java
+
+                    pom {
+                        name = POM_NAME
+                        description = 'An inheritance based action system for libGDX.'
+                        url = 'https://github.com/VabrantGames/ActionSystem'
+
+                        licenses {
+                            license {
+                                name = "Apache license 2.0"
+                                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                            }
+                        }
+                        developers {
+                            developer {
+                                id = "VabrantGames"
+                                name = "John Barton"
+                            }
+                        }
+                        scm {
+                            connection = 'scm:git@github.com:VabrantGames/ActionSystem.git'
+                            developerConnection = 'scm:git@github.com:VabrantGames/ActionSystem.git'
+                            url = 'https://github.com/VabrantGames/ActionSystem'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task("openCatalog", type: Exec) {
+    File f = file('build/dependencyUpdates/report.txt')
+
+    doFirst {
+        if (!f.isFile()) {
+            commandLine 'echo', "No report file found. Run task 'versionCatalogUpdate'"
+            return
+        }
+    }
+
+    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+        commandLine 'open'
+        args (['-a', 'TextEdit', f.absolutePath])
+    } else {
+        commandLine 'echo', "[OpenCatalog task] Windows not tested"
+    }
+}
+
+openCatalog.configure { dependsOn('versionCatalogUpdate') }
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'

@@ -15,11 +15,9 @@
  */
 package com.vabrant.actionsystem.actions;
 
-/**
- * Action that holds a single action.
- * @author John Barton
- */
+/** Action that holds a single action.
+ * @author John Barton */
 @Deprecated
 public interface SingleParentAction {
-	public Action<?> getAction();
+    public Action<?> getAction();
 }

@@ -5,21 +5,14 @@ import com.vabrant.actionsystem.actions.*;
 
 public class ActorActionable extends Actor implements Movable, Colorable, Rotatable, Shakable, Zoomable, Scalable {
 
+    @Override
+    public void setShakeX(float x) {}
 
     @Override
-    public void setShakeX(float x) {
-
-    }
+    public void setShakeY(float y) {}
 
     @Override
-    public void setShakeY(float y) {
-
-    }
-
-    @Override
-    public void setShakeAngle(float angle) {
-
-    }
+    public void setShakeAngle(float angle) {}
 
     @Override
     public float getShakeX() {
@@ -37,9 +30,7 @@ public class ActorActionable extends Actor implements Movable, Colorable, Rotata
     }
 
     @Override
-    public void setZoom(float zoom) {
-
-    }
+    public void setZoom(float zoom) {}
 
     @Override
     public float getZoom() {

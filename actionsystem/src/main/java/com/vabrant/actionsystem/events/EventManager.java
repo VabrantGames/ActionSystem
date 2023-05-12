@@ -4,10 +4,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import com.vabrant.actionsystem.actions.ActionPools;
 
-/**
- * A simple reusable event system. Some events are vital to ensure things function properly and therefore can be
- * locked. Locked events will only be removed when explicitly removed with {@link #2removeListener} or when {@link #reset} is called.
- */
+/** A simple reusable event system. Some events are vital to ensure things function properly and therefore can be locked. Locked
+ * events will only be removed when explicitly removed with {@link #2removeListener} or when {@link #reset} is called. */
 public class EventManager implements Pool.Poolable {
 
     private ObjectMap<String, EventEntry> events;
@@ -35,10 +33,8 @@ public class EventManager implements Pool.Poolable {
         return entry.hasListener(listener);
     }
 
-    /**
-     * Clears all listeners of an {@link Event}
-     * @param eventType
-     */
+    /** Clears all listeners of an {@link Event}
+     * @param eventType */
     public void clearListeners(String eventType) {
         if (eventType == null) throw new IllegalArgumentException("Event type is null");
 
@@ -49,9 +45,7 @@ public class EventManager implements Pool.Poolable {
         }
     }
 
-    /**
-     * Clears listeners of all {@link Event}'s excluding locked events.
-     */
+    /** Clears listeners of all {@link Event}'s excluding locked events. */
     public void clearAllListeners() {
         clearAllListeners(false);
     }
@@ -108,5 +102,4 @@ public class EventManager implements Pool.Poolable {
     public void reset() {
         clearAllListeners(true);
     }
-
 }

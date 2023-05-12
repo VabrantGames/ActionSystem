@@ -1,5 +1,7 @@
 package com.vabrant.actionsystem.test.tests;
 
+import static org.junit.Assert.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
@@ -15,8 +17,6 @@ import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
 import com.vabrant.actionsystem.test.TestObject;
 import space.earlygrey.shapedrawer.ShapeDrawer;
-
-import static org.junit.Assert.*;
 
 public class HSBColorActionTest extends ActionSystemTestListener {
 
@@ -127,9 +127,7 @@ public class HSBColorActionTest extends ActionSystemTestListener {
         targetAlphaWidget = new DoubleLabelWidget("TargetAlpha: ", skin, root);
     }
 
-     /**
-     * @see com.vabrant.actionsystem.actions.MoveAction
-     */
+    /** @see com.vabrant.actionsystem.actions.MoveAction */
     @Override
     public void createTests() {
         addTest(new ActionTest("ChangeColorHSB") {
@@ -138,11 +136,19 @@ public class HSBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValue(hueEndWidget.getValue() % 360, saturationEndWidget.getValue(),
-                        brightnessEndWidget.getValue(), alphaStartWidget.getValue());
+                setTargetValue(
+                        hueEndWidget.getValue() % 360,
+                        saturationEndWidget.getValue(),
+                        brightnessEndWidget.getValue(),
+                        alphaStartWidget.getValue());
 
-                return HSBColorAction.changeColor(testObject, hueEndWidget.getValue(), saturationEndWidget.getValue(),
-                                brightnessEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
+                return HSBColorAction.changeColor(
+                                testObject,
+                                hueEndWidget.getValue(),
+                                saturationEndWidget.getValue(),
+                                brightnessEndWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -153,11 +159,19 @@ public class HSBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValue(hueEndWidget.getValue() % 360, saturationEndWidget.getValue(),
-                        brightnessEndWidget.getValue(), alphaEndWidget.getValue());
+                setTargetValue(
+                        hueEndWidget.getValue() % 360,
+                        saturationEndWidget.getValue(),
+                        brightnessEndWidget.getValue(),
+                        alphaEndWidget.getValue());
 
-                return HSBColorAction.changeColor(testObject, hueEndWidget.getValue(), saturationEndWidget.getValue(),
-                                brightnessEndWidget.getValue(), alphaEndWidget.getValue(), durationWidget.getValue(),
+                return HSBColorAction.changeColor(
+                                testObject,
+                                hueEndWidget.getValue(),
+                                saturationEndWidget.getValue(),
+                                brightnessEndWidget.getValue(),
+                                alphaEndWidget.getValue(),
+                                durationWidget.getValue(),
                                 Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
@@ -169,11 +183,14 @@ public class HSBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValue(hueEndWidget.getValue() % 360, saturationStartWidget.getValue(),
-                        brightnessStartWidget.getValue(), alphaStartWidget.getValue());
+                setTargetValue(
+                        hueEndWidget.getValue() % 360,
+                        saturationStartWidget.getValue(),
+                        brightnessStartWidget.getValue(),
+                        alphaStartWidget.getValue());
 
-                return HSBColorAction.changeHue(testObject, hueEndWidget.getValue(), durationWidget.getValue(),
-                                Interpolation.linear)
+                return HSBColorAction.changeHue(
+                                testObject, hueEndWidget.getValue(), durationWidget.getValue(), Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -184,11 +201,17 @@ public class HSBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValue(hueStartWidget.getValue(), saturationEndWidget.getValue(),
-                        brightnessStartWidget.getValue(), alphaStartWidget.getValue());
+                setTargetValue(
+                        hueStartWidget.getValue(),
+                        saturationEndWidget.getValue(),
+                        brightnessStartWidget.getValue(),
+                        alphaStartWidget.getValue());
 
-                return HSBColorAction.changeSaturation(testObject, saturationEndWidget.getValue(),
-                                durationWidget.getValue(), Interpolation.linear)
+                return HSBColorAction.changeSaturation(
+                                testObject,
+                                saturationEndWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
@@ -199,18 +222,27 @@ public class HSBColorActionTest extends ActionSystemTestListener {
                 clearCurrentValues();
                 clearTargetValues();
                 setTestObjectColor();
-                setTargetValue(hueStartWidget.getValue(), saturationStartWidget.getValue(),
-                        brightnessEndWidget.getValue(), alphaStartWidget.getValue());
+                setTargetValue(
+                        hueStartWidget.getValue(),
+                        saturationStartWidget.getValue(),
+                        brightnessEndWidget.getValue(),
+                        alphaStartWidget.getValue());
 
-                return HSBColorAction.changeBrightness(testObject, brightnessEndWidget.getValue(),
-                                durationWidget.getValue(), Interpolation.linear)
+                return HSBColorAction.changeBrightness(
+                                testObject,
+                                brightnessEndWidget.getValue(),
+                                durationWidget.getValue(),
+                                Interpolation.linear)
                         .subscribeToEvent(ActionEvent.END_EVENT, metricsListener);
             }
         });
     }
 
     private void setTestObjectColor() {
-        HSBColorAction.HSBToRGB(testObject.getColor(), hueStartWidget.getValue(), saturationStartWidget.getValue(),
+        HSBColorAction.HSBToRGB(
+                testObject.getColor(),
+                hueStartWidget.getValue(),
+                saturationStartWidget.getValue(),
                 brightnessStartWidget.getValue());
         testObject.getColor().a = alphaStartWidget.getValue();
     }

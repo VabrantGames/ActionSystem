@@ -1,2 +1,6 @@
 jdk:
   -openjdk11
+install:
+  - echo "Installing with Gradle"
+  - chmod 755 gradlew
+  - ./gradlew clean actionsystem:publishToMavenLocal

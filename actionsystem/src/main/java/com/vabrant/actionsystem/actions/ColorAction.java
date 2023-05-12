@@ -21,54 +21,52 @@ import com.badlogic.gdx.math.MathUtils;
 
 public abstract class ColorAction<T extends ColorAction<T>> extends PercentAction<Colorable, T> {
 
-	protected static <T extends ColorAction<T>> T changeAlpha(T action, Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
-		return action
-				.changeAlpha(endAlpha)
-				.set(colorable, duration, interpolation);
-	}
+    protected static <T extends ColorAction<T>> T changeAlpha(
+            T action, Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
+        return action.changeAlpha(endAlpha).set(colorable, duration, interpolation);
+    }
 
-	public static int setBit(int num, int bit, int setTo) {
-		return (num & ~(1 << bit )) | (setTo & 1) << bit;
-	}
+    public static int setBit(int num, int bit, int setTo) {
+        return (num & ~(1 << bit)) | (setTo & 1) << bit;
+    }
 
-	public static boolean isBitOn(int num, int bit) {
-		return (num & (1 << (bit))) != 0;
-	}
+    public static boolean isBitOn(int num, int bit) {
+        return (num & (1 << (bit))) != 0;
+    }
 
-	protected int alphaChannel = 0;
-	protected boolean setupAction = true;
-	protected Color startColor = new Color(Color.WHITE);
-	protected Color endColor = new Color(Color.WHITE);
-	
-	public T changeAlpha(float endAlpha) {
-		alphaChannel = 1;
-		endColor.a = endAlpha;
-		return (T) this;
-	}
+    protected int alphaChannel = 0;
+    protected boolean setupAction = true;
+    protected Color startColor = new Color(Color.WHITE);
+    protected Color endColor = new Color(Color.WHITE);
 
-	@Override
-	protected void percent(float percent) {
-		if(alphaChannel == 1) percentable.getColor().a = MathUtils.lerp(startColor.a, endColor.a, percent);
-	}
-	
-	@Override
-	public T setup() {
-		super.setup();
-		
-		if(setupAction) {
-			setupAction = false;
-			startColor.set(percentable.getColor());
-		}
-		return (T) this;
-	}
-	
-	@Override
-	public void reset() {
-		super.reset();
-		alphaChannel = 0;
-		setupAction = true;
-		startColor.set(Color.WHITE);
-		endColor.set(Color.WHITE);
-	}
+    public T changeAlpha(float endAlpha) {
+        alphaChannel = 1;
+        endColor.a = endAlpha;
+        return (T) this;
+    }
 
+    @Override
+    protected void percent(float percent) {
+        if (alphaChannel == 1) percentable.getColor().a = MathUtils.lerp(startColor.a, endColor.a, percent);
+    }
+
+    @Override
+    public T setup() {
+        super.setup();
+
+        if (setupAction) {
+            setupAction = false;
+            startColor.set(percentable.getColor());
+        }
+        return (T) this;
+    }
+
+    @Override
+    public void reset() {
+        super.reset();
+        alphaChannel = 0;
+        setupAction = true;
+        startColor.set(Color.WHITE);
+        endColor.set(Color.WHITE);
+    }
 }

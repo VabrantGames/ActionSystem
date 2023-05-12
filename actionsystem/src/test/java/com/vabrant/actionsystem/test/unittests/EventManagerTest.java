@@ -1,5 +1,7 @@
 package com.vabrant.actionsystem.test.unittests;
 
+import static org.junit.Assert.*;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
@@ -10,16 +12,13 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class EventManagerTest {
 
     private static Application application;
 
     @BeforeClass
     public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {
-        });
+        application = new HeadlessApplication(new ApplicationAdapter() {});
     }
 
     @Test
@@ -50,7 +49,7 @@ public class EventManagerTest {
         action.fakeEnd();
         action.incrementCount();
 
-        assertArrayEquals(new boolean[]{true, true, true}, wereEventsCalled);
+        assertArrayEquals(new boolean[] {true, true, true}, wereEventsCalled);
     }
 
     @Test
@@ -115,35 +114,35 @@ public class EventManagerTest {
         manager.subscribe(event, new EmptyEventListener());
         manager.subscribe(lockedEvent, new EmptyEventListener());
 
-        //Non locked events should be cleared
+        // Non locked events should be cleared
         manager.clearListeners(event);
         assertFalse(manager.hasEvent(event));
 
-        //Locked events should not be cleared
+        // Locked events should not be cleared
         assertTrue(manager.hasEvent(lockedEvent));
     }
 
-   @Test
-   @Ignore
-   public void TemplateListenerTest () {
+    @Test
+    @Ignore
+    public void TemplateListenerTest() {
         TestAction action = new TestAction();
 
-       ActionListenerTemplate listener = new ActionListenerTemplate();
-       listener.setEndListener(new ActionListener() {
-           @Override
-           public void onEvent(ActionEvent e) {
+        ActionListenerTemplate listener = new ActionListenerTemplate();
+        listener.setEndListener(new ActionListener() {
+            @Override
+            public void onEvent(ActionEvent e) {
                 System.out.println("Hello start event");
-           }
-       });
-       listener.setStartListener(new ActionListener() {
-           @Override
-           public void onEvent(ActionEvent e) {
+            }
+        });
+        listener.setStartListener(new ActionListener() {
+            @Override
+            public void onEvent(ActionEvent e) {
                 System.out.println("Hello end event");
-           }
-       });
+            }
+        });
 
-       action.subscribeToEvent(ActionEvent.START_EVENT, listener);
-       action.subscribeToEvent(ActionEvent.END_EVENT, listener);
+        action.subscribeToEvent(ActionEvent.START_EVENT, listener);
+        action.subscribeToEvent(ActionEvent.END_EVENT, listener);
     }
 
     private class ActionListenerTemplate implements EventListener<ActionEvent> {
@@ -174,9 +173,7 @@ public class EventManagerTest {
         }
     }
 
-    private interface ActionListener extends EventListener<ActionEvent> {
-
-    }
+    private interface ActionListener extends EventListener<ActionEvent> {}
 
     private static class ActionEvent extends Event {
 
@@ -194,11 +191,9 @@ public class EventManagerTest {
         public void setAsEnd() {
             type = END_EVENT;
         }
-
     }
 
-    private interface CountListener extends EventListener<CountEvent> {
-    }
+    private interface CountListener extends EventListener<CountEvent> {}
 
     private static class CountEvent extends Event {
 
@@ -220,7 +215,7 @@ public class EventManagerTest {
         private EventManager eventManager = new EventManager();
 
         public void fakeStart() {
-           ActionEvent event = new ActionEvent();
+            ActionEvent event = new ActionEvent();
             event.setAsStart();
             eventManager.fire(event);
         }
@@ -250,8 +245,7 @@ public class EventManagerTest {
 
     private static class EmptyEventListener implements EventListener {
         @Override
-        public void onEvent(Event e) {
-        }
-    };
-
+        public void onEvent(Event e) {}
+    }
+    ;
 }

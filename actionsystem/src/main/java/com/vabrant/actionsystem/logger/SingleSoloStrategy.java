@@ -10,8 +10,7 @@ public class SingleSoloStrategy implements SoloStrategy {
             if (this.logger.equals(logger)) {
                 this.logger = null;
             }
-        }
-        else if (solo) {
+        } else if (solo) {
             this.logger = logger;
         }
     }

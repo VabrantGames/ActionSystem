@@ -29,151 +29,152 @@ import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class RestartTest extends ActionSystemTestListener {
-	
-	private final int radius = 30;
-	private Circle[] circles = new Circle[3];
-	
-	@Override
-	public void create() {
-		super.create();
-		
-		shapeDrawer.setColor(Color.BLACK);
 
-		for(int i = 0; i < circles.length; i++) {
-			circles[i] = new Circle();
-		}
-		reset();
-	}
-	
-	public void reset() {
-		int x = radius;
-		float y = (TestUtils.DEFAULT_HEIGHT - (radius * 2)) / 2;
-		for (int i = 0; i < circles.length; i++) {
-			Circle c = circles[i];
-			c.draw = true;
-			c.setX(x);
-			x += (radius * 2);			
-			c.setY(y);
-		}
-	}
-	
-	@Override
-	public boolean keyDown(int keycode) {
-		switch(keycode) {
-			case Keys.NUMPAD_0:
-				multipleObjectsTest();
-				break;
-			case Keys.NUMPAD_1:
-				singleObjectsTest();
-		}
-		return super.keyDown(keycode);
-	}
-	
-	public void singleObjectsTest() {
-		TestUtils.printTestHeader("Single Objects Test");
-		reset();
-		
-		circles[1].draw = false;
-		circles[2].draw = false;
-		
-		GroupAction sequence = GroupAction.sequence(
-				MoveAction.moveXBy(circles[0], 100, 0.5f, Interpolation.linear)
-				.setName("Right").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				MoveAction.moveYBy(circles[0], 100, 0.5f, Interpolation.linear)
-				.setName("Up").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				MoveAction.moveXBy(circles[0], -100, 0.5f, Interpolation.linear)
-				.setName("Left").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				DelayAction.delay(0.1f));
+    private final int radius = 30;
+    private Circle[] circles = new Circle[3];
 
-		ActionListener restartListener = new ActionListener() {
-			boolean restart = true;
+    @Override
+    public void create() {
+        super.create();
 
-			@Override
-			public void onEvent(ActionEvent e) {
-				if (!restart) return;
-				restart = false;
-				System.out.println("Restart GroupAction");
-				sequence.restart();
-			}
-		};
-		((MoveAction)sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+        shapeDrawer.setColor(Color.BLACK);
 
-		actionManager.addAction(sequence);
-	}
-	
-	public void multipleObjectsTest() {
-		TestUtils.printTestHeader("Multiple Objects Test");
-		
-		reset();
-		
-		GroupAction sequence = GroupAction.sequence(
-				MoveAction.moveXBy(circles[2], 200, 0.5f, Interpolation.linear)
-				.setName("Three").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				MoveAction.moveXBy(circles[1], 200, 0.5f, Interpolation.linear)
-				.setName("Two").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				MoveAction.moveXBy(circles[0], 200, 0.5f, Interpolation.linear)
-				.setName("One").setLogLevel(ActionLogger.LogLevel.DEBUG),
-				DelayAction.delay(0.1f));
+        for (int i = 0; i < circles.length; i++) {
+            circles[i] = new Circle();
+        }
+        reset();
+    }
 
-		ActionListener restartListener = new ActionListener() {
-			boolean restart = true;
+    public void reset() {
+        int x = radius;
+        float y = (TestUtils.DEFAULT_HEIGHT - (radius * 2)) / 2;
+        for (int i = 0; i < circles.length; i++) {
+            Circle c = circles[i];
+            c.draw = true;
+            c.setX(x);
+            x += (radius * 2);
+            c.setY(y);
+        }
+    }
 
-			@Override
-			public void onEvent(ActionEvent e) {
-				if (!restart) return;
-				restart = false;
-				System.out.println("Restart GroupAction");
-				sequence.restart();
-			}
-		};
-		((MoveAction)sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+    @Override
+    public boolean keyDown(int keycode) {
+        switch (keycode) {
+            case Keys.NUMPAD_0:
+                multipleObjectsTest();
+                break;
+            case Keys.NUMPAD_1:
+                singleObjectsTest();
+        }
+        return super.keyDown(keycode);
+    }
 
-		actionManager.addAction(sequence);
-	}
-	
-	@Override
-	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
-		for(int i = 0; i < circles.length; i++) {
-			circles[i].draw(shapeDrawer, radius);
-		}
-	}
-	
-	private static class Circle implements Movable {
-		
-		private boolean draw = true;
-		private float x;
-		private float y;
+    public void singleObjectsTest() {
+        TestUtils.printTestHeader("Single Objects Test");
+        reset();
 
-		@Override
-		public void setX(float x) {
-			this.x = x;
-		}
+        circles[1].draw = false;
+        circles[2].draw = false;
 
-		@Override
-		public void setY(float y) {
-			this.y = y;
-		}
+        GroupAction sequence = GroupAction.sequence(
+                MoveAction.moveXBy(circles[0], 100, 0.5f, Interpolation.linear)
+                        .setName("Right")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                MoveAction.moveYBy(circles[0], 100, 0.5f, Interpolation.linear)
+                        .setName("Up")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                MoveAction.moveXBy(circles[0], -100, 0.5f, Interpolation.linear)
+                        .setName("Left")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                DelayAction.delay(0.1f));
 
-		@Override
-		public float getX() {
-			return x;
-		}
+        ActionListener restartListener = new ActionListener() {
+            boolean restart = true;
 
-		@Override
-		public float getY() {
-			return y;
-		}
-		
-		public void draw(ShapeDrawer shapeDrawer, float radius) {
-			if(!draw) return;
-			shapeDrawer.filledCircle(x, y, radius);
-		}
-		
-	}
+            @Override
+            public void onEvent(ActionEvent e) {
+                if (!restart) return;
+                restart = false;
+                System.out.println("Restart GroupAction");
+                sequence.restart();
+            }
+        };
+        ((MoveAction) sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
 
+        actionManager.addAction(sequence);
+    }
+
+    public void multipleObjectsTest() {
+        TestUtils.printTestHeader("Multiple Objects Test");
+
+        reset();
+
+        GroupAction sequence = GroupAction.sequence(
+                MoveAction.moveXBy(circles[2], 200, 0.5f, Interpolation.linear)
+                        .setName("Three")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                MoveAction.moveXBy(circles[1], 200, 0.5f, Interpolation.linear)
+                        .setName("Two")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                MoveAction.moveXBy(circles[0], 200, 0.5f, Interpolation.linear)
+                        .setName("One")
+                        .setLogLevel(ActionLogger.LogLevel.DEBUG),
+                DelayAction.delay(0.1f));
+
+        ActionListener restartListener = new ActionListener() {
+            boolean restart = true;
+
+            @Override
+            public void onEvent(ActionEvent e) {
+                if (!restart) return;
+                restart = false;
+                System.out.println("Restart GroupAction");
+                sequence.restart();
+            }
+        };
+        ((MoveAction) sequence.getActions().get(2)).subscribeToEvent(ActionEvent.END_EVENT, restartListener);
+
+        actionManager.addAction(sequence);
+    }
+
+    @Override
+    public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {
+        for (int i = 0; i < circles.length; i++) {
+            circles[i].draw(shapeDrawer, radius);
+        }
+    }
+
+    private static class Circle implements Movable {
+
+        private boolean draw = true;
+        private float x;
+        private float y;
+
+        @Override
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        @Override
+        public void setY(float y) {
+            this.y = y;
+        }
+
+        @Override
+        public float getX() {
+            return x;
+        }
+
+        @Override
+        public float getY() {
+            return y;
+        }
+
+        public void draw(ShapeDrawer shapeDrawer, float radius) {
+            if (!draw) return;
+            shapeDrawer.filledCircle(x, y, radius);
+        }
+    }
 }

@@ -9,12 +9,12 @@ import com.vabrant.actionsystem.actions.RotateAction;
 
 public class ActionTemplates {
 
-	public static <T extends Movable & Rotatable> GroupAction testTemplate(T actionable, float duration) {
-		GroupAction group = GroupAction.obtain();
-		group.parallel();
-		group.add(MoveAction.moveBy(actionable, 20, 20, duration, Interpolation.circleOut));
-		group.add(RotateAction.rotateBy(actionable, 180, duration, Interpolation.swingOut).reverseBackToStart(false));
-		return group;
-	}
-	
+    public static <T extends Movable & Rotatable> GroupAction testTemplate(T actionable, float duration) {
+        GroupAction group = GroupAction.obtain();
+        group.parallel();
+        group.add(MoveAction.moveBy(actionable, 20, 20, duration, Interpolation.circleOut));
+        group.add(RotateAction.rotateBy(actionable, 180, duration, Interpolation.swingOut)
+                .reverseBackToStart(false));
+        return group;
+    }
 }

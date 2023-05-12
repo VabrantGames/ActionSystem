@@ -12,8 +12,8 @@ public class ZoomTest extends DefaultPlatformTest {
     public void create() {
         super.create();
 
-        ZoomAction za = ZoomAction.zoomBy(actionable, 1, 2f, Interpolation.smooth2)
-                .reverseBackToStart(true);
+        ZoomAction za =
+                ZoomAction.zoomBy(actionable, 1, 2f, Interpolation.smooth2).reverseBackToStart(true);
         addAction(RepeatAction.continuous(GroupAction.sequence(DelayAction.delay(0.5f), za)));
     }
 }

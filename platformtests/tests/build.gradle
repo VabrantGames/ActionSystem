@@ -4,12 +4,8 @@ apply plugin: 'java-library'
 
 sourceCompatibility = 1.8
 
-compileJava {
-    options.incremental = true
-}
-
 dependencies {
 //    api libs.gdx
-    api "com.badlogicgames.gdx:gdx:1.11.0"
+//    api "com.badlogicgames.gdx:gdx:1.11.0"
     api project(":actionsystem")
 }

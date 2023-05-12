@@ -1,48 +1,44 @@
 package com.vabrant.actionsystem.test.performancetests;
 
 import com.badlogic.gdx.graphics.Color;
-import com.vabrant.actionsystem.actions.ColorAction;
 import com.vabrant.actionsystem.actions.HSBColorAction;
 
 public class HSBToRGBTest {
 
-	public static void main(String[] args){
-		HSBToRGBTest h = new HSBToRGBTest();
-		h.runTest();
-	}
+    public static void main(String[] args) {
+        HSBToRGBTest h = new HSBToRGBTest();
+        h.runTest();
+    }
 
-	private final float h = 300;
-	private final float s = 0f;
-	private final float v = 0.5f;
-	private final int iterations = 10000;
-	private final PerformanceTimer timer = new PerformanceTimer(2);
-	private final Color testColor = new Color();
+    private final float h = 300;
+    private final float s = 0f;
+    private final float v = 0.5f;
+    private final int iterations = 10000;
+    private final PerformanceTimer timer = new PerformanceTimer(2);
+    private final Color testColor = new Color();
 
-	public HSBToRGBTest() {
-	}
+    public HSBToRGBTest() {}
 
-	public void runTest() {
-		timer.clear();
-		testOne();
-		testTwo();
-		System.out.println(timer.toString());
-	}
-	
-	private void testOne() {
-		timer.start();
-		for(int i = 0; i < iterations; i++) {
-			testColor.fromHsv(h, s, v);
-		}
-		timer.end();
-	}
-	
-	private void testTwo() {
-		timer.start();
-		for(int i = 0; i < iterations; i++) {
-			HSBColorAction.HSBToRGB(testColor, h, s, v);
-		}
-		timer.end();
-	}
+    public void runTest() {
+        timer.clear();
+        testOne();
+        testTwo();
+        System.out.println(timer.toString());
+    }
 
+    private void testOne() {
+        timer.start();
+        for (int i = 0; i < iterations; i++) {
+            testColor.fromHsv(h, s, v);
+        }
+        timer.end();
+    }
 
+    private void testTwo() {
+        timer.start();
+        for (int i = 0; i < iterations; i++) {
+            HSBColorAction.HSBToRGB(testColor, h, s, v);
+        }
+        timer.end();
+    }
 }

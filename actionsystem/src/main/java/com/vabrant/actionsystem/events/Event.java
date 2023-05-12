@@ -15,6 +15,5 @@ public class Event implements Pool.Poolable {
     }
 
     @Override
-    public void reset() {
-    }
+    public void reset() {}
 }

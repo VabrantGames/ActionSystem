@@ -20,40 +20,31 @@ import static org.junit.Assert.assertTrue;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
-import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.ActionListener;
-import com.vabrant.actionsystem.events.EventManager;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
-import org.junit.After;
+import com.vabrant.actionsystem.test.unittests.MockActions.*;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.Method;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.vabrant.actionsystem.test.unittests.MockActions.*;
-
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class ActionManagerTest {
 
     @Rule
     public TestName testName = new TestName();
+
     private ActionManager actionManager;
     private static Application application;
 
     @BeforeClass
     public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {
-        });
+        application = new HeadlessApplication(new ApplicationAdapter() {});
     }
 
     public boolean hasBeenPooled(Action<?> action) {
@@ -93,9 +84,9 @@ public class ActionManagerTest {
         });
         a2.set(a2Child);
 
-        //Adds the action to the manager
-        //Makes this action the root action
-        //Starts the action
+        // Adds the action to the manager
+        // Makes this action the root action
+        // Starts the action
         manager.addAction(a1);
         manager.addAction(a2);
 
@@ -103,9 +94,9 @@ public class ActionManagerTest {
         assertTrue(a2.isRunning());
         assertTrue(a2.getAction().isRunning());
 
-        //End the action by passing in a large amount of time
-        //The TimeAction should end when the timer is greater than the duration
-        //The ActionManager should pool this action when it has been ended
+        // End the action by passing in a large amount of time
+        // The TimeAction should end when the timer is greater than the duration
+        // The ActionManager should pool this action when it has been ended
         manager.update(Float.MAX_VALUE);
 
         assertFalse(a1.isRunning());
@@ -127,19 +118,17 @@ public class ActionManagerTest {
         ActionManager manager = new ActionManager(amount);
         manager.getLogger().setLevel(ActionLogger.LogLevel.INFO);
 
-        //Add actions to manager
+        // Add actions to manager
         for (int i = 0; i < amount; i++) {
-            MockAction action = MockAction.obtain()
-                    .setName(Integer.toString(i))
-                    .setLogLevel(ActionLogger.LogLevel.DEBUG);
+            MockAction action =
+                    MockAction.obtain().setName(Integer.toString(i)).setLogLevel(ActionLogger.LogLevel.DEBUG);
             manager.addAction(action);
             actions[i] = action;
         }
 
-        //Mock cycle update
+        // Mock cycle update
         manager.update(Integer.MAX_VALUE);
 
         manager.freeAll(true);
     }
-
 }

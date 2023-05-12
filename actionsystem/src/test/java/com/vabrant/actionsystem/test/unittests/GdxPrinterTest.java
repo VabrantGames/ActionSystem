@@ -16,8 +16,7 @@ public class GdxPrinterTest {
 
     @BeforeClass
     public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {
-        });
+        application = new HeadlessApplication(new ApplicationAdapter() {});
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
     }
 
@@ -30,6 +29,5 @@ public class GdxPrinterTest {
         printer.print(logger, "Hello", "Info", ActionLogger.LogLevel.INFO);
         printer.print(logger, "Hello", "Error", ActionLogger.LogLevel.ERROR);
         printer.print(logger, "Hello", "Debug", ActionLogger.LogLevel.DEBUG);
-
     }
 }

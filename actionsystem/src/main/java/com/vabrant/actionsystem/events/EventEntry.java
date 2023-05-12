@@ -2,7 +2,6 @@ package com.vabrant.actionsystem.events;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.vabrant.actionsystem.actions.Action;
 
 public class EventEntry implements Pool.Poolable {
 

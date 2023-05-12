@@ -1,6 +1,5 @@
 package com.vabrant.actionsystem.platformtests.lwjgl3;
 
-import com.vabrant.actionsystem.platformtests.tests.PlatformTests;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -17,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vabrant.actionsystem.platformtests.tests.PlatformTests;
 
 public class Lwjgl3TestStarter {
 
@@ -63,7 +63,8 @@ public class Lwjgl3TestStarter {
                         Lwjgl3WindowConfiguration winConfig = new Lwjgl3WindowConfiguration();
                         winConfig.setTitle(testName);
                         winConfig.setWindowedMode(640, 480);
-                        winConfig.setWindowPosition(((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionX() + 40,
+                        winConfig.setWindowPosition(
+                                ((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionX() + 40,
                                 ((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionY() + 40);
                         winConfig.useVsync(false);
                         ((Lwjgl3Application) Gdx.app).newWindow(test, winConfig);

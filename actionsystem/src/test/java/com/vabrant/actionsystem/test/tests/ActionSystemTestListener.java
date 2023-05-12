@@ -1,7 +1,5 @@
 package com.vabrant.actionsystem.test.tests;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -37,374 +35,379 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionPools;
-
 import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.ActionListener;
+import java.util.Iterator;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class ActionSystemTestListener extends ApplicationAdapter implements InputProcessor {
-	
-	private boolean isTestRunning;
-	private float testDelayTimer = 0;
-	private final float testDelayDuration = 0.5f;
-	public SpriteBatch batch;
-	public ShapeRenderer shapeRenderer;
-	public AssetManager assetManager;
-	public ActionManager actionManager;
-	public ShapeDrawer shapeDrawer;
-	public Texture pixelTexture;
-	public Viewport hudViewport;
-	private Stage stage;
-	private Skin skin;
-	private ObjectMap<String, ActionTest> tests;
-	private Action<?> actionToRun;
-	private String selectedTest;
-	private Label isRunningLabel;
-	private Label fpsLabel;
 
-	private ActionListener testOverListener = new ActionListener() {
-		@Override
-		public void onEvent(ActionEvent e) {
-			removeCurrentTest();
-		}
-	};
-	
-	@Override
-	public void create() {
-		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
-		pixmap.setColor(Color.WHITE);
-		pixmap.drawPixel(0, 0);
-		
-		tests = new ObjectMap<>();
-		hudViewport = new ScreenViewport();
-		batch = new SpriteBatch();
-		pixelTexture = new Texture(pixmap);
-		shapeDrawer = new ShapeDrawer(batch, new TextureRegion(pixelTexture));
-		shapeDrawer.setDefaultSnap(false);
-		actionManager = new ActionManager();
-		assetManager = new AssetManager();
-		shapeRenderer = new ShapeRenderer();
-		shapeRenderer.setAutoShapeType(true);
-		
-		createTests();
-		
-		stage = new Stage(new ScreenViewport(), batch);
-//		stage.setDebugAll(true);
-		skin = new Skin(Gdx.files.internal("orangepeelui/uiskin.json"));
+    private boolean isTestRunning;
+    private float testDelayTimer = 0;
+    private final float testDelayDuration = 0.5f;
+    public SpriteBatch batch;
+    public ShapeRenderer shapeRenderer;
+    public AssetManager assetManager;
+    public ActionManager actionManager;
+    public ShapeDrawer shapeDrawer;
+    public Texture pixelTexture;
+    public Viewport hudViewport;
+    private Stage stage;
+    private Skin skin;
+    private ObjectMap<String, ActionTest> tests;
+    private Action<?> actionToRun;
+    private String selectedTest;
+    private Label isRunningLabel;
+    private Label fpsLabel;
 
-		Table selectBoxTable = new Table();
-		selectBoxTable.setFillParent(true);
-		selectBoxTable.pad(4).center().top();
-		SelectBox<String> testSelectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
-		Iterator<String> testNames = tests.keys();
-		Array<String> items = new Array<>();
-		
-		while(testNames.hasNext()) {
-			items.add(testNames.next());
-		}
-		
-		selectBoxTable.add(testSelectBox);
-		testSelectBox.setItems(items);
-		testSelectBox.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				selectedTest = testSelectBox.getSelected();
-			}
-		});
-		selectedTest = testSelectBox.getSelected();
-		stage.addActor(selectBoxTable);
-		
-		Table isRunningAndFPSTable = new Table();
-		isRunningAndFPSTable.setFillParent(true);
-		isRunningAndFPSTable.pad(4).right().top();
-		isRunningLabel = new Label("Not Running", new LabelStyle(skin.get(LabelStyle.class)));
-		isRunningLabel.getStyle().fontColor = Color.BLACK;
-		isRunningAndFPSTable.add(isRunningLabel).width(100);
-		
-//		isRunningLabelTable.row();
-//		fpsLabel = new Label("Fps:", skin);
-//		isRunningLabelTable.add(fpsLabel).left();
-		stage.addActor(isRunningAndFPSTable);
-		
-		Table statsRoot = new Table();
-		statsRoot.setFillParent(true);
-		statsRoot.pad(4).left().top();
-		createHud(statsRoot, skin);
-		stage.addActor(statsRoot);
-		stage.addListener(new InputListener() {
-			@Override
-			public boolean keyDown(InputEvent event, int keycode) {
-				switch(keycode) {
-					case Keys.ESCAPE:
-						stage.setKeyboardFocus(null);
-						break;
-					case Keys.SPACE:
-						if(selectedTest == null) return false;
-						
-						if(isTestRunning) removeCurrentTest();
-						isTestRunning = true;
-						ActionTest test = tests.get(selectedTest);
-						actionToRun = test.run();
-						actionToRun.subscribeToEvent(ActionEvent.END_EVENT, testOverListener);
-						isRunningLabel.setText("Running");
-						isRunningLabel.getStyle().fontColor = Color.RED;
-						break;
-				}
-				return super.keyDown(event, keycode);
-			}
-		});
-		
-		Gdx.input.setInputProcessor(stage);
-	}
+    private ActionListener testOverListener = new ActionListener() {
+        @Override
+        public void onEvent(ActionEvent e) {
+            removeCurrentTest();
+        }
+    };
 
-	private void removeCurrentTest() {
-		if(isTestRunning) {
-			isTestRunning = false;
-			actionManager.freeAll(false);
-		}
-		
-		if(actionToRun != null) {
-			ActionPools.free(actionToRun);
-			actionToRun = null;
-		}
-		
-		isRunningLabel.setText("Not Running");
-		isRunningLabel.getStyle().fontColor = Color.BLACK;
-		testDelayTimer = 0;
-	}
-	
-	@Override
-	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
-		hudViewport.update(width, height, true);
-	}
+    @Override
+    public void create() {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-	@Override
-	public void dispose() {
-		batch.dispose();
-		assetManager.dispose();
-		pixelTexture.dispose();
-		stage.dispose();
-		skin.dispose();
-	}
-	
-	public void addTest(ActionTest test) {
-		tests.put(test.name, test);
-	}
+        Pixmap pixmap = new Pixmap(1, 1, Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.drawPixel(0, 0);
 
-	public void createTests() {}
-	public void createHud(Table root, Skin skin) {}
-	public void update(float delta) {}
-	public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {}
-	public void drawWithShapeRenderer(ShapeRenderer renderer) {}
-	
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-		float delta = Gdx.graphics.getDeltaTime();
-		
-		if(isTestRunning) {
-			if(actionToRun != null) {
-				if((testDelayTimer += delta) >= testDelayDuration) {
-					actionManager.addAction(actionToRun);
-					actionToRun = null;
-					testDelayTimer = 0;
-				}
-			}
-		}
-		
-		actionManager.update(delta);
-		stage.act(delta);
-		update(delta);
+        tests = new ObjectMap<>();
+        hudViewport = new ScreenViewport();
+        batch = new SpriteBatch();
+        pixelTexture = new Texture(pixmap);
+        shapeDrawer = new ShapeDrawer(batch, new TextureRegion(pixelTexture));
+        shapeDrawer.setDefaultSnap(false);
+        actionManager = new ActionManager();
+        assetManager = new AssetManager();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setAutoShapeType(true);
 
-		batch.setProjectionMatrix(hudViewport.getCamera().combined);
-		batch.enableBlending();
-		batch.begin();
-		draw(batch, shapeDrawer);
-		shapeDrawer.rectangle(0, 0, hudViewport.getWorldWidth() - 1, hudViewport.getWorldHeight() - 1, Color.GREEN);
-		batch.end();
-		
-		stage.getViewport().apply();
-		stage.draw();
-		
-		shapeRenderer.setProjectionMatrix(hudViewport.getCamera().combined);
-		shapeRenderer.begin();
-		drawWithShapeRenderer(shapeRenderer);
-		shapeRenderer.end();
-	}
+        createTests();
 
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
-	}
+        stage = new Stage(new ScreenViewport(), batch);
+        // stage.setDebugAll(true);
+        skin = new Skin(Gdx.files.internal("orangepeelui/uiskin.json"));
 
-	@Override
-	public boolean keyUp(int keycode) {
-		return false;
-	}
+        Table selectBoxTable = new Table();
+        selectBoxTable.setFillParent(true);
+        selectBoxTable.pad(4).center().top();
+        SelectBox<String> testSelectBox = new SelectBox<>(new SelectBoxStyle(skin.get(SelectBoxStyle.class)));
+        Iterator<String> testNames = tests.keys();
+        Array<String> items = new Array<>();
 
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
-	}
+        while (testNames.hasNext()) {
+            items.add(testNames.next());
+        }
 
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
+        selectBoxTable.add(testSelectBox);
+        testSelectBox.setItems(items);
+        testSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                selectedTest = testSelectBox.getSelected();
+            }
+        });
+        selectedTest = testSelectBox.getSelected();
+        stage.addActor(selectBoxTable);
 
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
+        Table isRunningAndFPSTable = new Table();
+        isRunningAndFPSTable.setFillParent(true);
+        isRunningAndFPSTable.pad(4).right().top();
+        isRunningLabel = new Label("Not Running", new LabelStyle(skin.get(LabelStyle.class)));
+        isRunningLabel.getStyle().fontColor = Color.BLACK;
+        isRunningAndFPSTable.add(isRunningLabel).width(100);
 
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
+        // isRunningLabelTable.row();
+        // fpsLabel = new Label("Fps:", skin);
+        // isRunningLabelTable.add(fpsLabel).left();
+        stage.addActor(isRunningAndFPSTable);
 
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
+        Table statsRoot = new Table();
+        statsRoot.setFillParent(true);
+        statsRoot.pad(4).left().top();
+        createHud(statsRoot, skin);
+        stage.addActor(statsRoot);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                switch (keycode) {
+                    case Keys.ESCAPE:
+                        stage.setKeyboardFocus(null);
+                        break;
+                    case Keys.SPACE:
+                        if (selectedTest == null) return false;
 
-	@Override
-	public boolean scrolled(float amountX, float amountY) { return false; }
+                        if (isTestRunning) removeCurrentTest();
+                        isTestRunning = true;
+                        ActionTest test = tests.get(selectedTest);
+                        actionToRun = test.run();
+                        actionToRun.subscribeToEvent(ActionEvent.END_EVENT, testOverListener);
+                        isRunningLabel.setText("Running");
+                        isRunningLabel.getStyle().fontColor = Color.RED;
+                        break;
+                }
+                return super.keyDown(event, keycode);
+            }
+        });
 
-	public static class LabelTextFieldWidget {
-		
-		protected boolean allowNegativeValues;
-		Label label;
-		TextField textField;
-		
-		public LabelTextFieldWidget(String labelTitle, Skin skin, Table table) {
-			label = new Label(labelTitle, skin);
-			textField = new TextField("", skin);
-			table.add(label).left();
-			table.add(textField).left().width(100).padRight(10);
-		}
-		
-//		public void setAllowNegativeValues(boolean allowNegativeValues) {
-//			this.allowNegativeValues = allowNegativeValues;
-//		}
-		
-		public void allowNegativeValues() {
-			allowNegativeValues = true;
-		}
-	}
-	
-	public static class LabelTextFieldIntWidget extends LabelTextFieldWidget {
-		
-		public LabelTextFieldIntWidget(String labelTitle, Skin skin, Table table, int startValue) {
-			super(labelTitle, skin, table);
-			textField.setText(String.valueOf(startValue));
-			textField.setTextFieldFilter(new TextFieldFilter() {
-				@Override
-				public boolean acceptChar(TextField textField, char c) {
-					return Character.isDigit(c);
-				}
-			});
-		}
-		
-		public void setValue(int value) {
-			textField.setText(String.valueOf(value));
-		}
-		
-		public int getValue() {
-			if(textField.getText().isEmpty()) return 0;
-			return Integer.parseInt(textField.getText());
-		}
-	}
-	
-	public static class LabelTextFieldFloatWidget extends LabelTextFieldWidget {
-		
-		public LabelTextFieldFloatWidget(String labelTitle, Skin skin, Table table, float startValue) {
-			super(labelTitle, skin, table);
-			textField.setText(String.valueOf(startValue));
-			textField.setTextFieldFilter(new TextFieldFilter() {
-				@Override
-				public boolean acceptChar(TextField textField, char c) {
-					if(!Character.isDigit(c)) {
-						switch(c) {
-							case '.':
-								if(textField.getText().contains(".")) return false;
-								break;
-							case '-':
-								if(!allowNegativeValues) return false;
-								if(textField.getText().length() > 1) {
-									if(textField.getCursorPosition() != 0) return false;
-									
-									char fc = textField.getText().charAt(0);
-									if(fc == '-') return false;
-								}
-								break;
-							default:
-								return false;
-						}
-					}
-					return true;
-				}
-			});
-		}
-		
-		public void setValue(float value) {
-			textField.setText(String.valueOf(value));
-		}
-		
-		public float getValue() {
-			if(textField.getText().isEmpty()) return 0;
-			return Float.parseFloat(textField.getText());
-		}
-	}
-	
-	public static class DoubleLabelWidget {
-		
-		Label titleLabel;
-		Label valueLabel;
-		
-		public DoubleLabelWidget(String labelTitle, Skin skin, Table table) {
-			titleLabel = new Label(labelTitle, skin);
-			valueLabel = new Label("0.0", new LabelStyle(skin.get(LabelStyle.class)));
-			valueLabel.getStyle().fontColor = Color.BLACK;
-			table.add(titleLabel).left();
-			table.add(valueLabel).width(100);
-		}
-		
-		public void setValue(Number number) {
-			valueLabel.setText(String.valueOf(number.floatValue()));
-		}
-	}
-	
-	public static class LabelCheckBoxWidget {
-		
-		Label titleLabel;
-		CheckBox checkBox;
-			   
-		public LabelCheckBoxWidget(String title, Skin skin, Table table) {
-			titleLabel = new Label(title, skin);
-			checkBox = new CheckBox("", skin);
-			table.add(titleLabel).left();
-			table.add(checkBox).width(100);
-		}
-		
-		public boolean isChecked() {
-			return checkBox.isChecked();
-		}
-	}
+        Gdx.input.setInputProcessor(stage);
+    }
 
-	public static abstract class ActionTest {
-		
-		public final String name;
-		
-		public ActionTest(String name) {
-			this.name = name;
-		}
-		
-		public abstract Action<?> run();
-	}
+    private void removeCurrentTest() {
+        if (isTestRunning) {
+            isTestRunning = false;
+            actionManager.freeAll(false);
+        }
 
+        if (actionToRun != null) {
+            ActionPools.free(actionToRun);
+            actionToRun = null;
+        }
+
+        isRunningLabel.setText("Not Running");
+        isRunningLabel.getStyle().fontColor = Color.BLACK;
+        testDelayTimer = 0;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+        hudViewport.update(width, height, true);
+    }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+        assetManager.dispose();
+        pixelTexture.dispose();
+        stage.dispose();
+        skin.dispose();
+    }
+
+    public void addTest(ActionTest test) {
+        tests.put(test.name, test);
+    }
+
+    public void createTests() {}
+
+    public void createHud(Table root, Skin skin) {}
+
+    public void update(float delta) {}
+
+    public void draw(SpriteBatch batch, ShapeDrawer shapeDrawer) {}
+
+    public void drawWithShapeRenderer(ShapeRenderer renderer) {}
+
+    @Override
+    public void render() {
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        if (isTestRunning) {
+            if (actionToRun != null) {
+                if ((testDelayTimer += delta) >= testDelayDuration) {
+                    actionManager.addAction(actionToRun);
+                    actionToRun = null;
+                    testDelayTimer = 0;
+                }
+            }
+        }
+
+        actionManager.update(delta);
+        stage.act(delta);
+        update(delta);
+
+        batch.setProjectionMatrix(hudViewport.getCamera().combined);
+        batch.enableBlending();
+        batch.begin();
+        draw(batch, shapeDrawer);
+        shapeDrawer.rectangle(0, 0, hudViewport.getWorldWidth() - 1, hudViewport.getWorldHeight() - 1, Color.GREEN);
+        batch.end();
+
+        stage.getViewport().apply();
+        stage.draw();
+
+        shapeRenderer.setProjectionMatrix(hudViewport.getCamera().combined);
+        shapeRenderer.begin();
+        drawWithShapeRenderer(shapeRenderer);
+        shapeRenderer.end();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(float amountX, float amountY) {
+        return false;
+    }
+
+    public static class LabelTextFieldWidget {
+
+        protected boolean allowNegativeValues;
+        Label label;
+        TextField textField;
+
+        public LabelTextFieldWidget(String labelTitle, Skin skin, Table table) {
+            label = new Label(labelTitle, skin);
+            textField = new TextField("", skin);
+            table.add(label).left();
+            table.add(textField).left().width(100).padRight(10);
+        }
+
+        // public void setAllowNegativeValues(boolean allowNegativeValues) {
+        // this.allowNegativeValues = allowNegativeValues;
+        // }
+
+        public void allowNegativeValues() {
+            allowNegativeValues = true;
+        }
+    }
+
+    public static class LabelTextFieldIntWidget extends LabelTextFieldWidget {
+
+        public LabelTextFieldIntWidget(String labelTitle, Skin skin, Table table, int startValue) {
+            super(labelTitle, skin, table);
+            textField.setText(String.valueOf(startValue));
+            textField.setTextFieldFilter(new TextFieldFilter() {
+                @Override
+                public boolean acceptChar(TextField textField, char c) {
+                    return Character.isDigit(c);
+                }
+            });
+        }
+
+        public void setValue(int value) {
+            textField.setText(String.valueOf(value));
+        }
+
+        public int getValue() {
+            if (textField.getText().isEmpty()) return 0;
+            return Integer.parseInt(textField.getText());
+        }
+    }
+
+    public static class LabelTextFieldFloatWidget extends LabelTextFieldWidget {
+
+        public LabelTextFieldFloatWidget(String labelTitle, Skin skin, Table table, float startValue) {
+            super(labelTitle, skin, table);
+            textField.setText(String.valueOf(startValue));
+            textField.setTextFieldFilter(new TextFieldFilter() {
+                @Override
+                public boolean acceptChar(TextField textField, char c) {
+                    if (!Character.isDigit(c)) {
+                        switch (c) {
+                            case '.':
+                                if (textField.getText().contains(".")) return false;
+                                break;
+                            case '-':
+                                if (!allowNegativeValues) return false;
+                                if (textField.getText().length() > 1) {
+                                    if (textField.getCursorPosition() != 0) return false;
+
+                                    char fc = textField.getText().charAt(0);
+                                    if (fc == '-') return false;
+                                }
+                                break;
+                            default:
+                                return false;
+                        }
+                    }
+                    return true;
+                }
+            });
+        }
+
+        public void setValue(float value) {
+            textField.setText(String.valueOf(value));
+        }
+
+        public float getValue() {
+            if (textField.getText().isEmpty()) return 0;
+            return Float.parseFloat(textField.getText());
+        }
+    }
+
+    public static class DoubleLabelWidget {
+
+        Label titleLabel;
+        Label valueLabel;
+
+        public DoubleLabelWidget(String labelTitle, Skin skin, Table table) {
+            titleLabel = new Label(labelTitle, skin);
+            valueLabel = new Label("0.0", new LabelStyle(skin.get(LabelStyle.class)));
+            valueLabel.getStyle().fontColor = Color.BLACK;
+            table.add(titleLabel).left();
+            table.add(valueLabel).width(100);
+        }
+
+        public void setValue(Number number) {
+            valueLabel.setText(String.valueOf(number.floatValue()));
+        }
+    }
+
+    public static class LabelCheckBoxWidget {
+
+        Label titleLabel;
+        CheckBox checkBox;
+
+        public LabelCheckBoxWidget(String title, Skin skin, Table table) {
+            titleLabel = new Label(title, skin);
+            checkBox = new CheckBox("", skin);
+            table.add(titleLabel).left();
+            table.add(checkBox).width(100);
+        }
+
+        public boolean isChecked() {
+            return checkBox.isChecked();
+        }
+    }
+
+    public abstract static class ActionTest {
+
+        public final String name;
+
+        public ActionTest(String name) {
+            this.name = name;
+        }
+
+        public abstract Action<?> run();
+    }
 }

@@ -25,63 +25,59 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.SoundAction;
 
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class SoundActionTest extends ActionSystemTestListener {
 
-	private LabelTextFieldFloatWidget volumeWidget;
-	private LabelTextFieldFloatWidget pitchWidget;
-	private LabelTextFieldFloatWidget panWidget;
-	private LabelCheckBoxWidget monoWidget; 
-	
-	private Sound monoSound;
-	private Sound stereoSound;
-	
-	@Override
-	public void create() {
-		super.create();
-		monoSound = Gdx.audio.newSound(Gdx.files.internal("simpleSawMono.mp3"));
-		stereoSound = Gdx.audio.newSound(Gdx.files.internal("simpleSawStereo.mp3"));
-	}
-	
-	@Override
-	public void createHud(Table root, Skin skin) {
-		Label valuesLabel = new Label("Values", new LabelStyle(skin.get(LabelStyle.class)));
-		valuesLabel.getStyle().fontColor = Color.BLACK;
-		root.add(valuesLabel).left();
-		root.row();
-		volumeWidget = new LabelTextFieldFloatWidget("volume: ", skin, root, 1f);
-		root.row();
-		pitchWidget = new LabelTextFieldFloatWidget("pitch: ", skin, root, 1f);
-		root.row();
-		panWidget = new LabelTextFieldFloatWidget("pan: ", skin, root, 0f);
-		panWidget.allowNegativeValues();
-		root.row();
-		monoWidget = new LabelCheckBoxWidget("mono: ", skin, root);
-	}
-	
-	@Override
-	public void createTests() {
-		addTest(new ActionTest("PlaySound") {
-			@Override
-			public Action<?> run() {
-				return SoundAction.play(getSound(), 6.857f, volumeWidget.getValue(), 
-						pitchWidget.getValue(), panWidget.getValue());
-			}
-		});
-		
-		addTest(new ActionTest("Blank") {
-			@Override
-			public Action<?> run() {
-				return null;
-			}
-		});
-	}
+    private LabelTextFieldFloatWidget volumeWidget;
+    private LabelTextFieldFloatWidget pitchWidget;
+    private LabelTextFieldFloatWidget panWidget;
+    private LabelCheckBoxWidget monoWidget;
 
-	public Sound getSound() {
-		return monoWidget.isChecked() ? monoSound : stereoSound;
-	}
+    private Sound monoSound;
+    private Sound stereoSound;
 
+    @Override
+    public void create() {
+        super.create();
+        monoSound = Gdx.audio.newSound(Gdx.files.internal("simpleSawMono.mp3"));
+        stereoSound = Gdx.audio.newSound(Gdx.files.internal("simpleSawStereo.mp3"));
+    }
+
+    @Override
+    public void createHud(Table root, Skin skin) {
+        Label valuesLabel = new Label("Values", new LabelStyle(skin.get(LabelStyle.class)));
+        valuesLabel.getStyle().fontColor = Color.BLACK;
+        root.add(valuesLabel).left();
+        root.row();
+        volumeWidget = new LabelTextFieldFloatWidget("volume: ", skin, root, 1f);
+        root.row();
+        pitchWidget = new LabelTextFieldFloatWidget("pitch: ", skin, root, 1f);
+        root.row();
+        panWidget = new LabelTextFieldFloatWidget("pan: ", skin, root, 0f);
+        panWidget.allowNegativeValues();
+        root.row();
+        monoWidget = new LabelCheckBoxWidget("mono: ", skin, root);
+    }
+
+    @Override
+    public void createTests() {
+        addTest(new ActionTest("PlaySound") {
+            @Override
+            public Action<?> run() {
+                return SoundAction.play(
+                        getSound(), 6.857f, volumeWidget.getValue(), pitchWidget.getValue(), panWidget.getValue());
+            }
+        });
+
+        addTest(new ActionTest("Blank") {
+            @Override
+            public Action<?> run() {
+                return null;
+            }
+        });
+    }
+
+    public Sound getSound() {
+        return monoWidget.isChecked() ? monoSound : stereoSound;
+    }
 }

@@ -1,13 +1,16 @@
 package com.vabrant.actionsystem.test.unittests;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.Action;
-import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionWatcher;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
@@ -16,21 +19,18 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class ActionWatcherTest {
 
     @Rule
     public TestName testName = new TestName();
+
     private static ActionWatcher watcher;
     private static Application application;
     private static ActionManager actionManager;
 
     @BeforeClass
     public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {
-        });
+        application = new HeadlessApplication(new ApplicationAdapter() {});
         actionManager = new ActionManager();
         watcher = new ActionWatcher(10);
         watcher.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
@@ -43,9 +43,9 @@ public class ActionWatcherTest {
 
         final String tag = "child";
 
-        //Create parent and child actions
+        // Create parent and child actions
         MockSingleParentAction parent = MockSingleParentAction.obtain();
-//		parent.setLogLevel(ActionLogger.DEBUG);
+        // parent.setLogLevel(ActionLogger.DEBUG);
         MockAction child = MockAction.obtain()
                 .setName(tag)
                 .setLogLevel(ActionLogger.LogLevel.DEBUG)
@@ -60,7 +60,7 @@ public class ActionWatcherTest {
 
         actionManager.addAction(parent);
 
-        //Get action from watcher
+        // Get action from watcher
         Action<?> action = watcher.get(tag);
 
         assertFalse(action == null);
@@ -70,9 +70,7 @@ public class ActionWatcherTest {
         assertFalse(watcher.contains(tag));
     }
 
-    /**
-     * Creates a test action, starts the action then removes the action from the watcher while the action is running.
-     */
+    /** Creates a test action, starts the action then removes the action from the watcher while the action is running. */
     @Test
     public void explicitRemoveTest() {
         TestUtils.printTestHeader(testName.getMethodName());
@@ -106,7 +104,7 @@ public class ActionWatcherTest {
         for (int i = 0; i < amount; i++) {
             MockAction a = MockAction.obtain()
                     .setName(Integer.toString(i))
-//                    .setLogLevel(ActionLogger.DEBUG)
+                    // .setLogLevel(ActionLogger.DEBUG)
                     .watchAction(watcher);
             actionManager.addAction(a);
         }

@@ -17,11 +17,9 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Action that holds multiple actions.
- * @author John Barton
- */
+/** Action that holds multiple actions.
+ * @author John Barton */
 @Deprecated
 public interface MultiParentAction {
-	public Array<Action<?>> getActions();
+    public Array<Action<?>> getActions();
 }

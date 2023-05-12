@@ -15,41 +15,36 @@
  */
 package com.vabrant.actionsystem.test.tests;
 
-import org.junit.Test;
-
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.CountDownAction;
 import com.vabrant.actionsystem.actions.CountDownAction.CountDownActionListener;
+import org.junit.Test;
 
-/**
- * @author John Barton
- *
- */
+/** @author John Barton */
 public class CountDownActionTest {
-	
-	@Test
-	public void basicTest() {
-		ActionManager manager = new ActionManager();
-		
-		CountDownAction action = CountDownAction.countDown(5);
-		action.addCountDownActionListener(new CountDownActionListener() {
-			@Override
-			public void currentCount(int count) {
-				System.out.println(count);
-			}
-		});
-		
-		manager.addAction(action);
 
-		long currentTime = System.currentTimeMillis();
-		long oldTime = currentTime;
-		
-		while(action.isRunning()) {
-			oldTime =  currentTime;
-			currentTime = System.currentTimeMillis();
-			float delta = (currentTime - oldTime) / 1000.0f;
-			manager.update(delta);
-		}
-	}
+    @Test
+    public void basicTest() {
+        ActionManager manager = new ActionManager();
 
+        CountDownAction action = CountDownAction.countDown(5);
+        action.addCountDownActionListener(new CountDownActionListener() {
+            @Override
+            public void currentCount(int count) {
+                System.out.println(count);
+            }
+        });
+
+        manager.addAction(action);
+
+        long currentTime = System.currentTimeMillis();
+        long oldTime = currentTime;
+
+        while (action.isRunning()) {
+            oldTime = currentTime;
+            currentTime = System.currentTimeMillis();
+            float delta = (currentTime - oldTime) / 1000.0f;
+            manager.update(delta);
+        }
+    }
 }
