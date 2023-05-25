@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.reflect.Annotation;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.vabrant.actionsystem.platformtests.tests.PlatformTests;
 
@@ -33,6 +35,8 @@ public class Lwjgl3TestStarter {
         public void create() {
             System.out.println("OpenGL renderer: " + Gdx.graphics.getGLVersion().getRendererString());
             System.out.println("OpenGL vendor: " + Gdx.graphics.getGLVersion().getVendorString());
+
+            PlatformTests.addTest(MoveActionTester.class);
 
             stage = new Stage(new ScreenViewport());
             Gdx.input.setInputProcessor(stage);
@@ -62,7 +66,25 @@ public class Lwjgl3TestStarter {
                         ApplicationListener test = PlatformTests.newTest(testName);
                         Lwjgl3WindowConfiguration winConfig = new Lwjgl3WindowConfiguration();
                         winConfig.setTitle(testName);
-                        winConfig.setWindowedMode(640, 480);
+
+                        Annotation windowSizeAnnotation =
+                                ClassReflection.getAnnotation(test.getClass(), WindowSize.class);
+
+                        if (windowSizeAnnotation == null) {
+                            windowSizeAnnotation = ClassReflection.getAnnotation(
+                                    test.getClass().getSuperclass(), WindowSize.class);
+
+                            if (windowSizeAnnotation == null) {
+                                winConfig.setWindowedMode(640, 480);
+                            } else {
+                                WindowSize ws = windowSizeAnnotation.getAnnotation(WindowSize.class);
+                                winConfig.setWindowedMode(ws.width(), ws.height());
+                            }
+                        } else {
+                            WindowSize ws = windowSizeAnnotation.getAnnotation(WindowSize.class);
+                            winConfig.setWindowedMode(ws.width(), ws.height());
+                        }
+
                         winConfig.setWindowPosition(
                                 ((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionX() + 40,
                                 ((Lwjgl3Graphics) Gdx.graphics).getWindow().getPositionY() + 40);

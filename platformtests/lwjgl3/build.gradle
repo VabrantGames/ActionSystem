@@ -8,15 +8,26 @@ sourceCompatibility = 1.8
 
 mainClassName = "com.vabrant.actionsystem.platformtests.lwjgl3.Lwjgl3TestStarter"
 
+repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url 'https://s01.oss.sonatype.org' }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
+    }
+
 dependencies {
-	implementation project(":platformtests")
-	implementation libs.gdx.lwjgl3
-	implementation(libs.gdx.platform) {
-		artifact {
-			classifier = "natives-desktop"
-		}
-	}
+    api libs.jdxgdxds
+    implementation project(":platformtests")
+    implementation libs.gdx.lwjgl3
+    implementation(libs.gdx.platform) {
+       artifact {
+           classifier = "natives-desktop"
+       }
+    }
 }
+
 
 run {
 	workingDir = project.file('../assets')

@@ -8,6 +8,9 @@ import com.vabrant.actionsystem.actions.*;
 
 public class Actionable implements Movable, Scalable, Colorable, Rotatable, Shakable, Zoomable {
 
+    private float width;
+    private float height;
+
     private float moveX;
     private float moveY;
     private float scaleX = 1;
@@ -20,14 +23,15 @@ public class Actionable implements Movable, Scalable, Colorable, Rotatable, Shak
     private Color color;
     private TextureRegion region;
 
-    //    public Actionable(Texture tex) {
-    //       this(new TextureRegion(tex)) ;
-    //    }
-
     public Actionable(Texture tex) {
-        //        this.region = region;
+        this(tex, 100, 100, new Color(0xFFFFFFFF));
+    }
+
+    public Actionable(Texture tex, float width, float height, Color color) {
+        this.width = width;
+        this.height = height;
         region = new TextureRegion(tex);
-        color = new Color(0xFFFFFFFF);
+        this.color = new Color(color);
     }
 
     public Texture getTexture() {
@@ -42,13 +46,29 @@ public class Actionable implements Movable, Scalable, Colorable, Rotatable, Shak
                 moveY + shakeY,
                 50,
                 50,
-                100,
-                100,
+                width,
+                height,
                 scaleX * zoom,
                 scaleY * zoom,
                 rotation + shakeAngle,
                 false);
         batch.setColor(Color.WHITE);
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public float getHeight() {
+        return height;
     }
 
     @Override
