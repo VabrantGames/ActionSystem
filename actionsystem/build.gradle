@@ -24,9 +24,11 @@ if (JavaVersion.current().isJava8Compatible()) {
 dependencies {
 	api libs.gdx
 	implementation libs.makeSomeNoise
-	testImplementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
-	testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-	testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-	testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+	testImplementation libs.gdx.headless
+	testImplementation(libs.gdx.platform) {
+		artifact {
+			classifier = "natives-desktop"
+		}
+	}
 	testImplementation libs.junit
 }

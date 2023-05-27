@@ -31,7 +31,6 @@ import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.Event;
 import com.vabrant.actionsystem.events.EventListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
-import com.vabrant.actionsystem.test.tests.ActionSystemTestListener;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
@@ -40,7 +39,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /** @author John Barton */
-public class ActionPoolsTest extends ActionSystemTestListener {
+public class ActionPoolsTest {
 
     private static Application application;
 

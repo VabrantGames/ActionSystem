@@ -34,6 +34,7 @@ gdx = { module = "com.badlogicgames.gdx:gdx", version.ref = "gdxVersion" }
 gdx-android = { module = "com.badlogicgames.gdx:gdx-backend-android", version.ref = "gdxVersion" }
 gdx-lwjgl3 = { module = "com.badlogicgames.gdx:gdx-backend-lwjgl3", version.ref = "gdxVersion" }
 gdx-platform = { module = "com.badlogicgames.gdx:gdx-platform", version.ref = "gdxVersion" }
+gdx-headless = { module = "com.badlogicgames.gdx:gdx-backend-headless", version.ref = "gdxVersion"}
 junit = { module = "junit:junit", version.ref = "junitVersion" }
 makeSomeNoise = { module = "com.github.tommyettinger:make_some_noise", version.ref = "makeSomeNoiseVersion" }
 robovm-backend = { module = "com.badlogicgames.gdx:gdx-backend-robovm", version.ref = "gdxVersion" }
