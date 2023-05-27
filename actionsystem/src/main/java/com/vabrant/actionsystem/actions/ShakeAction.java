@@ -17,6 +17,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Pool.Poolable;
 import make.some.noise.Noise;
 
 public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
@@ -25,39 +26,26 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         return obtain(ShakeAction.class);
     }
 
-    public static <T extends ShakeLogicData> ShakeAction shakeX(
-            Shakable shakable, ShakeLogic<T> logic, T data, float amount, float duration, Interpolation interpolation) {
-        return obtain().shakeX(amount)
-                .set(shakable, duration, interpolation)
-                .setLogic(logic)
-                .setLogicData(data);
+    public static ShakeAction shakeX(
+            Shakable shakable, ShakeLogic<?> logic, float amount, float duration, Interpolation interpolation) {
+        return obtain().shakeX(amount).set(shakable, duration, interpolation).setLogic(logic);
     }
 
-    public static <T extends ShakeLogicData> ShakeAction shakeY(
-            Shakable shakable, ShakeLogic<T> logic, T data, float amount, float duration, Interpolation interpolation) {
-        return obtain().shakeY(amount)
-                .set(shakable, duration, interpolation)
-                .setLogic(logic)
-                .setLogicData(data);
+    public static ShakeAction shakeY(
+            Shakable shakable, ShakeLogic<?> logic, float amount, float duration, Interpolation interpolation) {
+        return obtain().shakeY(amount).set(shakable, duration, interpolation).setLogic(logic);
     }
 
-    public static <T extends ShakeLogicData> ShakeAction shakeAngle(
-            Shakable shakable,
-            ShakeLogic<T> logic,
-            T data,
-            float maxAngle,
-            float duration,
-            Interpolation interpolation) {
+    public static ShakeAction shakeAngle(
+            Shakable shakable, ShakeLogic<?> logic, float maxAngle, float duration, Interpolation interpolation) {
         return obtain().shakeAngle(maxAngle)
                 .set(shakable, duration, interpolation)
-                .setLogic(logic)
-                .setLogicData(data);
+                .setLogic(logic);
     }
 
-    public static <T extends ShakeLogicData> ShakeAction shake(
+    public static ShakeAction shake(
             Shakable shakable,
-            ShakeLogic<T> logic,
-            T data,
+            ShakeLogic<?> logic,
             float xAmount,
             float yAmount,
             float angleAmount,
@@ -65,12 +53,11 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
             Interpolation interpolation) {
         return obtain().shake(xAmount, yAmount, angleAmount)
                 .set(shakable, duration, interpolation)
-                .setLogic(logic)
-                .setLogicData(data);
+                .setLogic(logic);
     }
 
-    public static RandomShakeLogic RANDOM_SHAKE_LOGIC = new RandomShakeLogic();
-    public static CosSinShakeLogic COS_SIN_SHAKE_LOGIC =
+    public static final RandomShakeLogic RANDOM_SHAKE_LOGIC = new RandomShakeLogic();
+    public static final CosSinShakeLogic COS_SIN_SHAKE_LOGIC =
             new CosSinShakeLogic(15 * MathUtils.PI, 11 * MathUtils.PI, 6 * MathUtils.PI);
 
     private boolean usePercent;
@@ -130,17 +117,12 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         return angleAmount;
     }
 
-    public ShakeAction setLogic(ShakeLogic logic) {
+    public ShakeAction setLogic(ShakeLogic<?> logic) {
         if (logic == null) {
             this.logic = RANDOM_SHAKE_LOGIC;
         } else {
             this.logic = logic;
         }
-        return this;
-    }
-
-    private ShakeAction setLogicData(ShakeLogicData data) {
-        this.data = data;
         return this;
     }
 
@@ -177,15 +159,14 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
     protected void percent(float percent) {
         if (!usePercent) percent = 1;
         logic.percent(data);
-        if (shakeX) percentable.setShakeX(logic.getX());
-        if (shakeY) percentable.setShakeY(logic.getY());
-        if (shakeAngle) percentable.setShakeAngle(logic.getAngle());
+        if (shakeX) percentable.setShakeX(logic.getX(data));
+        if (shakeY) percentable.setShakeY(logic.getY(data));
+        if (shakeAngle) percentable.setShakeAngle(logic.getAngle(data));
     }
 
     @Override
     protected void startLogic() {
         if (logic == null) throw new RuntimeException("Logic has to be set before action is ran.");
-        data.setAction(this);
         super.startLogic();
         data.onActionStart();
     }
@@ -209,6 +190,10 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 
     @Override
     public ShakeAction setup() {
+        if (!setup) return this;
+        data = logic.getData();
+        data.setAction(this);
+        super.setup();
         return this;
     }
 
@@ -227,23 +212,25 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
     @Override
     public void reset() {
         super.reset();
-        data.setAction(null);
         data.onActionEnd();
+        ActionPools.free(data);
         logic = null;
         data = null;
     }
 
     public interface ShakeLogic<T extends ShakeLogicData> {
-        float getX();
+        float getX(T data);
 
-        float getY();
+        float getY(T data);
 
-        float getAngle();
+        float getAngle(T data);
 
         void percent(T data);
+
+        T getData();
     }
 
-    public abstract static class ShakeLogicData {
+    public abstract static class ShakeLogicData implements Poolable {
 
         private ShakeAction action;
 
@@ -253,6 +240,11 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 
         public ShakeAction getAction() {
             return action;
+        }
+
+        @Override
+        public void reset() {
+            action = null;
         }
 
         protected abstract void onActionStart();
@@ -272,33 +264,35 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
     public static class RandomShakeLogic implements ShakeLogic<DefaultShakeLogicData> {
 
         private float percent;
-        private ShakeLogicData data;
 
         @Override
-        public float getX() {
+        public float getX(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.random(-action.xAmount, action.xAmount) * percent;
         }
 
         @Override
-        public float getY() {
+        public float getY(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.random(-action.yAmount, action.yAmount) * percent;
         }
 
         @Override
-        public float getAngle() {
+        public float getAngle(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.random(-action.angleAmount, action.angleAmount) * percent;
         }
 
         @Override
         public void percent(DefaultShakeLogicData data) {
-            this.data = data;
-
             ShakeAction action = data.getAction();
             percent = action.getPercent();
             percent = action.usePercent() ? (1 - percent) : percent;
+        }
+
+        @Override
+        public DefaultShakeLogicData getData() {
+            return ActionPools.obtain(DefaultShakeLogicData.class);
         }
     }
 
@@ -308,7 +302,6 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         private float yFrequency;
         private float angleFrequency;
         private float percent;
-        private ShakeLogicData data;
 
         public CosSinShakeLogic(float xFrequency, float yFrequency, float angleFrequency) {
             set(xFrequency, yFrequency, angleFrequency);
@@ -321,29 +314,33 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         }
 
         @Override
-        public float getX() {
+        public float getX(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.cos(action.getCurrentTime() * xFrequency) * action.xAmount * percent;
         }
 
         @Override
-        public float getY() {
+        public float getY(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.sin(action.getCurrentTime() * yFrequency) * action.yAmount * percent;
         }
 
         @Override
-        public float getAngle() {
+        public float getAngle(DefaultShakeLogicData data) {
             ShakeAction action = data.getAction();
             return MathUtils.sin(action.getCurrentTime() * angleFrequency) * action.angleAmount * percent;
         }
 
         @Override
         public void percent(DefaultShakeLogicData data) {
-            this.data = data;
             ShakeAction action = data.getAction();
             float percent = action.getPercent();
             this.percent = action.usePercent() ? (1 - percent) : percent;
+        }
+
+        @Override
+        public DefaultShakeLogicData getData() {
+            return ActionPools.obtain(DefaultShakeLogicData.class);
         }
     }
 
@@ -353,7 +350,6 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         private float traumaPower = 2;
         private float shakeAmount;
         private final Noise noise;
-        private GDQShakeLogicData data;
 
         public GDQShakeLogic(float trauma) {
             this(MathUtils.random(0, Integer.MAX_VALUE - 1), trauma, 2);
@@ -378,21 +374,21 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
         }
 
         @Override
-        public float getX() {
+        public float getX(GDQShakeLogicData data) {
             return data.getAction().getXValue()
                     * shakeAmount
                     * noise.getConfiguredNoise(noise.getSeed() * 2, data.noiseY);
         }
 
         @Override
-        public float getY() {
+        public float getY(GDQShakeLogicData data) {
             return data.getAction().getYValue()
                     * shakeAmount
                     * noise.getConfiguredNoise(noise.getSeed() * 3, data.noiseY);
         }
 
         @Override
-        public float getAngle() {
+        public float getAngle(GDQShakeLogicData data) {
             return data.getAction().getAngleValue()
                     * shakeAmount
                     * noise.getConfiguredNoise(noise.getSeed(), data.noiseY);
@@ -400,11 +396,15 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 
         @Override
         public void percent(GDQShakeLogicData data) {
-            this.data = data;
             data.noiseY += 1;
             ShakeAction action = data.getAction();
-            float trauma = action.usePercent() ? this.trauma * (1 - action.getPercent()) : this.trauma;
-            shakeAmount = (float) Math.pow(trauma, traumaPower);
+            float localTrauma = action.usePercent() ? trauma * (1 - action.getPercent()) : trauma;
+            shakeAmount = (float) Math.pow(localTrauma, traumaPower);
+        }
+
+        @Override
+        public GDQShakeLogicData getData() {
+            return ActionPools.obtain(GDQShakeLogicData.class);
         }
 
         public static class GDQShakeLogicData extends ShakeLogicData {

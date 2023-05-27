@@ -6,10 +6,8 @@ import java.util.*;
 
 public class PlatformTests {
 
-    public static final List<Class<? extends PlatformTest>> tests = Arrays.asList(
-            RotateTest.class, MoveTest.class, ScaleTest.class, ColorTest.class, ZoomTest.class
-            //            ShakeTest.class
-            );
+    public static final List<Class<? extends PlatformTest>> tests = new ArrayList<>(Arrays.asList(
+            RotateTest.class, MoveTest.class, ScaleTest.class, ColorTest.class, ZoomTest.class, ShakeTest.class));
 
     public static final ObjectMap<String, Class> mappedTests;
 
@@ -18,6 +16,11 @@ public class PlatformTests {
         for (Class c : tests) {
             mappedTests.put(c.getSimpleName(), c);
         }
+    }
+
+    public static void addTest(Class<? extends PlatformTest> c) {
+        tests.add(c);
+        mappedTests.put(c.getSimpleName(), c);
     }
 
     public static List<String> getNames() {
