@@ -1,7 +1,7 @@
 buildscript {
-    dependencies {
-        classpath libs.robovm.gradlePlugin
-    }
+	dependencies {
+		classpath libs.robovm.gradlePlugin
+	}
 }
 
 apply plugin: 'java-library'
@@ -12,7 +12,7 @@ sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-    mainClassName = "com.vabrant.actionsystem.test.ios.IOSLauncher"
+	mainClassName = "com.vabrant.actionsystem.test.ios.IOSLauncher"
 }
 
 launchIPhoneSimulator.dependsOn build
@@ -21,16 +21,16 @@ launchIOSDevice.dependsOn build
 createIPA.dependsOn build
 
 eclipse.project {
-    name = "platformtests-ios"
-    natures 'org.robovm.eclipse.RoboVMNature'
+	name = "platformtests-ios"
+	natures 'org.robovm.eclipse.RoboVMNature'
 }
 
 dependencies {
-    implementation libs.bundles.robovm
-    implementation(libs.gdx.platform) {
-        artifact {
-            classifier = "natives-ios"
-        }
-    }
-    implementation project(':platformtests')
+	implementation libs.bundles.robovm
+	implementation(libs.gdx.platform) {
+		artifact {
+			classifier = "natives-ios"
+		}
+	}
+	implementation project(':platformtests')
 }

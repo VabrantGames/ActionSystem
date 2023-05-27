@@ -1,148 +1,129 @@
-import java.awt.Desktop
 import org.gradle.internal.os.OperatingSystem
 
 buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-        gradlePluginPortal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		google()
+		gradlePluginPortal()
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url 'https://s01.oss.sonatype.org' }
+		maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+	}
 
-    dependencies {
-    }
+	dependencies {
+	}
 }
 
 plugins {
-    alias(libs.plugins.gradleVersionUpdate)
-    alias(libs.plugins.versionCatalogUpdate)
-    alias(libs.plugins.spotless)
+	alias(libs.plugins.gradleVersionUpdate)
+	alias(libs.plugins.versionCatalogUpdate)
+	alias(libs.plugins.spotless)
 }
 
 versionCatalogUpdate {
-    catalogFile = file("libs.versions.toml")
+	catalogFile = file("libs.versions.toml")
 
-    keep {
-        keepUnusedVersions = true
-        keepUnusedLibraries = true
-        keepUnusedPlugins = true
-    }
+	keep {
+		keepUnusedVersions = true
+		keepUnusedLibraries = true
+		keepUnusedPlugins = true
+	}
 }
+
+ext {
+	isRelease = {
+		return project.hasProperty("RELEASE")
+	}
+
+	getSnapshotRepositoryURL = {
+		return "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+	}
+
+	getReleaseRepositoryURL = {
+		return "https://s01.oss.sonatype.org/service/local/"
+	}
+}
+
 
 allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
-}
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	apply plugin: "com.diffplug.spotless"
 
-subprojects {
-    group = "com.vabrantgames.actionsystem"
+	group = "com.vabrantgames.actionsystem"
 
-    buildscript {
-        repositories {
-            google()
-            mavenLocal()
-            mavenCentral()
-            gradlePluginPortal()
-            maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-            maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        }
-    }
+	buildscript {
+		repositories {
+			google()
+			mavenLocal()
+			mavenCentral()
+			gradlePluginPortal()
+			maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+			maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+			maven { url 'https://s01.oss.sonatype.org' }
+			maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+			maven { url 'https://jitpack.io' }
+		}
+	}
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
-        maven { url "https://jitpack.io" }
-    }
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+		maven { url 'https://s01.oss.sonatype.org' }
+		maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+		maven { url "https://jitpack.io" }
+	}
 
-    apply plugin: 'com.diffplug.spotless'
+	spotless {
+		enforceCheck = true
 
-    afterEvaluate {
-        spotless {
-            enforceCheck = false
+		java {
+			target '**/*.java'
+			removeUnusedImports()
+			palantirJavaFormat()
+		}
 
-            java {
-                removeUnusedImports()
-                palantirJavaFormat()
-            }
-        }
-    }
-}
-
-
-
-configure(project(":actionsystem")) {
-    apply plugin: 'maven-publish'
-
-    afterEvaluate {
-        java {
-            withSourcesJar()
-            withJavadocJar()
-        }
-
-        publishing {
-            publications {
-                mavenJava(MavenPublication) {
-                    from components.java
-
-                    pom {
-                        name = POM_NAME
-                        description = 'An inheritance based action system for libGDX.'
-                        url = 'https://github.com/VabrantGames/ActionSystem'
-
-                        licenses {
-                            license {
-                                name = "Apache license 2.0"
-                                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                            }
-                        }
-                        developers {
-                            developer {
-                                id = "VabrantGames"
-                                name = "John Barton"
-                            }
-                        }
-                        scm {
-                            connection = 'scm:git@github.com:VabrantGames/ActionSystem.git'
-                            developerConnection = 'scm:git@github.com:VabrantGames/ActionSystem.git'
-                            url = 'https://github.com/VabrantGames/ActionSystem'
-                        }
-                    }
-                }
-            }
-        }
-    }
+		groovyGradle {
+			target '*.gradle'
+			greclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
+		}
+	}
 }
 
 task("openCatalog", type: Exec) {
-    File f = file('build/dependencyUpdates/report.txt')
+	File f = file('build/dependencyUpdates/report.txt')
 
-    doFirst {
-        if (!f.isFile()) {
-            commandLine 'echo', "No report file found. Run task 'versionCatalogUpdate'"
-            return
-        }
-    }
+	doFirst {
+		if (!f.isFile()) {
+			commandLine 'echo', "No report file found. Run task 'versionCatalogUpdate'"
+			return
+		}
+	}
 
-    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
-        commandLine 'open'
-        args (['-a', 'TextEdit', f.absolutePath])
-    } else {
-        commandLine 'echo', "[OpenCatalog task] Windows not tested"
-    }
+	if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+		commandLine 'open'
+		args([
+			'-a',
+			'TextEdit',
+			f.absolutePath
+		])
+	} else {
+		commandLine 'echo', "[OpenCatalog task] Windows not tested"
+	}
 }
 
 openCatalog.configure { dependsOn('versionCatalogUpdate') }
 
 configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
 tasks.eclipse.doLast {
-    delete ".project"
-    delete ".classpath"
-    delete ".settings/"
+	delete ".project"
+	delete ".classpath"
+	delete ".settings/"
 }

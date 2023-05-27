@@ -1,5 +1,5 @@
 [versions]
-actionSystemVersion = "0.5.1"
+actionSystemVersion = "0.5.2"
 # @pin
 androidDesugarVersion = "1.1.5"
 # @pin
@@ -23,6 +23,7 @@ spotlessVersion = "6.18.0"
 # @pin
 targetSdk = "29"
 versionCatalogUpdateVersion = "0.8.0"
+nexusPublish = "1.3.0"
 
 [libraries]
 android-desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "androidDesugarVersion" }
@@ -53,3 +54,6 @@ robovm = [
 gradleVersionUpdate = { id = "com.github.ben-manes.versions", version.ref = "gradleVersionUpdateVersion" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "versionCatalogUpdateVersion" }
+nexusPublish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish"}
+mavenPublish = {id = "com.vanniktech.maven.publish.base",  version = "0.25.2"}
+

@@ -9,20 +9,20 @@ sourceCompatibility = 1.8
 mainClassName = "com.vabrant.actionsystem.platformtests.lwjgl3.Lwjgl3TestStarter"
 
 dependencies {
-    implementation project(":platformtests")
-    implementation libs.gdx.lwjgl3
-    implementation(libs.gdx.platform) {
-       artifact {
-           classifier = "natives-desktop"
-       }
-    }
+	implementation project(":platformtests")
+	implementation libs.gdx.lwjgl3
+	implementation(libs.gdx.platform) {
+		artifact {
+			classifier = "natives-desktop"
+		}
+	}
 }
 
 run {
-    workingDir = project.file('../assets')
-    ignoreExitValue = true
+	workingDir = project.file('../assets')
+	ignoreExitValue = true
 
-    if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
-        jvmArgs += "-XstartOnFirstThread"
-    }
+	if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
+		jvmArgs += "-XstartOnFirstThread"
+	}
 }

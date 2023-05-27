@@ -7,14 +7,14 @@ includeProject("platformtests-android", new File(rootDir, "platformtests/android
 includeProject("platformtests-ios", new File(rootDir, "platformtests/ios"));
 
 void includeProject(String name, File path) {
-    include name
-    project(":${name}").projectDir = path
+	include name
+	project(":${name}").projectDir = path
 }
 
 dependencyResolutionManagement {
-    versionCatalogs {
-        libs {
-            from(files("libs.versions.toml"))
-        }
-    }
+	versionCatalogs {
+		libs {
+			from(files("libs.versions.toml"))
+		}
+	}
 }

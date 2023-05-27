@@ -1,6 +1,11 @@
+apply from: "../gradle/publish.gradle"
+
 apply plugin: "java-library"
 
-ext.POM_NAME = 'ActionSystem'
+ext {
+	POM_NAME = 'ActionSystem'
+	POM_DESCRIPTION = 'An inheritance based action system for libGDX'
+}
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -9,19 +14,19 @@ version = libs.versions.actionSystemVersion.get()
 sourceCompatibility = 1.8
 
 if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
+	allprojects {
+		tasks.withType(Javadoc) {
+			options.addStringOption('Xdoclint:none', '-quiet')
+		}
+	}
 }
 
 dependencies {
-    api libs.gdx
-    implementation libs.makeSomeNoise
-    testImplementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-    testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    testImplementation libs.junit
+	api libs.gdx
+	implementation libs.makeSomeNoise
+	testImplementation "space.earlygrey:shapedrawer:$shapeDrawerVersion"
+	testImplementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+	testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+	testImplementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+	testImplementation libs.junit
 }
