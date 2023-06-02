@@ -19,8 +19,6 @@ package com.vabrant.actionsystem.test.unittests;
 import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionPools;
-import com.vabrant.actionsystem.actions.MultiParentAction;
-import com.vabrant.actionsystem.actions.SingleParentAction;
 
 /** @author John Barton */
 public class MockActions {
@@ -51,7 +49,7 @@ public class MockActions {
 		}
 	}
 
-	public static class MockSingleParentAction extends Action<MockSingleParentAction> implements SingleParentAction {
+	public static class MockSingleParentAction extends Action<MockSingleParentAction> {
 
 		public static MockSingleParentAction obtain () {
 			return obtain(MockSingleParentAction.class);
@@ -70,7 +68,6 @@ public class MockActions {
 			if (action != null) action.setRootAction(root);
 		}
 
-		@Override
 		public Action<?> getAction () {
 			return action;
 		}
@@ -119,7 +116,7 @@ public class MockActions {
 		}
 	}
 
-	public static class MockMultiParentAction extends Action<MockMultiParentAction> implements MultiParentAction {
+	public static class MockMultiParentAction extends Action<MockMultiParentAction> {
 
 		public static MockMultiParentAction obtain () {
 			return obtain(MockMultiParentAction.class);
@@ -140,7 +137,6 @@ public class MockActions {
 			}
 		}
 
-		@Override
 		public Array<Action<?>> getActions () {
 			return actions;
 		}

@@ -18,7 +18,7 @@ package com.vabrant.actionsystem.actions;
 
 /** Repeats an {@link Action} a specified number of times or indefinitely.
  * @author John Barton */
-public class RepeatAction extends Action<RepeatAction> implements SingleParentAction {
+public class RepeatAction extends Action<RepeatAction> {
 
 	public static RepeatAction obtain () {
 		return obtain(RepeatAction.class);

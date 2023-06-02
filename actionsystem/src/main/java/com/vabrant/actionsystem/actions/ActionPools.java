@@ -145,38 +145,6 @@ public class ActionPools {
 		}
 	}
 
-	@Deprecated
-	private static void freeChildActions (Action<?> action) {
-		if (action instanceof SingleParentAction) {
-			freeSingleParentAction(action);
-		} else if (action instanceof MultiParentAction) {
-			freeMultiParentAction(action);
-		}
-	}
-
-	/** Frees a child action of a {@link SingleParentAction}. Also frees any children it may have.
-	 * @param action Parent action. */
-	@Deprecated
-	private static void freeSingleParentAction (Action<?> action) {
-		Action<?> child = ((SingleParentAction)action).getAction();
-		if (child == null) return;
-		freeChildActions(child);
-		freeAction(child);
-	}
-
-	/** Frees multiple child actions of a {@link MultiParentAction}. Also frees any children it may have.
-	 * @param action */
-	@Deprecated
-	private static void freeMultiParentAction (Action<?> action) {
-		Array<Action<?>> children = ((MultiParentAction)action).getActions();
-		for (int i = children.size - 1; i >= 0; i--) {
-			Action<?> child = children.pop();
-			if (child == null) continue;
-			freeChildActions(child);
-			freeAction(child);
-		}
-	}
-
 	/** Frees an action. */
 	@Deprecated
 	private static <T extends Action<?>> void freeAction (T action) {

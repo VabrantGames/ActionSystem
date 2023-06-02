@@ -20,7 +20,7 @@ import com.badlogic.gdx.utils.Array;
 
 /** Runs a group of {@link Action}'s as a {@link #sequence() sequence} or in {@link #parallel() parallel}.
  * @author John Barton */
-public class GroupAction extends Action<GroupAction> implements MultiParentAction, Reversible<GroupAction> {
+public class GroupAction extends Action<GroupAction> implements Reversible<GroupAction> {
 
 	public static GroupAction obtain () {
 		return obtain(GroupAction.class);
@@ -82,7 +82,6 @@ public class GroupAction extends Action<GroupAction> implements MultiParentActio
 		return this;
 	}
 
-	@Override
 	public Array<Action<?>> getActions () {
 		return actions;
 	}
