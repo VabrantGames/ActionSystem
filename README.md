@@ -5,6 +5,8 @@ An inheritance based action system for [libGDX](https://libgdx.com/).
 ---
 
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.vabrantgames.actionsystem/actionsystem?label=snapshot&server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/#nexus-search;gav~com.vabrantgames.actionsystem~actionsystem~~~)
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.vabrantgames.actionsystem/actionsystem?nexusVersion=2&server=https%3A%2F%2Fs01.oss.sonatype.org&label=version)](https://central.sonatype.com/artifact/com.vabrantgames.actionsystem/actionsystem/0.6.0)
+
 
 
 
