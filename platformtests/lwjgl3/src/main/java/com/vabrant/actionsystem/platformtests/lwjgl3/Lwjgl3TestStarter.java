@@ -16,8 +16,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.vabrant.actionsystem.platformtests.tests.PlatformTest;
 import com.vabrant.actionsystem.platformtests.tests.PlatformTests;
+
+import java.io.File;
 
 public class Lwjgl3TestStarter {
 
@@ -34,6 +38,26 @@ public class Lwjgl3TestStarter {
 		public void create () {
 			System.out.println("OpenGL renderer: " + Gdx.graphics.getGLVersion().getRendererString());
 			System.out.println("OpenGL vendor: " + Gdx.graphics.getGLVersion().getVendorString());
+
+			File tempDir = new File(
+				System.getProperty("user.dir") + "/../lwjgl3/src/main/java/com/vabrant/actionsystem/platformtests/lwjgl3/temp");
+			File[] files = tempDir.listFiles();
+
+			if (files != null) {
+				for (File f : files) {
+					try {
+						Class c = ClassReflection
+							.forName("com.vabrant.actionsystem.platformtests.lwjgl3.temp." + f.getName().replace(".java", ""));
+
+						if (PlatformTest.class.isAssignableFrom(c)) {
+							PlatformTests.addTest(c);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						Gdx.app.exit();
+					}
+				}
+			}
 
 			stage = new Stage(new ScreenViewport());
 			Gdx.input.setInputProcessor(stage);

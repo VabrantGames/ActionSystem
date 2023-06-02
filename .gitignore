@@ -17,7 +17,10 @@ android/gen/
 local.properties
 com_crashlytics_export_strings.xml
 
+## Mine:
 packImages/
+platformtests/lwjgl3/src/main/java/com/vabrant/actionsystem/platformtests/lwjgl3/temp/*
+!platformtests/lwjgl3/src/main/java/com/vabrant/actionsystem/platformtests/lwjgl3/temp/.gitkeep
 
 ## GWT:
 war/
