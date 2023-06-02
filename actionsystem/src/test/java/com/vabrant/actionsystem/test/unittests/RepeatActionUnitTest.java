@@ -1,3 +1,4 @@
+
 package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertEquals;
@@ -15,43 +16,43 @@ import org.junit.Test;
 
 public class RepeatActionUnitTest {
 
-    private static Application application;
+	private static Application application;
 
-    @BeforeClass
-    public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {});
-    }
+	@BeforeClass
+	public static void init () {
+		application = new HeadlessApplication(new ApplicationAdapter() {});
+	}
 
-    @Test
-    public void resetTest() {
-        MockActions.MockAction a = MockActions.MockAction.obtain();
-        RepeatAction repeat = RepeatAction.repeat(a);
-        ActionManager manager = new ActionManager();
+	@Test
+	public void resetTest () {
+		MockActions.MockAction a = MockActions.MockAction.obtain();
+		RepeatAction repeat = RepeatAction.repeat(a);
+		ActionManager manager = new ActionManager();
 
-        // Start action
-        manager.addAction(repeat);
+		// Start action
+		manager.addAction(repeat);
 
-        repeat.end();
+		repeat.end();
 
-        // Remove and pool action
-        manager.update(Float.MAX_VALUE);
+		// Remove and pool action
+		manager.update(Float.MAX_VALUE);
 
-        assertNull(repeat.getAction());
-    }
+		assertNull(repeat.getAction());
+	}
 
-    @Test
-    public void poolTest() {
-        MockActions.MockAction a = MockActions.MockAction.obtain();
-        RepeatAction repeat = RepeatAction.repeat(a);
-        ActionManager manager = new ActionManager();
+	@Test
+	public void poolTest () {
+		MockActions.MockAction a = MockActions.MockAction.obtain();
+		RepeatAction repeat = RepeatAction.repeat(a);
+		ActionManager manager = new ActionManager();
 
-        // Start action
-        manager.addAction(repeat);
-        repeat.end();
+		// Start action
+		manager.addAction(repeat);
+		repeat.end();
 
-        // Remove and pool action
-        manager.update(Float.MAX_VALUE);
+		// Remove and pool action
+		manager.update(Float.MAX_VALUE);
 
-        assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", Action.class, null, a, null));
-    }
+		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", Action.class, null, a, null));
+	}
 }

@@ -3,6 +3,9 @@ Copyright 2011 libgdx
 [authors] https://github.com/libgdx/libgdx/blob/master/AUTHORS
 [contributors] https://github.com/libgdx/libgdx/blob/master/CONTRIBUTORS
 
+#===== eclipse-formatter.xml =====#
+https://github.com/libgdx/libgdx/blob/master/eclipse-formatter.xml
+
 #===== AbstractTestWrapper =====#
 [original] https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/AbstractTestWrapper.java
 

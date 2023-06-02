@@ -1,3 +1,4 @@
+
 package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertFalse;
@@ -21,100 +22,92 @@ import org.junit.rules.TestName;
 
 public class ActionWatcherTest {
 
-    @Rule
-    public TestName testName = new TestName();
+	@Rule public TestName testName = new TestName();
 
-    private static ActionWatcher watcher;
-    private static Application application;
-    private static ActionManager actionManager;
+	private static ActionWatcher watcher;
+	private static Application application;
+	private static ActionManager actionManager;
 
-    @BeforeClass
-    public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {});
-        actionManager = new ActionManager();
-        watcher = new ActionWatcher(10);
-        watcher.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-    }
+	@BeforeClass
+	public static void init () {
+		application = new HeadlessApplication(new ApplicationAdapter() {});
+		actionManager = new ActionManager();
+		watcher = new ActionWatcher(10);
+		watcher.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	}
 
-    @Test
-    public void basicTest() {
-        TestUtils.printTestHeader(testName.getMethodName());
+	@Test
+	public void basicTest () {
+		TestUtils.printTestHeader(testName.getMethodName());
 
-        final String tag = "child";
+		final String tag = "child";
 
-        // Create parent and child actions
-        MockSingleParentAction parent = MockSingleParentAction.obtain();
-        // parent.setLogLevel(ActionLogger.DEBUG);
-        MockAction child = MockAction.obtain()
-                .setName(tag)
-                .setLogLevel(ActionLogger.LogLevel.DEBUG)
-                .watchAction(watcher);
-        child.setCustomUpdateCode(new Runnable() {
-            @Override
-            public void run() {
-                child.end();
-            }
-        });
-        parent.set(child);
+		// Create parent and child actions
+		MockSingleParentAction parent = MockSingleParentAction.obtain();
+		// parent.setLogLevel(ActionLogger.DEBUG);
+		MockAction child = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LogLevel.DEBUG).watchAction(watcher);
+		child.setCustomUpdateCode(new Runnable() {
+			@Override
+			public void run () {
+				child.end();
+			}
+		});
+		parent.set(child);
 
-        actionManager.addAction(parent);
+		actionManager.addAction(parent);
 
-        // Get action from watcher
-        Action<?> action = watcher.get(tag);
+		// Get action from watcher
+		Action<?> action = watcher.get(tag);
 
-        assertFalse(action == null);
+		assertFalse(action == null);
 
-        actionManager.update(Integer.MAX_VALUE);
+		actionManager.update(Integer.MAX_VALUE);
 
-        assertFalse(watcher.contains(tag));
-    }
+		assertFalse(watcher.contains(tag));
+	}
 
-    /** Creates a test action, starts the action then removes the action from the watcher while the action is running. */
-    @Test
-    public void explicitRemoveTest() {
-        TestUtils.printTestHeader(testName.getMethodName());
+	/** Creates a test action, starts the action then removes the action from the watcher while the action is running. */
+	@Test
+	public void explicitRemoveTest () {
+		TestUtils.printTestHeader(testName.getMethodName());
 
-        final String tag = "action";
-        MockAction action = MockAction.obtain()
-                .setName(tag)
-                .setLogLevel(ActionLogger.LogLevel.DEBUG)
-                .watchAction(watcher);
-        action.setCustomUpdateCode(new Runnable() {
-            @Override
-            public void run() {
-                action.end();
-            }
-        });
+		final String tag = "action";
+		MockAction action = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LogLevel.DEBUG).watchAction(watcher);
+		action.setCustomUpdateCode(new Runnable() {
+			@Override
+			public void run () {
+				action.end();
+			}
+		});
 
-        actionManager.addAction(action);
+		actionManager.addAction(action);
 
-        assertTrue(watcher.remove(tag));
+		assertTrue(watcher.remove(tag));
 
-        actionManager.update(Integer.MAX_VALUE);
-    }
+		actionManager.update(Integer.MAX_VALUE);
+	}
 
-    @Test
-    public void compareTest() {
-        TestUtils.printTestHeader(testName.getMethodName());
+	@Test
+	public void compareTest () {
+		TestUtils.printTestHeader(testName.getMethodName());
 
-        actionManager.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
+		actionManager.getLogger().setLevel(ActionLogger.LogLevel.DEBUG);
 
-        final int amount = 10;
-        for (int i = 0; i < amount; i++) {
-            MockAction a = MockAction.obtain()
-                    .setName(Integer.toString(i))
-                    // .setLogLevel(ActionLogger.DEBUG)
-                    .watchAction(watcher);
-            actionManager.addAction(a);
-        }
+		final int amount = 10;
+		for (int i = 0; i < amount; i++) {
+			MockAction a = MockAction.obtain().setName(Integer.toString(i))
+				// .setLogLevel(ActionLogger.DEBUG)
+				.watchAction(watcher);
+			actionManager.addAction(a);
+		}
 
-        for (int i = 0; i < amount; i++) {
-            Action<?> a = watcher.get(Integer.toString(i));
-            assertFalse(a == null);
-            assertTrue(actionManager.getActions().get(i).equals(a));
-        }
+		for (int i = 0; i < amount; i++) {
+			Action<?> a = watcher.get(Integer.toString(i));
+			assertFalse(a == null);
+			assertTrue(actionManager.getActions().get(i).equals(a));
+		}
 
-        actionManager.freeAll();
-    }
+		actionManager.freeAll();
+	}
 }

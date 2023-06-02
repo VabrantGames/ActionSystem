@@ -13,12 +13,13 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.graphics.Color;
 
 public interface Colorable extends Percentable {
-    public void setColor(Color color);
+	public void setColor (Color color);
 
-    public Color getColor();
+	public Color getColor ();
 }

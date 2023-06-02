@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.*;
@@ -41,139 +42,139 @@ import org.junit.Test;
 /** @author John Barton */
 public class ActionPoolsTest {
 
-    private static Application application;
+	private static Application application;
 
-    @BeforeClass
-    public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {});
-        ActionPools.logger.setLevel(ActionLogger.LogLevel.DEBUG);
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-    }
+	@BeforeClass
+	public static void init () {
+		application = new HeadlessApplication(new ApplicationAdapter() {});
+		ActionPools.logger.setLevel(ActionLogger.LogLevel.DEBUG);
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	}
 
-    public boolean hasBeenPooled(Action<?> action) {
-        try {
-            Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
-            m.setAccessible(true);
-            return (boolean) m.invoke(action);
-        } catch (ReflectionException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+	public boolean hasBeenPooled (Action<?> action) {
+		try {
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
+			m.setAccessible(true);
+			return (boolean)m.invoke(action);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 
-        throw new RuntimeException("I did something wrong");
-    }
+		throw new RuntimeException("I did something wrong");
+	}
 
-    public void printTestHeader(String name) {
-        System.out.println();
-        String pattern = "//----------//";
-        System.out.println(pattern + ' ' + name + ' ' + pattern);
-    }
+	public void printTestHeader (String name) {
+		System.out.println();
+		String pattern = "//----------//";
+		System.out.println(pattern + ' ' + name + ' ' + pattern);
+	}
 
-    @Test
-    public void createPoolTest() {
-        Pool<MockAction> pool = ActionPools.create(MockAction.class, 4, 10, false);
-        assertNotNull(pool);
-        assertTrue(ActionPools.exists(MockAction.class));
-    }
+	@Test
+	public void createPoolTest () {
+		Pool<MockAction> pool = ActionPools.create(MockAction.class, 4, 10, false);
+		assertNotNull(pool);
+		assertTrue(ActionPools.exists(MockAction.class));
+	}
 
-    @Test
-    public void getPoolTest() {
-        Pool<?> pool = ActionPools.get(MockAction.class);
-        assertNotNull(pool);
-        assertNotNull(ActionPools.get(MockAction.class));
-    }
+	@Test
+	public void getPoolTest () {
+		Pool<?> pool = ActionPools.get(MockAction.class);
+		assertNotNull(pool);
+		assertNotNull(ActionPools.get(MockAction.class));
+	}
 
-    @Test
-    @Ignore
-    public void freeTest() {
-        // Free Action
-        MockAction action = MockAction.obtain();
-        ActionPools.free(action);
-        assertTrue(hasBeenPooled(action));
+	@Test
+	@Ignore
+	public void freeTest () {
+		// Free Action
+		MockAction action = MockAction.obtain();
+		ActionPools.free(action);
+		assertTrue(hasBeenPooled(action));
 
-        // Free non action
-        ActionPools.create(TestClass.class);
-        TestClass testClass = new TestClass();
-        ActionPools.free(testClass);
-        assertTrue(testClass.pooled);
-    }
+		// Free non action
+		ActionPools.create(TestClass.class);
+		TestClass testClass = new TestClass();
+		ActionPools.free(testClass);
+		assertTrue(testClass.pooled);
+	}
 
-    @Test
-    public void freeAllTest() {
-        Array<MockAction> actions = new Array<>(3);
-        for (int i = 0; i < 3; i++) {
-            actions.add(MockAction.obtain());
-        }
+	@Test
+	public void freeAllTest () {
+		Array<MockAction> actions = new Array<>(3);
+		for (int i = 0; i < 3; i++) {
+			actions.add(MockAction.obtain());
+		}
 
-        ActionPools.freeAll(actions);
-        for (int i = actions.size - 1; i >= 0; i--) {
-            Action a = actions.removeIndex(i);
-            assertTrue(hasBeenPooled(a));
-        }
+		ActionPools.freeAll(actions);
+		for (int i = actions.size - 1; i >= 0; i--) {
+			Action a = actions.removeIndex(i);
+			assertTrue(hasBeenPooled(a));
+		}
 
-        for (int i = 0; i < 3; i++) {
-            actions.add(MockAction.obtain());
-        }
+		for (int i = 0; i < 3; i++) {
+			actions.add(MockAction.obtain());
+		}
 
-        ActionPools.freeAll(actions.items);
-        for (int i = actions.size - 1; i >= 0; i--) {
-            Action a = actions.removeIndex(i);
-            assertTrue(hasBeenPooled(a));
-        }
-    }
+		ActionPools.freeAll(actions.items);
+		for (int i = actions.size - 1; i >= 0; i--) {
+			Action a = actions.removeIndex(i);
+			assertTrue(hasBeenPooled(a));
+		}
+	}
 
-    @Test
-    public void fillTest() {
-        final int fillAmount = 10;
-        int expected = ActionPools.get(MockAction.class).getFree() + fillAmount;
-        ActionPools.fill(MockAction.class, 10);
-        assertEquals(expected, ActionPools.get(MockAction.class).getFree());
-    }
+	@Test
+	public void fillTest () {
+		final int fillAmount = 10;
+		int expected = ActionPools.get(MockAction.class).getFree() + fillAmount;
+		ActionPools.fill(MockAction.class, 10);
+		assertEquals(expected, ActionPools.get(MockAction.class).getFree());
+	}
 
-    @Test
-    public void childFreeTest() {
-        final boolean[] result = new boolean[6];
+	@Test
+	public void childFreeTest () {
+		final boolean[] result = new boolean[6];
 
-        class PooledListener implements EventListener {
+		class PooledListener implements EventListener {
 
-            private int idx;
+			private int idx;
 
-            PooledListener(int idx) {
-                this.idx = idx;
-            }
+			PooledListener (int idx) {
+				this.idx = idx;
+			}
 
-            @Override
-            public void onEvent(Event e) {
-                result[idx] = true;
-            }
-        }
+			@Override
+			public void onEvent (Event e) {
+				result[idx] = true;
+			}
+		}
 
-        int idx = 0;
-        MockMultiParentAction root = MockMultiParentAction.obtain();
-        root.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
+		int idx = 0;
+		MockMultiParentAction root = MockMultiParentAction.obtain();
+		root.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
 
-        MockSingleParentAction child1 = MockSingleParentAction.obtain();
-        child1.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
-        child1.set(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
-        root.add(child1);
+		MockSingleParentAction child1 = MockSingleParentAction.obtain();
+		child1.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
+		child1.set(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
+		root.add(child1);
 
-        MockMultiParentAction child2 = MockMultiParentAction.obtain();
-        child2.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
-        child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
-        child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
-        root.add(child2);
+		MockMultiParentAction child2 = MockMultiParentAction.obtain();
+		child2.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
+		child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
+		child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
+		root.add(child2);
 
-        ActionPools.free(root);
+		ActionPools.free(root);
 
-        assertArrayEquals(new boolean[] {true, true, true, true, true, true}, result);
-    }
+		assertArrayEquals(new boolean[] {true, true, true, true, true, true}, result);
+	}
 
-    private static class TestClass implements Pool.Poolable {
-        boolean pooled;
+	private static class TestClass implements Pool.Poolable {
+		boolean pooled;
 
-        @Override
-        public void reset() {
-            pooled = true;
-        }
-    }
+		@Override
+		public void reset () {
+			pooled = true;
+		}
+	}
 }

@@ -13,10 +13,11 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 public interface Zoomable extends Percentable {
-    public void setZoom(float zoom);
+	public void setZoom (float zoom);
 
-    public float getZoom();
+	public float getZoom ();
 }

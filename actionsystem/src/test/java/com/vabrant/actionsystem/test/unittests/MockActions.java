@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.test.unittests;
 
 import com.badlogic.gdx.utils.Array;
@@ -24,151 +25,152 @@ import com.vabrant.actionsystem.actions.SingleParentAction;
 /** @author John Barton */
 public class MockActions {
 
-    public static class MockAction extends Action<MockAction> {
+	public static class MockAction extends Action<MockAction> {
 
-        private Runnable runnable;
+		private Runnable runnable;
 
-        public static MockAction obtain() {
-            return obtain(MockAction.class);
-        }
+		public static MockAction obtain () {
+			return obtain(MockAction.class);
+		}
 
-        public MockAction setCustomUpdateCode(Runnable runnable) {
-            this.runnable = runnable;
-            return this;
-        }
+		public MockAction setCustomUpdateCode (Runnable runnable) {
+			this.runnable = runnable;
+			return this;
+		}
 
-        @Override
-        public void updateLogic(float delta) {
-            // if(!isRunning()) return false;
-            if (runnable != null) runnable.run();
-        }
+		@Override
+		public void updateLogic (float delta) {
+			// if(!isRunning()) return false;
+			if (runnable != null) runnable.run();
+		}
 
-        @Override
-        public void reset() {
-            super.reset();
-            runnable = null;
-        }
-    }
+		@Override
+		public void reset () {
+			super.reset();
+			runnable = null;
+		}
+	}
 
-    public static class MockSingleParentAction extends Action<MockSingleParentAction> implements SingleParentAction {
+	public static class MockSingleParentAction extends Action<MockSingleParentAction> implements SingleParentAction {
 
-        public static MockSingleParentAction obtain() {
-            return obtain(MockSingleParentAction.class);
-        }
+		public static MockSingleParentAction obtain () {
+			return obtain(MockSingleParentAction.class);
+		}
 
-        private Action<?> action;
+		private Action<?> action;
 
-        public MockSingleParentAction set(Action<?> action) {
-            this.action = action;
-            return this;
-        }
+		public MockSingleParentAction set (Action<?> action) {
+			this.action = action;
+			return this;
+		}
 
-        @Override
-        public void setRootAction(Action<?> root) {
-            super.setRootAction(root);
-            if (action != null) action.setRootAction(root);
-        }
+		@Override
+		public void setRootAction (Action<?> root) {
+			super.setRootAction(root);
+			if (action != null) action.setRootAction(root);
+		}
 
-        @Override
-        public Action<?> getAction() {
-            return action;
-        }
+		@Override
+		public Action<?> getAction () {
+			return action;
+		}
 
-        @Override
-        protected void startLogic() {
-            super.startLogic();
-            if (action != null) action.start();
-        }
+		@Override
+		protected void startLogic () {
+			super.startLogic();
+			if (action != null) action.start();
+		}
 
-        @Override
-        protected void restartLogic() {
-            super.restartLogic();
-            if (action != null) action.restart0();
-        }
+		@Override
+		protected void restartLogic () {
+			super.restartLogic();
+			if (action != null) action.restart0();
+		}
 
-        @Override
-        protected void killLogic() {
-            super.killLogic();
-            if (action != null) action.kill();
-        }
+		@Override
+		protected void killLogic () {
+			super.killLogic();
+			if (action != null) action.kill();
+		}
 
-        @Override
-        protected void endLogic() {
-            super.endLogic();
-            if (action != null) action.end();
-        }
+		@Override
+		protected void endLogic () {
+			super.endLogic();
+			if (action != null) action.end();
+		}
 
-        @Override
-        public void reset() {
-            super.reset();
-            if (action != null) {
-                ActionPools.free(action);
-            }
-            action = null;
-        }
+		@Override
+		public void reset () {
+			super.reset();
+			if (action != null) {
+				ActionPools.free(action);
+			}
+			action = null;
+		}
 
-        @Override
-        public void updateLogic(float delta) {
-            // if(!isRunning()) return false;
-            if (action != null) {
-                if (!action.update(delta)) {
-                    end();
-                }
-            }
-        }
-    }
+		@Override
+		public void updateLogic (float delta) {
+			// if(!isRunning()) return false;
+			if (action != null) {
+				if (!action.update(delta)) {
+					end();
+				}
+			}
+		}
+	}
 
-    public static class MockMultiParentAction extends Action<MockMultiParentAction> implements MultiParentAction {
+	public static class MockMultiParentAction extends Action<MockMultiParentAction> implements MultiParentAction {
 
-        public static MockMultiParentAction obtain() {
-            return obtain(MockMultiParentAction.class);
-        }
+		public static MockMultiParentAction obtain () {
+			return obtain(MockMultiParentAction.class);
+		}
 
-        private Array<Action<?>> actions = new Array<>();
+		private Array<Action<?>> actions = new Array<>();
 
-        public MockMultiParentAction add(Action<?> action) {
-            actions.add(action);
-            return this;
-        }
+		public MockMultiParentAction add (Action<?> action) {
+			actions.add(action);
+			return this;
+		}
 
-        @Override
-        public void setRootAction(Action<?> root) {
-            super.setRootAction(root);
-            for (int i = 0; i < actions.size; i++) {
-                actions.get(i).setRootAction(root);
-            }
-        }
+		@Override
+		public void setRootAction (Action<?> root) {
+			super.setRootAction(root);
+			for (int i = 0; i < actions.size; i++) {
+				actions.get(i).setRootAction(root);
+			}
+		}
 
-        @Override
-        public Array<Action<?>> getActions() {
-            return actions;
-        }
+		@Override
+		public Array<Action<?>> getActions () {
+			return actions;
+		}
 
-        @Override
-        protected void restartLogic() {
-            for (int i = 0; i < actions.size; i++) {
-                // actions.get(i).restart(false);
-                actions.get(i).restart0();
-            }
-        }
+		@Override
+		protected void restartLogic () {
+			for (int i = 0; i < actions.size; i++) {
+				// actions.get(i).restart(false);
+				actions.get(i).restart0();
+			}
+		}
 
-        @Override
-        protected void endLogic() {
-            super.endLogic();
+		@Override
+		protected void endLogic () {
+			super.endLogic();
 
-            for (int i = 0; i < actions.size; i++) {
-                actions.get(i).end();
-            }
-        }
+			for (int i = 0; i < actions.size; i++) {
+				actions.get(i).end();
+			}
+		}
 
-        @Override
-        public void updateLogic(float delta) {}
+		@Override
+		public void updateLogic (float delta) {
+		}
 
-        @Override
-        public void reset() {
-            super.reset();
-            ActionPools.freeAll(actions);
-            actions.clear();
-        }
-    }
+		@Override
+		public void reset () {
+			super.reset();
+			ActionPools.freeAll(actions);
+			actions.clear();
+		}
+	}
 }

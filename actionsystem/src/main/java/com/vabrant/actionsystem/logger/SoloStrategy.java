@@ -1,9 +1,10 @@
+
 package com.vabrant.actionsystem.logger;
 
 public interface SoloStrategy {
-    public void solo(ActionLogger action, boolean solo);
+	public void solo (ActionLogger action, boolean solo);
 
-    public boolean isActive();
+	public boolean isActive ();
 
-    public boolean canPrint(ActionLogger logger);
+	public boolean canPrint (ActionLogger logger);
 }

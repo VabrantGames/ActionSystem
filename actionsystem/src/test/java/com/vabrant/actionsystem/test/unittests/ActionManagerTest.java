@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.assertFalse;
@@ -36,99 +37,97 @@ import org.junit.rules.TestName;
 /** @author John Barton */
 public class ActionManagerTest {
 
-    @Rule
-    public TestName testName = new TestName();
+	@Rule public TestName testName = new TestName();
 
-    private ActionManager actionManager;
-    private static Application application;
+	private ActionManager actionManager;
+	private static Application application;
 
-    @BeforeClass
-    public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {});
-    }
+	@BeforeClass
+	public static void init () {
+		application = new HeadlessApplication(new ApplicationAdapter() {});
+	}
 
-    public boolean hasBeenPooled(Action<?> action) {
-        try {
-            Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
-            m.setAccessible(true);
-            return (boolean) m.invoke(action);
-        } catch (ReflectionException e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+	public boolean hasBeenPooled (Action<?> action) {
+		try {
+			Method m = ClassReflection.getDeclaredMethod(Action.class, "hasBeenPooled");
+			m.setAccessible(true);
+			return (boolean)m.invoke(action);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Test
-    public void basicTest() {
-        TestUtils.printTestHeader(testName.getMethodName());
+	@Test
+	public void basicTest () {
+		TestUtils.printTestHeader(testName.getMethodName());
 
-        ActionManager manager = new ActionManager();
+		ActionManager manager = new ActionManager();
 
-        MockAction a1 = MockAction.obtain();
-        a1.setCustomUpdateCode(new Runnable() {
-            @Override
-            public void run() {
-                a1.end();
-            }
-        });
+		MockAction a1 = MockAction.obtain();
+		a1.setCustomUpdateCode(new Runnable() {
+			@Override
+			public void run () {
+				a1.end();
+			}
+		});
 
-        MockSingleParentAction a2 = MockSingleParentAction.obtain();
-        MockAction a2Child = MockAction.obtain();
-        a2Child.setCustomUpdateCode(new Runnable() {
-            @Override
-            public void run() {
-                a2Child.end();
-            }
-        });
-        a2.set(a2Child);
+		MockSingleParentAction a2 = MockSingleParentAction.obtain();
+		MockAction a2Child = MockAction.obtain();
+		a2Child.setCustomUpdateCode(new Runnable() {
+			@Override
+			public void run () {
+				a2Child.end();
+			}
+		});
+		a2.set(a2Child);
 
-        // Adds the action to the manager
-        // Makes this action the root action
-        // Starts the action
-        manager.addAction(a1);
-        manager.addAction(a2);
+		// Adds the action to the manager
+		// Makes this action the root action
+		// Starts the action
+		manager.addAction(a1);
+		manager.addAction(a2);
 
-        assertTrue(a1.isRunning());
-        assertTrue(a2.isRunning());
-        assertTrue(a2.getAction().isRunning());
+		assertTrue(a1.isRunning());
+		assertTrue(a2.isRunning());
+		assertTrue(a2.getAction().isRunning());
 
-        // End the action by passing in a large amount of time
-        // The TimeAction should end when the timer is greater than the duration
-        // The ActionManager should pool this action when it has been ended
-        manager.update(Float.MAX_VALUE);
+		// End the action by passing in a large amount of time
+		// The TimeAction should end when the timer is greater than the duration
+		// The ActionManager should pool this action when it has been ended
+		manager.update(Float.MAX_VALUE);
 
-        assertFalse(a1.isRunning());
-        assertFalse(a2.isRunning());
-        assertFalse(a2Child.isRunning());
+		assertFalse(a1.isRunning());
+		assertFalse(a2.isRunning());
+		assertFalse(a2Child.isRunning());
 
-        assertTrue(hasBeenPooled(a1));
-        assertTrue(hasBeenPooled(a2));
-        assertTrue(hasBeenPooled(a2Child));
-    }
+		assertTrue(hasBeenPooled(a1));
+		assertTrue(hasBeenPooled(a2));
+		assertTrue(hasBeenPooled(a2Child));
+	}
 
-    @Test
-    public void freeAllTest() {
-        TestUtils.printTestHeader(testName.getMethodName());
+	@Test
+	public void freeAllTest () {
+		TestUtils.printTestHeader(testName.getMethodName());
 
-        final int amount = 10;
+		final int amount = 10;
 
-        Action[] actions = new Action[amount];
-        ActionManager manager = new ActionManager(amount);
-        manager.getLogger().setLevel(ActionLogger.LogLevel.INFO);
+		Action[] actions = new Action[amount];
+		ActionManager manager = new ActionManager(amount);
+		manager.getLogger().setLevel(ActionLogger.LogLevel.INFO);
 
-        // Add actions to manager
-        for (int i = 0; i < amount; i++) {
-            MockAction action =
-                    MockAction.obtain().setName(Integer.toString(i)).setLogLevel(ActionLogger.LogLevel.DEBUG);
-            manager.addAction(action);
-            actions[i] = action;
-        }
+		// Add actions to manager
+		for (int i = 0; i < amount; i++) {
+			MockAction action = MockAction.obtain().setName(Integer.toString(i)).setLogLevel(ActionLogger.LogLevel.DEBUG);
+			manager.addAction(action);
+			actions[i] = action;
+		}
 
-        // Mock cycle update
-        manager.update(Integer.MAX_VALUE);
+		// Mock cycle update
+		manager.update(Integer.MAX_VALUE);
 
-        manager.freeAll(true);
-    }
+		manager.freeAll(true);
+	}
 }

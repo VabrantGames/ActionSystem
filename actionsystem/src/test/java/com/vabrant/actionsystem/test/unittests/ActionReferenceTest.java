@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.test.unittests;
 
 import static org.junit.Assert.*;
@@ -31,52 +32,52 @@ import org.junit.Test;
 /** @author John Barton */
 public class ActionReferenceTest {
 
-    private static Application application;
+	private static Application application;
 
-    @BeforeClass
-    public static void init() {
-        application = new HeadlessApplication(new ApplicationAdapter() {});
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-    }
+	@BeforeClass
+	public static void init () {
+		application = new HeadlessApplication(new ApplicationAdapter() {});
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
+	}
 
-    @Test
-    public void basicTest() {
-        // Action to reference
-        MockAction action = MockAction.obtain();
+	@Test
+	public void basicTest () {
+		// Action to reference
+		MockAction action = MockAction.obtain();
 
-        // Reference to the action. Likely a global var that different methods or whatever can access
-        ActionReference<MockAction> ref = new ActionReference<MockAction>();
-        ref.setAction(action);
+		// Reference to the action. Likely a global var that different methods or whatever can access
+		ActionReference<MockAction> ref = new ActionReference<MockAction>();
+		ref.setAction(action);
 
-        assertNotNull(ref.getAction());
+		assertNotNull(ref.getAction());
 
-        action.reset();
+		action.reset();
 
-        assertNull(ref.getAction());
-    }
+		assertNull(ref.getAction());
+	}
 
-    @Test
-    public void changeActionTest() {
-        MockAction action1 = MockAction.obtain();
-        MockAction action2 = MockAction.obtain();
-        ActionReference<MockAction> ref = new ActionReference<MockAction>();
+	@Test
+	public void changeActionTest () {
+		MockAction action1 = MockAction.obtain();
+		MockAction action2 = MockAction.obtain();
+		ActionReference<MockAction> ref = new ActionReference<MockAction>();
 
-        ref.setAction(action1);
-        Action oldAction = ref.setAction(action2);
+		ref.setAction(action1);
+		Action oldAction = ref.setAction(action2);
 
-        assertEquals(ref.getAction(), action2);
-        assertEquals(oldAction, action1);
+		assertEquals(ref.getAction(), action2);
+		assertEquals(oldAction, action1);
 
-        ref.setAction(null);
+		ref.setAction(null);
 
-        assertNull(ref.getAction());
-    }
+		assertNull(ref.getAction());
+	}
 
-    // @Test
-    public void cleanupTest() {
-        MockAction action = MockAction.obtain();
-        ActionReference<MockAction> ref = new ActionReference<MockAction>(action);
-        ActionPools.free(action);
-        assertNull(ref.getAction());
-    }
+	// @Test
+	public void cleanupTest () {
+		MockAction action = MockAction.obtain();
+		ActionReference<MockAction> ref = new ActionReference<MockAction>(action);
+		ActionPools.free(action);
+		assertNull(ref.getAction());
+	}
 }

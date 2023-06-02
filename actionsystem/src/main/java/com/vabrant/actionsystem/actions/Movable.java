@@ -13,14 +13,15 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 public interface Movable extends Percentable {
-    public void setX(float x);
+	public void setX (float x);
 
-    public void setY(float y);
+	public void setY (float y);
 
-    public float getX();
+	public float getX ();
 
-    public float getY();
+	public float getY ();
 }

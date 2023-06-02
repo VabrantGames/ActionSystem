@@ -1,3 +1,4 @@
+
 package com.vabrant.actionsystem.platformtests.tests;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -8,31 +9,35 @@ import com.vabrant.actionsystem.actions.ActionManager;
 
 public class PlatformTest extends InputAdapter implements ApplicationListener {
 
-    protected ActionManager actionManager;
+	protected ActionManager actionManager;
 
-    public void addAction(Action action) {
-        actionManager.addAction(action);
-    }
+	public void addAction (Action action) {
+		actionManager.addAction(action);
+	}
 
-    @Override
-    public void create() {
-        actionManager = new ActionManager();
-    }
+	@Override
+	public void create () {
+		actionManager = new ActionManager();
+	}
 
-    @Override
-    public void resize(int width, int height) {}
+	@Override
+	public void resize (int width, int height) {
+	}
 
-    @Override
-    public void render() {
-        actionManager.update(Gdx.graphics.getDeltaTime());
-    }
+	@Override
+	public void render () {
+		actionManager.update(Gdx.graphics.getDeltaTime());
+	}
 
-    @Override
-    public void pause() {}
+	@Override
+	public void pause () {
+	}
 
-    @Override
-    public void resume() {}
+	@Override
+	public void resume () {
+	}
 
-    @Override
-    public void dispose() {}
+	@Override
+	public void dispose () {
+	}
 }

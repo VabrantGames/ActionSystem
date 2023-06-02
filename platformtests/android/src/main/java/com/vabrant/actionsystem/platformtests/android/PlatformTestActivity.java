@@ -1,3 +1,4 @@
+
 package com.vabrant.actionsystem.platformtests.android;
 
 import android.os.Build;
@@ -12,27 +13,27 @@ import com.vabrant.actionsystem.platformtests.tests.PlatformTests;
 
 public class PlatformTestActivity extends AndroidApplication {
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate (@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        // use the full display, even if we have a device with a notch
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Window applicationWindow = getApplicationWindow();
-            WindowManager.LayoutParams attrib = applicationWindow.getAttributes();
-            attrib.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
+		// use the full display, even if we have a device with a notch
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			Window applicationWindow = getApplicationWindow();
+			WindowManager.LayoutParams attrib = applicationWindow.getAttributes();
+			attrib.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+		}
 
-        // obtain the test info
-        Bundle extras = getIntent().getExtras();
-        String testName = (String) extras.get("test");
-        PlatformTest test = PlatformTests.newTest(testName);
+		// obtain the test info
+		Bundle extras = getIntent().getExtras();
+		String testName = (String)extras.get("test");
+		PlatformTest test = PlatformTests.newTest(testName);
 
-        // and run the application...
-        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        config.useImmersiveMode = true;
-        config.useRotationVectorSensor = true;
-        config.useGyroscope = true;
-        initialize(test, config);
-    }
+		// and run the application...
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		config.useImmersiveMode = true;
+		config.useRotationVectorSensor = true;
+		config.useGyroscope = true;
+		initialize(test, config);
+	}
 }

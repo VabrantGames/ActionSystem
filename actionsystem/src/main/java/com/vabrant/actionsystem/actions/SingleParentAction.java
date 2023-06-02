@@ -13,11 +13,12 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 /** Action that holds a single action.
  * @author John Barton */
 @Deprecated
 public interface SingleParentAction {
-    public Action<?> getAction();
+	public Action<?> getAction ();
 }

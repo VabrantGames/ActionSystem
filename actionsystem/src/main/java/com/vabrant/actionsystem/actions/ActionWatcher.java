@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
@@ -24,73 +25,73 @@ import com.vabrant.actionsystem.logger.ActionLogger;
  * @author John Barton */
 public class ActionWatcher {
 
-    private static ActionWatcher instance = null;
+	private static ActionWatcher instance = null;
 
-    public static ActionWatcher getInstance() {
-        return instance != null ? instance : (instance = new ActionWatcher(20));
-    }
+	public static ActionWatcher getInstance () {
+		return instance != null ? instance : (instance = new ActionWatcher(20));
+	}
 
-    private final ActionLogger logger;
-    private final ObjectMap<String, Action<?>> watchActions;
+	private final ActionLogger logger;
+	private final ObjectMap<String, Action<?>> watchActions;
 
-    private ActionListener cleanupListener = new ActionListener() {
-        @Override
-        public void onEvent(ActionEvent e) {
-            remove(e.getAction().getName());
-        }
-    };
+	private ActionListener cleanupListener = new ActionListener() {
+		@Override
+		public void onEvent (ActionEvent e) {
+			remove(e.getAction().getName());
+		}
+	};
 
-    public ActionWatcher(int amount) {
-        watchActions = new ObjectMap<>(amount);
-        logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.LogLevel.NONE);
-    }
+	public ActionWatcher (int amount) {
+		watchActions = new ObjectMap<>(amount);
+		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.LogLevel.NONE);
+	}
 
-    public Action<?> get(String key) {
-        return watchActions.get(key);
-    }
+	public Action<?> get (String key) {
+		return watchActions.get(key);
+	}
 
-    public void watch(Action<?> action) {
-        String key = action.getName();
+	public void watch (Action<?> action) {
+		String key = action.getName();
 
-        if (key == null || key.isEmpty()) throw new IllegalArgumentException("Action needs a name to be identified.");
+		if (key == null || key.isEmpty()) throw new IllegalArgumentException("Action needs a name to be identified.");
 
-        // Check if the watcher contains the key or the same action instance
-        if (watchActions.containsKey(key) || watchActions.containsValue(action, false)) {
-            logger.debug("Key or action is already added.");
-            return;
-        }
+		// Check if the watcher contains the key or the same action instance
+		if (watchActions.containsKey(key) || watchActions.containsValue(action, false)) {
+			logger.debug("Key or action is already added.");
+			return;
+		}
 
-        action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
-        watchActions.put(key, action);
-        logger.info("Watching", key);
-    }
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
+		watchActions.put(key, action);
+		logger.info("Watching", key);
+	}
 
-    public boolean remove(Action<?> action) {
-        return remove(action.getName());
-    }
+	public boolean remove (Action<?> action) {
+		return remove(action.getName());
+	}
 
-    /** Removes an action from the watcher.
-     * @param name
-     * @return Whether or not the action was removed. */
-    public boolean remove(String name) {
-        Action<?> action = watchActions.remove(name);
+	/** Removes an action from the watcher.
+	 * @param name
+	 * @return Whether or not the action was removed. */
+	public boolean remove (String name) {
+		Action<?> action = watchActions.remove(name);
 
-        if (action == null) {
-            logger.info("Action " + name + " doesn't exist");
-            return false;
-        }
+		if (action == null) {
+			logger.info("Action " + name + " doesn't exist");
+			return false;
+		}
 
-        action.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
+		action.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
 
-        logger.info("Stopped Watching", name);
-        return true;
-    }
+		logger.info("Stopped Watching", name);
+		return true;
+	}
 
-    public boolean contains(String key) {
-        return watchActions.containsKey(key);
-    }
+	public boolean contains (String key) {
+		return watchActions.containsKey(key);
+	}
 
-    public ActionLogger getLogger() {
-        return logger;
-    }
+	public ActionLogger getLogger () {
+		return logger;
+	}
 }

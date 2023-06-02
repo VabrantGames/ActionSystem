@@ -13,9 +13,10 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 /** @author John Barton */
 public interface Condition {
-    public <T extends Action<T>> boolean isTrue(T action);
+	public <T extends Action<T>> boolean isTrue (T action);
 }

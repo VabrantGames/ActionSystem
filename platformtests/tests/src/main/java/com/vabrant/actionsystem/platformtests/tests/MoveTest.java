@@ -1,3 +1,4 @@
+
 package com.vabrant.actionsystem.platformtests.tests;
 
 import com.badlogic.gdx.math.Interpolation;
@@ -8,12 +9,11 @@ import com.vabrant.actionsystem.actions.RepeatAction;
 
 public class MoveTest extends DefaultPlatformTest {
 
-    @Override
-    public void create() {
-        super.create();
+	@Override
+	public void create () {
+		super.create();
 
-        MoveAction ma =
-                MoveAction.moveYBy(actionable, 50, 1f, Interpolation.exp5Out).reverseBackToStart(true);
-        addAction(RepeatAction.continuous(GroupAction.sequence(DelayAction.delay(0.5f), ma)));
-    }
+		MoveAction ma = MoveAction.moveYBy(actionable, 50, 1f, Interpolation.exp5Out).reverseBackToStart(true);
+		addAction(RepeatAction.continuous(GroupAction.sequence(DelayAction.delay(0.5f), ma)));
+	}
 }

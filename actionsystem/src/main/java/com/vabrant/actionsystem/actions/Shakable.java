@@ -13,18 +13,19 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 public interface Shakable extends Percentable {
-    public void setShakeX(float x);
+	public void setShakeX (float x);
 
-    public void setShakeY(float y);
+	public void setShakeY (float y);
 
-    public void setShakeAngle(float angle);
+	public void setShakeAngle (float angle);
 
-    public float getShakeX();
+	public float getShakeX ();
 
-    public float getShakeY();
+	public float getShakeY ();
 
-    public float getShakeAngle();
+	public float getShakeAngle ();
 }

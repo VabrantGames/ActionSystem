@@ -84,7 +84,7 @@ allprojects {
 		java {
 			target '**/*.java'
 			removeUnusedImports()
-			palantirJavaFormat()
+			eclipse().configFile new File(rootProject.projectDir.absolutePath, 'eclipse-formatter.xml')
 		}
 
 		groovyGradle {

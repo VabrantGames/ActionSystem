@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 import com.vabrant.actionsystem.events.ActionEvent;
@@ -22,62 +23,63 @@ import com.vabrant.actionsystem.events.ActionListener;
  * @author John Barton */
 public class ActionReference<T extends Action<T>> {
 
-    private T reference;
+	private T reference;
 
-    private ActionListener cleanupListener = new ActionListener() {
-        @Override
-        public void onEvent(ActionEvent e) {
-            reference = null;
-        }
-    };
+	private ActionListener cleanupListener = new ActionListener() {
+		@Override
+		public void onEvent (ActionEvent e) {
+			reference = null;
+		}
+	};
 
-    public ActionReference() {}
+	public ActionReference () {
+	}
 
-    public ActionReference(T action) {
-        if (action == null) throw new IllegalArgumentException();
-        setAction(action);
-    }
+	public ActionReference (T action) {
+		if (action == null) throw new IllegalArgumentException();
+		setAction(action);
+	}
 
-    /** Sets an action to be used as a reference. Returns the old action reference if set.
-     * @param action
-     * @return Old action */
-    public T setAction(T action) {
-        T oldAction = null;
+	/** Sets an action to be used as a reference. Returns the old action reference if set.
+	 * @param action
+	 * @return Old action */
+	public T setAction (T action) {
+		T oldAction = null;
 
-        // Remove the old action before a new one is set
-        if (reference != null) {
-            if (action == reference) return null;
+		// Remove the old action before a new one is set
+		if (reference != null) {
+			if (action == reference) return null;
 
-            reference.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
-            oldAction = reference;
-            reference = null;
-        }
+			reference.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
+			oldAction = reference;
+			reference = null;
+		}
 
-        if (action == null) return oldAction;
+		if (action == null) return oldAction;
 
-        reference = action;
-        action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
+		reference = action;
+		action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
 
-        return oldAction;
-    }
+		return oldAction;
+	}
 
-    public T getAction() {
-        return reference;
-    }
+	public T getAction () {
+		return reference;
+	}
 
-    public void start() {
-        reference.start();
-    }
+	public void start () {
+		reference.start();
+	}
 
-    public void restart() {
-        reference.restart();
-    }
+	public void restart () {
+		reference.restart();
+	}
 
-    public void end() {
-        reference.end();
-    }
+	public void end () {
+		reference.end();
+	}
 
-    public void kill() {
-        reference.kill();
-    }
+	public void kill () {
+		reference.kill();
+	}
 }

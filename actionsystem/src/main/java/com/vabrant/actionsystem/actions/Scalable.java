@@ -13,14 +13,15 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 public interface Scalable extends Percentable {
-    public void setScaleX(float scaleX);
+	public void setScaleX (float scaleX);
 
-    public void setScaleY(float scaleY);
+	public void setScaleY (float scaleY);
 
-    public float getScaleX();
+	public float getScaleX ();
 
-    public float getScaleY();
+	public float getScaleY ();
 }

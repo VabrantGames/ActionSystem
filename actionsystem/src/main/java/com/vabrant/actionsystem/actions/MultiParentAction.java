@@ -13,6 +13,7 @@
  *	See the License for the specific language governing permissions and
  *	limitations under the License.
  */
+
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
@@ -21,5 +22,5 @@ import com.badlogic.gdx.utils.Array;
  * @author John Barton */
 @Deprecated
 public interface MultiParentAction {
-    public Array<Action<?>> getActions();
+	public Array<Action<?>> getActions ();
 }
