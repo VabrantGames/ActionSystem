@@ -4,19 +4,24 @@ An inheritance based action system for [libGDX](https://libgdx.com/).
 
 ---
 
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.vabrantgames.actionsystem/actionsystem?label=snapshot&server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/#nexus-search;gav~com.vabrantgames.actionsystem~actionsystem~~~)
+
+
+
 ## How to add to project
-To use in your project add [jitpack](https://jitpack.io/#VabrantGames/ActionSystem) as a repository in your build.gradle then this project as a dependency with 
+To use in your project add the following repositories in your build.gradle. Then this project as a dependency with 
 a specified version.
 
 ```groovy
 repositories {
-    maven { url 'https://jitpack.io'}
+    maven { url 'https://s01.oss.sonatype.org' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
 }
 ```
 
 ```groovy
 dependency {
-    implementation 'com.github.VabrantGames:actionsystem:version'
+    implementation 'com.vabrantgames.actionsystem:actionsystem:version'
 }
 ```
 ---
