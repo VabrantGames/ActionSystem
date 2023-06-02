@@ -153,6 +153,7 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	@Override
 	protected void startLogic () {
 		super.startLogic();
+		if (percentable == null) throw new NullPointerException("Percentable is null");
 		setup();
 		percent(percent);
 	}
