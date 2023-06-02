@@ -16,6 +16,7 @@ a specified version.
 repositories {
     maven { url 'https://s01.oss.sonatype.org' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
 }
 ```
 
