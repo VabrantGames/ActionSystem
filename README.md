@@ -4,8 +4,8 @@ An inheritance based action system for [libGDX](https://libgdx.com/).
 
 ---
 
-[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.vabrantgames.actionsystem/actionsystem?label=snapshot&server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/#nexus-search;gav~com.vabrantgames.actionsystem~actionsystem~~~)
-[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.vabrantgames.actionsystem/actionsystem?nexusVersion=2&server=https%3A%2F%2Fs01.oss.sonatype.org&label=version)](https://central.sonatype.com/artifact/com.vabrantgames.actionsystem/actionsystem/0.6.0)
+[![Sonatype Nexus (Releases)](https://img.shields.io/nexus/r/com.vabrantgames.actionsystem/actionsystem?color=green&nexusVersion=2&server=https%3A%2F%2Fs01.oss.sonatype.org&label=release)](https://central.sonatype.com/artifact/com.vabrantgames.actionsystem/actionsystem/0.6.0)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.vabrantgames.actionsystem/actionsystem?label=snapshot&color=green&server=https%3A%2F%2Fs01.oss.sonatype.org)](https://s01.oss.sonatype.org/#nexus-search;gav~com.vabrantgames.actionsystem~actionsystem~~~)
 
 
 
@@ -16,7 +16,6 @@ a specified version.
 
 ```groovy
 repositories {
-    maven { url 'https://s01.oss.sonatype.org' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
 }
@@ -96,9 +95,7 @@ Actions can easily be created from static helpers located in the action you are 
 ---
 
 ## Actions
-- [ColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/ColorAction.java)
-- [RGBColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/RGBColorAction.java)
-- [HSBColorAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/HSBColorAction.java)
+- [ColorAction](actionsystem/src/main/java/com/vabrant/actionsystem/actions/coloraction/ColorAction.java)
 - [CountDownAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/CountDownAction.java)
 - [DelayAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/DelayAction.java)
 - [GroupAction](https://github.com/VabrantGames/ActionSystem/blob/master/actionsystem/src/main/java/com/vabrant/actionsystem/actions/GroupAction.java)
