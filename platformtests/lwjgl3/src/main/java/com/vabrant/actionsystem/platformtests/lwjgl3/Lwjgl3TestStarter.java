@@ -46,8 +46,17 @@ public class Lwjgl3TestStarter {
 			if (files != null) {
 				for (File f : files) {
 					try {
-						Class c = ClassReflection
-							.forName("com.vabrant.actionsystem.platformtests.lwjgl3.temp." + f.getName().replace(".java", ""));
+						Class c = null;
+
+						try {
+							c = ClassReflection
+								.forName("com.vabrant.actionsystem.platformtests.lwjgl3.temp." + f.getName().replace(".java", ""));
+						} catch (Exception e) {
+							continue;
+						}
+
+// Class c = ClassReflection
+// .forName("com.vabrant.actionsystem.platformtests.lwjgl3.temp." + f.getName().replace(".java", ""));
 
 						if (PlatformTest.class.isAssignableFrom(c)) {
 							PlatformTests.addTest(c);
