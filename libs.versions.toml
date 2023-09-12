@@ -1,5 +1,5 @@
 [versions]
-actionSystemVersion = "0.6.0"
+actionSystemVersion = "0.7.0"
 # @pin
 androidDesugarVersion = "1.1.5"
 # @pin
