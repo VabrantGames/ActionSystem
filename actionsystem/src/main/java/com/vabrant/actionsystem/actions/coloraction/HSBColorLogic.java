@@ -27,86 +27,118 @@ public class HSBColorLogic implements ColorLogic<HSBColorLogicData> {
 
 	public static ColorAction changeColor (Colorable colorable, float hue, float saturation, float brightness, float duration,
 		Interpolation interpolation) {
-		return changeColor(colorable, hue, saturation, brightness, -1, duration, interpolation);
+		return changeColor(colorable, -1, -1, -1, -1, hue, saturation, brightness, -1, duration, interpolation);
 	}
 
 	public static ColorAction changeColor (Colorable colorable, float hue, float saturation, float brightness, float alpha,
 		float duration, Interpolation interpolation) {
+		return changeColor(colorable, -1, -1, -1, -1, hue, saturation, brightness, alpha, duration, interpolation);
+	}
+
+	public static ColorAction changeColor (Colorable colorable, float startHue, float startSaturation, float startBrightness,
+		float startAlpha, float endHue, float endSaturation, float endBrightness, float endAlpha, float duration,
+		Interpolation interpolation) {
 		HSBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeColor(data, hue, saturation, brightness, alpha);
+		INSTANCE.changeColor(data, startHue, startSaturation, startBrightness, startAlpha, endHue, endSaturation, endBrightness,
+			endAlpha);
 		return a;
 	}
 
 	public static ColorAction changeHue (Colorable colorable, float hue, float duration, Interpolation interpolation) {
+		return changeHue(colorable, -1, hue, duration, interpolation);
+	}
+
+	public static ColorAction changeHue (Colorable colorable, float startHue, float endHue, float duration,
+		Interpolation interpolation) {
 		HSBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeHue(data, hue);
+		INSTANCE.changeHue(data, startHue, endHue);
 		return a;
 	}
 
 	public static ColorAction changeSaturation (Colorable colorable, float saturation, float duration,
 		Interpolation interpolation) {
+		return changeSaturation(colorable, -1, saturation, duration, interpolation);
+	}
+
+	public static ColorAction changeSaturation (Colorable colorable, float startSaturation, float endSaturation, float duration,
+		Interpolation interpolation) {
 		HSBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeSaturation(data, saturation);
+		INSTANCE.changeSaturation(data, startSaturation, endSaturation);
 		return a;
 	}
 
 	public static ColorAction changeBrightness (Colorable colorable, float brightness, float duration,
 		Interpolation interpolation) {
+		return changeBrightness(colorable, -1, brightness, duration, interpolation);
+	}
+
+	public static ColorAction changeBrightness (Colorable colorable, float startBrightness, float endBrightness, float duration,
+		Interpolation interpolation) {
 		HSBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeBrightness(data, brightness);
+		INSTANCE.changeBrightness(data, startBrightness, endBrightness);
 		return a;
 	}
 
 	private HSBColorLogic () {
 	}
 
-	public HSBColorLogic changeColor (HSBColorLogicData data, float hue, float saturation, float brightness, float alpha) {
+	public HSBColorLogic changeColor (HSBColorLogicData data, float startHue, float startSaturation, float startBrightness,
+		float startAlpha, float endHue, float endSaturation, float endBrightness, float endAlpha) {
+		if (endAlpha != -1) {
+			data.getAction().changeAlpha(startAlpha, endAlpha);
+		}
+
+		if (endHue != -1) {
+			changeHue(data, startHue, endHue);
+		}
+
+		if (endSaturation != -1) {
+			changeSaturation(data, startSaturation, endSaturation);
+		}
+
+		if (endBrightness != -1) {
+			changeBrightness(data, startBrightness, endBrightness);
+		}
+		return this;
+	}
+
+	public HSBColorLogic changeHue (HSBColorLogicData data, float startHue, float endHue) {
 		ColorAction a = data.getAction();
+		a.options = ColorAction.setBit(a.options, 1, 1);
+		data.endHSB[0] = endHue;
 
-		if (hue != -1) {
-			a.options = ColorAction.setBit(a.options, 1, 1);
-			data.endHSB[0] = hue;
+		if (startHue != -1) {
+			data.startHSB[0] = startHue;
+			data.isHueStartSet = true;
 		}
-
-		if (saturation != -1) {
-			a.options = ColorAction.setBit(a.options, 2, 1);
-			data.endHSB[1] = saturation;
-		}
-
-		if (brightness != -1) {
-			a.options = ColorAction.setBit(a.options, 3, 1);
-			data.endHSB[2] = brightness;
-		}
-
-		if (alpha != -1) {
-			a.changeAlpha(alpha);
-		}
-
 		return this;
 	}
 
-	public HSBColorLogic changeHue (HSBColorLogicData data, float hue) {
-// ColorAction a = data.getAction();
-// a.options = ColorAction.setBit(a.options, 1, 1);
-		setupChannel(data, 1, hue);
+	public HSBColorLogic changeSaturation (HSBColorLogicData data, float startSaturation, float endSaturation) {
+		ColorAction a = data.getAction();
+		a.options = ColorAction.setBit(a.options, 2, 1);
+		data.endHSB[1] = endSaturation;
+
+		if (startSaturation != -1) {
+			data.startHSB[1] = startSaturation;
+			data.isSaturationStartSet = true;
+		}
 		return this;
 	}
 
-	public HSBColorLogic changeSaturation (HSBColorLogicData data, float green) {
-// ColorAction a = data.getAction();
-// a.options = ColorAction.setBit(a.options, 2, 1);
-		setupChannel(data, 2, green);
-		return this;
-	}
+	public HSBColorLogic changeBrightness (HSBColorLogicData data, float startBrightness, float endBrightness) {
+		ColorAction a = data.getAction();
+		a.options = ColorAction.setBit(a.options, 3, 1);
+		data.endHSB[2] = endBrightness;
 
-	public HSBColorLogic changeBrightness (HSBColorLogicData data, float blue) {
-// ColorAction a = data.getAction();
-// a.options = ColorAction.setBit(a.options, 3, 1);
-		setupChannel(data, 3, blue);
+		if (startBrightness != -1) {
+			data.startHSB[2] = startBrightness;
+			data.isBrightnessStartSet = true;
+		}
 		return this;
 	}
 
@@ -130,7 +162,9 @@ public class HSBColorLogic implements ColorLogic<HSBColorLogicData> {
 		float s = ColorAction.isBitOn(options, 2) ? MathUtils.lerp(startHSB[1], endHSB[1], percent) : getSaturation(c);
 		float b = ColorAction.isBitOn(options, 3) ? MathUtils.lerp(startHSB[2], endHSB[2], percent) : getBrightness(c);
 		HSBToRGB(endColor, h, s, b);
-		c.set(endColor.r, endColor.g, endColor.b, c.a);
+		c.r = endColor.r;
+		c.g = endColor.g;
+		c.b = endColor.b;
 	}
 
 	public static Color HSBToRGB (Color color, float hue, float saturation, float brightness) {
@@ -208,6 +242,10 @@ public class HSBColorLogic implements ColorLogic<HSBColorLogicData> {
 
 	public static class HSBColorLogicData extends ColorLogicData {
 
+		protected boolean isHueStartSet;
+		protected boolean isSaturationStartSet;
+		protected boolean isBrightnessStartSet;
+
 		private float[] startHSB;
 
 		private float[] endHSB;
@@ -219,11 +257,23 @@ public class HSBColorLogic implements ColorLogic<HSBColorLogicData> {
 
 		@Override
 		protected void onSetup () {
-			super.onSetup();
-			Color c = getAction().getPercentable().getColor();
-			startHSB[0] = HSBColorLogic.getHue(c);
-			startHSB[1] = HSBColorLogic.getSaturation(c);
-			startHSB[2] = HSBColorLogic.getBrightness(c);
+			ColorAction a = getAction();
+			Color c = a.getPercentable().getColor();
+
+			if (ColorAction.isBitOn(a.options, 1) && !isHueStartSet) {
+				isHueStartSet = true;
+				startHSB[0] = HSBColorLogic.getHue(c);
+			}
+
+			if (ColorAction.isBitOn(a.options, 2) && !isSaturationStartSet) {
+				isSaturationStartSet = true;
+				startHSB[1] = HSBColorLogic.getSaturation(c);
+			}
+
+			if (ColorAction.isBitOn(a.options, 3) && !isBrightnessStartSet) {
+				isBrightnessStartSet = true;
+				startHSB[2] = HSBColorLogic.getBrightness(c);
+			}
 		}
 
 		@Override
@@ -231,6 +281,9 @@ public class HSBColorLogic implements ColorLogic<HSBColorLogicData> {
 			super.reset();
 			Arrays.fill(startHSB, 0);
 			Arrays.fill(endHSB, 0);
+			isHueStartSet = false;
+			isSaturationStartSet = false;
+			isBrightnessStartSet = false;
 		}
 	}
 }

@@ -197,14 +197,17 @@ public class RGBColorLogic implements ColorLogic<RGBColorLogicData> {
 			Color colorable = getAction().getPercentable().getColor();
 
 			if (ColorAction.isBitOn(a.options, 1) && !isRedStartSet) {
+				isRedStartSet = true;
 				a.startColor.r = colorable.r;
 			}
 
 			if (ColorAction.isBitOn(a.options, 2) && !isGreenStartSet) {
+				isGreenStartSet = true;
 				a.startColor.g = colorable.g;
 			}
 
 			if (ColorAction.isBitOn(a.options, 3) && !isBlueStartSet) {
+				isBlueStartSet = true;
 				a.startColor.b = colorable.b;
 			}
 		}

@@ -93,7 +93,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 
 	protected int options;
 	protected boolean setupAction = true;
-	protected boolean isStartAlphaSet;
+	protected boolean isAlphaStartSet;
 	protected Color startColor = new Color(Color.WHITE);
 	protected Color endColor = new Color(Color.WHITE);
 	protected ColorLogic logic;
@@ -109,7 +109,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 
 		if (startAlpha != -1) {
 			startColor.a = startAlpha;
-			isStartAlphaSet = true;
+			isAlphaStartSet = true;
 		}
 		return this;
 	}
@@ -122,7 +122,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 
 	public void setStartAlphaAsSet () {
-		isStartAlphaSet = true;
+		isAlphaStartSet = true;
 	}
 
 	public ColorAction setStartColor (float red, float green, float blue) {
@@ -181,8 +181,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		if (setupAction) {
 			setupAction = false;
 
-			if (isBitOn(options, 0) && !isStartAlphaSet) {
-				isStartAlphaSet = true;
+			if (isBitOn(options, 0) && !isAlphaStartSet) {
+				isAlphaStartSet = true;
 				startColor.a = percentable.getColor().a;
 			}
 
@@ -220,7 +220,7 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 		setupAction = true;
 		startColor.set(Color.WHITE);
 		endColor.set(Color.WHITE);
-		isStartAlphaSet = false;
+		isAlphaStartSet = false;
 	}
 
 	public static abstract class ColorLogicData implements Poolable {
