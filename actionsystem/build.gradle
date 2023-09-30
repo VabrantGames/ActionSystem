@@ -9,7 +9,8 @@ ext {
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-version = libs.versions.actionSystemVersion.get()
+//version = libs.versions.actionSystemVersion.get()
+version = libs.versions.actionSystemVersion.get() + "-local"
 
 sourceCompatibility = 1.8
 

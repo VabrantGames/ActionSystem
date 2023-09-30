@@ -24,9 +24,14 @@ public class RGBColorLogic implements ColorLogic<RGBColorLogicData> {
 	}
 
 	public static ColorAction changeColor (Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
+		return changeColor(colorable, null, endColor, duration, interpolation);
+	}
+
+	public static ColorAction changeColor (Colorable colorable, Color startColor, Color endColor, float duration,
+		Interpolation interpolation) {
 		RGBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeColor(data, endColor);
+		INSTANCE.changeColor(data, startColor, endColor);
 		return a;
 	}
 
@@ -37,74 +42,131 @@ public class RGBColorLogic implements ColorLogic<RGBColorLogicData> {
 
 	public static ColorAction changeColor (Colorable colorable, float red, float green, float blue, float alpha, float duration,
 		Interpolation interpolation) {
+		return changeColor(colorable, -1, -1, -1, -1, red, green, blue, alpha, duration, interpolation);
+	}
+
+	public static ColorAction changeColor (Colorable colorable, float startRed, float startGreen, float startBlue, float endRed,
+		float endGreen, float endBlue, float duration, Interpolation interpolation) {
+		return changeColor(colorable, startRed, startGreen, startBlue, -1, endRed, endGreen, endBlue, -1, duration, interpolation);
+	}
+
+	public static ColorAction changeColor (Colorable colorable, float startRed, float startGreen, float startBlue,
+		float startAlpha, float endRed, float endGreen, float endBlue, float endAlpha, float duration,
+		Interpolation interpolation) {
 		RGBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeColor(data, red, green, blue, alpha);
+		INSTANCE.changeColor(data, startRed, startGreen, startBlue, startAlpha, endRed, endGreen, endBlue, endAlpha);
 		return a;
 	}
 
 	public static ColorAction changeRed (Colorable colorable, float red, float duration, Interpolation interpolation) {
+		return changeRed(colorable, -1, red, duration, interpolation);
+	}
+
+	public static ColorAction changeRed (Colorable colorable, float startRed, float endRed, float duration,
+		Interpolation interpolation) {
 		RGBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeRed(data, red);
+		INSTANCE.changeRed(data, startRed, endRed);
 		return a;
 	}
 
-	public static ColorAction changeGreen (Colorable colorable, float green, float duration, Interpolation interpolation) {
+	public static ColorAction changeGreen (Colorable colorable, float endGreen, float duration, Interpolation interpolation) {
+		return changeGreen(colorable, -1, endGreen, duration, interpolation);
+	}
+
+	public static ColorAction changeGreen (Colorable colorable, float startGreen, float endGreen, float duration,
+		Interpolation interpolation) {
 		RGBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeGreen(data, green);
+		INSTANCE.changeGreen(data, startGreen, endGreen);
 		return a;
 	}
 
-	public static ColorAction changeBlue (Colorable colorable, float blue, float duration, Interpolation interpolation) {
+	public static ColorAction changeBlue (Colorable colorable, float endBlue, float duration, Interpolation interpolation) {
+		return changeBlue(colorable, -1, endBlue, duration, interpolation);
+	}
+
+	public static ColorAction changeBlue (Colorable colorable, float startBlue, float endBlue, float duration,
+		Interpolation interpolation) {
 		RGBColorLogicData data = getData();
 		ColorAction a = ColorAction.obtain().set(colorable, duration, interpolation).setLogicAndData(INSTANCE, data);
-		INSTANCE.changeBlue(data, blue);
+		INSTANCE.changeBlue(data, startBlue, endBlue);
 		return a;
 	}
 
 	private RGBColorLogic () {
 	}
 
-	public void changeColor (RGBColorLogicData data, Color endColor) {
+	public void changeColor (RGBColorLogicData data, Color startColor, Color endColor) {
 		ColorAction a = data.getAction();
 		a.options |= 0b1111;
 		a.endColor.set(endColor);
+
+		if (startColor != null) {
+			a.startColor.set(startColor);
+			data.isRedStartSet = true;
+			data.isGreenStartSet = true;
+			data.isBlueStartSet = true;
+			a.setStartAlphaAsSet();
+		}
 	}
 
-	public RGBColorLogic changeColor (RGBColorLogicData data, float red, float green, float blue, float alpha) {
+	public RGBColorLogic changeColor (RGBColorLogicData data, float startRed, float startGreen, float startBlue, float startAlpha,
+		float endRed, float endGreen, float endBlue, float endAlpha) {
 		ColorAction a = data.getAction();
-		if (red != -1) a.options = ColorAction.setBit(a.options, 1, 1);
-		if (green != -1) a.options = ColorAction.setBit(a.options, 2, 1);
-		if (blue != -1) a.options = ColorAction.setBit(a.options, 3, 1);
-		if (alpha != -1) a.changeAlpha(alpha);
 
-		Color c = data.getAction().endColor;
-		c.r = red;
-		c.g = green;
-		c.b = blue;
+		if (endAlpha != -1) {
+			a.changeAlpha(startAlpha, endAlpha);
+		}
+
+		if (endRed != -1) {
+			changeRed(data, startRed, endRed);
+		}
+
+		if (endGreen != -1) {
+			changeGreen(data, startGreen, endGreen);
+		}
+
+		if (endBlue != -1) {
+			changeBlue(data, startBlue, endBlue);
+		}
 		return this;
 	}
 
-	public RGBColorLogic changeRed (RGBColorLogicData data, float red) {
+	public RGBColorLogic changeRed (RGBColorLogicData data, float startRed, float endRed) {
 		ColorAction a = data.getAction();
 		a.options = ColorAction.setBit(a.options, 1, 1);
-		data.getAction().endColor.r = red;
+		a.endColor.r = endRed;
+
+		if (startRed != -1) {
+			a.startColor.r = startRed;
+			data.isRedStartSet = true;
+		}
 		return this;
 	}
 
-	public RGBColorLogic changeGreen (RGBColorLogicData data, float green) {
+	public RGBColorLogic changeGreen (RGBColorLogicData data, float startGreen, float endGreen) {
 		ColorAction a = data.getAction();
 		a.options = ColorAction.setBit(a.options, 2, 1);
-		data.getAction().endColor.g = green;
+		a.endColor.g = endGreen;
+
+		if (startGreen != -1) {
+			a.startColor.g = startGreen;
+			data.isGreenStartSet = true;
+		}
 		return this;
 	}
 
-	public RGBColorLogic changeBlue (RGBColorLogicData data, float blue) {
+	public RGBColorLogic changeBlue (RGBColorLogicData data, float startBlue, float endBlue) {
 		ColorAction a = data.getAction();
 		a.options = ColorAction.setBit(a.options, 3, 1);
-		data.getAction().endColor.b = blue;
+		a.endColor.b = endBlue;
+
+		if (startBlue != -1) {
+			a.startColor.b = startBlue;
+			data.isBlueStartSet = true;
+		}
 		return this;
 	}
 
@@ -124,6 +186,36 @@ public class RGBColorLogic implements ColorLogic<RGBColorLogicData> {
 	}
 
 	public static class RGBColorLogicData extends ColorLogicData {
+
+		protected boolean isRedStartSet;
+		protected boolean isGreenStartSet;
+		protected boolean isBlueStartSet;
+
+		@Override
+		protected void onSetup () {
+			ColorAction a = getAction();
+			Color colorable = getAction().getPercentable().getColor();
+
+			if (ColorAction.isBitOn(a.options, 1) && !isRedStartSet) {
+				a.startColor.r = colorable.r;
+			}
+
+			if (ColorAction.isBitOn(a.options, 2) && !isGreenStartSet) {
+				a.startColor.g = colorable.g;
+			}
+
+			if (ColorAction.isBitOn(a.options, 3) && !isBlueStartSet) {
+				a.startColor.b = colorable.b;
+			}
+		}
+
+		@Override
+		public void reset () {
+			super.reset();
+			isRedStartSet = false;
+			isGreenStartSet = false;
+			isBlueStartSet = false;
+		}
 	}
 
 }
