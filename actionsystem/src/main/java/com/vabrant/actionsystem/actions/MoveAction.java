@@ -29,12 +29,25 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return obtain().moveXBy(amount).set(movable, duration, interpolation);
 	}
 
+	public static MoveAction moveXBy (Movable movable, float start, float amount, float duration, Interpolation interpolation) {
+		return obtain().moveXBy(start, amount).set(movable, duration, interpolation);
+	}
+
 	public static MoveAction moveYBy (Movable movable, float amount, float duration, Interpolation interpolation) {
 		return obtain().moveYBy(amount).set(movable, duration, interpolation);
 	}
 
+	public static MoveAction moveYBy (Movable movable, float start, float amount, float duration, Interpolation interpolation) {
+		return obtain().moveYBy(start, amount).set(movable, duration, interpolation);
+	}
+
 	public static MoveAction moveBy (Movable movable, float xAmount, float yAmount, float duration, Interpolation interpolation) {
 		return obtain().moveBy(xAmount, yAmount).set(movable, duration, interpolation);
+	}
+
+	public static MoveAction moveBy (Movable movable, float xStart, float yStart, float xAmount, float yAmount, float duration,
+		Interpolation interpolation) {
+		return obtain().moveBy(xStart, yStart, xAmount, yAmount).set(movable, duration, interpolation);
 	}
 
 	public static MoveAction moveByAngleRad (Movable movable, float radians, float amount, float duration,
@@ -51,12 +64,25 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return obtain().moveXTo(end).set(movable, duration, interpolation);
 	}
 
+	public static MoveAction moveXTo (Movable movable, float start, float end, float duration, Interpolation interpolation) {
+		return obtain().moveXTo(start, end).set(movable, duration, interpolation);
+	}
+
 	public static MoveAction moveYTo (Movable movable, float end, float duration, Interpolation interpolation) {
 		return obtain().moveYTo(end).set(movable, duration, interpolation);
 	}
 
+	public static MoveAction moveYTo (Movable movable, float start, float end, float duration, Interpolation interpolation) {
+		return obtain().moveYTo(start, end).set(movable, duration, interpolation);
+	}
+
 	public static MoveAction moveTo (Movable movable, float xEnd, float yEnd, float duration, Interpolation interpolation) {
 		return obtain().moveTo(xEnd, yEnd).set(movable, duration, interpolation);
+	}
+
+	public static MoveAction moveTo (Movable movable, float xStart, float xEnd, float yStart, float yEnd, float duration,
+		Interpolation interpolation) {
+		return obtain().moveTo(xStart, xEnd, yStart, yEnd).set(movable, duration, interpolation);
 	}
 
 	public static MoveAction setX (Movable movable, float x) {
@@ -84,10 +110,10 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 
 	private int xType = -1;
 	private int yType = -1;
-
-	private boolean solo;
-	private boolean setupX = true;
-	private boolean setupY = true;
+	private boolean isXStartSet;
+	private boolean isYStartSet;
+	private boolean setupX;
+	private boolean setupY;
 	private boolean startXByFromEnd;
 	private boolean startYByFromEnd;
 	private float xStart;
@@ -103,17 +129,35 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return this;
 	}
 
+	public MoveAction moveXTo (float start, float end) {
+		isXStartSet = true;
+		xStart = start;
+		moveXTo(end);
+		return this;
+	}
+
 	public MoveAction moveYTo (float end) {
 		this.yEnd = end;
 		yType = MOVE_TO;
 		return this;
 	}
 
+	public MoveAction moveYTo (float start, float end) {
+		isYStartSet = true;
+		yStart = start;
+		moveYTo(end);
+		return this;
+	}
+
 	public MoveAction moveTo (float xEnd, float yEnd) {
-		this.xEnd = xEnd;
-		this.yEnd = yEnd;
-		xType = MOVE_TO;
-		yType = MOVE_TO;
+		moveXTo(xEnd);
+		moveYTo(yEnd);
+		return this;
+	}
+
+	public MoveAction moveTo (float xStart, float xEnd, float yStart, float yEnd) {
+		moveXTo(xStart, xEnd);
+		moveYTo(yStart, yEnd);
 		return this;
 	}
 
@@ -132,9 +176,25 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return this;
 	}
 
+	public MoveAction moveXBy (float start, float amount) {
+		moveXBy(amount);
+		xStart = start;
+		xEnd = xStart + xAmount;
+		isXStartSet = true;
+		return this;
+	}
+
 	public MoveAction moveYBy (float amount) {
 		yAmount = amount;
 		yType = MOVE_BY;
+		return this;
+	}
+
+	public MoveAction moveYBy (float start, float amount) {
+		moveYBy(amount);
+		yStart = start;
+		yEnd = yStart + amount;
+		isYStartSet = true;
 		return this;
 	}
 
@@ -143,6 +203,12 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		this.yAmount = yAmount;
 		xType = MOVE_BY;
 		yType = MOVE_BY;
+		return this;
+	}
+
+	public MoveAction moveBy (float xStart, float yStart, float xEnd, float yEnd) {
+		moveXBy(xStart, xEnd);
+		moveYBy(yStart, yEnd);
 		return this;
 	}
 
@@ -156,78 +222,34 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		return this;
 	}
 
-	/** Solos the direction. Has no use if both x and y are being moved.
-	 * @param value
-	 * @return */
-	public MoveAction solo (boolean value) {
-		solo = value;
-		return this;
-	}
-
 	@Override
 	protected void percent (float percent) {
-		switch (xType) {
-		case MOVE_BY:
-		case MOVE_TO:
-			percentable.setX(MathUtils.lerp(xStart, xEnd, percent));
-			break;
-		}
-
-		switch (yType) {
-		case MOVE_BY:
-		case MOVE_TO:
-			percentable.setY(MathUtils.lerp(yStart, yEnd, percent));
-			break;
-		}
+		if (xType > -1) percentable.setX(MathUtils.lerp(xStart, xEnd, percent));
+		if (yType > -1) percentable.setY(MathUtils.lerp(yStart, yEnd, percent));
 	}
 
 	@Override
 	public MoveAction setup () {
 		super.setup();
 
-		if (setupX) {
-			setupX = false;
+		if (setupX || xType > -1 && (!isXStartSet)) {
+			isXStartSet = true;
+			xStart = percentable.getX();
 
-			// If move x but not the y save the y
-			if (xType > -1 && yType == -1) yStart = percentable.getY();
-
-			switch (xType) {
-			case MOVE_BY:
-				xStart = percentable.getX();
+			if (xType == MOVE_BY) {
 				xEnd = xStart + xAmount;
-				break;
-			case MOVE_TO:
-				xStart = percentable.getX();
-				break;
 			}
 		}
 
-		if (setupY) {
-			setupY = false;
+		if (setupY || yType > -1 && (!isYStartSet)) {
+			isYStartSet = true;
+			yStart = percentable.getY();
 
-			// If move y but not x save the x
-			if (yType > -1 && xType == -1) xStart = percentable.getX();
-
-			switch (yType) {
-			case MOVE_BY:
-				yStart = percentable.getY();
+			if (yType == MOVE_BY) {
 				yEnd = yStart + yAmount;
-				break;
-			case MOVE_TO:
-				yStart = percentable.getY();
-				break;
 			}
 		}
 		return this;
-	}
-
-	@Override
-	protected void startLogic () {
-		super.startLogic();
-		if (!solo) {
-			percentable.setX(xType == -1 ? xStart : (!reverse ? xStart : xEnd));
-			percentable.setY(yType == -1 ? yStart : (!reverse ? yStart : yEnd));
-		}
 	}
 
 	@Override
@@ -237,35 +259,20 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		if (yType == MOVE_BY && startYByFromEnd) setupY = true;
 	}
 
-	// @Override
-	// public boolean hasConflict(Action<?> action) {
-	// if(action instanceof MoveAction) {
-	// MoveAction conflictAction = (MoveAction)action;
-	//
-	// if(xType > -1 && yType > -1) return true;
-	//
-	// //only x is being scaled so as long as the other action is not using the x there is no conflict
-	// if(conflictAction.xType > -1 && xType > -1) return true;
-	// if(conflictAction.yType > -1 && yType > -1) return true;
-	// }
-	// return false;
-	// }
-
 	@Override
 	public void clear () {
 		super.clear();
-		solo = false;
 		xAmount = 0;
 		yAmount = 0;
 		xStart = 0;
 		xEnd = 0;
 		yStart = 0;
 		yEnd = 0;
-		setupX = true;
-		setupY = true;
 		startXByFromEnd = false;
 		startYByFromEnd = false;
 		xType = -1;
 		yType = -1;
+		isXStartSet = false;
+		isYStartSet = false;
 	}
 }
