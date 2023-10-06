@@ -52,7 +52,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	private int type = -1;
 
-	private boolean setup = false;
+	private boolean setup;
 	private boolean cap;
 	private boolean capDeg;
 	private boolean startRotateByFromEnd;
@@ -108,7 +108,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	@Override
 	protected void percent (float percent) {
-		if (type > -1) percentable.setRotation(MathUtils.lerp(start, end, percent));
+		percentable.setRotation(MathUtils.lerp(start, end, percent));
 	}
 
 	@Override
@@ -119,14 +119,10 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 			isStartSet = true;
 			setup = false;
 
-			switch (type) {
-			case ROTATE_TO:
-				start = percentable.getRotation();
-				break;
-			case ROTATE_BY:
-				start = percentable.getRotation();
+			start = percentable.getRotation();
+
+			if (type == ROTATE_BY) {
 				end = start + byAmount;
-				break;
 			}
 		}
 		return this;

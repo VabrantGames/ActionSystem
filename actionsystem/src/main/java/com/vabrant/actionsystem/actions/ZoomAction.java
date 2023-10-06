@@ -29,8 +29,16 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 		return obtain().zoomTo(end).set(zoomable, duration, interpolation);
 	}
 
+	public static ZoomAction zoomTo (Zoomable zoomable, float start, float end, float duration, Interpolation interpolation) {
+		return obtain().zoomTo(start, end).set(zoomable, duration, interpolation);
+	}
+
 	public static ZoomAction zoomBy (Zoomable zoomable, float amount, float duration, Interpolation interpolation) {
 		return obtain().zoomBy(amount).set(zoomable, duration, interpolation);
+	}
+
+	public static ZoomAction zoomBy (Zoomable zoomable, float start, float amount, float duration, Interpolation interpolation) {
+		return obtain().zoomBy(start, amount).set(zoomable, duration, interpolation);
 	}
 
 	public static ZoomAction setZoom (Zoomable zoomable, float zoom) {
@@ -43,7 +51,8 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 	private int type = -1;
 
 	private boolean startZoomByFromEnd;
-	private boolean setup = true;
+	private boolean setup;
+	private boolean isStartSet;
 	private float start;
 	private float end;
 	private float amount;
@@ -54,9 +63,24 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 		return this;
 	}
 
+	public ZoomAction zoomTo (float start, float end) {
+		isStartSet = true;
+		this.start = start;
+		zoomTo(end);
+		return this;
+	}
+
 	public ZoomAction zoomBy (float amount) {
 		this.amount = amount;
 		type = ZOOM_BY;
+		return this;
+	}
+
+	public ZoomAction zoomBy (float start, float amount) {
+		zoomBy(amount);
+		this.start = start;
+		end = start + amount;
+		isStartSet = true;
 		return this;
 	}
 
@@ -74,17 +98,13 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 	public ZoomAction setup () {
 		super.setup();
 
-		if (setup) {
+		if (setup || type > -1 && !isStartSet) {
+			isStartSet = true;
 			setup = false;
+			start = percentable.getZoom();
 
-			switch (type) {
-			case ZOOM_BY:
-				start = percentable.getZoom();
+			if (type == ZOOM_BY) {
 				end = start + amount;
-				break;
-			case ZOOM_TO:
-				start = percentable.getZoom();
-				break;
 			}
 		}
 		return this;
@@ -96,18 +116,10 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 		if (type == ZOOM_BY && startZoomByFromEnd) setup = true;
 	}
 
-	// @Override
-	// public boolean hasConflict(Action<?> action) {
-	// if(action instanceof ZoomAction) {
-	// ZoomAction conflictAction = (ZoomAction)action;
-	// if(conflictAction.type > -1) return true;
-	// }
-	// return false;
-	// }
-
 	@Override
 	public void clear () {
 		super.clear();
+		isStartSet = false;
 		setup = true;
 		start = 0;
 		end = 0;
