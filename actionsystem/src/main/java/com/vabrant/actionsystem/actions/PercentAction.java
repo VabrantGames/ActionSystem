@@ -161,7 +161,8 @@ public abstract class PercentAction<P extends Percentable, A extends Action<A>> 
 	@Override
 	protected void restartLogic () {
 		super.restartLogic();
-		if (!setup) percent(percent);
+// if (!setup) percent(percent);
+		percent(percent);
 	}
 
 	@Override

@@ -29,8 +29,18 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return obtain().rotateTo(end).set(rotatable, duration, interpolation);
 	}
 
+	public static RotateAction rotateTo (Rotatable rotatable, float start, float end, float duration,
+		Interpolation interpolation) {
+		return obtain().rotateTo(start, end).set(rotatable, duration, interpolation);
+	}
+
 	public static RotateAction rotateBy (Rotatable rotatable, float amount, float duration, Interpolation interpolation) {
 		return obtain().rotateBy(amount).set(rotatable, duration, interpolation);
+	}
+
+	public static RotateAction rotateBy (Rotatable rotatable, float start, float amount, float duration,
+		Interpolation interpolation) {
+		return obtain().rotateBy(start, amount).set(rotatable, duration, interpolation);
 	}
 
 	public static RotateAction setRotation (Rotatable rotatable, float rotation) {
@@ -42,10 +52,11 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	private int type = -1;
 
-	private boolean setup = true;
+	private boolean setup = false;
 	private boolean cap;
 	private boolean capDeg;
 	private boolean startRotateByFromEnd;
+	private boolean isStartSet;
 	private float byAmount;
 	private float start;
 	private float end;
@@ -56,9 +67,24 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 		return this;
 	}
 
+	public RotateAction rotateTo (float start, float end) {
+		isStartSet = true;
+		this.start = start;
+		rotateTo(end);
+		return this;
+	}
+
 	public RotateAction rotateBy (float amount) {
 		byAmount = amount;
 		type = ROTATE_BY;
+		return this;
+	}
+
+	public RotateAction rotateBy (float start, float amount) {
+		rotateBy(amount);
+		this.start = start;
+		end = start + amount;
+		isStartSet = true;
 		return this;
 	}
 
@@ -76,20 +102,21 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	 * @return This action for chaining. */
 	public RotateAction capEndBetweenRevolution (boolean useDeg) {
 		cap = true;
-		capDeg = useDeg ? true : false;
+		capDeg = useDeg;
 		return this;
 	}
 
 	@Override
 	protected void percent (float percent) {
-		percentable.setRotation(MathUtils.lerp(start, end, percent));
+		if (type > -1) percentable.setRotation(MathUtils.lerp(start, end, percent));
 	}
 
 	@Override
 	public RotateAction setup () {
 		super.setup();
 
-		if (setup) {
+		if (setup || type > -1 && !isStartSet) {
+			isStartSet = true;
 			setup = false;
 
 			switch (type) {
@@ -123,12 +150,13 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	public void clear () {
 		super.clear();
 		type = -1;
-		setup = true;
+		setup = false;
 		cap = false;
 		capDeg = false;
 		startRotateByFromEnd = false;
 		byAmount = 0;
 		start = 0;
 		end = 0;
+		isStartSet = false;
 	}
 }
