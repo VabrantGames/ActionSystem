@@ -237,6 +237,7 @@ public class PercentActionTest {
 
 		public float start;
 		public float end;
+		private boolean setup = true;
 
 		public PercentTestAction moveTo (float end) {
 			this.end = end;
@@ -244,11 +245,21 @@ public class PercentActionTest {
 		}
 
 		@Override
-		public PercentTestAction setup () {
-			super.setup();
-			start = percentable.getValue();
-			return this;
+		protected void startLogic () {
+			super.startLogic();
+
+			if (setup) {
+				setup = false;
+				start = percentable.getValue();
+			}
 		}
+
+// @Override
+// public PercentTestAction setup () {
+// super.setup();
+// start = percentable.getValue();
+// return this;
+// }
 
 		@Override
 		protected void percent (float percent) {
@@ -258,6 +269,7 @@ public class PercentActionTest {
 		@Override
 		public void reset () {
 			super.reset();
+			setup = true;
 			start = 0;
 			end = 0;
 		}

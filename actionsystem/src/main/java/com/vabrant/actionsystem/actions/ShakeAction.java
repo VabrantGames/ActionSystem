@@ -50,6 +50,7 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 		6 * MathUtils.PI);
 
 	private boolean usePercent;
+	private boolean setup = true;
 	private float xAmount;
 	private float yAmount;
 	private float angleAmount;
@@ -160,6 +161,13 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	protected void startLogic () {
 		if (logic == null) throw new RuntimeException("Logic has to be set before action is ran.");
 		super.startLogic();
+
+		if (setup) {
+			setup = false;
+			data = logic.getData();
+			data.setAction(this);
+		}
+
 		data.onActionStart();
 	}
 
@@ -181,17 +189,9 @@ public class ShakeAction extends PercentAction<Shakable, ShakeAction> {
 	}
 
 	@Override
-	public ShakeAction setup () {
-		if (!setup) return this;
-		data = logic.getData();
-		data.setAction(this);
-		super.setup();
-		return this;
-	}
-
-	@Override
 	public void clear () {
 		super.clear();
+		setup = true;
 		xAmount = 0;
 		yAmount = 0;
 		angleAmount = 0;

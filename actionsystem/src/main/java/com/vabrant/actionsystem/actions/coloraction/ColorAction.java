@@ -175,8 +175,8 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 
 	@Override
-	public ColorAction setup () {
-		if (!setup) return this;
+	protected void startLogic () {
+		super.startLogic();
 
 		if (setupAction) {
 			setupAction = false;
@@ -191,13 +191,6 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 			}
 		}
 
-		super.setup();
-		return this;
-	}
-
-	@Override
-	protected void startLogic () {
-		super.startLogic();
 		if (data != null) {
 			data.onStart();
 		}

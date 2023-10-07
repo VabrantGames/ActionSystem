@@ -110,8 +110,6 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 
 	private int xType = -1;
 	private int yType = -1;
-	private boolean isXStartSet;
-	private boolean isYStartSet;
 	private boolean setupX;
 	private boolean setupY;
 	private boolean startXByFromEnd;
@@ -124,26 +122,26 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	private float xAmount;
 
 	public MoveAction moveXTo (float end) {
+		setupX = true;
 		this.xEnd = end;
 		xType = MOVE_TO;
 		return this;
 	}
 
 	public MoveAction moveXTo (float start, float end) {
-		isXStartSet = true;
 		xStart = start;
 		moveXTo(end);
 		return this;
 	}
 
 	public MoveAction moveYTo (float end) {
+		setupY = true;
 		this.yEnd = end;
 		yType = MOVE_TO;
 		return this;
 	}
 
 	public MoveAction moveYTo (float start, float end) {
-		isYStartSet = true;
 		yStart = start;
 		moveYTo(end);
 		return this;
@@ -167,10 +165,13 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		yAmount = offsetY(angle, amount);
 		xType = MOVE_BY;
 		yType = MOVE_BY;
+		setupX = true;
+		setupY = true;
 		return this;
 	}
 
 	public MoveAction moveXBy (float amount) {
+		setupX = true;
 		xAmount = amount;
 		xType = MOVE_BY;
 		return this;
@@ -179,12 +180,12 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	public MoveAction moveXBy (float start, float amount) {
 		moveXBy(amount);
 		xStart = start;
-		xEnd = xStart + xAmount;
-		isXStartSet = true;
+		xEnd = start + amount;
 		return this;
 	}
 
 	public MoveAction moveYBy (float amount) {
+		setupX = true;
 		yAmount = amount;
 		yType = MOVE_BY;
 		return this;
@@ -193,16 +194,13 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	public MoveAction moveYBy (float start, float amount) {
 		moveYBy(amount);
 		yStart = start;
-		yEnd = yStart + amount;
-		isYStartSet = true;
+		yEnd = start + amount;
 		return this;
 	}
 
 	public MoveAction moveBy (float xAmount, float yAmount) {
-		this.xAmount = xAmount;
-		this.yAmount = yAmount;
-		xType = MOVE_BY;
-		yType = MOVE_BY;
+		moveXBy(xAmount);
+		moveYBy(yAmount);
 		return this;
 	}
 
@@ -229,11 +227,11 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	@Override
-	public MoveAction setup () {
-		super.setup();
+	protected void startLogic () {
+		super.startLogic();
 
-		if (setupX || xType > -1 && !isXStartSet) {
-			isXStartSet = true;
+		if (setupX) {
+			setupX = false;
 			xStart = percentable.getX();
 
 			if (xType == MOVE_BY) {
@@ -241,15 +239,14 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 			}
 		}
 
-		if (setupY || yType > -1 && !isYStartSet) {
-			isYStartSet = true;
+		if (setupY) {
+			setupY = false;
 			yStart = percentable.getY();
 
 			if (yType == MOVE_BY) {
 				yEnd = yStart + yAmount;
 			}
 		}
-		return this;
 	}
 
 	@Override
@@ -272,7 +269,7 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 		startYByFromEnd = false;
 		xType = -1;
 		yType = -1;
-		isXStartSet = false;
-		isYStartSet = false;
+		setupX = false;
+		setupY = false;
 	}
 }

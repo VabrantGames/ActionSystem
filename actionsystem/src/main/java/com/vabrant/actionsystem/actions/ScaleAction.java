@@ -95,9 +95,6 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 
 	private int xType = -1;
 	private int yType = -1;
-
-	private boolean isXStartSet;
-	private boolean isYStartSet;
 	private boolean setupX;
 	private boolean setupY;
 	private boolean startXByFromEnd;
@@ -110,6 +107,7 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	private float yAmount;
 
 	public ScaleAction scaleXBy (float amount) {
+		setupX = true;
 		xAmount = amount;
 		xType = SCALE_BY;
 		return this;
@@ -119,11 +117,11 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 		scaleXBy(amount);
 		xStart = start;
 		xEnd = xStart + amount;
-		isXStartSet = true;
 		return this;
 	}
 
 	public ScaleAction scaleYBy (float amount) {
+		setupY = true;
 		yAmount = amount;
 		yType = SCALE_BY;
 		return this;
@@ -133,15 +131,12 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 		scaleYBy(amount);
 		yStart = start;
 		yEnd = yStart + amount;
-		isYStartSet = true;
 		return this;
 	}
 
 	public ScaleAction scaleBy (float xAmount, float yAmount) {
-		this.xAmount = xAmount;
-		this.yAmount = yAmount;
-		xType = SCALE_BY;
-		yType = SCALE_BY;
+		scaleXBy(xAmount);
+		scaleYBy(yAmount);
 		return this;
 	}
 
@@ -152,36 +147,34 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	}
 
 	public ScaleAction scaleXTo (float end) {
+		setupX = true;
 		this.xEnd = end;
 		xType = SCALE_TO;
 		return this;
 	}
 
 	public ScaleAction scaleXTo (float start, float end) {
-		isXStartSet = true;
 		xStart = start;
 		scaleXTo(end);
 		return this;
 	}
 
 	public ScaleAction scaleYTo (float end) {
+		setupY = true;
 		this.yEnd = end;
 		yType = SCALE_TO;
 		return this;
 	}
 
 	public ScaleAction scaleYTo (float start, float end) {
-		isYStartSet = true;
 		yStart = start;
 		scaleYTo(end);
 		return this;
 	}
 
 	public ScaleAction scaleTo (float xEnd, float yEnd) {
-		this.xEnd = xEnd;
-		this.yEnd = yEnd;
-		xType = SCALE_TO;
-		yType = SCALE_TO;
+		scaleXTo(xEnd);
+		scaleYTo(yEnd);
 		return this;
 	}
 
@@ -208,11 +201,11 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	}
 
 	@Override
-	public ScaleAction setup () {
-		super.setup();
+	protected void startLogic () {
+		super.startLogic();
 
-		if (setupX || xType > -1 && !isXStartSet) {
-			isXStartSet = true;
+		if (setupX) {
+			setupX = false;
 			xStart = percentable.getScaleX();
 
 			if (xType == SCALE_BY) {
@@ -220,15 +213,14 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 			}
 		}
 
-		if (setupY || yType > -1 && !isYStartSet) {
-			isYStartSet = true;
+		if (setupY) {
+			setupY = false;
 			yStart = percentable.getScaleY();
 
 			if (yType == SCALE_BY) {
 				yEnd = yStart + yAmount;
 			}
 		}
-		return this;
 	}
 
 	@Override
@@ -241,12 +233,10 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	@Override
 	public void clear () {
 		super.clear();
-		isXStartSet = false;
-		isYStartSet = false;
 		startXByFromEnd = false;
 		startYByFromEnd = false;
-		setupX = true;
-		setupY = true;
+		setupX = false;
+		setupY = false;
 		xAmount = 0;
 		yAmount = 0;
 		xStart = 0;
