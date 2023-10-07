@@ -30,57 +30,12 @@ public class ColorAction extends PercentAction<Colorable, ColorAction> {
 	}
 
 	public static ColorAction changeAlpha (Colorable colorable, float endAlpha, float duration, Interpolation interpolation) {
-		return obtain().set(colorable, duration, interpolation).changeAlpha(endAlpha);
+		return obtain().changeAlpha(endAlpha).set(colorable, duration, interpolation);
 	}
 
-	public static ColorAction changeColorRGB (Colorable colorable, Color endColor, float duration, Interpolation interpolation) {
-		return RGBColorLogic.changeColor(colorable, endColor, duration, interpolation);
-	}
-
-	public static ColorAction changeColorRGB (Colorable colorable, float red, float green, float blue, float duration,
+	public static ColorAction changeAlpha (Colorable colorable, float startAlpha, float endAlpha, float duration,
 		Interpolation interpolation) {
-		return RGBColorLogic.changeColor(colorable, red, green, blue, duration, interpolation);
-	}
-
-	public static ColorAction changeColorRGB (Colorable colorable, float red, float green, float blue, float alpha, float duration,
-		Interpolation interpolation) {
-		return RGBColorLogic.changeColor(colorable, red, green, blue, alpha, duration, interpolation);
-	}
-
-	public static ColorAction changeRed (Colorable colorable, float red, float duration, Interpolation interpolation) {
-		return RGBColorLogic.changeRed(colorable, red, duration, interpolation);
-	}
-
-	public static ColorAction changeGreen (Colorable colorable, float green, float duration, Interpolation interpolation) {
-		return RGBColorLogic.changeGreen(colorable, green, duration, interpolation);
-	}
-
-	public static ColorAction changeBlue (Colorable colorable, float blue, float duration, Interpolation interpolation) {
-		return RGBColorLogic.changeBlue(colorable, blue, duration, interpolation);
-	}
-
-	public static ColorAction changeColorHSB (Colorable colorable, float hue, float saturation, float brightness, float alpha,
-		float duration, Interpolation interpolation) {
-		return HSBColorLogic.changeColor(colorable, hue, saturation, brightness, alpha, duration, interpolation);
-	}
-
-	public static ColorAction changeColorHSB (Colorable colorable, float hue, float saturation, float brightness, float duration,
-		Interpolation interpolation) {
-		return HSBColorLogic.changeColor(colorable, hue, saturation, brightness, duration, interpolation);
-	}
-
-	public static ColorAction changeHue (Colorable colorable, float hue, float duration, Interpolation interpolation) {
-		return HSBColorLogic.changeHue(colorable, hue, duration, interpolation);
-	}
-
-	public static ColorAction changeSaturation (Colorable colorable, float saturation, float duration,
-		Interpolation interpolation) {
-		return HSBColorLogic.changeSaturation(colorable, saturation, duration, interpolation);
-	}
-
-	public static ColorAction changeBrightness (Colorable colorable, float brightness, float duration,
-		Interpolation interpolation) {
-		return HSBColorLogic.changeBrightness(colorable, brightness, duration, interpolation);
+		return obtain().changeAlpha(startAlpha, endAlpha).set(colorable, duration, interpolation);
 	}
 
 	public static int setBit (int num, int bit, int setTo) {
