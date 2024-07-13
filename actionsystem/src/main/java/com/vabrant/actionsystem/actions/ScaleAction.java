@@ -114,9 +114,10 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	}
 
 	public ScaleAction scaleXBy (float start, float amount) {
-		scaleXBy(amount);
 		xStart = start;
 		xEnd = xStart + amount;
+		xAmount = amount;
+		xType = SCALE_BY;
 		return this;
 	}
 
@@ -128,9 +129,10 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 	}
 
 	public ScaleAction scaleYBy (float start, float amount) {
-		scaleYBy(amount);
 		yStart = start;
 		yEnd = yStart + amount;
+		yAmount = amount;
+		yType = SCALE_BY;
 		return this;
 	}
 
@@ -148,27 +150,29 @@ public class ScaleAction extends PercentAction<Scalable, ScaleAction> {
 
 	public ScaleAction scaleXTo (float end) {
 		setupX = true;
-		this.xEnd = end;
+		xEnd = end;
 		xType = SCALE_TO;
 		return this;
 	}
 
 	public ScaleAction scaleXTo (float start, float end) {
 		xStart = start;
-		scaleXTo(end);
+		xEnd = end;
+		xType = SCALE_TO;
 		return this;
 	}
 
 	public ScaleAction scaleYTo (float end) {
 		setupY = true;
-		this.yEnd = end;
+		yEnd = end;
 		yType = SCALE_TO;
 		return this;
 	}
 
 	public ScaleAction scaleYTo (float start, float end) {
 		yStart = start;
-		scaleYTo(end);
+		yEnd = end;
+		yType = SCALE_TO;
 		return this;
 	}
 

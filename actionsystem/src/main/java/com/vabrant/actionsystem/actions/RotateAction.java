@@ -52,7 +52,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 
 	private int type = -1;
 
-	private boolean setup = true;
+	private boolean setup;
 	private boolean cap;
 	private boolean capDeg;
 	private boolean startRotateByFromEnd;
@@ -61,29 +61,31 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	private float end;
 
 	public RotateAction rotateTo (float end) {
+		setup = true;
 		this.end = end;
 		type = ROTATE_TO;
 		return this;
 	}
 
 	public RotateAction rotateTo (float start, float end) {
-		setup = true;
 		this.start = start;
-		rotateTo(end);
+		this.end = end;
+		type = ROTATE_TO;
 		return this;
 	}
 
 	public RotateAction rotateBy (float amount) {
+		setup = true;
 		byAmount = amount;
 		type = ROTATE_BY;
 		return this;
 	}
 
 	public RotateAction rotateBy (float start, float amount) {
-		setup = true;
-		rotateBy(amount);
 		this.start = start;
 		end = start + amount;
+		byAmount = amount;
+		type = ROTATE_BY;
 		return this;
 	}
 
@@ -142,7 +144,7 @@ public class RotateAction extends PercentAction<Rotatable, RotateAction> {
 	public void clear () {
 		super.clear();
 		type = -1;
-		setup = true;
+		setup = false;
 		cap = false;
 		capDeg = false;
 		startRotateByFromEnd = false;

@@ -51,25 +51,27 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 	private int type = -1;
 
 	private boolean startZoomByFromEnd;
-	private boolean setup = true;
+	private boolean setup;
 	private float start;
 	private float end;
 	private float amount;
 
 	public ZoomAction zoomTo (float end) {
+		setup = true;
 		this.end = end;
 		type = ZOOM_TO;
 		return this;
 	}
 
 	public ZoomAction zoomTo (float start, float end) {
-		setup = false;
 		this.start = start;
-		zoomTo(end);
+		this.end = end;
+		type = ZOOM_TO;
 		return this;
 	}
 
 	public ZoomAction zoomBy (float amount) {
+		setup = true;
 		this.amount = amount;
 		type = ZOOM_BY;
 		return this;
@@ -77,9 +79,9 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 
 	public ZoomAction zoomBy (float start, float amount) {
 		setup = false;
-		zoomBy(amount);
 		this.start = start;
 		end = start + amount;
+		this.amount = amount;
 		return this;
 	}
 
@@ -116,7 +118,7 @@ public class ZoomAction extends PercentAction<Zoomable, ZoomAction> {
 	@Override
 	public void clear () {
 		super.clear();
-		setup = true;
+		setup = false;
 		start = 0;
 		end = 0;
 		amount = 0;

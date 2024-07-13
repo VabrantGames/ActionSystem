@@ -123,27 +123,29 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 
 	public MoveAction moveXTo (float end) {
 		setupX = true;
-		this.xEnd = end;
+		xEnd = end;
 		xType = MOVE_TO;
 		return this;
 	}
 
 	public MoveAction moveXTo (float start, float end) {
 		xStart = start;
-		moveXTo(end);
+		xEnd = end;
+		xType = MOVE_TO;
 		return this;
 	}
 
 	public MoveAction moveYTo (float end) {
 		setupY = true;
-		this.yEnd = end;
+		yEnd = end;
 		yType = MOVE_TO;
 		return this;
 	}
 
 	public MoveAction moveYTo (float start, float end) {
 		yStart = start;
-		moveYTo(end);
+		yEnd = end;
+		yType = MOVE_TO;
 		return this;
 	}
 
@@ -178,23 +180,25 @@ public class MoveAction extends PercentAction<Movable, MoveAction> {
 	}
 
 	public MoveAction moveXBy (float start, float amount) {
-		moveXBy(amount);
 		xStart = start;
 		xEnd = start + amount;
+		xAmount = amount;
+		xType = MOVE_BY;
 		return this;
 	}
 
 	public MoveAction moveYBy (float amount) {
-		setupX = true;
+		setupY = true;
 		yAmount = amount;
 		yType = MOVE_BY;
 		return this;
 	}
 
 	public MoveAction moveYBy (float start, float amount) {
-		moveYBy(amount);
 		yStart = start;
 		yEnd = start + amount;
+		yAmount = amount;
+		yType = MOVE_BY;
 		return this;
 	}
 

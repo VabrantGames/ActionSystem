@@ -2,7 +2,14 @@ apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
 afterEvaluate {
-    if (!isRelease()) version += "-SNAPSHOT"
+//    if (!isRelease()) version += "-SNAPSHOT"
+    if (project.hasProperty("RELEASE")) {
+
+    } else if (project.hasProperty("SNAPSHOT")) {
+        version += "-SNAPSHOT"
+    } else if (project.hasProperty("LOCAL")) {
+        version += "-LOCAL"
+    }
 
     java {
         withSourcesJar()
