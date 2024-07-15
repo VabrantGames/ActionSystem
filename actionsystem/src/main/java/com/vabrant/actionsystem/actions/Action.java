@@ -18,9 +18,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
-import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.EventListener;
-import com.vabrant.actionsystem.events.EventManager;
+import com.vabrant.actionsystem.events.*;
 import com.vabrant.actionsystem.logger.ActionLogger;
 
 /** The base class for all actions.
@@ -215,17 +213,17 @@ public class Action<T extends Action<T>> implements Poolable {
 		return (T)this;
 	}
 
-	public T subscribeToEvent (String eventType, EventListener<?> listener) {
+	public T subscribeToEvent (Class<? extends Event> eventType, EventListener<?> listener) {
 		eventManager.subscribe(eventType, listener);
 		return (T)this;
 	}
 
-	public T unsubscribeFromEvent (String eventType, EventListener<?> listener) {
+	public T unsubscribeFromEvent (Class<? extends Event> eventType, EventListener<?> listener) {
 		eventManager.unsubscribe(eventType, listener);
 		return (T)this;
 	}
 
-	public T clearListeners (String eventType) {
+	public T clearListeners (Class<? extends Event> eventType) {
 		eventManager.clearListeners(eventType);
 		return (T)this;
 	}
@@ -259,9 +257,8 @@ public class Action<T extends Action<T>> implements Poolable {
 
 		logger.info("Reset");
 
-		if (eventManager.hasEvent(ActionEvent.RESET_EVENT)) {
-			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsReset();
+		if (eventManager.hasEvent(ActionResetEvent.class)) {
+			ActionResetEvent event = ActionPools.obtain(ActionResetEvent.class);
 			event.setAction(this);
 			eventManager.fire(event);
 		}
@@ -307,9 +304,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = true;
 		startLogic();
 
-		if (eventManager != null && eventManager.hasEvent(ActionEvent.START_EVENT)) {
-			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsStart();
+		if (eventManager.hasEvent(ActionStartEvent.class)) {
+			ActionStartEvent event = ActionPools.obtain(ActionStartEvent.class);
 			event.setAction(this);
 			eventManager.fire(event);
 		}
@@ -341,9 +337,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = false;
 		restartLogic();
 
-		if (eventManager.hasEvent(ActionEvent.RESTART_EVENT)) {
-			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsRestart();
+		if (eventManager.hasEvent(ActionRestartEvent.class)) {
+			ActionRestartEvent event = ActionPools.obtain(ActionRestartEvent.class);
 			event.setAction(this);
 			eventManager.fire(event);
 		}
@@ -366,9 +361,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = false;
 		endLogic();
 
-		if (eventManager.hasEvent(ActionEvent.END_EVENT)) {
-			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsEnd();
+		if (eventManager.hasEvent(ActionEndEvent.class)) {
+			ActionEndEvent event = ActionPools.obtain(ActionEndEvent.class);
 			event.setAction(this);
 			eventManager.fire(event);
 		}
@@ -393,9 +387,8 @@ public class Action<T extends Action<T>> implements Poolable {
 		isRunning = false;
 		killLogic();
 
-		if (eventManager.hasEvent(ActionEvent.KILL_EVENT)) {
-			ActionEvent event = ActionPools.obtain(ActionEvent.class);
-			event.setAsKill();
+		if (eventManager.hasEvent(ActionKillEvent.class)) {
+			ActionKillEvent event = ActionPools.obtain(ActionKillEvent.class);
 			event.setAction(this);
 			eventManager.fire(event);
 		}

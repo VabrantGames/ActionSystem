@@ -53,6 +53,6 @@ public class RepeatActionUnitTest {
 		// Remove and pool action
 		manager.update(Float.MAX_VALUE);
 
-		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", Action.class, null, a, null));
+		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", null, Action.class, a, null));
 	}
 }

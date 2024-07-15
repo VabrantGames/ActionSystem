@@ -17,8 +17,9 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.ActionListener;
+import com.vabrant.actionsystem.events.Event;
+import com.vabrant.actionsystem.events.ActionResetEvent;
+import com.vabrant.actionsystem.events.EventListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 
 /** Keeps track of actions that may be nested inside other actions or to provide global access to actions.
@@ -34,9 +35,9 @@ public class ActionWatcher {
 	private final ActionLogger logger;
 	private final ObjectMap<String, Action<?>> watchActions;
 
-	private ActionListener cleanupListener = new ActionListener() {
+	private EventListener cleanupListener = new EventListener() {
 		@Override
-		public void onEvent (ActionEvent e) {
+		public void onEvent (Event e) {
 			remove(e.getAction().getName());
 		}
 	};
@@ -61,7 +62,7 @@ public class ActionWatcher {
 			return;
 		}
 
-		action.subscribeToEvent(ActionEvent.RESET_EVENT, cleanupListener);
+		action.subscribeToEvent(ActionResetEvent.class, cleanupListener);
 		watchActions.put(key, action);
 		logger.info("Watching", key);
 	}
@@ -81,7 +82,7 @@ public class ActionWatcher {
 			return false;
 		}
 
-		action.unsubscribeFromEvent(ActionEvent.RESET_EVENT, cleanupListener);
+		action.unsubscribeFromEvent(ActionResetEvent.class, cleanupListener);
 
 		logger.info("Stopped Watching", name);
 		return true;

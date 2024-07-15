@@ -28,8 +28,8 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
-import com.vabrant.actionsystem.events.ActionEvent;
 import com.vabrant.actionsystem.events.Event;
+import com.vabrant.actionsystem.events.ActionResetEvent;
 import com.vabrant.actionsystem.events.EventListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
@@ -151,17 +151,17 @@ public class ActionPoolsTest {
 
 		int idx = 0;
 		MockMultiParentAction root = MockMultiParentAction.obtain();
-		root.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
+		root.subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++));
 
 		MockSingleParentAction child1 = MockSingleParentAction.obtain();
-		child1.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
-		child1.set(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
+		child1.subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++));
+		child1.set(MockAction.obtain().subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++)));
 		root.add(child1);
 
 		MockMultiParentAction child2 = MockMultiParentAction.obtain();
-		child2.subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++));
-		child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
-		child2.add(MockAction.obtain().subscribeToEvent(ActionEvent.RESET_EVENT, new PooledListener(idx++)));
+		child2.subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++));
+		child2.add(MockAction.obtain().subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++)));
+		child2.add(MockAction.obtain().subscribeToEvent(ActionResetEvent.class, new PooledListener(idx++)));
 		root.add(child2);
 
 		ActionPools.free(root);

@@ -12,8 +12,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
-import com.vabrant.actionsystem.events.ActionEvent;
-import com.vabrant.actionsystem.events.ActionListener;
+import com.vabrant.actionsystem.events.*;
 import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
@@ -98,9 +97,9 @@ public class ActionTest {
 		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
-		action.subscribeToEvent(ActionEvent.START_EVENT, new ActionListener() {
+		action.subscribeToEvent(ActionStartEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				result[0] = true;
 			}
 		});
@@ -116,9 +115,9 @@ public class ActionTest {
 		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
-		action.subscribeToEvent(ActionEvent.END_EVENT, new ActionListener() {
+		action.subscribeToEvent(ActionEndEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				result[0] = true;
 			}
 		});
@@ -135,9 +134,9 @@ public class ActionTest {
 		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
-		action.subscribeToEvent(ActionEvent.KILL_EVENT, new ActionListener() {
+		action.subscribeToEvent(ActionKillEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				result[0] = true;
 			}
 		});
@@ -154,9 +153,9 @@ public class ActionTest {
 		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
-		action.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+		action.subscribeToEvent(ActionRestartEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				result[0] = true;
 			}
 		});
@@ -173,9 +172,9 @@ public class ActionTest {
 		final boolean[] result = {false};
 		MockAction action = MockAction.obtain();
 
-		action.subscribeToEvent(ActionEvent.RESET_EVENT, new ActionListener() {
+		action.subscribeToEvent(ActionResetEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				result[0] = true;
 			}
 		});
@@ -270,25 +269,25 @@ public class ActionTest {
 
 	@Test
 	public void restartTest () {
-		MockAction action = MockAction.obtain().subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+		MockAction action = MockAction.obtain().subscribeToEvent(ActionRestartEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				assertFalse(e.getAction().isRunning());
 			}
 		});
 
 		MockSingleParentAction singleParentAction = MockSingleParentAction.obtain().set(MockAction.obtain());
-		singleParentAction.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+		singleParentAction.subscribeToEvent(ActionRestartEvent.class, new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				assertFalse(((MockSingleParentAction)e.getAction()).getAction().isRunning());
 			}
 		});
 
 		MockMultiParentAction multiParentAction = MockMultiParentAction.obtain().add(MockAction.obtain()).add(MockAction.obtain())
-			.subscribeToEvent(ActionEvent.RESTART_EVENT, new ActionListener() {
+			.subscribeToEvent(ActionRestartEvent.class, new EventListener() {
 				@Override
-				public void onEvent (ActionEvent e) {
+				public void onEvent (Event e) {
 					Array<Action<?>> actions = ((MockMultiParentAction)e.getAction()).getActions();
 
 					for (Action a : actions) {
@@ -316,16 +315,16 @@ public class ActionTest {
 
 	@Test
 	public void cleanupEventTest () {
-		ActionListener listener = new ActionListener() {
+		EventListener listener = new EventListener() {
 			@Override
-			public void onEvent (ActionEvent e) {
+			public void onEvent (Event e) {
 				e.getAction().getLogger().print("Hello cleanup event");
 			}
 		};
 
 		MockAction action = MockAction.obtain();
 		action.setName(testName.getMethodName());
-		action.subscribeToEvent(ActionEvent.RESET_EVENT, listener);
+		action.subscribeToEvent(ActionResetEvent.class, listener);
 
 		// Mock cycle
 		makeRoot(action, true);

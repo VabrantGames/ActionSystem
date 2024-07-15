@@ -1,13 +1,26 @@
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
-afterEvaluate {
-//    if (!isRelease()) version += "-SNAPSHOT"
-    if (project.hasProperty("RELEASE")) {
+    def gitBranch() {
+        def branch = ""
+        def proc = "git rev-parse --abbrev-ref HEAD".execute()
+        proc.in.eachLine { line -> branch = line }
+        proc.err.eachLine { line -> println line }
+        proc.waitFor()
+        branch
+    }
 
-    } else if (project.hasProperty("SNAPSHOT")) {
+afterEvaluate {
+    def branchName = gitBranch()
+    branchName.replaceAll('-', '_')
+
+    if (project.hasProperty("SNAPSHOT")) {
         version += "-SNAPSHOT"
     } else if (project.hasProperty("LOCAL")) {
+        if (!branchName.equals("master")) {
+           version += '-' + (branchName.replaceAll('-', '_'))
+        }
+
         version += "-LOCAL"
     }
 

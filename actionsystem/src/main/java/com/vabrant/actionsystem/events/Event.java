@@ -1,21 +1,23 @@
 
 package com.vabrant.actionsystem.events;
 
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import com.vabrant.actionsystem.actions.Action;
 
-public class Event implements Pool.Poolable {
+public class Event implements Poolable {
 
-	protected String type;
+	private Action action;
 
-	public Event (String type) {
-		this.type = type;
+	public void setAction (Action action) {
+		this.action = action;
 	}
 
-	public String getType () {
-		return type;
+	public Action getAction () {
+		return action;
 	}
 
 	@Override
 	public void reset () {
+		action = null;
 	}
 }

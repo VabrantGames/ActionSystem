@@ -57,7 +57,7 @@ public class GroupActionUnitTest {
 		// Remove and pool the action
 		manager.update(Float.MAX_VALUE);
 
-		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", Action.class, null, m1, null));
-		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", Action.class, null, m2, null));
+		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", null, Action.class, m1, null));
+		assertEquals(Boolean.TRUE, TestUtils.executePrivateMethod("hasBeenPooled", null, Action.class, m2, null));
 	}
 }
