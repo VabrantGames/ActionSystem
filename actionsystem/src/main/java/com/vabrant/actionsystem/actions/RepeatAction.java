@@ -160,6 +160,7 @@ public class RepeatAction extends Action<RepeatAction> {
 	@Override
 	public void updateLogic (float delta) {
 		if (!action.update(delta)) {
+			if (isDead) return;
 			if (isContinuous || count < amount) {
 				if (!isContinuous) count++;
 				if (logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
