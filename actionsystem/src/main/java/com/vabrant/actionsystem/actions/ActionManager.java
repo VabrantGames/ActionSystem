@@ -18,6 +18,7 @@ package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
 import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.LoggerManager;
 
 /** Manages actions.
  *
@@ -52,7 +53,7 @@ public class ActionManager {
 		action.setRootAction(action);
 		actions.add(action);
 		action.start();
-		if (logger != null) logger.info("Added" + action.getLogger().getActionName(), action.getLogger().getClassName());
+		if (LoggerManager.canLog()) logger.info("Added");
 	}
 
 	public void update (float delta) {

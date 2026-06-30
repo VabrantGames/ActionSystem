@@ -32,6 +32,7 @@ import com.vabrant.actionsystem.events.Event;
 import com.vabrant.actionsystem.events.ActionResetEvent;
 import com.vabrant.actionsystem.events.EventListener;
 import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
@@ -47,7 +48,7 @@ public class ActionPoolsTest {
 	@BeforeClass
 	public static void init () {
 		application = new HeadlessApplication(new ApplicationAdapter() {});
-		ActionPools.logger.setLevel(ActionLogger.LogLevel.DEBUG);
+		ActionPools.setLogLevel(Logger.DEBUG);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 

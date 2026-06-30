@@ -18,6 +18,7 @@ package com.vabrant.actionsystem.logger;
 
 import com.badlogic.gdx.utils.StringBuilder;
 
+@Deprecated
 public class ActionLogger {
 
 	private static boolean RESTRICT_OUTPUT = false;

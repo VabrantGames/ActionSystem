@@ -16,6 +16,8 @@
 
 package com.vabrant.actionsystem.actions;
 
+import com.vabrant.actionsystem.logger.LoggerManager;
+
 /** Repeats an {@link Action} a specified number of times or indefinitely.
  * @author John Barton */
 public class RepeatAction extends Action<RepeatAction> {
@@ -162,7 +164,7 @@ public class RepeatAction extends Action<RepeatAction> {
 		if (!action.update(delta)) {
 			if (isContinuous || count < amount) {
 				if (!isContinuous) count++;
-				if (logger != null && !isContinuous) logger.debug("Repeat", Integer.toString(getCount()));
+				if (LoggerManager.canLog() && !isContinuous) logger.debug(this, "Repeat", Integer.toString(getCount()));
 				if (pingPong && count > 1 || pingPong && isContinuous) reversible.setReverse(reverseState = !reverseState);
 				action.start();
 			} else {

@@ -12,6 +12,7 @@ import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionWatcher;
 import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
@@ -46,7 +47,7 @@ public class ActionWatcherTest {
 		// Create parent and child actions
 		MockSingleParentAction parent = MockSingleParentAction.obtain();
 		// parent.setLogLevel(ActionLogger.DEBUG);
-		MockAction child = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LogLevel.DEBUG).watchAction(watcher);
+		MockAction child = MockAction.obtain().setName(tag).setLogLevel(Logger.DEBUG).watchAction(watcher);
 		child.setCustomUpdateCode(new Runnable() {
 			@Override
 			public void run () {
@@ -73,7 +74,7 @@ public class ActionWatcherTest {
 		TestUtils.printTestHeader(testName.getMethodName());
 
 		final String tag = "action";
-		MockAction action = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LogLevel.DEBUG).watchAction(watcher);
+		MockAction action = MockAction.obtain().setName(tag).setLogLevel(Logger.DEBUG).watchAction(watcher);
 		action.setCustomUpdateCode(new Runnable() {
 			@Override
 			public void run () {

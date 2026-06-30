@@ -23,11 +23,22 @@ import com.badlogic.gdx.utils.ReflectionPool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
+import com.vabrant.actionsystem.logger.LoggerManager;
 
 public class ActionPools {
 
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
-	public static final ActionLogger logger = ActionLogger.getLogger(ActionPools.class, ActionLogger.LogLevel.NONE);
+	public static final Logger logger = LoggerManager.getLogger(ActionPools.class);
+	public static int logLevel = Logger.NONE;
+
+	public static void setLogLevel (int logLevel) {
+		ActionPools.logLevel = logLevel;
+	}
+
+	public static int getLogLevel () {
+		return logLevel;
+	}
 
 	/** Where you want the pool to be filled to.
 	 * @param type
@@ -38,13 +49,17 @@ public class ActionPools {
 		Pool<T> pool = get(type);
 
 		if (pool.getFree() == pool.max) {
-			logger.info(type.getSimpleName() + " pool is full.");
+			if (LoggerManager.canLog()) {
+				LoggerManager.print(Logger.INFO, logLevel, null, logger, type.getSimpleName(), "Pool is full.", null);
+			}
 			return;
 		}
 
 		int amountToAdd = (pool.getFree() + amount) < pool.max ? amount : pool.max - pool.getFree();
 
-		logger.debug("AmountToAdd", Integer.toString(amountToAdd));
+		if (LoggerManager.canLog()) {
+			LoggerManager.print(Logger.DEBUG, logLevel, null, logger, "Amount to add", null, null);
+		}
 
 		for (int i = 0; i < amountToAdd; i++) {
 			try {
@@ -106,10 +121,12 @@ public class ActionPools {
 					pool = ActionPools.get(action.getClass());
 				}
 
+				if (LoggerManager.canLog()) {
+					LoggerManager.print(Logger.INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+				}
+
 				pool.free(action);
 				action.setPooled(true);
-
-				logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
 			} else {
 				action.stateReset();
 			}
@@ -163,6 +180,8 @@ public class ActionPools {
 			action.stateReset();
 		}
 
-		logger.info("Pooled" + action.getLogger().getActionName(), action.getLogger().getClassName());
+		if (LoggerManager.canLog()) {
+			LoggerManager.print(Logger.INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+		}
 	}
 }

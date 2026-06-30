@@ -19,7 +19,8 @@ package com.vabrant.actionsystem.actions;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.vabrant.actionsystem.events.*;
-import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
+import com.vabrant.actionsystem.logger.LoggerManager;
 
 /** The base class for all actions.
  *
@@ -53,6 +54,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected boolean isDead;
 	protected boolean isRunning;
 	protected boolean isPaused;
+	protected int logLevel = Logger.NONE;
 
 	private String name;
 	private Condition pauseCondition;
@@ -60,24 +62,28 @@ public class Action<T extends Action<T>> implements Poolable {
 	private ActionManager actionManager;
 	protected EventManager eventManager;
 
-	protected final ActionLogger logger;
+	protected final Logger logger;
 
 	public Action () {
-		logger = ActionLogger.getLogger(this.getClass(), ActionLogger.LogLevel.NONE);
+		logger = LoggerManager.getLogger(this.getClass());
 		eventManager = new EventManager();
 	}
 
-	public T setLogLevel (ActionLogger.LogLevel level) {
-		logger.setLevel(level);
+	public T setLogLevel (int level) {
+		logLevel = level;
 		return (T)this;
+	}
+
+	public int getLogLevel () {
+		return logLevel;
 	}
 
 	public T soloLogger (boolean solo) {
-		logger.solo(solo);
+		LoggerManager.solo(this);
 		return (T)this;
 	}
 
-	public ActionLogger getLogger () {
+	public Logger getLogger () {
 		return logger;
 	}
 
@@ -159,7 +165,6 @@ public class Action<T extends Action<T>> implements Poolable {
 
 	public T setName (String name) {
 		this.name = name;
-		logger.setName(name);
 		return (T)this;
 	}
 
@@ -255,7 +260,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public void reset () {
 		if (inUse()) throw new IllegalStateException("Action can't be reset while in use.");
 
-		logger.info("Reset");
+		logger.info(this, "Reset");
 
 		if (eventManager.hasEvent(ActionResetEvent.class)) {
 			ActionResetEvent event = ActionPools.obtain(ActionResetEvent.class);
@@ -265,7 +270,6 @@ public class Action<T extends Action<T>> implements Poolable {
 
 		clear();
 		stateReset();
-		logger.reset();
 		eventManager.reset();
 		pauseCondition = null;
 		resumeCondition = null;
@@ -299,7 +303,7 @@ public class Action<T extends Action<T>> implements Poolable {
 			"Managed actions may not be reused without being returned to a pool. To reuse an action make it unmanaged.");
 		if (rootAction.isDead) throw new IllegalStateException("Action is dead.");
 
-		logger.info("Start Action");
+		logger.info(this, "Start Action");
 
 		isRunning = true;
 		startLogic();
@@ -332,7 +336,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	/** <b>Should only be called by child actions of an action.</b><br>
 	 * This method will restart the action without starting it again. */
 	public final void restart0 () {
-		logger.info("Restart Action");
+		logger.info(this, "Restart Action");
 
 		isRunning = false;
 		restartLogic();
@@ -355,7 +359,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public final T end () {
 		if (!isRunning()) return (T)this;
 
-		logger.info("End Action");
+		logger.info(this, "End Action");
 
 		if (isRoot()) isDead = true;
 		isRunning = false;
@@ -381,7 +385,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	public final T kill () {
 		if (!isRunning()) return (T)this;
 
-		logger.info("Kill Action");
+		logger.info(this, "Kill Action");
 
 		if (isRoot()) isDead = true;
 		isRunning = false;
