@@ -22,7 +22,6 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.logger.LoggerManager;
 
@@ -30,7 +29,7 @@ public class ActionPools {
 
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
 	public static final Logger logger = LoggerManager.getLogger(ActionPools.class);
-	public static int logLevel = Logger.NONE;
+	public static int logLevel = Logger.LOGGER_NONE;
 
 	public static void setLogLevel (int logLevel) {
 		ActionPools.logLevel = logLevel;
@@ -50,7 +49,7 @@ public class ActionPools {
 
 		if (pool.getFree() == pool.max) {
 			if (LoggerManager.canLog()) {
-				LoggerManager.print(Logger.INFO, logLevel, null, logger, type.getSimpleName(), "Pool is full.", null);
+				LoggerManager.print(Logger.LOGGER_INFO, logLevel, null, logger, type.getSimpleName(), "Pool is full.", null);
 			}
 			return;
 		}
@@ -58,7 +57,7 @@ public class ActionPools {
 		int amountToAdd = (pool.getFree() + amount) < pool.max ? amount : pool.max - pool.getFree();
 
 		if (LoggerManager.canLog()) {
-			LoggerManager.print(Logger.DEBUG, logLevel, null, logger, "Amount to add", null, null);
+			LoggerManager.print(Logger.LOGGER_DEBUG, logLevel, null, logger, "Amount to add", null, null);
 		}
 
 		for (int i = 0; i < amountToAdd; i++) {
@@ -122,7 +121,7 @@ public class ActionPools {
 				}
 
 				if (LoggerManager.canLog()) {
-					LoggerManager.print(Logger.INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+					LoggerManager.print(Logger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
 				}
 
 				pool.free(action);
@@ -181,7 +180,7 @@ public class ActionPools {
 		}
 
 		if (LoggerManager.canLog()) {
-			LoggerManager.print(Logger.INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+			LoggerManager.print(Logger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
 		}
 	}
 }

@@ -54,7 +54,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected boolean isDead;
 	protected boolean isRunning;
 	protected boolean isPaused;
-	protected int logLevel = Logger.NONE;
+	protected int logLevel = Logger.LOGGER_NONE;
 
 	private String name;
 	private Condition pauseCondition;

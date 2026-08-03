@@ -15,7 +15,6 @@ import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.PercentAction;
 import com.vabrant.actionsystem.actions.Percentable;
-import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.test.TestUtils;
 import java.util.Arrays;
@@ -53,7 +52,7 @@ public class PercentActionTest {
 	}
 
 	public PercentTestAction getTestAction () {
-		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.DEBUG);
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.LOGGER_DEBUG);
 
 		// Make root action (Usually done by the action manager)
 		try {
@@ -83,7 +82,7 @@ public class PercentActionTest {
 		System.out.println(duration);
 
 		ActionManager manager = new ActionManager();
-		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.DEBUG);
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.LOGGER_DEBUG);
 
 		manager.addAction(action);
 
@@ -103,7 +102,7 @@ public class PercentActionTest {
 
 		ActionManager manager = new ActionManager();
 		PercentTestAction action = PercentTestAction.set(testClass, end, duration).unmanage()
-			.setLogLevel(Logger.DEBUG);
+			.setLogLevel(Logger.LOGGER_DEBUG);
 
 		// Starts action
 		manager.addAction(action);
@@ -129,7 +128,7 @@ public class PercentActionTest {
 		TestUtils.printTestHeader("Set Time Test");
 
 		ActionManager manager = new ActionManager();
-		PercentTestAction action = PercentTestAction.set(testClass, 10, 1).setLogLevel(Logger.DEBUG);
+		PercentTestAction action = PercentTestAction.set(testClass, 10, 1).setLogLevel(Logger.LOGGER_DEBUG);
 
 		manager.addAction(action);
 		manager.update(0);
@@ -144,7 +143,7 @@ public class PercentActionTest {
 		printTestHeader("Restart Cycle Test");
 
 		ActionManager manager = new ActionManager();
-		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.DEBUG);
+		PercentTestAction action = PercentTestAction.set(testClass, end, duration).setLogLevel(Logger.LOGGER_DEBUG);
 
 		manager.addAction(action);
 		manager.update(0.5f);

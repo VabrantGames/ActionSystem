@@ -4,10 +4,10 @@ import com.vabrant.actionsystem.actions.Action;
 
 public class Logger {
 
-    public static final int NONE = 0;
-    public static final int ERROR = 1;
-    public static final int INFO = 2;
-    public static final int DEBUG = 3;
+    public static final int LOGGER_NONE = 0;
+    public static final int LOGGER_ERROR = 1;
+    public static final int LOGGER_INFO = 2;
+    public static final int LOGGER_DEBUG = 3;
 
     private final String loggerName;
 
@@ -32,7 +32,11 @@ public class Logger {
     }
 
     public void info (Action<?> action, String header, String body, Exception exception) {
-        print(INFO, action, header, body, exception);
+        print(LOGGER_INFO, action, header, body, exception);
+    }
+
+    public void info (int logLevel, String soloID, String header, String body, Exception exception) {
+        LoggerManager.print(LOGGER_INFO, logLevel, soloID, this, header, body, exception);
     }
 
     public void debug (Action<?> action, String header) {
@@ -44,7 +48,11 @@ public class Logger {
     }
 
     public void debug (Action<?> action, String header, String body, Exception exception) {
-        print(DEBUG, action, header, body, exception);
+        print(LOGGER_DEBUG, action, header, body, exception);
+    }
+
+    public void debug (int logLevel, String soloID, String header, String body, Exception exception) {
+        LoggerManager.print(LOGGER_DEBUG, logLevel, soloID, this, header, body, exception);
     }
 
     public void error (Action<?> action, String header) {
@@ -56,10 +64,15 @@ public class Logger {
     }
 
     public void error (Action<?> action, String header, String body, Exception exception) {
-        print(ERROR, action, header, body, exception);
+        print(LOGGER_ERROR, action, header, body, exception);
     }
 
-    public void print (int level, Action action, String header, String body, Exception exception) {
-        LoggerManager.print(level, action,  header, body, null);
+    public void error (int logLevel, String soloID, String header, String body, Exception exception) {
+        LoggerManager.print(LOGGER_ERROR, logLevel, soloID, this, header, body, exception);
     }
+
+    private void print (int levelType, Action action, String header, String body, Exception exception) {
+        LoggerManager.print(levelType, action.getLogLevel(), action.getName(), this, header, body, exception);
+    }
+
 }

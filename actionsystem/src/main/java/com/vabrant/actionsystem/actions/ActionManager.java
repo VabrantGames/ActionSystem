@@ -17,7 +17,7 @@
 package com.vabrant.actionsystem.actions;
 
 import com.badlogic.gdx.utils.Array;
-import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.logger.LoggerManager;
 
 /** Manages actions.
@@ -25,8 +25,10 @@ import com.vabrant.actionsystem.logger.LoggerManager;
  * @author John Barton */
 public class ActionManager {
 
+	private int logLevel;
+	private String logID;
 	private final Array<Action<?>> actions;
-	private final ActionLogger logger = ActionLogger.getLogger(ActionManager.class);
+	private final Logger logger = LoggerManager.getLogger(ActionManager.class);
 
 	public ActionManager () {
 		this(10);
@@ -36,7 +38,15 @@ public class ActionManager {
 		actions = new Array<>(initialSize);
 	}
 
-	public ActionLogger getLogger () {
+	public void setLogLevel (int logLevel) {
+		this.logLevel = logLevel;
+	}
+
+	public void setLogID (String logID) {
+		this.logID = logID;
+	}
+
+	public Logger getLogger () {
 		return logger;
 	}
 
@@ -53,7 +63,7 @@ public class ActionManager {
 		action.setRootAction(action);
 		actions.add(action);
 		action.start();
-		if (LoggerManager.canLog()) logger.info("Added");
+		if (LoggerManager.canLog()) logger.info(logLevel, logID, "Added", null, null);
 	}
 
 	public void update (float delta) {
@@ -102,7 +112,7 @@ public class ActionManager {
 	/** Pools all action.
 	 * @param freeUnmanaged */
 	public void freeAll (boolean freeUnmanaged) {
-		if (logger != null) logger.debug("Free All");
+		if (logger != null) logger.debug(logLevel, logID, "Free All", null, null);
 		for (int i = actions.size - 1; i >= 0; i--) {
 			Action<?> action = actions.removeIndex(i);
 			action.setRoot(false);

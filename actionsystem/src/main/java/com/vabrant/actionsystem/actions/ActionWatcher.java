@@ -20,19 +20,26 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.vabrant.actionsystem.events.Event;
 import com.vabrant.actionsystem.events.ActionResetEvent;
 import com.vabrant.actionsystem.events.EventListener;
-import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.Logger;
+import com.vabrant.actionsystem.logger.LoggerManager;
 
 /** Keeps track of actions that may be nested inside other actions or to provide global access to actions.
  * @author John Barton */
 public class ActionWatcher {
 
 	private static ActionWatcher instance = null;
+	private static final Logger logger = LoggerManager.getLogger(ActionWatcher.class);
 
 	public static ActionWatcher getInstance () {
-		return instance != null ? instance : (instance = new ActionWatcher(20));
+		if (instance != null) return instance;
+
+		instance = new ActionWatcher(20);
+		instance.setLogID("DefaultActionWatcher");
+		return instance;
 	}
 
-	private final ActionLogger logger;
+	private int logLevel = Logger.LOGGER_NONE;
+	private String logID;
 	private final ObjectMap<String, Action<?>> watchActions;
 
 	private EventListener cleanupListener = new EventListener() {
@@ -44,11 +51,22 @@ public class ActionWatcher {
 
 	public ActionWatcher (int amount) {
 		watchActions = new ObjectMap<>(amount);
-		logger = ActionLogger.getLogger(ActionWatcher.class, ActionLogger.LogLevel.NONE);
 	}
 
 	public Action<?> get (String key) {
 		return watchActions.get(key);
+	}
+
+	public void setLogLevel (int level) {
+		logLevel = level;
+	}
+
+	public void setLogID (String logID) {
+		this.logID = logID;
+	}
+
+	public Logger getLogger () {
+		return logger;
 	}
 
 	public void watch (Action<?> action) {
@@ -58,13 +76,13 @@ public class ActionWatcher {
 
 		// Check if the watcher contains the key or the same action instance
 		if (watchActions.containsKey(key) || watchActions.containsValue(action, false)) {
-			logger.debug("Key or action is already added.");
+			logger.debug(logLevel, logID, "Key or action is already added.", null, null);
 			return;
 		}
 
 		action.subscribeToEvent(ActionResetEvent.class, cleanupListener);
 		watchActions.put(key, action);
-		logger.info("Watching", key);
+		logger.info(logLevel, logID, "Watching", key, null);
 	}
 
 	public boolean remove (Action<?> action) {
@@ -73,18 +91,18 @@ public class ActionWatcher {
 
 	/** Removes an action from the watcher.
 	 * @param name
-	 * @return Whether or not the action was removed. */
+	 * @return Whether the action was removed. */
 	public boolean remove (String name) {
 		Action<?> action = watchActions.remove(name);
 
 		if (action == null) {
-			logger.info("Action " + name + " doesn't exist");
+			logger.info(logLevel, logID, "Action " + name + " doesn't exist", null, null);
 			return false;
 		}
 
 		action.unsubscribeFromEvent(ActionResetEvent.class, cleanupListener);
 
-		logger.info("Stopped Watching", name);
+		logger.info(logLevel, logID, "Stopped Watching", name, null);
 		return true;
 	}
 
@@ -92,7 +110,4 @@ public class ActionWatcher {
 		return watchActions.containsKey(key);
 	}
 
-	public ActionLogger getLogger () {
-		return logger;
-	}
 }

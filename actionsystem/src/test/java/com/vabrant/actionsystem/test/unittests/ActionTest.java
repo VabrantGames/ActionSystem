@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
 import com.vabrant.actionsystem.events.*;
-import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.logger.Logger;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockMultiParentAction;
@@ -71,7 +70,7 @@ public class ActionTest {
 	public void basicTest () {
 		printTestHeader(testName.getMethodName());
 
-		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.DEBUG);
+		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.LOGGER_DEBUG);
 
 		action.setCustomUpdateCode(new Runnable() {
 			@Override
@@ -191,7 +190,7 @@ public class ActionTest {
 
 	@Test
 	public void unmanagedTest () {
-		MockAction action = MockAction.obtain().setName("unmanaged").setLogLevel(Logger.DEBUG).unmanage();
+		MockAction action = MockAction.obtain().setName("unmanaged").setLogLevel(Logger.LOGGER_DEBUG).unmanage();
 
 		// Normal cycle
 		makeRoot(action, true);
@@ -215,7 +214,7 @@ public class ActionTest {
 	public void attemptToUseManagedPooledActionTest () {
 		printTestHeader(testName.getMethodName());
 
-		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.DEBUG);
+		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.LOGGER_DEBUG);
 
 		makeRoot(action, true);
 		action.start();
@@ -242,7 +241,7 @@ public class ActionTest {
 	public void poolRootActionWhileInUseTest () {
 		printTestHeader(testName.getMethodName());
 
-		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.DEBUG);
+		MockAction action = MockAction.obtain().setName("Action").setLogLevel(Logger.LOGGER_DEBUG);
 
 		// Make action root and mock a normal cycle
 		makeRoot(action, true);

@@ -1,20 +1,19 @@
 package com.vabrant.actionsystem.logger;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.StringBuilder;
 import com.vabrant.actionsystem.actions.Action;
 
 public class LoggerManager {
 
     private static boolean bypass;
-    private static int DEFAULT_LEVEL = Logger.NONE;
+    private static int DEFAULT_LEVEL = Logger.LOGGER_NONE;
     private static Logger bypassLogger = new Logger(LoggerManager.class);
-    private static final ObjectMap<Class, Logger> loggers = new ObjectMap<>();
+    private static final ObjectMap<Class<?>, Logger> loggers = new ObjectMap<>();
     private static final StringBuilder STRING_BUILDER = new StringBuilder(300);
-    private static Array<String> soloLoggers = new Array<>();
-//    private static ObjectMap<String, Action> soloLoggers;
+    private static final ObjectSet<String> soloIDS = new ObjectSet<>();
 
     public static void setBypass (boolean bypass) {
         LoggerManager.bypass = bypass;
@@ -30,9 +29,13 @@ public class LoggerManager {
             return;
         }
 
-        if (soloLoggers.contains(action.getName(), false)) return;
+        solo(action.getName());
+    }
 
-        soloLoggers.add(action.getName());
+    public static void solo (String soloID) {
+        if (soloIDS.contains(soloID)) return;
+
+        soloIDS.add(soloID);
     }
 
     public static Logger getLogger (Class<?> klass) {
@@ -51,27 +54,19 @@ public class LoggerManager {
         }
     }
 
-    public static void print (int levelType, Action action, String header, String body, Exception exception) {
-        print(levelType, action.getLogLevel(), action.getName(), action.getLogger(), header, body, exception);
-    }
-
     public static void print (int levelType, int logLevel, String actionName, Logger logger, String header, String body, Exception exception) {
         if (bypass || levelType > logLevel) return;
 
-        if (soloLoggers.size > 0) {
-            if (actionName == null || !soloLoggers.contains(actionName, false)) return;
-        }
-
-//        if (soloLoggers.size > 0 && !soloLoggers.containsKey(action)) return;
+        if (soloIDS.size > 0 && (actionName == null || !soloIDS.contains(actionName))) return;
 
         STRING_BUILDER.clear();
 
         String identifierString;
 
         if (actionName != null) {
-            STRING_BUILDER.append(actionName);
-            STRING_BUILDER.append("-");
             STRING_BUILDER.append(logger.getLoggerName());
+            STRING_BUILDER.append("-");
+            STRING_BUILDER.append(actionName);
             identifierString = STRING_BUILDER.toString();
             STRING_BUILDER.clear();
         } else {
@@ -85,23 +80,25 @@ public class LoggerManager {
             STRING_BUILDER.append(body);
         }
 
+        boolean hasException = exception != null;
+
         switch (levelType) {
-            case Logger.INFO:
-                if (exception == null) {
+            case Logger.LOGGER_INFO:
+                if (!hasException) {
                     Gdx.app.log(identifierString, STRING_BUILDER.toString());
                 } else {
                     Gdx.app.log(identifierString, STRING_BUILDER.toString(), exception);
                 }
                 break;
-            case Logger.DEBUG:
-                if (exception == null) {
+            case Logger.LOGGER_DEBUG:
+                if (!hasException) {
                     Gdx.app.debug(identifierString, STRING_BUILDER.toString());
                 } else {
                     Gdx.app.debug(identifierString, STRING_BUILDER.toString(), exception);
                 }
                 break;
-            case Logger.ERROR:
-                if (exception == null) {
+            case Logger.LOGGER_ERROR:
+                if (!hasException) {
                     Gdx.app.error(identifierString, STRING_BUILDER.toString());
                 } else {
                     Gdx.app.error(identifierString, STRING_BUILDER.toString(), exception);
