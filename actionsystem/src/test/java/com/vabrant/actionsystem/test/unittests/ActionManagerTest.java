@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Method;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.vabrant.actionsystem.actions.*;
-import com.vabrant.actionsystem.logger.Logger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.*;
 import org.junit.BeforeClass;
@@ -116,11 +116,11 @@ public class ActionManagerTest {
 
 		Action[] actions = new Action[amount];
 		ActionManager manager = new ActionManager(amount);
-		manager.setLogLevel(Logger.LOGGER_INFO);
+		manager.setLogLevel(ActionLogger.LOGGER_INFO);
 
 		// Add actions to manager
 		for (int i = 0; i < amount; i++) {
-			MockAction action = MockAction.obtain().setName(Integer.toString(i)).setLogLevel(Logger.LOGGER_DEBUG);
+			MockAction action = MockAction.obtain().setName(Integer.toString(i)).setLogLevel(ActionLogger.LOGGER_DEBUG);
 			manager.addAction(action);
 			actions[i] = action;
 		}

@@ -22,14 +22,14 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ReflectionPool;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.vabrant.actionsystem.logger.Logger;
-import com.vabrant.actionsystem.logger.LoggerManager;
+import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLoggerManager;
 
 public class ActionPools {
 
 	private static final ObjectMap<Class<?>, Pool<?>> pools = new ObjectMap<>();
-	public static final Logger logger = LoggerManager.getLogger(ActionPools.class);
-	public static int logLevel = Logger.LOGGER_NONE;
+	public static final ActionLogger logger = ActionLoggerManager.getLogger(ActionPools.class);
+	public static int logLevel = ActionLogger.LOGGER_NONE;
 
 	public static void setLogLevel (int logLevel) {
 		ActionPools.logLevel = logLevel;
@@ -48,16 +48,16 @@ public class ActionPools {
 		Pool<T> pool = get(type);
 
 		if (pool.getFree() == pool.max) {
-			if (LoggerManager.canLog()) {
-				LoggerManager.print(Logger.LOGGER_INFO, logLevel, null, logger, type.getSimpleName(), "Pool is full.", null);
+			if (ActionLoggerManager.canLog()) {
+				ActionLoggerManager.print(ActionLogger.LOGGER_INFO, logLevel, null, logger, type.getSimpleName(), "Pool is full.", null);
 			}
 			return;
 		}
 
 		int amountToAdd = (pool.getFree() + amount) < pool.max ? amount : pool.max - pool.getFree();
 
-		if (LoggerManager.canLog()) {
-			LoggerManager.print(Logger.LOGGER_DEBUG, logLevel, null, logger, "Amount to add", null, null);
+		if (ActionLoggerManager.canLog()) {
+			ActionLoggerManager.print(ActionLogger.LOGGER_DEBUG, logLevel, null, logger, "Amount to add", null, null);
 		}
 
 		for (int i = 0; i < amountToAdd; i++) {
@@ -120,8 +120,8 @@ public class ActionPools {
 					pool = ActionPools.get(action.getClass());
 				}
 
-				if (LoggerManager.canLog()) {
-					LoggerManager.print(Logger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+				if (ActionLoggerManager.canLog()) {
+					ActionLoggerManager.print(ActionLogger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
 				}
 
 				pool.free(action);
@@ -179,8 +179,8 @@ public class ActionPools {
 			action.stateReset();
 		}
 
-		if (LoggerManager.canLog()) {
-			LoggerManager.print(Logger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
+		if (ActionLoggerManager.canLog()) {
+			ActionLoggerManager.print(ActionLogger.LOGGER_INFO, logLevel, action.getName(), logger, "Pooled", null, null);
 		}
 	}
 }

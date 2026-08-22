@@ -20,15 +20,15 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.vabrant.actionsystem.events.Event;
 import com.vabrant.actionsystem.events.ActionResetEvent;
 import com.vabrant.actionsystem.events.EventListener;
-import com.vabrant.actionsystem.logger.Logger;
-import com.vabrant.actionsystem.logger.LoggerManager;
+import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLoggerManager;
 
 /** Keeps track of actions that may be nested inside other actions or to provide global access to actions.
  * @author John Barton */
 public class ActionWatcher {
 
 	private static ActionWatcher instance = null;
-	private static final Logger logger = LoggerManager.getLogger(ActionWatcher.class);
+	private static final ActionLogger logger = ActionLoggerManager.getLogger(ActionWatcher.class);
 
 	public static ActionWatcher getInstance () {
 		if (instance != null) return instance;
@@ -38,7 +38,7 @@ public class ActionWatcher {
 		return instance;
 	}
 
-	private int logLevel = Logger.LOGGER_NONE;
+	private int logLevel = ActionLogger.LOGGER_NONE;
 	private String logID;
 	private final ObjectMap<String, Action<?>> watchActions;
 
@@ -65,7 +65,7 @@ public class ActionWatcher {
 		this.logID = logID;
 	}
 
-	public Logger getLogger () {
+	public ActionLogger getLogger () {
 		return logger;
 	}
 

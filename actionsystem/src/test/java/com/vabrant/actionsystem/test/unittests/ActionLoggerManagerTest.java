@@ -20,8 +20,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.vabrant.actionsystem.logger.Logger;
-import com.vabrant.actionsystem.logger.LoggerManager;
+import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLoggerManager;
 import com.vabrant.actionsystem.test.TestUtils;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 /** @author John Barton */
-public class LoggerManagerTest {
+public class ActionLoggerManagerTest {
 
 	@Rule public TestName testName = new TestName();
 
@@ -48,16 +48,16 @@ public class LoggerManagerTest {
 		class Action1 {}
 		class Action2 {}
 
-		Logger action1Logger = LoggerManager.getLogger(Action1.class);
-		Logger action2Logger = LoggerManager.getLogger(Action2.class);
+		ActionLogger action1Logger = ActionLoggerManager.getLogger(Action1.class);
+		ActionLogger action2Logger = ActionLoggerManager.getLogger(Action2.class);
 
-		LoggerManager.print(Logger.LOGGER_INFO, Logger.LOGGER_INFO, "customAction1", action1Logger, "Header", "Body", null);
-		LoggerManager.print(Logger.LOGGER_DEBUG, Logger.LOGGER_DEBUG, "customAction1", action1Logger, "Header", "Body", null);
-		LoggerManager.print(Logger.LOGGER_ERROR, Logger.LOGGER_ERROR, "customAction1", action1Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_INFO, ActionLogger.LOGGER_INFO, "customAction1", action1Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_DEBUG, ActionLogger.LOGGER_DEBUG, "customAction1", action1Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_ERROR, ActionLogger.LOGGER_ERROR, "customAction1", action1Logger, "Header", "Body", null);
 
-		LoggerManager.print(Logger.LOGGER_INFO, Logger.LOGGER_INFO, "customAction2", action2Logger, "Header", "Body", null);
-		LoggerManager.print(Logger.LOGGER_DEBUG, Logger.LOGGER_DEBUG, "customAction2", action2Logger, "Header", "Body", null);
-		LoggerManager.print(Logger.LOGGER_ERROR, Logger.LOGGER_ERROR, "customAction2", action2Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_INFO, ActionLogger.LOGGER_INFO, "customAction2", action2Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_DEBUG, ActionLogger.LOGGER_DEBUG, "customAction2", action2Logger, "Header", "Body", null);
+		ActionLoggerManager.print(ActionLogger.LOGGER_ERROR, ActionLogger.LOGGER_ERROR, "customAction2", action2Logger, "Header", "Body", null);
 	}
 
 	@Test
@@ -65,17 +65,17 @@ public class LoggerManagerTest {
 		TestUtils.printTestHeader(testName.getMethodName());
 
 		MockActions.MockAction action = MockActions.MockAction.obtain();
-		action.setLogLevel(Logger.LOGGER_DEBUG);
+		action.setLogLevel(ActionLogger.LOGGER_DEBUG);
 
 		MockActions.MockAction soloAction = MockActions.MockAction.obtain();
-		soloAction.setLogLevel(Logger.LOGGER_DEBUG);
+		soloAction.setLogLevel(ActionLogger.LOGGER_DEBUG);
 
 		// Should print an error message since no action name was set.
-		LoggerManager.solo(soloAction);
+		ActionLoggerManager.solo(soloAction);
 
 		// Setup the solo action
 		soloAction.setName("SoloAction");
-		LoggerManager.solo(soloAction);
+		ActionLoggerManager.solo(soloAction);
 
 		//Should not print
 		action.getLogger().info(action, "Hello");
