@@ -11,7 +11,7 @@ import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.vabrant.actionsystem.actions.Action;
 import com.vabrant.actionsystem.actions.ActionManager;
 import com.vabrant.actionsystem.actions.ActionWatcher;
-import com.vabrant.actionsystem.logger.Logger;
+import com.vabrant.actionsystem.logger.ActionLogger;
 import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockSingleParentAction;
@@ -33,7 +33,7 @@ public class ActionWatcherTest {
 		application = new HeadlessApplication(new ApplicationAdapter() {});
 		actionManager = new ActionManager();
 		watcher = new ActionWatcher(10);
-		watcher.setLogLevel(Logger.LOGGER_DEBUG);
+		watcher.setLogLevel(ActionLogger.LOGGER_DEBUG);
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 	}
 
@@ -46,7 +46,7 @@ public class ActionWatcherTest {
 		// Create parent and child actions
 		MockSingleParentAction parent = MockSingleParentAction.obtain();
 		// parent.setLogLevel(ActionLogger.DEBUG);
-		MockAction child = MockAction.obtain().setName(tag).setLogLevel(Logger.LOGGER_DEBUG).watchAction(watcher);
+		MockAction child = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LOGGER_DEBUG).watchAction(watcher);
 		child.setCustomUpdateCode(new Runnable() {
 			@Override
 			public void run () {
@@ -73,7 +73,7 @@ public class ActionWatcherTest {
 		TestUtils.printTestHeader(testName.getMethodName());
 
 		final String tag = "action";
-		MockAction action = MockAction.obtain().setName(tag).setLogLevel(Logger.LOGGER_DEBUG).watchAction(watcher);
+		MockAction action = MockAction.obtain().setName(tag).setLogLevel(ActionLogger.LOGGER_DEBUG).watchAction(watcher);
 		action.setCustomUpdateCode(new Runnable() {
 			@Override
 			public void run () {
@@ -92,7 +92,7 @@ public class ActionWatcherTest {
 	public void compareTest () {
 		TestUtils.printTestHeader(testName.getMethodName());
 
-		actionManager.setLogLevel(Logger.LOGGER_DEBUG);
+		actionManager.setLogLevel(ActionLogger.LOGGER_DEBUG);
 
 		final int amount = 10;
 		for (int i = 0; i < amount; i++) {

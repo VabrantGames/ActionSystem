@@ -2,7 +2,7 @@ package com.vabrant.actionsystem.logger;
 
 import com.vabrant.actionsystem.actions.Action;
 
-public class Logger {
+public class ActionLogger {
 
     public static final int LOGGER_NONE = 0;
     public static final int LOGGER_ERROR = 1;
@@ -11,11 +11,11 @@ public class Logger {
 
     private final String loggerName;
 
-    public Logger (String loggerName) {
+    public ActionLogger(String loggerName) {
         this.loggerName = loggerName;
     }
 
-    public Logger (Class<?> klass) {
+    public ActionLogger(Class<?> klass) {
         loggerName = klass.getSimpleName();
     }
 
@@ -36,7 +36,7 @@ public class Logger {
     }
 
     public void info (int logLevel, String soloID, String header, String body, Exception exception) {
-        LoggerManager.print(LOGGER_INFO, logLevel, soloID, this, header, body, exception);
+        ActionLoggerManager.print(LOGGER_INFO, logLevel, soloID, this, header, body, exception);
     }
 
     public void debug (Action<?> action, String header) {
@@ -52,7 +52,7 @@ public class Logger {
     }
 
     public void debug (int logLevel, String soloID, String header, String body, Exception exception) {
-        LoggerManager.print(LOGGER_DEBUG, logLevel, soloID, this, header, body, exception);
+        ActionLoggerManager.print(LOGGER_DEBUG, logLevel, soloID, this, header, body, exception);
     }
 
     public void error (Action<?> action, String header) {
@@ -68,11 +68,11 @@ public class Logger {
     }
 
     public void error (int logLevel, String soloID, String header, String body, Exception exception) {
-        LoggerManager.print(LOGGER_ERROR, logLevel, soloID, this, header, body, exception);
+        ActionLoggerManager.print(LOGGER_ERROR, logLevel, soloID, this, header, body, exception);
     }
 
     private void print (int levelType, Action action, String header, String body, Exception exception) {
-        LoggerManager.print(levelType, action.getLogLevel(), action.getName(), this, header, body, exception);
+        ActionLoggerManager.print(levelType, action.getLogLevel(), action.getName(), this, header, body, exception);
     }
 
 }

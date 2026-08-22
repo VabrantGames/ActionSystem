@@ -20,8 +20,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.vabrant.actionsystem.logger.Logger;
-import com.vabrant.actionsystem.logger.LoggerManager;
+import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLoggerManager;
 import com.vabrant.actionsystem.test.TestUtils;
 import com.vabrant.actionsystem.test.unittests.MockActions.MockAction;
 import org.junit.BeforeClass;
@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 /** @author John Barton */
-public class LoggerTest {
+public class ActionLoggerTest {
 
 	@Rule public TestName testName = new TestName();
 
@@ -46,10 +46,10 @@ public class LoggerTest {
 	public void basicTest () {
 		TestUtils.printTestHeader(testName.getMethodName());
 
-		Logger logger = LoggerManager.getLogger(LoggerTest.class);
-		logger.info(Logger.LOGGER_INFO, null,  "Header", "Body", null);
-		logger.debug(Logger.LOGGER_DEBUG, null, "Header", "Body", null);
-		logger.error(Logger.LOGGER_ERROR, null, "Header", "Body", null);
+		ActionLogger logger = ActionLoggerManager.getLogger(ActionLoggerTest.class);
+		logger.info(ActionLogger.LOGGER_INFO, null,  "Header", "Body", null);
+		logger.debug(ActionLogger.LOGGER_DEBUG, null, "Header", "Body", null);
+		logger.error(ActionLogger.LOGGER_ERROR, null, "Header", "Body", null);
 
 		MockAction mockAction = MockAction.obtain();
 		mockAction.getLogger().info(mockAction, "Header", "Body");
@@ -96,14 +96,14 @@ public class LoggerTest {
 
 		MockActions.MockAction action = MockActions.MockAction.obtain();
 		MockActions.MockAction soloAction = MockActions.MockAction.obtain();
-		action.setLogLevel(Logger.LOGGER_DEBUG);
-		soloAction.setLogLevel(Logger.LOGGER_DEBUG);
+		action.setLogLevel(ActionLogger.LOGGER_DEBUG);
+		soloAction.setLogLevel(ActionLogger.LOGGER_DEBUG);
 
 		// Should print an error message since no action name was set.
-		LoggerManager.solo(soloAction);
+		ActionLoggerManager.solo(soloAction);
 
 		soloAction.setName("SoloAction");
-		LoggerManager.solo(soloAction);
+		ActionLoggerManager.solo(soloAction);
 
 		//Should not print
 		action.getLogger().info(action, "Hello");

@@ -19,8 +19,8 @@ package com.vabrant.actionsystem.actions;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 import com.vabrant.actionsystem.events.*;
-import com.vabrant.actionsystem.logger.Logger;
-import com.vabrant.actionsystem.logger.LoggerManager;
+import com.vabrant.actionsystem.logger.ActionLogger;
+import com.vabrant.actionsystem.logger.ActionLoggerManager;
 
 /** The base class for all actions.
  *
@@ -54,7 +54,7 @@ public class Action<T extends Action<T>> implements Poolable {
 	protected boolean isDead;
 	protected boolean isRunning;
 	protected boolean isPaused;
-	protected int logLevel = Logger.LOGGER_NONE;
+	protected int logLevel = ActionLogger.LOGGER_NONE;
 
 	private String name;
 	private Condition pauseCondition;
@@ -62,10 +62,10 @@ public class Action<T extends Action<T>> implements Poolable {
 	private ActionManager actionManager;
 	protected EventManager eventManager;
 
-	protected final Logger logger;
+	protected final ActionLogger logger;
 
 	public Action () {
-		logger = LoggerManager.getLogger(this.getClass());
+		logger = ActionLoggerManager.getLogger(this.getClass());
 		eventManager = new EventManager();
 	}
 
@@ -79,11 +79,11 @@ public class Action<T extends Action<T>> implements Poolable {
 	}
 
 	public T soloLogger (boolean solo) {
-		LoggerManager.solo(this);
+		ActionLoggerManager.solo(this);
 		return (T)this;
 	}
 
-	public Logger getLogger () {
+	public ActionLogger getLogger () {
 		return logger;
 	}
 
